@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SereneApi", "SereneApi\SereneApi.csproj", "{9AE7AD4B-28C2-4A0F-B631-B5DEA5A6E088}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi", "SereneApi\SereneApi.csproj", "{9AE7AD4B-28C2-4A0F-B631-B5DEA5A6E088}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SereneApi.Tests", "SereneApi.Tests\SereneApi.Tests.csproj", "{A5838144-4692-4D5C-A534-C1737C924A4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{9AE7AD4B-28C2-4A0F-B631-B5DEA5A6E088}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AE7AD4B-28C2-4A0F-B631-B5DEA5A6E088}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AE7AD4B-28C2-4A0F-B631-B5DEA5A6E088}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5838144-4692-4D5C-A534-C1737C924A4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5838144-4692-4D5C-A534-C1737C924A4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5838144-4692-4D5C-A534-C1737C924A4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5838144-4692-4D5C-A534-C1737C924A4B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
