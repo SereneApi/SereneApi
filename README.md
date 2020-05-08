@@ -60,7 +60,7 @@ Here is what the **appsettings.json** file looks like
 
 The above code will perform two basic actions. It will Get a User using their ID and Create a new user. Below is an example of the Url that this code will act upon.
 
->**Take Note:** Between the Source and Resource; **api/** is being appended to the URL. We'll go over this later when we cover the **ResourcePrecursor**.
+>**Take Note:** Between the Source and Resource **api/** is being appended to the URL. We'll go over this later when we cover the **ResourcePrecursor**.
 
 Here is the URL that GetUserAsync(171) will generate.
 >GET : http://myservice:8080/api/User/171
@@ -92,7 +92,7 @@ public class UserDto
 The **ApiHandler** is a core part of **SereneApi** and handles every single request. When inherited it offers a plethora of simple to use and yet powerful methods that should cover most if not all use cases and is completely extensible.
 >**Take Note:** No examples will be provided in this chapter. Review the Examples section to see it in action.
 
-### ApiMethod
+### ApiMethods
 The ApiMethod Enum tells the ApiHandler what **RESTful** method it will be performing in the requet. Below are the methods made available in **SereneApi**
 ```csharp
 public enum ApiMethod

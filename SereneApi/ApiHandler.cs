@@ -134,6 +134,35 @@ namespace DeltaWare.SereneApi
         }
 
         /// <summary>
+        /// Performs an in Body Request
+        /// </summary>
+        /// <typeparam name="TContent">The type to be serialized and sent in the body of the request</typeparam>
+        /// <param name="method">The RESTful API <see cref="ApiMethod"/> to be used</param>
+        /// <param name="inBodyContent">The object serialized and sent in the body of the request</param>
+        /// <returns></returns>
+        protected virtual Task<IApiResponse> InBodyRequestAsync<TContent>(ApiMethod method, TContent inBodyContent)
+        {
+            Uri route = GenerateRoute();
+
+            return InBodyRequestAsync<TContent>(method, route, inBodyContent);
+        }
+
+        /// <summary>
+        /// Performs an in Body Request
+        /// </summary>
+        /// <typeparam name="TContent">The type to be serialized and sent in the body of the request</typeparam>
+        /// <param name="method">The type to be serialized and sent in the body of the request</param>
+        /// <param name="action">The <see cref="action"/> to be performed</param>
+        /// <param name="inBodyContent">The object serialized and sent in the body of the request</param>
+        /// <returns></returns>
+        protected virtual Task<IApiResponse> InBodyRequestAsync<TContent>(ApiMethod method, object action, TContent inBodyContent)
+        {
+            Uri route = GenerateRoute(action);
+
+            return InBodyRequestAsync<TContent>(method, route, inBodyContent);
+        }
+
+        /// <summary>
         /// Performs an in Body Request returning a <see cref="TResponse"/>
         /// </summary>
         /// <typeparam name="TResponse">The type to be deserialized by the <see cref="ApiHandler"/> from the response</typeparam>
@@ -146,20 +175,6 @@ namespace DeltaWare.SereneApi
             Uri route = GenerateRoute();
 
             return InBodyRequestAsync<TResponse, TContent>(method, route, inBodyContent);
-        }
-
-        /// <summary>
-        /// Performs an in Body Request
-        /// </summary>
-        /// <typeparam name="TContent">The type to be serialized and sent in the body of the request</typeparam>
-        /// <param name="method">The RESTful API <see cref="ApiMethod"/> to be used</param>
-        /// <param name="inBodyContent">The object serialized and sent in the body of the request</param>
-        /// <returns></returns>
-        protected virtual Task<IApiResponse> InBodyRequestAsync<TContent>(ApiMethod method, TContent inBodyContent)
-        {
-            Uri route = GenerateRoute();
-
-            return InBodyRequestAsync<TContent>(method, route, inBodyContent);
         }
 
         /// <summary>
@@ -176,21 +191,6 @@ namespace DeltaWare.SereneApi
             Uri route = GenerateRoute(action);
 
             return InBodyRequestAsync<TResponse, TContent>(method, route, inBodyContent);
-        }
-
-        /// <summary>
-        /// Performs an in Body Request
-        /// </summary>
-        /// <typeparam name="TContent">The type to be serialized and sent in the body of the request</typeparam>
-        /// <param name="method">The type to be serialized and sent in the body of the request</param>
-        /// <param name="action">The <see cref="action"/> to be performed</param>
-        /// <param name="inBodyContent">The object serialized and sent in the body of the request</param>
-        /// <returns></returns>
-        protected virtual Task<IApiResponse> InBodyRequestAsync<TContent>(ApiMethod method, object action, TContent inBodyContent)
-        {
-            Uri route = GenerateRoute(action);
-
-            return InBodyRequestAsync<TContent>(method, route, inBodyContent);
         }
 
         #endregion
