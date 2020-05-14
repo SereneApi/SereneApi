@@ -3,8 +3,10 @@ using DeltaWare.SereneApi.Interfaces;
 using DeltaWare.SereneApi.Types;
 using Microsoft.Extensions.Logging;
 using System;
+using System.IO;
 using System.Linq.Expressions;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace DeltaWare.SereneApi
@@ -46,26 +48,26 @@ namespace DeltaWare.SereneApi
         #region Action Methods
 
         /// <summary>
-        /// Performs an in Path Request. The <see cref="parameter"/> will be appended to the Url
+        /// Performs an in Path Request. The <see cref="endpoint"/> will be appended to the Url
         /// </summary>
         /// <param name="method">The RESTful API <see cref="ApiMethod"/> to be used</param>
-        /// <param name="parameter">The <see cref="parameter"/> to be appended to the Url</param>
-        protected virtual Task<IApiResponse> InPathRequestAsync(ApiMethod method, object parameter = null)
+        /// <param name="endpoint">The <see cref="endpoint"/> to be appended to the Url</param>
+        protected virtual Task<IApiResponse> InPathRequestAsync(ApiMethod method, object endpoint = null)
         {
-            Uri route = GenerateRoute(parameter);
+            Uri route = GenerateRoute(endpoint);
 
             return InPathRequestAsync(method, route);
         }
 
         /// <summary>
-        /// Performs an in Path Request. The <see cref="parameters"/> will be appended to the Url
+        /// Performs an in Path Request. The <see cref="endpointParameters"/> will be appended to the Url
         /// </summary>
         /// <param name="method">The RESTful API <see cref="ApiMethod"/> to be used</param>
-        /// <param name="actionTemplate">The action to be performed, supports templates for string formatting with <see cref="parameters"/></param>
-        /// <param name="parameters">The <see cref="parameters"/> to be appended to the Url</param>
-        protected virtual Task<IApiResponse> InPathRequestAsync(ApiMethod method, string actionTemplate, params object[] parameters)
+        /// <param name="endpointTemplate">The endpoint to be performed, supports templates for string formatting with <see cref="endpointParameters"/></param>
+        /// <param name="endpointParameters">The <see cref="endpointParameters"/> to be appended to the Url</param>
+        protected virtual Task<IApiResponse> InPathRequestAsync(ApiMethod method, string endpointTemplate, params object[] endpointParameters)
         {
-            string action = FormatActionTemplate(actionTemplate, parameters);
+            string action = FormatEndpointTemplate(endpointTemplate, endpointParameters);
 
             Uri route = GenerateRoute(action);
 
@@ -73,27 +75,27 @@ namespace DeltaWare.SereneApi
         }
 
         /// <summary>
-        /// Performs an in Path Request returning a <see cref="TResponse"/>. The <see cref="parameter"/> will be appended to the Url
+        /// Performs an in Path Request returning a <see cref="TResponse"/>. The <see cref="endpoint"/> will be appended to the Url
         /// </summary>
         /// <typeparam name="TResponse">The type to be deserialized by the <see cref="ApiHandler"/> from the response</typeparam>
         /// <param name="method">The RESTful API <see cref="ApiMethod"/> to be used</param>
-        /// <param name="parameter">The <see cref="parameter"/> to be appended to the Url</param>
-        protected virtual Task<IApiResponse<TResponse>> InPathRequestAsync<TResponse>(ApiMethod method, object parameter = null)
+        /// <param name="endpoint">The <see cref="endpoint"/> to be appended to the Url</param>
+        protected virtual Task<IApiResponse<TResponse>> InPathRequestAsync<TResponse>(ApiMethod method, object endpoint = null)
         {
-            Uri route = GenerateRoute(parameter);
+            Uri route = GenerateRoute(endpoint);
 
             return InPathRequestAsync<TResponse>(method, route);
         }
 
         /// <summary>
-        /// Performs an in Path Request returning a <see cref="TResponse"/>. The <see cref="parameters"/> will be appended to the Url
+        /// Performs an in Path Request returning a <see cref="TResponse"/>. The <see cref="endpointParameters"/> will be appended to the Url
         /// </summary>
         /// <param name="method">The RESTful API <see cref="ApiMethod"/> to be used</param>
-        /// <param name="actionTemplate">The action to be performed, supports templates for string formatting with <see cref="parameters"/></param>
-        /// <param name="parameters">The <see cref="parameters"/> to be appended to the Url</param>
-        protected virtual Task<IApiResponse<TResponse>> InPathRequestAsync<TResponse>(ApiMethod method, string actionTemplate, params object[] parameters)
+        /// <param name="endpointTemplate">The endpoint to be performed, supports templates for string formatting with <see cref="endpointParameters"/></param>
+        /// <param name="endpointParameters">The <see cref="endpointParameters"/> to be appended to the Url</param>
+        protected virtual Task<IApiResponse<TResponse>> InPathRequestAsync<TResponse>(ApiMethod method, string endpointTemplate, params object[] endpointParameters)
         {
-            string action = FormatActionTemplate(actionTemplate, parameters);
+            string action = FormatEndpointTemplate(endpointTemplate, endpointParameters);
 
             Uri route = GenerateRoute(action);
 
@@ -104,135 +106,101 @@ namespace DeltaWare.SereneApi
         /// Performs an in Path Request with query support returning a <see cref="TResponse"/>
         /// </summary>
         /// <typeparam name="TResponse">The type to be deserialized by the <see cref="ApiHandler"/> from the response</typeparam>
-        /// <typeparam name="TContent">The type to be sent in the query</typeparam>
+        /// <typeparam name="TQueryContent">The type to be sent in the query</typeparam>
         /// <param name="method">The RESTful API <see cref="ApiMethod"/> to be used</param>
-        /// <param name="action">The <see cref="action"/> to be performed</param>
-        /// <param name="content">The <see cref="content"/> to be used when generating the <see cref="query"/></param>
-        /// <param name="query">Selects parts of the <see cref="content"/> to be converted into a query</param>
-        protected virtual Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TContent>(ApiMethod method, object action, TContent content, Expression<Func<TContent, object>> query = null) where TContent : class
+        /// <param name="endpoint">The <see cref="endpoint"/> to be performed</param>
+        /// <param name="queryContent"> <see cref="queryContent"/> to be used when generating the <see cref="query"/></param>
+        /// <param name="query">Selects parts of the <see cref="queryContent"/> to be converted into a query</param>
+        protected virtual Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQueryContent>(ApiMethod method, TQueryContent queryContent, Expression<Func<TQueryContent, object>> query, object endpoint = null) where TQueryContent : class
         {
-            Uri route = GenerateRouteWithQuery(action, content, query);
+            Uri route = GenerateRouteWithQuery(endpoint, queryContent, query);
 
             return InPathRequestAsync<TResponse>(method, route);
         }
 
         /// <summary>
-        /// Performs an in Path Request with query support returning a <see cref="TResponse"/>. The <see cref="parameters"/> will be appended to the Url
+        /// Performs an in Path Request with query support returning a <see cref="TResponse"/>. The <see cref="endpointParameters"/> will be appended to the Url
         /// </summary>
         /// <typeparam name="TResponse">The type to be deserialized by the <see cref="ApiHandler"/> from the response</typeparam>
-        /// <typeparam name="TContent">The type to be sent in the query</typeparam>
+        /// <typeparam name="TQueryContent">The type to be sent in the query</typeparam>
         /// <param name="method">The RESTful API <see cref="ApiMethod"/> to be used</param>
-        /// <param name="actionTemplate">The action to be performed, supports templates for string formatting with <see cref="parameters"/></param>
-        /// <param name="content">The <see cref="content"/> to be used when generating the <see cref="query"/></param>
-        /// <param name="query">Selects parts of the <see cref="content"/> to be converted into a query</param>
-        /// <param name="parameters">The <see cref="parameters"/> to be appended to the Url</param>
-        protected virtual Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TContent>(ApiMethod method, string actionTemplate, TContent content, Expression<Func<TContent, object>> query = null, params object[] parameters) where TContent : class
+        /// <param name="endpointTemplate">The endpoint to be performed, supports templates for string formatting with <see cref="endpointParameters"/></param>
+        /// <param name="queryContent">The <see cref="queryContent"/> to be used when generating the <see cref="query"/></param>
+        /// <param name="query">Selects parts of the <see cref="queryContent"/> to be converted into a query</param>
+        /// <param name="endpointParameters">The <see cref="endpointParameters"/> to be appended to the Url</param>
+        protected virtual Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQueryContent>(ApiMethod method, TQueryContent queryContent, Expression<Func<TQueryContent, object>> query, string endpointTemplate, params object[] endpointParameters) where TQueryContent : class
         {
-            Uri route = GenerateRouteWithQuery(actionTemplate, content, query, parameters);
+            Uri route = GenerateRouteWithQuery(endpointTemplate, queryContent, query, endpointParameters);
 
             return InPathRequestAsync<TResponse>(method, route);
         }
 
         /// <summary>
-        /// Performs an in Body Request
+        /// Serializes the supplied <typeparam name="TContent"/> sending it in the Body of the Request
         /// </summary>
         /// <typeparam name="TContent">The type to be serialized and sent in the body of the request</typeparam>
-        /// <param name="method">The RESTful API <see cref="ApiMethod"/> to be used</param>
-        /// <param name="inBodyContent">The object serialized and sent in the body of the request</param>
-        /// <returns></returns>
-        protected virtual Task<IApiResponse> InBodyRequestAsync<TContent>(ApiMethod method, TContent inBodyContent)
+        /// <param name="method">The RESTful <see cref="ApiMethod"/> to be used</param>
+        /// <param name="bodyContent">The object serialized and sent in the body of the request</param>
+        /// <param name="endpoint">The <see cref="endpoint"/> to be appended to the end of the Url</param>
+        protected virtual Task<IApiResponse> InBodyRequestAsync<TContent>(ApiMethod method, TContent bodyContent, object endpoint = null)
         {
-            Uri route = GenerateRoute();
+            Uri route = GenerateRoute(endpoint);
 
-            return InBodyRequestAsync<TContent>(method, route, inBodyContent);
+            return InBodyRequestAsync<TContent>(method, route, bodyContent);
         }
 
         /// <summary>
-        /// Performs an in Body Request
+        /// Serializes the supplied <typeparam name="TContent"/> sending it in the Body of the Request
         /// </summary>
-        /// <typeparam name="TContent">The type to be serialized and sent in the body of the request</typeparam>
-        /// <param name="method">The type to be serialized and sent in the body of the request</param>
-        /// <param name="action">The <see cref="action"/> to be performed</param>
-        /// <param name="inBodyContent">The object serialized and sent in the body of the request</param>
-        /// <returns></returns>
-        protected virtual Task<IApiResponse> InBodyRequestAsync<TContent>(ApiMethod method, object action, TContent inBodyContent)
+        /// <typeparam name="TContent"></typeparam>
+        /// <param name="method"></param>
+        /// <param name="bodyContent"></param>
+        /// <param name="endpointTemplate"></param>
+        /// <param name="endpointParameters"></param>
+        protected virtual Task<IApiResponse> InBodyRequestAsync<TContent>(ApiMethod method, TContent bodyContent, string endpointTemplate, params object[] endpointParameters)
         {
+            string action = FormatEndpointTemplate(endpointTemplate, endpointParameters);
+
             Uri route = GenerateRoute(action);
 
-            return InBodyRequestAsync<TContent>(method, route, inBodyContent);
+            return InBodyRequestAsync<TContent>(method, route, bodyContent);
         }
 
         /// <summary>
-        /// Performs an in Body Request returning a <see cref="TResponse"/>
+        /// Serializes the supplied <typeparam name="TContent"/> sending it in the Body of the Request
         /// </summary>
-        /// <typeparam name="TResponse">The type to be deserialized by the <see cref="ApiHandler"/> from the response</typeparam>
-        /// <typeparam name="TContent">The type to be serialized and sent in the body of the request</typeparam>
-        /// <param name="method">The RESTful API <see cref="ApiMethod"/> to be used</param>
-        /// <param name="inBodyContent">The object serialized and sent in the body of the request</param>
-        /// <returns></returns>
-        protected virtual Task<IApiResponse<TResponse>> InBodyRequestAsync<TResponse, TContent>(ApiMethod method, TContent inBodyContent)
+        /// <typeparam name="TContent"></typeparam>
+        /// <typeparam name="TResponse"></typeparam>
+        /// <param name="method"></param>
+        /// <param name="bodyContent"></param>
+        /// <param name="endpoint"></param>
+        protected virtual Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(ApiMethod method, TContent bodyContent, object endpoint = null)
         {
-            Uri route = GenerateRoute();
+            Uri route = GenerateRoute(endpoint);
 
-            return InBodyRequestAsync<TResponse, TContent>(method, route, inBodyContent);
+            return InBodyRequestAsync<TContent, TResponse>(method, route, bodyContent);
         }
 
         /// <summary>
-        /// Performs an in Body Request returning a <see cref="TResponse"/>
+        /// Serializes the supplied <typeparam name="TContent"/> sending it in the Body of the Request
         /// </summary>
-        /// <typeparam name="TResponse">The type to be deserialized by the <see cref="ApiHandler"/> from the response</typeparam>
-        /// <typeparam name="TContent">The type to be serialized and sent in the body of the request</typeparam>
-        /// <param name="method">The RESTful API <see cref="ApiMethod"/> to be used</param>
-        /// <param name="action">The <see cref="action"/> to be performed</param>
-        /// <param name="inBodyContent">The object serialized and sent in the body of the request</param>
-        /// <returns></returns>
-        protected virtual Task<IApiResponse<TResponse>> InBodyRequestAsync<TResponse, TContent>(ApiMethod method, object action, TContent inBodyContent)
+        /// <typeparam name="TContent"></typeparam>
+        /// <typeparam name="TResponse"></typeparam>
+        /// <param name="method"></param>
+        /// <param name="bodyContent"></param>
+        /// <param name="endpointTemplate"></param>
+        /// <param name="endpointParameters"></param>
+        protected virtual Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(ApiMethod method, TContent bodyContent, string endpointTemplate, params object[] endpointParameters)
         {
+            string action = FormatEndpointTemplate(endpointTemplate, endpointParameters);
+
             Uri route = GenerateRoute(action);
 
-            return InBodyRequestAsync<TResponse, TContent>(method, route, inBodyContent);
+            return InBodyRequestAsync<TContent, TResponse>(method, route, bodyContent);
         }
 
         #endregion
         #region Helper Methods
-
-        /// <summary>
-        /// Creates a new Instance of a <see cref="HttpClient"/>
-        /// </summary>
-        protected virtual Task<HttpClient> CreateHttpClientAsync()
-        {
-            return Task.Factory.StartNew(() =>
-            {
-                if (_options.ClientOverride != null)
-                {
-                    _logger?.LogDebug("Using Client Override for Request");
-
-                    return _options.ClientOverride;
-                }
-
-                HttpClient client;
-
-                if (_options.HttpClientFactory != null)
-                {
-                    _logger?.LogDebug("An HttpClientFactory has been provided, creating Client using Factory");
-
-                    client = _options.HttpClientFactory.CreateClient();
-                }
-                else
-                {
-                    _logger?.LogDebug("Using default HttpClient as no client factory or override was provided");
-
-                    client = new HttpClient();
-                }
-
-                client.BaseAddress = _options.Source;
-                client.Timeout = _options.Timeout;
-
-                _options.RequestHeaderBuilder.Invoke(client.DefaultRequestHeaders);
-
-                return client;
-            });
-        }
 
         /// <summary>
         /// Processes the returned <see cref="HttpResponseMessage"/> deserializing the contained <see cref="TResponse"/>
@@ -255,7 +223,9 @@ namespace DeltaWare.SereneApi
 
             try
             {
-                TResponse response = await responseMessage.ReadAsJsonAsync<TResponse>();
+                await using Stream contentStream = await responseMessage.Content.ReadAsStreamAsync();
+
+                TResponse response = await JsonSerializer.DeserializeAsync<TResponse>(contentStream);
 
                 return ApiResponse<TResponse>.Success(response);
             }
@@ -292,18 +262,18 @@ namespace DeltaWare.SereneApi
         /// <summary>
         /// Generates the Path to be used by the <see cref="HttpClient"/> does not include the <see cref="IApiHandlerOptions.Source"/>
         /// </summary>
-        /// <param name="action">The action to be used in the route</param>
-        protected virtual Uri GenerateRoute(object action = null)
+        /// <param name="endpoint">The endpoint to be used in the route</param>
+        protected virtual Uri GenerateRoute(object endpoint = null)
         {
             Uri route;
 
-            if (action == null)
+            if (endpoint == null)
             {
-                route = new Uri($"{_options.ResourcePrecursor}{_options.Resource}", UriKind.Relative);
+                route = new Uri("", UriKind.Relative);
             }
             else
             {
-                route = new Uri($"{_options.ResourcePrecursor}{_options.Resource}/{action}", UriKind.Relative);
+                route = new Uri($"/{endpoint}", UriKind.Relative);
             }
 
             return route;
@@ -313,10 +283,10 @@ namespace DeltaWare.SereneApi
         /// Generates the Path and Query to be used by the <see cref="HttpClient"/> does not include the <see cref="IApiHandlerOptions.Source"/>
         /// </summary>
         /// <typeparam name="TContent">The type to be sent in the query</typeparam>
-        /// <param name="action">The action to be used in the route</param>
+        /// <param name="endpoint">The endpoint to be used in the route</param>
         /// <param name="content">The <see cref="content"/> to be used when generating the <see cref="query"/></param>
         /// <param name="query">Selects parts of the <see cref="content"/> to be converted into a query</param>
-        protected virtual Uri GenerateRouteWithQuery<TContent>(object action, TContent content, Expression<Func<TContent, object>> query = null) where TContent : class
+        protected virtual Uri GenerateRouteWithQuery<TContent>(object endpoint, TContent content, Expression<Func<TContent, object>> query = null) where TContent : class
         {
             string queryString;
 
@@ -329,7 +299,7 @@ namespace DeltaWare.SereneApi
                 queryString = _options.QueryFactory.Build(content, query);
             }
 
-            Uri route = new Uri($"{_options.ResourcePrecursor}{_options.Resource}/{action}{queryString}", UriKind.Relative);
+            Uri route = new Uri($"/{endpoint}{queryString}", UriKind.Relative);
 
             return route;
         }
@@ -338,11 +308,11 @@ namespace DeltaWare.SereneApi
         /// Generates the Path and Query to be used by the <see cref="HttpClient"/> does not include the <see cref="IApiHandlerOptions.Source"/>
         /// </summary>
         /// <typeparam name="TContent">The type to be sent in the query</typeparam>
-        /// <param name="actionTemplate">The action to be performed, supports templates for string formatting with <see cref="parameters"/></param>
+        /// <param name="endpointTemplate">The endpoint to be performed, supports templates for string formatting with <see cref="parameters"/></param>
         /// <param name="content">The <see cref="content"/> to be used when generating the <see cref="query"/></param>
         /// <param name="query">Selects parts of the <see cref="content"/> to be converted into a query</param>
         /// <param name="parameters">The <see cref="parameters"/> to be appended to the Url</param>
-        protected virtual Uri GenerateRouteWithQuery<TContent>(string actionTemplate, TContent content, Expression<Func<TContent, object>> query = null, params object[] parameters) where TContent : class
+        protected virtual Uri GenerateRouteWithQuery<TContent>(string endpointTemplate, TContent content, Expression<Func<TContent, object>> query = null, params object[] parameters) where TContent : class
         {
             string queryString;
 
@@ -355,9 +325,9 @@ namespace DeltaWare.SereneApi
                 queryString = _options.QueryFactory.Build(content, query);
             }
 
-            string action = FormatActionTemplate(actionTemplate, parameters);
+            string action = FormatEndpointTemplate(endpointTemplate, parameters);
 
-            Uri route = new Uri($"{_options.ResourcePrecursor}{_options.Resource}/{action}{queryString}", UriKind.Relative);
+            Uri route = new Uri($"/{action}{queryString}", UriKind.Relative);
 
             return route;
         }
@@ -365,24 +335,24 @@ namespace DeltaWare.SereneApi
         /// <summary>
         /// Formats the Action Template
         /// </summary>
-        /// <param name="actionTemplate">The action to be performed, supports templates for string formatting with <see cref="parameters"/></param>
+        /// <param name="endpointTemplate">The endpoint to be performed, supports templates for string formatting with <see cref="parameters"/></param>
         /// <param name="parameters">The <see cref="parameters"/> to be appended to the Url</param>
         /// <returns></returns>
-        protected virtual string FormatActionTemplate(string actionTemplate, params object[] parameters)
+        protected virtual string FormatEndpointTemplate(string endpointTemplate, params object[] parameters)
         {
-            string action = string.Format(actionTemplate, parameters);
+            string action = string.Format(endpointTemplate, parameters);
 
-            if (action.Length != actionTemplate.Length)
+            if (action.Length != endpointTemplate.Length)
             {
                 return $"{action}";
             }
 
             if (parameters.Length > 1)
             {
-                throw new ArgumentException("Multiple Parameters must be used with a formattable action template.");
+                throw new ArgumentException("Multiple Parameters must be used with a format-table endpoint template.");
             }
 
-            return $"{actionTemplate}/{parameters[0]}";
+            return $"{endpointTemplate}/{parameters[0]}";
         }
 
 
@@ -397,7 +367,7 @@ namespace DeltaWare.SereneApi
         /// <param name="route">The <see cref="route"/> to be used for the request</param>
         private async Task<IApiResponse> InPathRequestAsync(ApiMethod method, Uri route)
         {
-            using HttpClient client = await CreateHttpClientAsync();
+            using HttpClient client = _options.HttpClient;
 
             if (client is null)
             {
@@ -464,7 +434,7 @@ namespace DeltaWare.SereneApi
         /// <param name="route">The <see cref="route"/> to be used for the request</param>
         private async Task<IApiResponse<TResponse>> InPathRequestAsync<TResponse>(ApiMethod method, Uri route)
         {
-            using HttpClient client = await CreateHttpClientAsync();
+            using HttpClient client = _options.HttpClient;
 
             if (client is null)
             {
@@ -535,7 +505,7 @@ namespace DeltaWare.SereneApi
         /// <returns></returns>
         private async Task<IApiResponse> InBodyRequestAsync<TContent>(ApiMethod method, Uri route, TContent inBodyContent)
         {
-            using HttpClient client = await CreateHttpClientAsync();
+            using HttpClient client = _options.HttpClient;
 
             if (client is null)
             {
@@ -605,9 +575,9 @@ namespace DeltaWare.SereneApi
         /// <param name="route">The <see cref="route"/> to be used for the request</param>
         /// <param name="inBodyContent">The object serialized and sent in the body of the request</param>
         /// <returns></returns>
-        private async Task<IApiResponse<TResponse>> InBodyRequestAsync<TResponse, TContent>(ApiMethod method, Uri route, TContent inBodyContent)
+        private async Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(ApiMethod method, Uri route, TContent inBodyContent)
         {
-            using HttpClient client = await CreateHttpClientAsync();
+            using HttpClient client = _options.HttpClient;
 
             if (client is null)
             {

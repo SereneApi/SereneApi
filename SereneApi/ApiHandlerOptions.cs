@@ -1,4 +1,4 @@
-﻿using DeltaWare.SereneApi.Interfaces;
+using DeltaWare.SereneApi.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,42 +12,11 @@ namespace DeltaWare.SereneApi
     /// </summary>
     public class ApiHandlerOptions : IApiHandlerOptions
     {
-        #region Public Properties
+        private IHttpClientFactory _httpClientFactory;
 
-        /// <inheritdoc cref="IApiHandlerOptions.Source"/>
-        public Uri Source { get; private set; }
+        private HttpClient _clientOverride;
 
-        /// <inheritdoc cref="IApiHandlerOptions.Resource"/>
-        public string Resource { get; private set; }
 
-        /// <inheritdoc cref="IApiHandlerOptions.ResourcePrecursor"/>
-        public string ResourcePrecursor { get; private set; } = DefaultResourcePrecursor;
-
-        /// <inheritdoc cref="IApiHandlerOptions.Timeout"/>
-        public TimeSpan Timeout { get; private set; } = DefaultTimeoutPeriod;
-
-        /// <inheritdoc cref="IApiHandlerOptions.HttpClientFactory"/>
-        public IHttpClientFactory HttpClientFactory { get; private set; }
-
-        /// <inheritdoc cref="IApiHandlerOptions.LoggerFactory"/>
-        public ILoggerFactory LoggerFactory { get; private set; }
-
-        /// <inheritdoc cref="IApiHandlerOptions.QueryFactory"/>
-        public IQueryFactory QueryFactory { get; private set; } = new QueryFactory();
-
-        /// <inheritdoc cref="IApiHandlerOptions.ClientOverride"/>
-        public HttpClient ClientOverride { get; private set; }
-
-        /// <inheritdoc cref="IApiHandlerOptions.RetryCount"/>
-        public uint RetryCount { get; private set; }
-
-        /// <inheritdoc cref="IApiHandlerOptions.HandlerType"/>
-        public virtual Type HandlerType { get; } = typeof(ApiHandler);
-
-        /// <inheritdoc cref="IApiHandlerOptions.RequestHeaderBuilder"/>
-        public Action<HttpRequestHeaders> RequestHeaderBuilder { get; private set; } = DefaultRequestHeadersBuilder;
-
-        #endregion
         #region Default Values
 
         /// <summary>
@@ -70,14 +39,63 @@ namespace DeltaWare.SereneApi
         };
 
         #endregion
+        #region Public Properties
+
+        /// <inheritdoc cref="IApiHandlerOptions.Source"/>
+        public Uri Source { get; private set; }
+
+        /// <inheritdoc cref="IApiHandlerOptions.Resource"/>
+        public string Resource { get; private set; }
+
+        /// <inheritdoc cref="IApiHandlerOptions.ResourcePrecursor"/>
+        public string ResourcePrecursor { get; private set; } = DefaultResourcePrecursor;
+
+        /// <inheritdoc cref="IApiHandlerOptions.Timeout"/>
+        public TimeSpan Timeout { get; private set; } = DefaultTimeoutPeriod;
+
+        /// <inheritdoc cref="IApiHandlerOptions.LoggerFactory"/>
+        public ILoggerFactory LoggerFactory { get; private set; }
+
+        /// <inheritdoc cref="IApiHandlerOptions.QueryFactory"/>
+        public IQueryFactory QueryFactory { get; private set; } = new QueryFactory();
+
+        /// <inheritdoc cref="IApiHandlerOptions.HttpClient"/>
+        public HttpClient HttpClient
+        {
+            get
+            {
+                if (_clientOverride != null)
+                {
+                    return _clientOverride;
+                }
+
+                return _httpClientFactory.CreateClient(HandlerType.ToString());
+            }
+        }
+
+        /// <inheritdoc cref="IApiHandlerOptions.RetryCount"/>
+        public uint RetryCount { get; private set; }
+
+        /// <inheritdoc cref="IApiHandlerOptions.HandlerType"/>
+        public virtual Type HandlerType { get; } = typeof(ApiHandler);
+
+        /// <inheritdoc cref="IApiHandlerOptions.RequestHeaderBuilder"/>
+        public Action<HttpRequestHeaders> RequestHeaderBuilder { get; private set; } = DefaultRequestHeadersBuilder;
+
+        #endregion
         #region Public Methods
+
+        internal void AddHttpClientFactory(IHttpClientFactory httpClientFactory)
+        {
+            _httpClientFactory = httpClientFactory;
+        }
 
         /// <summary>
         /// Gets the Source, Resource, ResourcePrecursor and Timeout period from the <see cref="IConfigurationSection"/>.
         /// Note: Source and Resource are required, ResourcePrecursor and Timeout are optional
         /// </summary>
         /// <param name="configuration">The <see cref="IConfigurationSection"/> the values will be retrieved from</param>
-        internal void AddConfiguration(IConfigurationSection configuration)
+        internal void UseConfiguration(IConfigurationSection configuration)
         {
             if (Source != null || Resource != null)
             {
@@ -141,12 +159,12 @@ namespace DeltaWare.SereneApi
         /// <param name="clientOverride">The <see cref="HttpClient"/> to be used when making API requests.</param>
         internal void UseClientOverride(HttpClient clientOverride)
         {
-            if (HttpClientFactory != null)
+            if (_httpClientFactory != null)
             {
                 throw new ArgumentException("A Client Override cannot be used alongside an HttpClientFactory");
             }
 
-            ClientOverride = clientOverride;
+            _clientOverride = clientOverride;
         }
 
         /// <summary>

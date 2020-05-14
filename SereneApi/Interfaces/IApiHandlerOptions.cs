@@ -26,22 +26,20 @@ namespace DeltaWare.SereneApi.Interfaces
         /// </summary>
         string ResourcePrecursor { get; }
 
+        ILoggerFactory LoggerFactory { get; }
+
+        IQueryFactory QueryFactory { get; }
+
+        Type HandlerType { get; }
+
         /// <summary>
         /// Supplies the the HttpClients to be used for requests.
         /// </summary>
         TimeSpan Timeout { get; }
 
-        IHttpClientFactory HttpClientFactory { get; }
-
-        ILoggerFactory LoggerFactory { get; }
-
-        IQueryFactory QueryFactory { get; }
-
-        HttpClient ClientOverride { get; }
+        HttpClient HttpClient { get; }
 
         uint RetryCount { get; }
-
-        Type HandlerType { get; }
 
         Action<HttpRequestHeaders> RequestHeaderBuilder { get; }
     }

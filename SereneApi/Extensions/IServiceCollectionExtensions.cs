@@ -1,6 +1,7 @@
 ﻿using DeltaWare.SereneApi;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
+using System.Net.Http;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -23,7 +24,27 @@ namespace Microsoft.Extensions.DependencyInjection
 
             optionsAction?.Invoke(serviceProvider, builder);
 
-            return builder.Options;
+            ApiHandlerOptions<TApiHandler> options = builder.Options;
+
+            // Client override has been provided. We do not need to initiate a client Factory.
+            if (options.HttpClient != null)
+            {
+                return options;
+            }
+
+            services.AddHttpClient(options.HandlerType.ToString(), client =>
+            {
+                client.BaseAddress = new Uri($"{options.Source}/{options.ResourcePrecursor}{options.Resource}");
+                client.Timeout = options.Timeout;
+
+                options.RequestHeaderBuilder.Invoke(client.DefaultRequestHeaders);
+
+            });
+
+            options.AddHttpClientFactory(serviceProvider.GetRequiredService<IHttpClientFactory>());
+
+
+            return options;
         }
     }
 }

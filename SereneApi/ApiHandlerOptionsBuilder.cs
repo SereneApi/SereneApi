@@ -33,7 +33,7 @@ namespace DeltaWare.SereneApi
         /// <param name="configuration">The <see cref="IConfigurationSection"/> the values will be retrieved from</param>
         public ApiHandlerOptionsBuilder AddConfiguration(IConfigurationSection configuration)
         {
-            Options.AddConfiguration(configuration);
+            Options.UseConfiguration(configuration);
 
             return this;
         }
@@ -63,7 +63,7 @@ namespace DeltaWare.SereneApi
         }
 
         /// <summary>
-        /// Overrides the Client Builder with the supplied <see cref="HttpClient"/> this will disable the supplied Source and <see cref="HttpRequestHeaders"/>.
+        /// Overrides the Client with the supplied <see cref="HttpClient"/> this will disable the supplied Source, Timeout and <see cref="HttpRequestHeaders"/>.
         /// This should only be used for Unit Testing
         /// </summary>
         /// <param name="clientOverride">The <see cref="HttpClient"/> to be used when making API requests.</param>

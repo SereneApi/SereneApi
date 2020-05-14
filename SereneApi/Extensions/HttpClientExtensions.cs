@@ -2,7 +2,6 @@
 using System.Text;
 using System.Threading.Tasks;
 
-// Do not change the namespace
 namespace System.Net.Http
 {
     public static class HttpClientExtensions
