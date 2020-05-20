@@ -10,7 +10,7 @@ namespace Microsoft.Extensions.Configuration
         {
             if (configuration.GetSection(key).Exists())
             {
-                return configuration.Get<TValue>();
+                return configuration.GetSection(key).Get<TValue>();
             }
 
             if (required)
@@ -22,20 +22,20 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
-        /// Returns the <see cref="IConfigurationSection"/> from within ApiConfig that matches the specified <see cref="apiKey"/>
+        /// Returns the <see cref="IConfiguration"/> from within ApiConfig that matches the specified <see cref="apiKey"/>
         /// </summary>
         /// <param name="configuration">The ROOT <see cref="IConfiguration"/> to be searched in</param>
-        /// <param name="apiKey">The <see cref="IConfigurationSection"/> name containing the API Configuration</param>
-        public static IConfigurationSection GetApiConfig(this IConfiguration configuration, string apiKey)
+        /// <param name="apiKey">The <see cref="IConfiguration"/> name containing the API Configuration</param>
+        public static IConfiguration GetApiConfig(this IConfiguration configuration, string apiKey)
         {
-            if (configuration.GetSection(ApiConfigKey).Exists())
+            if (!configuration.GetSection(ApiConfigKey).Exists())
             {
                 throw new KeyNotFoundException($"Could not find {ApiConfigKey} inside appsettings.json");
             }
 
-            IConfigurationSection apiConfiguration = configuration.GetSection(ApiConfigKey);
+            IConfiguration apiConfiguration = configuration.GetSection(ApiConfigKey);
 
-            if (apiConfiguration.GetSection(apiKey).Exists())
+            if (!apiConfiguration.GetSection(apiKey).Exists())
             {
                 throw new KeyNotFoundException($"Could not find {ApiConfigKey}:{apiKey} inside appsettings.json");
             }

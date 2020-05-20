@@ -3,7 +3,7 @@ using System;
 
 namespace DeltaWare.SereneApi.Types
 {
-    public class ApiResponse<TResult> : IApiResponse<TResult>
+    public readonly struct ApiResponse<TResult> : IApiResponse<TResult>
     {
         public bool WasSuccessful { get; }
 
@@ -17,18 +17,24 @@ namespace DeltaWare.SereneApi.Types
 
         private ApiResponse(TResult result)
         {
+            WasSuccessful = true;
+
             Result = result;
 
-            WasSuccessful = true;
+            Message = string.Empty;
+
+            Exception = null;
         }
 
         private ApiResponse(string message, Exception exception)
         {
+            WasSuccessful = false;
+
+            Result = default;
+
             Message = message;
 
             Exception = exception;
-
-            WasSuccessful = false;
         }
 
         public static IApiResponse<TResult> Success(TResult result) => new ApiResponse<TResult>(result);

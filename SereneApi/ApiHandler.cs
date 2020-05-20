@@ -19,6 +19,11 @@ namespace DeltaWare.SereneApi
         #region Variables
 
         /// <summary>
+        /// The <see cref="HttpClient"/> to be used for requests by this <see cref="ApiHandler"/>
+        /// </summary>
+        private readonly HttpClient _httpClient;
+
+        /// <summary>
         /// The <see cref="ILogger"/> this <see cref="ApiHandler"/> will use.
         /// NOTE: This is created using the Logger Factory that is provided in the <see cref="ApiHandlerOptions"/> during construction
         /// </summary>
@@ -39,6 +44,13 @@ namespace DeltaWare.SereneApi
         protected ApiHandler(IApiHandlerOptions options)
         {
             _options = options;
+
+            _httpClient = _options.HttpClient;
+
+            if (_httpClient == null)
+            {
+                throw new ArgumentException("No HttpClient was provided");
+            }
 
             // Create our logger and set the category to our HandlerType
             _logger = _options.LoggerFactory?.CreateLogger(_options.HandlerType.ToString());
@@ -67,9 +79,9 @@ namespace DeltaWare.SereneApi
         /// <param name="endpointParameters">The <see cref="endpointParameters"/> to be appended to the Url</param>
         protected virtual Task<IApiResponse> InPathRequestAsync(ApiMethod method, string endpointTemplate, params object[] endpointParameters)
         {
-            string action = FormatEndpointTemplate(endpointTemplate, endpointParameters);
+            string endpoint = FormatEndpointTemplate(endpointTemplate, endpointParameters);
 
-            Uri route = GenerateRoute(action);
+            Uri route = GenerateRoute(endpoint);
 
             return InPathRequestAsync(method, route);
         }
@@ -95,9 +107,9 @@ namespace DeltaWare.SereneApi
         /// <param name="endpointParameters">The <see cref="endpointParameters"/> to be appended to the Url</param>
         protected virtual Task<IApiResponse<TResponse>> InPathRequestAsync<TResponse>(ApiMethod method, string endpointTemplate, params object[] endpointParameters)
         {
-            string action = FormatEndpointTemplate(endpointTemplate, endpointParameters);
+            string endpoint = FormatEndpointTemplate(endpointTemplate, endpointParameters);
 
-            Uri route = GenerateRoute(action);
+            Uri route = GenerateRoute(endpoint);
 
             return InPathRequestAsync<TResponse>(method, route);
         }
@@ -159,9 +171,9 @@ namespace DeltaWare.SereneApi
         /// <param name="endpointParameters"></param>
         protected virtual Task<IApiResponse> InBodyRequestAsync<TContent>(ApiMethod method, TContent bodyContent, string endpointTemplate, params object[] endpointParameters)
         {
-            string action = FormatEndpointTemplate(endpointTemplate, endpointParameters);
+            string endpoint = FormatEndpointTemplate(endpointTemplate, endpointParameters);
 
-            Uri route = GenerateRoute(action);
+            Uri route = GenerateRoute(endpoint);
 
             return InBodyRequestAsync<TContent>(method, route, bodyContent);
         }
@@ -192,11 +204,277 @@ namespace DeltaWare.SereneApi
         /// <param name="endpointParameters"></param>
         protected virtual Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(ApiMethod method, TContent bodyContent, string endpointTemplate, params object[] endpointParameters)
         {
-            string action = FormatEndpointTemplate(endpointTemplate, endpointParameters);
+            string endpoint = FormatEndpointTemplate(endpointTemplate, endpointParameters);
 
-            Uri route = GenerateRoute(action);
+            Uri route = GenerateRoute(endpoint);
 
             return InBodyRequestAsync<TContent, TResponse>(method, route, bodyContent);
+        }
+
+        #endregion
+        #region Base Action Methods
+
+        /// <summary>
+        /// Performs an in Path Request
+        /// </summary>
+        /// <param name="method">The RESTful API <see cref="ApiMethod"/> to be used</param>
+        /// <param name="route">The <see cref="Uri"/> to be used for the request</param>
+        protected async Task<IApiResponse> InPathRequestAsync(ApiMethod method, Uri route)
+        {
+            HttpResponseMessage responseMessage = null;
+
+            bool retryingRequest;
+            int requestsAttempted = 0;
+
+            do
+            {
+                requestsAttempted++;
+
+                try
+                {
+                    responseMessage = method switch
+                    {
+                        ApiMethod.Post => await _httpClient.PostAsJsonAsync(route),
+                        ApiMethod.Get => await _httpClient.GetAsync(route),
+                        ApiMethod.Put => await _httpClient.PutAsJsonAsync(route),
+                        ApiMethod.Patch => await _httpClient.PatchAsJsonAsync(route),
+                        ApiMethod.Delete => await _httpClient.DeleteAsync(route),
+                        _ => throw new ArgumentOutOfRangeException(nameof(method), method, "An incorrect ApiMethod Value was supplied.")
+                    };
+
+                    retryingRequest = false;
+                }
+                catch (ArgumentException)
+                {
+                    // An incorrect ApiMethod value was supplied. So we want this exception to bubble up to the caller.
+                    throw;
+                }
+                catch (TaskCanceledException canceledException)
+                {
+                    if (requestsAttempted == _options.RetryCount)
+                    {
+                        _logger.LogError(canceledException, "The Request to \"{RequestRoute}\" has Timed Out; Retry limit reached. Retired {count}",
+                            route, requestsAttempted);
+
+                        return ApiResponse.Failure("The Request Timed Out; Retry limit reached");
+                    }
+
+                    _logger.LogWarning("Request to \"{RequestRoute}\" has Timed out, retrying. Attempts Remaining {count}",
+                        route, _options.RetryCount - requestsAttempted);
+
+                    retryingRequest = true;
+                }
+                catch (Exception exception)
+                {
+
+                    _logger?.LogError(exception,
+                        "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
+                        method.ToString(), route);
+
+                    return ApiResponse.Failure($"An Exception occured whilst performing a HTTP {method} Request", exception);
+                }
+            } while (retryingRequest);
+
+            return ProcessResponse(responseMessage);
+        }
+
+        /// <summary>
+        /// Performs an in Path Request returning a <see cref="TResponse"/>
+        /// </summary>
+        /// <typeparam name="TResponse"></typeparam>
+        /// <param name="method">The RESTful API <see cref="ApiMethod"/> to be used</param>
+        /// <param name="route">The <see cref="Uri"/> to be used for the request</param>
+        protected async Task<IApiResponse<TResponse>> InPathRequestAsync<TResponse>(ApiMethod method, Uri route)
+        {
+            HttpResponseMessage responseMessage = null;
+
+            bool retryingRequest;
+            int requestsAttempted = 0;
+
+            do
+            {
+                requestsAttempted++;
+
+                try
+                {
+                    responseMessage = method switch
+                    {
+                        ApiMethod.Post => await _httpClient.PostAsJsonAsync(route),
+                        ApiMethod.Get => await _httpClient.GetAsync(route),
+                        ApiMethod.Put => await _httpClient.PutAsJsonAsync(route),
+                        ApiMethod.Patch => await _httpClient.PatchAsJsonAsync(route),
+                        ApiMethod.Delete => await _httpClient.DeleteAsync(route),
+                        _ => throw new ArgumentOutOfRangeException(nameof(method), method, "An incorrect ApiMethod Value was supplied.")
+                    };
+
+                    retryingRequest = false;
+                }
+                catch (ArgumentException)
+                {
+                    // An incorrect ApiMethod value was supplied. So we want this exception to bubble up to the caller.
+                    throw;
+                }
+                catch (TaskCanceledException canceledException)
+                {
+                    if (requestsAttempted == _options.RetryCount)
+                    {
+                        _logger.LogError(canceledException, "The Request to \"{RequestRoute}\" has Timed Out; Retry limit reached. Retired {count}",
+                            route, requestsAttempted);
+
+                        return ApiResponse<TResponse>.Failure("The Request Timed Out; Retry limit reached");
+                    }
+
+                    _logger.LogWarning("Request to \"{RequestRoute}\" has Timed out, retrying. Attempts Remaining {count}",
+                        route, _options.RetryCount - requestsAttempted);
+
+                    retryingRequest = true;
+                }
+                catch (Exception exception)
+                {
+
+                    _logger?.LogError(exception,
+                        "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
+                        method.ToString(), route);
+
+                    return ApiResponse<TResponse>.Failure($"An Exception occured whilst performing a HTTP {method} Request", exception);
+                }
+            } while (retryingRequest);
+
+            return await ProcessResponseAsync<TResponse>(responseMessage);
+        }
+
+        /// <summary>
+        /// Performs an in Body Request
+        /// </summary>
+        /// <typeparam name="TContent">The type to be serialized and sent in the body of the request</typeparam>
+        /// <param name="method">The RESTful API <see cref="ApiMethod"/> to be used</param>
+        /// <param name="route">The <see cref="Uri"/> to be used for the request</param>
+        /// <param name="inBodyContent">The object serialized and sent in the body of the request</param>
+        protected async Task<IApiResponse> InBodyRequestAsync<TContent>(ApiMethod method, Uri route, TContent inBodyContent)
+        {
+            HttpResponseMessage responseMessage = null;
+
+            bool retryingRequest;
+            int requestsAttempted = 0;
+
+            do
+            {
+                requestsAttempted++;
+
+                try
+                {
+                    responseMessage = method switch
+                    {
+                        ApiMethod.Post => await _httpClient.PostAsJsonAsync(route, inBodyContent),
+                        ApiMethod.Get => throw new ArgumentException("Get cannot be used in conjunction with an InBody Request"),
+                        ApiMethod.Put => await _httpClient.PutAsJsonAsync(route, inBodyContent),
+                        ApiMethod.Patch => await _httpClient.PatchAsJsonAsync(route, inBodyContent),
+                        ApiMethod.Delete => throw new ArgumentException("Delete cannot be used in conjunction with an InBody Request"),
+                        _ => throw new ArgumentOutOfRangeException(nameof(method), method,
+                            "An incorrect ApiMethod Value was supplied.")
+                    };
+
+                    retryingRequest = false;
+                }
+                catch (ArgumentException)
+                {
+                    // An incorrect ApiMethod value was supplied. So we want this exception to bubble up to the caller.
+                    throw;
+                }
+                catch (TaskCanceledException canceledException)
+                {
+                    if (requestsAttempted == _options.RetryCount)
+                    {
+                        _logger.LogError(canceledException, "The Request to \"{RequestRoute}\" has Timed Out; Retry limit reached. Retired {count}",
+                            route, requestsAttempted);
+
+                        return ApiResponse.Failure("The Request Timed Out; Retry limit reached");
+                    }
+
+                    _logger.LogWarning("Request to \"{RequestRoute}\" has Timed out, retrying. Attempts Remaining {count}",
+                        route, _options.RetryCount - requestsAttempted);
+
+                    retryingRequest = true;
+                }
+                catch (Exception exception)
+                {
+
+                    _logger?.LogError(exception,
+                        "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
+                        method.ToString(), route);
+
+                    return ApiResponse.Failure($"An Exception occured whilst performing a HTTP {method} Request", exception);
+                }
+            } while (retryingRequest);
+
+            return ProcessResponse(responseMessage);
+        }
+
+        /// <summary>
+        /// Performs an in Body Request returning a <see cref="TResponse"/>
+        /// </summary>
+        /// <typeparam name="TResponse"></typeparam>
+        /// <typeparam name="TContent">The type to be serialized and sent in the body of the request</typeparam>
+        /// <param name="method">The RESTful API <see cref="ApiMethod"/> to be used</param>
+        /// <param name="route">The <see cref="Uri"/> to be used for the request</param>
+        /// <param name="inBodyContent">The object serialized and sent in the body of the request</param>
+        protected async Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(ApiMethod method, Uri route, TContent inBodyContent)
+        {
+            HttpResponseMessage responseMessage = null;
+
+            bool retryingRequest;
+            int requestsAttempted = 0;
+
+            do
+            {
+                requestsAttempted++;
+
+                try
+                {
+                    responseMessage = method switch
+                    {
+                        ApiMethod.Post => await _httpClient.PostAsJsonAsync(route, inBodyContent),
+                        ApiMethod.Get => throw new ArgumentException("Get cannot be used in conjunction with an InBody Request"),
+                        ApiMethod.Put => await _httpClient.PutAsJsonAsync(route, inBodyContent),
+                        ApiMethod.Patch => await _httpClient.PatchAsJsonAsync(route, inBodyContent),
+                        ApiMethod.Delete => throw new ArgumentException("Delete cannot be used in conjunction with an InBody Request"),
+                        _ => throw new ArgumentOutOfRangeException(nameof(method), method, "An incorrect ApiMethod Value was supplied.")
+                    };
+
+                    retryingRequest = false;
+                }
+                catch (ArgumentException)
+                {
+                    // An incorrect ApiMethod value was supplied. So we want this exception to bubble up to the caller.
+                    throw;
+                }
+                catch (TaskCanceledException canceledException)
+                {
+                    if (requestsAttempted == _options.RetryCount)
+                    {
+                        _logger.LogError(canceledException, "The Request to \"{RequestRoute}\" has Timed Out; Retry limit reached. Retired {count}",
+                            route, requestsAttempted);
+
+                        return ApiResponse<TResponse>.Failure("The Request Timed Out; Retry limit reached");
+                    }
+
+                    _logger.LogWarning("Request to \"{RequestRoute}\" has Timed out, retrying. Attempts Remaining {count}",
+                        route, _options.RetryCount - requestsAttempted);
+
+                    retryingRequest = true;
+                }
+                catch (Exception exception)
+                {
+
+                    _logger?.LogError(exception,
+                        "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
+                        method.ToString(), route);
+
+                    return ApiResponse<TResponse>.Failure($"An Exception occured whilst performing a HTTP {method} Request", exception);
+                }
+            } while (retryingRequest);
+
+            return await ProcessResponseAsync<TResponse>(responseMessage);
         }
 
         #endregion
@@ -333,310 +611,28 @@ namespace DeltaWare.SereneApi
         }
 
         /// <summary>
-        /// Formats the Action Template
+        /// 
         /// </summary>
-        /// <param name="endpointTemplate">The endpoint to be performed, supports templates for string formatting with <see cref="parameters"/></param>
-        /// <param name="parameters">The <see cref="parameters"/> to be appended to the Url</param>
-        /// <returns></returns>
-        protected virtual string FormatEndpointTemplate(string endpointTemplate, params object[] parameters)
+        /// <param name="endpointTemplate"></param>
+        /// <param name="endpointParameters"></param>
+        protected virtual string FormatEndpointTemplate(string endpointTemplate, params object[] endpointParameters)
         {
-            string action = string.Format(endpointTemplate, parameters);
+            string endpoint = string.Format(endpointTemplate, endpointParameters);
 
-            if (action.Length != endpointTemplate.Length)
+            if (endpoint.Length != endpointTemplate.Length)
             {
-                return $"{action}";
+                return $"{endpoint}";
             }
 
-            if (parameters.Length > 1)
+            if (endpointParameters.Length > 1)
             {
                 throw new ArgumentException("Multiple Parameters must be used with a format-table endpoint template.");
             }
 
-            return $"{endpointTemplate}/{parameters[0]}";
+            return $"{endpointTemplate}/{endpointParameters[0]}";
         }
 
 
-
-        #endregion
-        #region Private Action Methods
-
-        /// <summary>
-        /// Performs an in Path Request
-        /// </summary>
-        /// <param name="method">The RESTful API <see cref="ApiMethod"/> to be used</param>
-        /// <param name="route">The <see cref="route"/> to be used for the request</param>
-        private async Task<IApiResponse> InPathRequestAsync(ApiMethod method, Uri route)
-        {
-            using HttpClient client = _options.HttpClient;
-
-            if (client is null)
-            {
-                _logger?.LogWarning("Could not Create an instance of the HttpClient.");
-
-                return ApiResponse.Failure("Could not Create an instance of the HttpClient");
-            }
-
-            HttpResponseMessage responseMessage = null;
-
-            bool retryingRequest;
-            int requestsAttempted = 0;
-
-            do
-            {
-                requestsAttempted++;
-
-                try
-                {
-                    responseMessage = method switch
-                    {
-                        ApiMethod.Post => await client.PostAsJsonAsync(route),
-                        ApiMethod.Get => await client.GetAsync(route),
-                        ApiMethod.Put => await client.PutAsJsonAsync(route),
-                        ApiMethod.Patch => await client.PatchAsJsonAsync(route),
-                        ApiMethod.Delete => await client.DeleteAsync(route),
-                        _ => throw new ArgumentOutOfRangeException(nameof(method), method, null)
-                    };
-
-                    retryingRequest = false;
-                }
-                catch (TaskCanceledException canceledException)
-                {
-                    if (requestsAttempted == _options.RetryCount)
-                    {
-                        _logger.LogError(canceledException, "Request Timed Out; Retry limit reached. Retired {count}", requestsAttempted);
-
-                        return ApiResponse.Failure("Request Timed Out; Retry limit reached");
-                    }
-
-                    _logger.LogWarning("Request Timed out, retrying. Attempts Remaining {count}", _options.RetryCount - requestsAttempted);
-
-                    retryingRequest = true;
-                }
-                catch (Exception exception)
-                {
-
-                    _logger?.LogError(exception,
-                        "An Exception occured whilst performing a HTTP {httpMethod} Request on thr Uri \"{uri}\"",
-                        method.ToString(), route);
-
-                    return ApiResponse.Failure("");
-                }
-            } while (retryingRequest);
-
-            return ProcessResponse(responseMessage);
-        }
-
-        /// <summary>
-        /// Performs an in Path Request returning a <see cref="TResponse"/>
-        /// </summary>
-        /// <typeparam name="TResponse"></typeparam>
-        /// <param name="method">The RESTful API <see cref="ApiMethod"/> to be used</param>
-        /// <param name="route">The <see cref="route"/> to be used for the request</param>
-        private async Task<IApiResponse<TResponse>> InPathRequestAsync<TResponse>(ApiMethod method, Uri route)
-        {
-            using HttpClient client = _options.HttpClient;
-
-            if (client is null)
-            {
-                _logger?.LogWarning("Could not Create an instance of the HttpClient.");
-
-                return ApiResponse<TResponse>.Failure("Could not Create an instance of the HttpClient");
-            }
-
-            HttpResponseMessage responseMessage = null;
-
-            bool retryingRequest;
-            int requestsAttempted = 0;
-
-            do
-            {
-                requestsAttempted++;
-
-                try
-                {
-                    responseMessage = method switch
-                    {
-                        ApiMethod.Post => await client.PostAsJsonAsync(route),
-                        ApiMethod.Get => await client.GetAsync(route),
-                        ApiMethod.Put => await client.PutAsJsonAsync(route),
-                        ApiMethod.Patch => await client.PatchAsJsonAsync(route),
-                        ApiMethod.Delete => await client.DeleteAsync(route),
-                        _ => throw new ArgumentOutOfRangeException(nameof(method), method, null)
-                    };
-
-                    retryingRequest = false;
-                }
-                catch (TaskCanceledException canceledException)
-                {
-                    if (requestsAttempted == _options.RetryCount)
-                    {
-                        _logger.LogError(canceledException, "Request Timed Out; Retry limit reached. Retired {count}",
-                            requestsAttempted);
-
-                        return ApiResponse<TResponse>.Failure("Request Timed Out; Retry limit reached");
-                    }
-
-                    _logger.LogWarning("Request Timed out, retrying. Attempts Remaining {count}",
-                        _options.RetryCount - requestsAttempted);
-
-                    retryingRequest = true;
-                }
-                catch (Exception exception)
-                {
-
-                    _logger?.LogError(exception,
-                        "An Exception occured whilst performing a HTTP {httpMethod} Request on thr Uri \"{uri}\"",
-                        method.ToString(), route);
-
-                    return ApiResponse<TResponse>.Failure("");
-                }
-            } while (retryingRequest);
-
-            return await ProcessResponseAsync<TResponse>(responseMessage);
-        }
-
-        /// <summary>
-        /// Performs an in Body Request returning a <see cref="TResponse"/>
-        /// </summary>
-        /// <typeparam name="TContent">The type to be serialized and sent in the body of the request</typeparam>
-        /// <param name="method">The RESTful API <see cref="ApiMethod"/> to be used</param>
-        /// <param name="route">The <see cref="route"/> to be used for the request</param>
-        /// <param name="inBodyContent">The object serialized and sent in the body of the request</param>
-        /// <returns></returns>
-        private async Task<IApiResponse> InBodyRequestAsync<TContent>(ApiMethod method, Uri route, TContent inBodyContent)
-        {
-            using HttpClient client = _options.HttpClient;
-
-            if (client is null)
-            {
-                _logger?.LogWarning("Could not Create an instance of the HttpClient.");
-
-                return ApiResponse.Failure("Could not Create an instance of the HttpClient");
-            }
-
-            HttpResponseMessage responseMessage = null;
-
-            bool retryingRequest;
-            int requestsAttempted = 0;
-
-            do
-            {
-                requestsAttempted++;
-
-                try
-                {
-                    responseMessage = method switch
-                    {
-                        ApiMethod.Post => await client.PostAsJsonAsync(route, inBodyContent),
-                        ApiMethod.Get => throw new ArgumentException("Get cannot be used with InBody Action"),
-                        ApiMethod.Put => await client.PutAsJsonAsync(route, inBodyContent),
-                        ApiMethod.Patch => await client.PatchAsJsonAsync(route, inBodyContent),
-                        ApiMethod.Delete => throw new ArgumentException("Delete cannot be used with InBody Action"),
-                        _ => throw new ArgumentOutOfRangeException(nameof(method), method, null)
-                    };
-
-                    retryingRequest = false;
-                }
-                catch (TaskCanceledException canceledException)
-                {
-                    if (requestsAttempted == _options.RetryCount)
-                    {
-                        _logger.LogError(canceledException, "Request Timed Out; Retry limit reached. Retired {count}",
-                            requestsAttempted);
-
-                        return ApiResponse.Failure("Request Timed Out; Retry limit reached");
-                    }
-
-                    _logger.LogWarning("Request Timed out, retrying. Attempts Remaining {count}",
-                        _options.RetryCount - requestsAttempted);
-
-                    retryingRequest = true;
-                }
-                catch (Exception exception)
-                {
-
-                    _logger?.LogError(exception,
-                        "An Exception occured whilst performing a HTTP {httpMethod} Request on thr Uri \"{uri}\"",
-                        method.ToString(), route);
-
-                    return ApiResponse.Failure("");
-                }
-            } while (retryingRequest);
-
-            return ProcessResponse(responseMessage);
-        }
-
-        /// <summary>
-        /// Performs an in Body Request
-        /// </summary>
-        /// <typeparam name="TResponse"></typeparam>
-        /// <typeparam name="TContent">The type to be serialized and sent in the body of the request</typeparam>
-        /// <param name="method">The RESTful API <see cref="ApiMethod"/> to be used</param>
-        /// <param name="route">The <see cref="route"/> to be used for the request</param>
-        /// <param name="inBodyContent">The object serialized and sent in the body of the request</param>
-        /// <returns></returns>
-        private async Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(ApiMethod method, Uri route, TContent inBodyContent)
-        {
-            using HttpClient client = _options.HttpClient;
-
-            if (client is null)
-            {
-                _logger?.LogWarning("Could not Create an instance of the HttpClient.");
-
-                return ApiResponse<TResponse>.Failure("Could not Create an instance of the HttpClient");
-            }
-
-            HttpResponseMessage responseMessage = null;
-
-            bool retryingRequest;
-            int requestsAttempted = 0;
-
-            do
-            {
-                requestsAttempted++;
-
-                try
-                {
-                    responseMessage = method switch
-                    {
-                        ApiMethod.Post => await client.PostAsJsonAsync(route, inBodyContent),
-                        ApiMethod.Get => throw new ArgumentException("Get cannot be used with InBody Action"),
-                        ApiMethod.Put => await client.PutAsJsonAsync(route, inBodyContent),
-                        ApiMethod.Patch => await client.PatchAsJsonAsync(route, inBodyContent),
-                        ApiMethod.Delete => throw new ArgumentException("Delete cannot be used with InBody Action"),
-                        _ => throw new ArgumentOutOfRangeException(nameof(method), method, null)
-                    };
-
-                    retryingRequest = false;
-                }
-                catch (TaskCanceledException canceledException)
-                {
-                    if (requestsAttempted == _options.RetryCount)
-                    {
-                        _logger.LogError(canceledException, "Request Timed Out; Retry limit reached. Retired {count}",
-                            requestsAttempted);
-
-                        return ApiResponse<TResponse>.Failure("Request Timed Out; Retry limit reached");
-                    }
-
-                    _logger.LogWarning("Request Timed out, retrying. Attempts Remaining {count}",
-                        _options.RetryCount - requestsAttempted);
-
-                    retryingRequest = true;
-                }
-                catch (Exception exception)
-                {
-
-                    _logger?.LogError(exception,
-                        "An Exception occured whilst performing a HTTP {httpMethod} Request on thr Uri \"{uri}\"",
-                        method.ToString(), route);
-
-                    return ApiResponse<TResponse>.Failure("");
-                }
-            } while (retryingRequest);
-
-            return await ProcessResponseAsync<TResponse>(responseMessage);
-        }
 
         #endregion
     }

@@ -27,11 +27,11 @@ namespace DeltaWare.SereneApi
         }
 
         /// <summary>
-        /// Gets the Source, Resource, ResourcePrecursor and Timeout period from the <see cref="IConfigurationSection"/>.
+        /// Gets the Source, Resource, ResourcePrecursor and Timeout period from the <see cref="IConfiguration"/>.
         /// Note: Source and Resource MUST be supplied if this is used, ResourcePrecursor and Timeout are optional
         /// </summary>
-        /// <param name="configuration">The <see cref="IConfigurationSection"/> the values will be retrieved from</param>
-        public ApiHandlerOptionsBuilder AddConfiguration(IConfigurationSection configuration)
+        /// <param name="configuration">The <see cref="IConfiguration"/> the values will be retrieved from</param>
+        public ApiHandlerOptionsBuilder AddConfiguration(IConfiguration configuration)
         {
             Options.UseConfiguration(configuration);
 

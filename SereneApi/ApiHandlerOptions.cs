@@ -69,7 +69,7 @@ namespace DeltaWare.SereneApi
                     return _clientOverride;
                 }
 
-                return _httpClientFactory.CreateClient(HandlerType.ToString());
+                return _httpClientFactory?.CreateClient(HandlerType.ToString());
             }
         }
 
@@ -91,11 +91,11 @@ namespace DeltaWare.SereneApi
         }
 
         /// <summary>
-        /// Gets the Source, Resource, ResourcePrecursor and Timeout period from the <see cref="IConfigurationSection"/>.
+        /// Gets the Source, Resource, ResourcePrecursor and Timeout period from the <see cref="IConfiguration"/>.
         /// Note: Source and Resource are required, ResourcePrecursor and Timeout are optional
         /// </summary>
-        /// <param name="configuration">The <see cref="IConfigurationSection"/> the values will be retrieved from</param>
-        internal void UseConfiguration(IConfigurationSection configuration)
+        /// <param name="configuration">The <see cref="IConfiguration"/> the values will be retrieved from</param>
+        internal void UseConfiguration(IConfiguration configuration)
         {
             if (Source != null || Resource != null)
             {
@@ -115,7 +115,7 @@ namespace DeltaWare.SereneApi
 
             TimeSpan timeout = configuration.Get<TimeSpan>("Timeout", false);
 
-            if (timeout != TimeSpan.MinValue)
+            if (timeout != TimeSpan.Zero)
             {
                 Timeout = timeout;
             }
