@@ -53,7 +53,7 @@ namespace DeltaWare.SereneApi
             }
 
             // Create our logger and set the category to our HandlerType
-            _logger = _options.LoggerFactory?.CreateLogger(_options.HandlerType.ToString());
+            _logger = _options.Logger;
         }
 
         #endregion

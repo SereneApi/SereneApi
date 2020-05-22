@@ -17,7 +17,7 @@ namespace DeltaWare.SereneApi
         /// <param name="options"></param>
         protected CrudApiHandler(IApiHandlerOptions options) : base(options)
         {
-            _logger = options.LoggerFactory?.CreateLogger(options.HandlerType);
+            _logger = options.Logger;
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.GetAsync"/>

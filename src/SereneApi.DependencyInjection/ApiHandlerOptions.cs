@@ -41,20 +41,32 @@ namespace DeltaWare.SereneApi.DependencyInjection
         #endregion
         #region Public Properties
 
-        /// <inheritdoc cref="IApiHandlerOptions.Source"/>
+        /// <summary>
+        /// The API Source location
+        /// EG: "http://SomeHost.com.au"
+        /// </summary>
         public Uri Source { get; private set; }
 
-        /// <inheritdoc cref="IApiHandlerOptions.Resource"/>
+        /// <summary>
+        /// The API <see cref="Resource"/> to be used  by the <see cref="ApiHandler"/> for API requests
+        /// EG: "Members", by default api/ is appended to the front therefore Members would become api/Members.
+        /// To change this, supply a <see cref="ResourcePrecursor"/>
+        /// </summary>
         public string Resource { get; private set; }
 
-        /// <inheritdoc cref="IApiHandlerOptions.ResourcePrecursor"/>
+        /// <summary>
+        /// The API <see cref="ResourcePrecursor"/> will be appended to the front of the <see cref="Resource"/> Value.
+        /// By default "api/" is being used
+        /// </summary>
         public string ResourcePrecursor { get; private set; } = DefaultResourcePrecursor;
 
-        /// <inheritdoc cref="IApiHandlerOptions.Timeout"/>
+        /// <summary>
+        /// Supplies the the HttpClients to be used for requests.
+        /// </summary>
         public TimeSpan Timeout { get; private set; } = DefaultTimeoutPeriod;
 
-        /// <inheritdoc cref="IApiHandlerOptions.LoggerFactory"/>
-        public ILoggerFactory LoggerFactory { get; private set; }
+        /// <inheritdoc cref="IApiHandlerOptions.Logger"/>
+        public ILogger Logger { get; private set; }
 
         /// <inheritdoc cref="IApiHandlerOptions.QueryFactory"/>
         public IQueryFactory QueryFactory { get; private set; } = new QueryFactory();
@@ -170,7 +182,7 @@ namespace DeltaWare.SereneApi.DependencyInjection
         /// <param name="loggerFactory">The <see cref="IQueryFactory"/> to be used for Logging</param>
         internal void AddLoggerFactory(ILoggerFactory loggerFactory)
         {
-            LoggerFactory = loggerFactory;
+            Logger = loggerFactory.CreateLogger(HandlerType);
         }
 
         /// <summary>
