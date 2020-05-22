@@ -4,19 +4,20 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Bson;
 
 namespace DeltaWare.SereneApi
 {
     /// <summary>
     /// The <see cref="ApiHandlerOptions"/> to be used by the <see cref="ApiHandler"/> when making API requests
     /// </summary>
-    public class ApiHandlerOptions : IApiHandlerOptions
+    public class ApiHandlerOptions : IApiHandlerOptions, IDisposable
     {
         private IHttpClientFactory _httpClientFactory;
 
         private HttpClient _clientOverride;
-
-
+        
         #region Default Values
 
         /// <summary>
@@ -59,6 +60,8 @@ namespace DeltaWare.SereneApi
         /// <inheritdoc cref="IApiHandlerOptions.QueryFactory"/>
         public IQueryFactory QueryFactory { get; private set; } = new QueryFactory();
 
+        public IServiceProvider ServiceProvider { get; private set; }
+
         /// <inheritdoc cref="IApiHandlerOptions.HttpClient"/>
         public HttpClient HttpClient
         {
@@ -84,11 +87,6 @@ namespace DeltaWare.SereneApi
 
         #endregion
         #region Public Methods
-
-        internal void AddHttpClientFactory(IHttpClientFactory httpClientFactory)
-        {
-            _httpClientFactory = httpClientFactory;
-        }
 
         /// <summary>
         /// Gets the Source, Resource, ResourcePrecursor and Timeout period from the <see cref="IConfiguration"/>.
@@ -180,7 +178,7 @@ namespace DeltaWare.SereneApi
         /// Overrides the default <see cref="DeltaWare.SereneApi.QueryFactory"/> with the supplied <see cref="IQueryFactory"/>
         /// </summary>
         /// <param name="queryFactory">The <see cref="IQueryFactory"/> to be used when building Queries</param>
-        internal void WithQueryFactory(IQueryFactory queryFactory)
+        internal void UseQueryFactory(IQueryFactory queryFactory)
         {
             QueryFactory = queryFactory;
         }
@@ -203,6 +201,38 @@ namespace DeltaWare.SereneApi
             RetryCount = retryCount;
         }
 
+        internal void AddServiceProvider(IServiceProvider serviceProvider)
+        {
+            ServiceProvider = serviceProvider;
+        }
+
+        internal void AddHttpClientFactory(IHttpClientFactory httpClientFactory)
+        {
+            _httpClientFactory = httpClientFactory;
+        }
+
+        #endregion
+        #region IDisposable
+
+        private bool _disposed;
+
+        public void Dispose() => Dispose(true);
+
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                ((ServiceProvider)ServiceProvider)?.Dispose();
+            }
+
+            _disposed = true;
+        }
         #endregion
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DeltaWare.SereneApi
 {
@@ -15,7 +16,7 @@ namespace DeltaWare.SereneApi
         /// <summary>
         /// The <see cref="ApiHandlerOptions"/> that will be used by the <see cref="ApiHandler"/>
         /// </summary>
-        public ApiHandlerOptions Options { get; }
+        protected ApiHandlerOptions Options { get; }
 
         /// <summary>
         /// Instantiates a new instance of the <see cref="ApiHandlerOptionsBuilder"/> class
@@ -31,7 +32,7 @@ namespace DeltaWare.SereneApi
         /// Note: Source and Resource MUST be supplied if this is used, ResourcePrecursor and Timeout are optional
         /// </summary>
         /// <param name="configuration">The <see cref="IConfiguration"/> the values will be retrieved from</param>
-        public ApiHandlerOptionsBuilder AddConfiguration(IConfiguration configuration)
+        public ApiHandlerOptionsBuilder UseConfiguration(IConfiguration configuration)
         {
             Options.UseConfiguration(configuration);
 
@@ -89,9 +90,9 @@ namespace DeltaWare.SereneApi
         /// Overrides the default <see cref="QueryFactory"/> with the supplied <see cref="IQueryFactory"/>
         /// </summary>
         /// <param name="queryFactory">The <see cref="IQueryFactory"/> to be used when building Queries</param>
-        public ApiHandlerOptionsBuilder WithQueryFactory(IQueryFactory queryFactory)
+        public ApiHandlerOptionsBuilder UseQueryFactory(IQueryFactory queryFactory)
         {
-            Options.WithQueryFactory(queryFactory);
+            Options.UseQueryFactory(queryFactory);
 
             return this;
         }
@@ -116,6 +117,35 @@ namespace DeltaWare.SereneApi
             Options.RetryOnTimeout(retryCount);
 
             return this;
+        }
+
+        public ApiHandlerOptions BuildApiOptions(IServiceCollection services)
+        {
+            bool usingClientFactory = false;
+
+            if (Options.HttpClient == null)
+            {
+                services.AddHttpClient(Options.HandlerType.ToString(), client =>
+                {
+                    client.BaseAddress = new Uri($"{Options.Source}/{Options.ResourcePrecursor}{Options.Resource}");
+                    client.Timeout = Options.Timeout;
+
+                    Options.RequestHeaderBuilder.Invoke(client.DefaultRequestHeaders);
+                });
+
+                usingClientFactory = true;
+            }
+
+            IServiceProvider internalServiceProvider = services.BuildServiceProvider();
+
+            Options.AddServiceProvider(internalServiceProvider);
+
+            if (usingClientFactory)
+            {
+                Options.AddHttpClientFactory(internalServiceProvider.GetRequiredService<IHttpClientFactory>());
+            }
+
+            return Options;
         }
     }
 }
