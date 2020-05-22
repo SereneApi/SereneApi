@@ -1,7 +1,7 @@
 ﻿using DeltaWare.SereneApi;
+using DeltaWare.SereneApi.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
-using System.Net.Http;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

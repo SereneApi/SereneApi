@@ -1,12 +1,9 @@
-﻿using System;
-using System.Net.Http;
-using DeltaWare.SereneApi;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace DeltaWare.SereneApi
+namespace DeltaWare.SereneApi.DependencyInjection
 {
     /// <summary>
-    /// The <see cref="ApiHandlerOptionsBuilder{TApiHandler}"/> is used to build new instances of the <see cref="ApiHandlerOptions"/> class
+    /// The <see cref="ApiHandlerOptionsBuilder{TApiHandler}"/> is used to build new instances of the <see cref="SereneApi.DepedencyInjection.ApiHandlerOptions"/> class
     /// </summary>
     public class ApiHandlerOptionsBuilder<TApiHandler> : ApiHandlerOptionsBuilder where TApiHandler : ApiHandler
     {

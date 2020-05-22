@@ -30,8 +30,6 @@ namespace DeltaWare.SereneApi.Interfaces
 
         IQueryFactory QueryFactory { get; }
 
-        IServiceProvider ServiceProvider { get; }
-
         Type HandlerType { get; }
 
         /// <summary>

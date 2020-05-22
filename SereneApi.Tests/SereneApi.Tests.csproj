@@ -20,8 +20,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SereneApi\SereneApi.csproj" />
-  </ItemGroup>
-
 </Project>

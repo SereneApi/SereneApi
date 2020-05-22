@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DeltaWare.SereneApi
+namespace DeltaWare.SereneApi.DependencyInjection
 {
     /// <summary>
     /// The <see cref="ApiHandlerOptions{TApiHandler}"/> to be used by the <see cref="ApiHandler"/> when making API requests

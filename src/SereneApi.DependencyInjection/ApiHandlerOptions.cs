@@ -1,13 +1,12 @@
 using DeltaWare.SereneApi.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Bson;
 
-namespace DeltaWare.SereneApi
+namespace DeltaWare.SereneApi.DependencyInjection
 {
     /// <summary>
     /// The <see cref="ApiHandlerOptions"/> to be used by the <see cref="ApiHandler"/> when making API requests
@@ -17,7 +16,7 @@ namespace DeltaWare.SereneApi
         private IHttpClientFactory _httpClientFactory;
 
         private HttpClient _clientOverride;
-        
+
         #region Default Values
 
         /// <summary>

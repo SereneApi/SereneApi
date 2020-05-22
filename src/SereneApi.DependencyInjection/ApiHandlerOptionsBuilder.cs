@@ -1,12 +1,12 @@
-﻿using DeltaWare.SereneApi.Interfaces;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using Microsoft.Extensions.DependencyInjection;
+using DeltaWare.SereneApi.Interfaces;
 
-namespace DeltaWare.SereneApi
+namespace DeltaWare.SereneApi.DependencyInjection
 {
     /// <summary>
     /// The <see cref="ApiHandlerOptionsBuilder"/> is used to build new instances of the <see cref="ApiHandlerOptions"/> class
