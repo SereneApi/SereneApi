@@ -1,10 +1,10 @@
-﻿using DeltaWare.SereneApi.Types.DataTable;
+﻿using System;
+using System.Linq;
+using DeltaWare.SereneApi.Extras.Types.DataTable;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
-using System;
-using System.Linq;
 
-namespace DeltaWare.SereneApi.Helpers
+namespace DeltaWare.SereneApi.Extras.Helpers
 {
     public static class DataTableHelper
     {

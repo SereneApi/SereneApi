@@ -1,4 +1,4 @@
-﻿namespace DeltaWare.SereneApi.Types.DataTable
+﻿namespace DeltaWare.SereneApi.Extras.Types.DataTable
 {
     public class DataTableQuery
     {
