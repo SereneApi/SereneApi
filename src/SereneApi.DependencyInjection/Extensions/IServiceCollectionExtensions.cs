@@ -14,7 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAdd(new ServiceDescriptor(typeof(ApiHandlerOptions<TApiImplementation>),
                 p => CreateApiHandlerOptions(optionsAction, p, services), ServiceLifetime.Singleton));
 
-            services.Add(new ServiceDescriptor(typeof(ApiHandlerOptions),
+            services.Add(new ServiceDescriptor(typeof(DeltaWare.SereneApi.DependencyInjection.ApiHandlerOptions),
                 p => p.GetRequiredService<ApiHandlerOptions<TApiImplementation>>(), ServiceLifetime.Singleton));
         }
 

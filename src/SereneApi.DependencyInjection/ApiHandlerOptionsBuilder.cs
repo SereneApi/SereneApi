@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using DeltaWare.SereneApi.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using DeltaWare.SereneApi.Interfaces;
 
 namespace DeltaWare.SereneApi.DependencyInjection
 {

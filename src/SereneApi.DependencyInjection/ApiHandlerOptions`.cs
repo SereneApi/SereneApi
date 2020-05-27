@@ -9,6 +9,9 @@ namespace DeltaWare.SereneApi.DependencyInjection
     {
         #region Public Properties
 
+        /// <summary>
+        /// The <see cref="Type"/> of <see cref="ApiHandler"/> these <see cref="Interfaces.IApiHandlerOptions"/> will be used for.
+        /// </summary>
         public override Type HandlerType => typeof(TApiHandler);
 
         #endregion
