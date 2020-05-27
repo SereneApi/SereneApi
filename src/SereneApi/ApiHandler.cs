@@ -3,6 +3,7 @@ using DeltaWare.SereneApi.Interfaces;
 using DeltaWare.SereneApi.Types;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq.Expressions;
 using System.Net.Http;
@@ -14,6 +15,7 @@ namespace DeltaWare.SereneApi
     /// <summary>
     /// When Inherited; Provides tools and methods required for implementing a RESTful Api consumer.
     /// </summary>
+    [DebuggerDisplay("Source:{_httpClient.BaseAddress}; Timeout:{_httpClient.Timeout}")]
     public abstract class ApiHandler : IDisposable
     {
         #region Variables
@@ -37,22 +39,20 @@ namespace DeltaWare.SereneApi
         #region Constructors
 
         /// <summary>
-        /// Creates a new instance of the ApiHandler
+        /// Creates a new instance of the <see cref="ApiHandler"/>
         /// </summary>
-        /// <param name="options">The options this ApiHandler will inherit</param>
+        /// <param name="options">The <see cref="IApiHandlerOptions"/> the <see cref="ApiHandler"/> will use when making requests</param>
         protected ApiHandler(IApiHandlerOptions options)
         {
             _options = options;
-
+            _logger = _options.Logger;
             _httpClient = _options.HttpClient;
-
+            
             if (_httpClient == null)
             {
                 throw new ArgumentException("No HttpClient was provided");
             }
 
-            // Create our logger and set the category to our HandlerType
-            _logger = _options.Logger;
         }
 
         #endregion
@@ -631,13 +631,14 @@ namespace DeltaWare.SereneApi
             return $"{endpointTemplate}/{endpointParameters[0]}";
         }
 
-
-
         #endregion
         #region IDisposable
 
         private bool _disposed;
 
+        /// <summary>
+        /// Disposes the current Instance of <see cref="ApiHandler"/>.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);

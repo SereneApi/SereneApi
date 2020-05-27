@@ -1,6 +1,6 @@
 ﻿using DeltaWare.SereneApi;
-using Newtonsoft.Json;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace System.Net.Http
@@ -47,7 +47,7 @@ namespace System.Net.Http
 
         private static StringContent ToStringContent<TContent>(this TContent content)
         {
-            return new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
+            return new StringContent(JsonSerializer.Serialize(content), Encoding.UTF8, "application/json");
         }
     }
 }
