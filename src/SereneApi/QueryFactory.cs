@@ -99,7 +99,7 @@ namespace DeltaWare.SereneApi
 
             StringBuilder queryBuilder = new StringBuilder();
 
-            // Add the question mark to the front of the query.
+            // AddDependency the question mark to the front of the query.
             queryBuilder.Append("?");
 
             // Enumerate all indexes except for the last index.

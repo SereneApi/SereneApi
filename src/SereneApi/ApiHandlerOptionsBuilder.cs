@@ -3,6 +3,10 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using DeltaWare.SereneApi.Enums;
+using DeltaWare.SereneApi.Helpers;
+using DeltaWare.SereneApi.Types;
+using DeltaWare.SereneApi.Types.Dependencies;
 
 namespace DeltaWare.SereneApi
 {
@@ -10,21 +14,17 @@ namespace DeltaWare.SereneApi
     {
         #region Variables
 
+        private readonly DependencyCollection _dependencyCollection = new DependencyCollection();
+
         private Uri _source;
 
-        private ILogger _logger;
-
-        private HttpClient _httpClientOverride;
+        private HttpClient _clientOverride;
 
         private readonly HttpClient _baseClient;
 
         private bool _disposeClient;
 
-        private readonly uint _retryCount = ApiHandlerOptionDefaults.RetryCount;
-
         private TimeSpan _timeout = ApiHandlerOptionDefaults.TimeoutPeriod;
-
-        private readonly IQueryFactory _queryFactory = ApiHandlerOptionDefaults.QueryFactory;
 
         private readonly Action<HttpRequestHeaders> _requestHeaderBuilder = ApiHandlerOptionDefaults.DefaultRequestHeadersBuilder;
 
@@ -32,9 +32,11 @@ namespace DeltaWare.SereneApi
 
         public ApiHandlerOptionsBuilder()
         {
+            _dependencyCollection.AddDependency(ApiHandlerOptionDefaults.QueryFactory);
+            _dependencyCollection.AddDependency(RetryDependency.Default);
         }
 
-        internal ApiHandlerOptionsBuilder(HttpClient baseClient, bool disposeClient = true)
+        internal ApiHandlerOptionsBuilder(HttpClient baseClient, bool disposeClient = true) : this()
         {
             _disposeClient = disposeClient;
             _baseClient = baseClient;
@@ -48,7 +50,7 @@ namespace DeltaWare.SereneApi
         /// <param name="resourcePrecursor">The Resource Precursor this applied before the Resource. By default this is set to "api/"</param>
         public ApiHandlerOptionsBuilder UseSource(string source, string resource, string resourcePrecursor = null)
         {
-            if (_httpClientOverride != null)
+            if (_clientOverride != null)
             {
                 throw new MethodAccessException("This method cannot be called alongside UseClientOverride");
             }
@@ -59,12 +61,7 @@ namespace DeltaWare.SereneApi
             }
 
             // The Resource Precursors default value will be used if a null or whitespace value is provided.
-            if (string.IsNullOrWhiteSpace(resourcePrecursor))
-            {
-                resourcePrecursor = ApiHandlerOptionDefaults.ResourcePrecursor;
-            }
-
-            _source = new Uri($"{source}/{resourcePrecursor}{resource}");
+            _source = ApiHandlerOptionsHelper.CreateApiSource(source, resource, resourcePrecursor);
 
             return this;
         }
@@ -86,7 +83,7 @@ namespace DeltaWare.SereneApi
                 throw new MethodAccessException("This method cannot be called alongside UseSource");
             }
 
-            _httpClientOverride = clientOverride;
+            _clientOverride = clientOverride;
             _disposeClient = disposeClient;
 
             return this;
@@ -109,7 +106,7 @@ namespace DeltaWare.SereneApi
         /// <param name="logger">The <see cref="ILogger"/> to be used for Logging</param>
         public ApiHandlerOptionsBuilder AddLogger(ILogger logger)
         {
-            _logger = logger;
+            _dependencyCollection.AddDependency(logger);
 
             return this;
         }
@@ -118,9 +115,9 @@ namespace DeltaWare.SereneApi
         {
             HttpClient httpClient;
 
-            if (_httpClientOverride != null)
+            if (_clientOverride != null)
             {
-                httpClient = _httpClientOverride;
+                httpClient = _clientOverride;
             }
             else
             {
@@ -132,7 +129,9 @@ namespace DeltaWare.SereneApi
                 _requestHeaderBuilder.Invoke(httpClient.DefaultRequestHeaders);
             }
 
-            IApiHandlerOptions options = new ApiHandlerOptions(httpClient, _logger, _queryFactory, _retryCount, _disposeClient);
+            _dependencyCollection.AddDependency(httpClient, _disposeClient ? DependencyBinding.Bound : DependencyBinding.Unbound);
+
+            IApiHandlerOptions options = new ApiHandlerOptions(_dependencyCollection, _source);
 
             return options;
         }

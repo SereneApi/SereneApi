@@ -9,6 +9,7 @@ using System.Linq.Expressions;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using DeltaWare.SereneApi.Types.Dependencies;
 
 namespace DeltaWare.SereneApi
 {
@@ -16,7 +17,7 @@ namespace DeltaWare.SereneApi
     /// When Inherited; Provides tools and methods required for implementing a RESTful Api consumer.
     /// </summary>
     [DebuggerDisplay("Source:{_httpClient.BaseAddress}; Timeout:{_httpClient.Timeout}")]
-    public abstract class ApiHandler : IDisposable
+    public abstract partial class ApiHandler : IDisposable
     {
         #region Variables
 
@@ -26,14 +27,25 @@ namespace DeltaWare.SereneApi
         private readonly HttpClient _httpClient;
 
         /// <summary>
-        /// The <see cref="ILogger"/> this <see cref="ApiHandler"/> will use.
-        /// </summary>
-        private readonly ILogger _logger;
-
-        /// <summary>
-        /// The options this <see cref="ApiHandler"/> will use.
+        /// The <see cref="IApiHandlerOptions"/> this <see cref="ApiHandler"/> will use
         /// </summary>
         private readonly IApiHandlerOptions _options;
+
+        #region Dependencies
+
+        /// <summary>
+        /// The <see cref="ILogger"/> this <see cref="ApiHandler"/> will use
+        /// </summary>
+        private ILogger _logger;
+
+        /// <summary>
+        /// The <see cref="IQueryFactory"/> that will be used for creating queries
+        /// </summary>
+        private IQueryFactory _queryFactory;
+
+        private RetryDependency _retry;
+
+        #endregion
 
         #endregion
         #region Constructors
@@ -45,14 +57,30 @@ namespace DeltaWare.SereneApi
         protected ApiHandler(IApiHandlerOptions options)
         {
             _options = options;
-            _logger = _options.Logger;
-            _httpClient = _options.HttpClient;
 
-            if (_httpClient == null)
+            #region Configure Dependencies
+
+            if (!_options.Dependencies.TryGetDependency(out _httpClient))
             {
                 throw new ArgumentException("No HttpClient was provided");
             }
 
+            AddDependencies();
+
+            #endregion
+        }
+
+        private void AddDependencies()
+        {
+            _options.Dependencies.TryGetDependency(out _logger);
+            _options.Dependencies.TryGetDependency(out _queryFactory);
+            _options.Dependencies.TryGetDependency(out _retry);
+
+            AddDependencies(_options.Dependencies);
+        }
+
+        protected virtual void AddDependencies(IDependencyCollection dependencies)
+        {
         }
 
         #endregion
@@ -250,7 +278,7 @@ namespace DeltaWare.SereneApi
                 }
                 catch (TaskCanceledException canceledException)
                 {
-                    if (requestsAttempted == _options.RetryCount)
+                    if (requestsAttempted == _retry.Count)
                     {
                         _logger.LogError(canceledException, "The Request to \"{RequestRoute}\" has Timed Out; Retry limit reached. Retired {count}",
                             route, requestsAttempted);
@@ -259,7 +287,7 @@ namespace DeltaWare.SereneApi
                     }
 
                     _logger.LogWarning("Request to \"{RequestRoute}\" has Timed out, retrying. Attempts Remaining {count}",
-                        route, _options.RetryCount - requestsAttempted);
+                        route, _retry.Count - requestsAttempted);
 
                     retryingRequest = true;
                 }
@@ -315,7 +343,7 @@ namespace DeltaWare.SereneApi
                 }
                 catch (TaskCanceledException canceledException)
                 {
-                    if (requestsAttempted == _options.RetryCount)
+                    if (requestsAttempted == _retry.Count)
                     {
                         _logger.LogError(canceledException, "The Request to \"{RequestRoute}\" has Timed Out; Retry limit reached. Retired {count}",
                             route, requestsAttempted);
@@ -324,7 +352,7 @@ namespace DeltaWare.SereneApi
                     }
 
                     _logger.LogWarning("Request to \"{RequestRoute}\" has Timed out, retrying. Attempts Remaining {count}",
-                        route, _options.RetryCount - requestsAttempted);
+                        route, _retry.Count - requestsAttempted);
 
                     retryingRequest = true;
                 }
@@ -382,7 +410,7 @@ namespace DeltaWare.SereneApi
                 }
                 catch (TaskCanceledException canceledException)
                 {
-                    if (requestsAttempted == _options.RetryCount)
+                    if (requestsAttempted == _retry.Count)
                     {
                         _logger.LogError(canceledException, "The Request to \"{RequestRoute}\" has Timed Out; Retry limit reached. Retired {count}",
                             route, requestsAttempted);
@@ -391,7 +419,7 @@ namespace DeltaWare.SereneApi
                     }
 
                     _logger.LogWarning("Request to \"{RequestRoute}\" has Timed out, retrying. Attempts Remaining {count}",
-                        route, _options.RetryCount - requestsAttempted);
+                        route, _retry.Count - requestsAttempted);
 
                     retryingRequest = true;
                 }
@@ -449,7 +477,7 @@ namespace DeltaWare.SereneApi
                 }
                 catch (TaskCanceledException canceledException)
                 {
-                    if (requestsAttempted == _options.RetryCount)
+                    if (requestsAttempted == _retry.Count)
                     {
                         _logger.LogError(canceledException, "The Request to \"{RequestRoute}\" has Timed Out; Retry limit reached. Retired {count}",
                             route, requestsAttempted);
@@ -458,7 +486,7 @@ namespace DeltaWare.SereneApi
                     }
 
                     _logger.LogWarning("Request to \"{RequestRoute}\" has Timed out, retrying. Attempts Remaining {count}",
-                        route, _options.RetryCount - requestsAttempted);
+                        route, _retry.Count - requestsAttempted);
 
                     retryingRequest = true;
                 }
@@ -569,11 +597,11 @@ namespace DeltaWare.SereneApi
 
             if (query is null)
             {
-                queryString = _options.QueryFactory.Build(content);
+                queryString = _queryFactory.Build(content);
             }
             else
             {
-                queryString = _options.QueryFactory.Build(content, query);
+                queryString = _queryFactory.Build(content, query);
             }
 
             Uri route = new Uri($"/{endpoint}{queryString}", UriKind.Relative);
@@ -595,11 +623,11 @@ namespace DeltaWare.SereneApi
 
             if (query is null)
             {
-                queryString = _options.QueryFactory.Build(content);
+                queryString = _queryFactory.Build(content);
             }
             else
             {
-                queryString = _options.QueryFactory.Build(content, query);
+                queryString = _queryFactory.Build(content, query);
             }
 
             string action = FormatEndpointTemplate(endpointTemplate, parameters);

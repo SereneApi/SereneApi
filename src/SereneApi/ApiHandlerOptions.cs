@@ -1,41 +1,30 @@
 ﻿using DeltaWare.SereneApi.Interfaces;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Net.Http;
+using System.Diagnostics;
 
 namespace DeltaWare.SereneApi
 {
+    [DebuggerDisplay("Source: {Source.ToString()}")]
     public class ApiHandlerOptions : IApiHandlerOptions, IDisposable
     {
-        private readonly bool _disposeClient;
+        #region Properties
 
-        public ILogger Logger { get; }
+        /// <inheritdoc cref="IApiHandlerOptions.Dependencies"/>
+        public IDependencyCollection Dependencies { get; }
 
-        public IQueryFactory QueryFactory { get; }
+        /// <inheritdoc cref="IApiHandlerOptions.Source"/>
+        public Uri Source { get; }
 
-        public HttpClient HttpClient { get; }
+        #endregion
+        #region Constructors
 
-        public uint RetryCount { get; }
-
-        public ApiHandlerOptions(HttpClient httpClient, uint retryCount = 0, bool disposeClient = true)
+        public ApiHandlerOptions(IDependencyCollection dependencyCollection, Uri source)
         {
-            HttpClient = httpClient;
-
-            RetryCount = retryCount;
-
-            _disposeClient = disposeClient;
+            Dependencies = dependencyCollection;
+            Source = source;
         }
 
-        public ApiHandlerOptions(HttpClient httpClient, ILogger logger, uint retryCount = 0, bool disposeClient = true) : this(httpClient, retryCount, disposeClient)
-        {
-            Logger = logger;
-        }
-
-        public ApiHandlerOptions(HttpClient httpClient, ILogger logger, IQueryFactory queryFactory, uint retryCount = 0, bool disposeClient = true) : this(httpClient, logger, retryCount, disposeClient)
-        {
-            QueryFactory = queryFactory;
-        }
-
+        #endregion
         #region IDisposable
 
         private volatile bool _disposed;
@@ -54,9 +43,12 @@ namespace DeltaWare.SereneApi
                 return;
             }
 
-            if (disposing && _disposeClient)
+            if (disposing)
             {
-                HttpClient.Dispose();
+                if (Dependencies is IDisposable disposableDependencyCollection)
+                {
+                    disposableDependencyCollection.Dispose();
+                }
             }
 
             _disposed = true;
