@@ -4,7 +4,7 @@ Serene API is a small library intended to provide a straightforward way of consu
 
 ## The Basics
 
-First off, you'll need to implement an ApiHandler and IApi interface. In this example we'll be consuming the **User** resource. The naming conventions is as follows
+First off, you'll need to implement an ApiHandler and an IApi interface. In this example we'll be consuming the **User** resource. The naming conventions are as follows
 * Api Definition: I**Resource**Api
 * Api Implementation: **Resource**ApiHandler 
 >**Best Practices Tip:** Your ApiHandler Implementations should be located in a Handlers folder under your project.
@@ -37,17 +37,14 @@ public class UserApiHandler : ApiHandler, IUserApi
 	}
 }
 ```
-Once you've created the API Definition and Implementation you can initiate it in your **Startup.cs** file.
+Once you've created the API Definition and its Implementation you can initiate it in the **ConfigureServices** method under your **Startup.cs** file.
 ```csharp
 services.AddApiHandler<IUserApi, UserApiHandler>((provider, builder) => 
 {
 	builder.AddConfiguration(Configuration.GetApiConfig("UserApi"));
-	builder.AddLoggerFactorty(provider.GetRequiredService<ILoggerFactory>());
 });
 ```
-In the example above we're getting our API Configuration from **appsettings.json** and adding an **ILoggerFactory** so logging is enabled.
-
-Here is what the **appsettings.json** file looks like
+In the example above we're getting our API Configuration from **appsettings.json**. This is what the **appsettings.json** file looks like
 ```json
 "ApiConfig": {
   "UserApi": {
@@ -58,7 +55,7 @@ Here is what the **appsettings.json** file looks like
 ```
 >**Take Note:** You can also provide ResourcePrecursor:*string* and Timeout:*TimeSpan* under your API configuration. But they're entirely optional.
 
-The above code will perform two basic actions. It will Get a User using their ID and Create a new user. Below is an example of the Url that this code will act upon.
+The example code will perform two basic actions. It will **Get** a User using their ID and also **Create** a new **User**. Below is an example of the Url that this code will act upon.
 
 >**Take Note:** Between the Source and Resource **api/** is being appended to the URL. We'll go over this later when we cover the **ResourcePrecursor**.
 
@@ -253,3 +250,7 @@ And that's it, seriously that is all that is needed to implement a basic CRUD AP
 * Extend In Body Requests to allow Action Templates and Parameters.
 * Unit Tests, at the present time there is no automated testing being done.
 * Make it available on NUGET!
+#
+### Contributors
+
+Icons made by <a href="https://www.flaticon.com/authors/prosymbols" title="Prosymbols">Prosymbols</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>

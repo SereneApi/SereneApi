@@ -47,7 +47,7 @@ namespace DeltaWare.SereneApi
             _options = options;
             _logger = _options.Logger;
             _httpClient = _options.HttpClient;
-            
+
             if (_httpClient == null)
             {
                 throw new ArgumentException("No HttpClient was provided");

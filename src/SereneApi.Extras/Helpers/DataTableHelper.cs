@@ -1,8 +1,8 @@
-﻿using System;
-using System.Linq;
-using DeltaWare.SereneApi.Extras.Types.DataTable;
+﻿using DeltaWare.SereneApi.Extras.Types.DataTable;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
+using System;
+using System.Linq;
 
 namespace DeltaWare.SereneApi.Extras.Helpers
 {
