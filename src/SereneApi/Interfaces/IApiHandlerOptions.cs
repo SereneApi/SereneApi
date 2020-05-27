@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
 
 namespace DeltaWare.SereneApi.Interfaces
 {
@@ -11,10 +9,14 @@ namespace DeltaWare.SereneApi.Interfaces
 
         IQueryFactory QueryFactory { get; }
 
-        Type HandlerType { get; }
-
+        /// <summary>
+        /// The <see cref="HttpClient"/> that the <see cref="ApiHandler"/> will use to make requests.
+        /// </summary>
         HttpClient HttpClient { get; }
 
+        /// <summary>
+        /// The numbers of times the <see cref="ApiHandler"/> will re-attempt the connection.
+        /// </summary>
         uint RetryCount { get; }
     }
 }

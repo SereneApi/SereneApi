@@ -14,7 +14,7 @@ namespace DeltaWare.SereneApi
     /// <summary>
     /// When Inherited; Provides tools and methods required for implementing a RESTful Api consumer.
     /// </summary>
-    public abstract class ApiHandler
+    public abstract class ApiHandler : IDisposable
     {
         #region Variables
 
@@ -25,7 +25,6 @@ namespace DeltaWare.SereneApi
 
         /// <summary>
         /// The <see cref="ILogger"/> this <see cref="ApiHandler"/> will use.
-        /// NOTE: This is created using the Logger Factory that is provided in the <see cref="ApiHandlerOptions"/> during construction
         /// </summary>
         private readonly ILogger _logger;
 
@@ -633,6 +632,36 @@ namespace DeltaWare.SereneApi
         }
 
 
+
+        #endregion
+        #region IDisposable
+
+        private bool _disposed;
+
+        public void Dispose()
+        {
+            Dispose(true);
+
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                if (_options is IDisposable disposableOptions)
+                {
+                    disposableOptions.Dispose();
+                }
+            }
+
+            _disposed = true;
+        }
 
         #endregion
     }

@@ -1,6 +1,5 @@
 using DeltaWare.SereneApi.Interfaces;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http;
@@ -90,10 +89,11 @@ namespace DeltaWare.SereneApi.DependencyInjection
         /// <inheritdoc cref="IApiHandlerOptions.RetryCount"/>
         public uint RetryCount { get; private set; }
 
-        /// <inheritdoc cref="IApiHandlerOptions.HandlerType"/>
+        /// <summary>
+        /// The <see cref="Type"/> of <see cref="ApiHandler"/> these <see cref="IApiHandlerOptions"/> will be used for.
+        /// </summary>
         public virtual Type HandlerType { get; } = typeof(ApiHandler);
 
-        /// <inheritdoc cref="IApiHandlerOptions.RequestHeaderBuilder"/>
         public Action<HttpRequestHeaders> RequestHeaderBuilder { get; private set; } = DefaultRequestHeadersBuilder;
 
         #endregion
@@ -106,15 +106,24 @@ namespace DeltaWare.SereneApi.DependencyInjection
         /// <param name="configuration">The <see cref="IConfiguration"/> the values will be retrieved from</param>
         internal void UseConfiguration(IConfiguration configuration)
         {
+            #region Configuration Key Values
+
+            const string sourceKey = "Source";
+            const string resourceKey = "Resource";
+            const string resourcePrecursorKey = "ResourcePrecursor";
+            const string timeoutKey = "Timeout";
+
+            #endregion
+
             if (Source != null || Resource != null)
             {
                 throw new ArgumentException("This method cannot be called twice");
             }
 
-            Source = configuration.Get<Uri>("Source");
-            Resource = configuration.Get<string>("Resource");
+            Source = configuration.Get<Uri>(sourceKey);
+            Resource = configuration.Get<string>(resourceKey);
 
-            string precursor = configuration.Get<string>("ResourcePrecursor", false);
+            string precursor = configuration.Get<string>(resourcePrecursorKey, false);
 
             // If the precursor is null, we don't want to set it. But if it is an empty string we use it.
             if (precursor != null)
@@ -122,11 +131,15 @@ namespace DeltaWare.SereneApi.DependencyInjection
                 ResourcePrecursor = precursor;
             }
 
-            TimeSpan timeout = configuration.Get<TimeSpan>("Timeout", false);
+            TimeSpan timeout = configuration.Get<TimeSpan>(timeoutKey, false);
 
             if (timeout != TimeSpan.Zero)
             {
                 Timeout = timeout;
+            }
+            else if (timeout < TimeSpan.Zero)
+            {
+                throw new ArgumentException("The Timeout value must be equal to or greater than 0");
             }
         }
 
@@ -186,7 +199,7 @@ namespace DeltaWare.SereneApi.DependencyInjection
         }
 
         /// <summary>
-        /// Overrides the default <see cref="DeltaWare.SereneApi.QueryFactory"/> with the supplied <see cref="IQueryFactory"/>
+        /// Overrides the default <see cref="SereneApi.QueryFactory"/> with the supplied <see cref="IQueryFactory"/>
         /// </summary>
         /// <param name="queryFactory">The <see cref="IQueryFactory"/> to be used when building Queries</param>
         internal void UseQueryFactory(IQueryFactory queryFactory)
@@ -229,7 +242,6 @@ namespace DeltaWare.SereneApi.DependencyInjection
 
         public void Dispose() => Dispose(true);
 
-
         protected virtual void Dispose(bool disposing)
         {
             if (_disposed)
@@ -239,11 +251,15 @@ namespace DeltaWare.SereneApi.DependencyInjection
 
             if (disposing)
             {
-                ((ServiceProvider)ServiceProvider)?.Dispose();
+                if (ServiceProvider is IDisposable disposableServiceProvider)
+                {
+                    disposableServiceProvider.Dispose();
+                }
             }
 
             _disposed = true;
         }
+
         #endregion
     }
 }

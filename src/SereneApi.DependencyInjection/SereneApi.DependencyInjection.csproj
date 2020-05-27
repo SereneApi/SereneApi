@@ -16,6 +16,7 @@
 		<NeutralLanguage>en-AU</NeutralLanguage>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
 	</PropertyGroup>
 
   <ItemGroup>
