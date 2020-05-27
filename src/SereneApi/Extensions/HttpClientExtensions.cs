@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DeltaWare.SereneApi;
+using Newtonsoft.Json;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -6,6 +7,14 @@ namespace System.Net.Http
 {
     public static class HttpClientExtensions
     {
+        /// <summary>
+        /// Creates a new <see cref="ApiHandler"/> using the <see cref="HttpClient"/> for the requests.
+        /// </summary>
+        public static TApiHandler CreateApiHandler<TApiHandler>(this HttpClient client) where TApiHandler : ApiHandler
+        {
+            return null;
+        }
+
         public static Task<HttpResponseMessage> PostAsJsonAsync(this HttpClient client, Uri requestUri)
         {
             return client.PostAsync(requestUri, null);

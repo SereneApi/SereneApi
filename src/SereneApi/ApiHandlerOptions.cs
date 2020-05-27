@@ -38,7 +38,7 @@ namespace DeltaWare.SereneApi
 
         #region IDisposable
 
-        private bool _disposed;
+        private volatile bool _disposed;
 
         public void Dispose()
         {

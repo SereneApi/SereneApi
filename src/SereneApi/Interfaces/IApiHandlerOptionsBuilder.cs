@@ -2,6 +2,6 @@
 {
     public interface IApiHandlerOptionsBuilder
     {
-        IApiHandlerOptions BuildOptions(bool disposeClient = true);
+        IApiHandlerOptions BuildOptions();
     }
 }

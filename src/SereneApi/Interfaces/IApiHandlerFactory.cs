@@ -1,7 +1,11 @@
-﻿namespace DeltaWare.SereneApi.Interfaces
+﻿using System;
+
+namespace DeltaWare.SereneApi.Interfaces
 {
     internal interface IApiHandlerFactory
     {
-        TApiHandler CreateInstance<TApiHandler>() where TApiHandler : ApiHandler;
+        TApiHandler Build<TApiHandler>() where TApiHandler : ApiHandler;
+
+        void RegisterHandler<TApiHandler>(Action<ApiHandlerOptionsBuilder> optionsAction) where TApiHandler : ApiHandler;
     }
 }

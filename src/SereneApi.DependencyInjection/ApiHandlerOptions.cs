@@ -16,28 +16,6 @@ namespace DeltaWare.SereneApi.DependencyInjection
 
         private HttpClient _clientOverride;
 
-        #region Default Values
-
-        /// <summary>
-        /// The default Timeout Period that is used by the <see cref="ApiHandler"/>
-        /// </summary>
-        public static readonly TimeSpan DefaultTimeoutPeriod = new TimeSpan(0, 0, 30);
-
-        /// <summary>
-        /// The default Resource Precursor that is used by the <see cref="ApiHandler"/>
-        /// </summary>
-        public static readonly string DefaultResourcePrecursor = "api/";
-
-        /// <summary>
-        /// The default <see cref="HttpRequestHeaders"/> that is used by the <see cref="ApiHandler"/>
-        /// </summary>
-        public static Action<HttpRequestHeaders> DefaultRequestHeadersBuilder { get; } = headers =>
-        {
-            headers.Accept.Clear();
-            headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        };
-
-        #endregion
         #region Public Properties
 
         /// <summary>
@@ -57,18 +35,18 @@ namespace DeltaWare.SereneApi.DependencyInjection
         /// The API <see cref="ResourcePrecursor"/> will be appended to the front of the <see cref="Resource"/> Value.
         /// By default "api/" is being used
         /// </summary>
-        public string ResourcePrecursor { get; private set; } = DefaultResourcePrecursor;
+        public string ResourcePrecursor { get; private set; } = ApiHandlerOptionDefaults.ResourcePrecursor;
 
         /// <summary>
         /// Supplies the the HttpClients to be used for requests.
         /// </summary>
-        public TimeSpan Timeout { get; private set; } = DefaultTimeoutPeriod;
+        public TimeSpan Timeout { get; private set; } = ApiHandlerOptionDefaults.TimeoutPeriod;
 
         /// <inheritdoc cref="IApiHandlerOptions.Logger"/>
         public ILogger Logger { get; private set; }
 
         /// <inheritdoc cref="IApiHandlerOptions.QueryFactory"/>
-        public IQueryFactory QueryFactory { get; private set; } = new QueryFactory();
+        public IQueryFactory QueryFactory { get; private set; } = ApiHandlerOptionDefaults.QueryFactory;
 
         public IServiceProvider ServiceProvider { get; private set; }
 
@@ -94,7 +72,7 @@ namespace DeltaWare.SereneApi.DependencyInjection
         /// </summary>
         public virtual Type HandlerType { get; } = typeof(ApiHandler);
 
-        public Action<HttpRequestHeaders> RequestHeaderBuilder { get; private set; } = DefaultRequestHeadersBuilder;
+        public Action<HttpRequestHeaders> RequestHeaderBuilder { get; private set; } = ApiHandlerOptionDefaults.DefaultRequestHeadersBuilder;
 
         #endregion
         #region Public Methods
@@ -238,7 +216,7 @@ namespace DeltaWare.SereneApi.DependencyInjection
         #endregion
         #region IDisposable
 
-        private bool _disposed;
+        private volatile bool _disposed;
 
         public void Dispose() => Dispose(true);
 
