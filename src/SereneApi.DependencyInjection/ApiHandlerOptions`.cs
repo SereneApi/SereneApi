@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DeltaWare.SereneApi.Interfaces;
+using System;
 
 namespace DeltaWare.SereneApi.DependencyInjection
 {
@@ -12,8 +13,12 @@ namespace DeltaWare.SereneApi.DependencyInjection
         /// <summary>
         /// The <see cref="Type"/> of <see cref="ApiHandler"/> these <see cref="Interfaces.IApiHandlerOptions"/> will be used for.
         /// </summary>
-        public override Type HandlerType => typeof(TApiHandler);
+        public Type HandlerType => typeof(TApiHandler);
 
         #endregion
+
+        public ApiHandlerOptions(IDependencyCollection dependencyCollection, Uri source) : base(dependencyCollection, source)
+        {
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using DeltaWare.SereneApi.Enums;
 using DeltaWare.SereneApi.Interfaces;
 using DeltaWare.SereneApi.Types;
+using DeltaWare.SereneApi.Types.Dependencies;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
@@ -9,7 +10,6 @@ using System.Linq.Expressions;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using DeltaWare.SereneApi.Types.Dependencies;
 
 namespace DeltaWare.SereneApi
 {

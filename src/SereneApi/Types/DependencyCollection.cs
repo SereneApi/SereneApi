@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using DeltaWare.SereneApi.Enums;
+﻿using DeltaWare.SereneApi.Enums;
 using DeltaWare.SereneApi.Interfaces;
+using System;
+using System.Collections.Generic;
 
 namespace DeltaWare.SereneApi.Types
 {

@@ -3,7 +3,7 @@ using System;
 
 namespace DeltaWare.SereneApi.Types
 {
-    public static class IDependencyExtensions
+    internal static class IDependencyExtensions
     {
         public static TDependency GetInstance<TDependency>(this IDependency dependency)
         {

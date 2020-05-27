@@ -1,5 +1,4 @@
 ﻿using System;
-using DeltaWare.SereneApi.Types;
 
 namespace DeltaWare.SereneApi.Enums
 {

@@ -1,12 +1,12 @@
-﻿using DeltaWare.SereneApi.Interfaces;
+﻿using DeltaWare.SereneApi.Enums;
+using DeltaWare.SereneApi.Helpers;
+using DeltaWare.SereneApi.Interfaces;
+using DeltaWare.SereneApi.Types;
+using DeltaWare.SereneApi.Types.Dependencies;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using DeltaWare.SereneApi.Enums;
-using DeltaWare.SereneApi.Helpers;
-using DeltaWare.SereneApi.Types;
-using DeltaWare.SereneApi.Types.Dependencies;
 
 namespace DeltaWare.SereneApi
 {
@@ -14,33 +14,46 @@ namespace DeltaWare.SereneApi
     {
         #region Variables
 
-        private readonly DependencyCollection _dependencyCollection = new DependencyCollection();
-
-        private Uri _source;
-
-        private HttpClient _clientOverride;
-
         private readonly HttpClient _baseClient;
 
-        private bool _disposeClient;
-
-        private TimeSpan _timeout = ApiHandlerOptionDefaults.TimeoutPeriod;
-
-        private readonly Action<HttpRequestHeaders> _requestHeaderBuilder = ApiHandlerOptionDefaults.DefaultRequestHeadersBuilder;
+        private readonly bool _disposeClient;
 
         #endregion
+        #region Properties
+
+        protected DependencyCollection DependencyCollection { get; } = new DependencyCollection();
+
+        protected Uri Source { get; set; }
+
+        protected HttpClient ClientOverride;
+
+        protected bool DisposeClientOverride;
+
+        protected Action<HttpRequestHeaders> RequestHeaderBuilder = ApiHandlerOptionDefaults.DefaultRequestHeadersBuilder;
+
+        protected TimeSpan Timeout = ApiHandlerOptionDefaults.TimeoutPeriod;
+
+        #endregion
+        #region Constructors
 
         public ApiHandlerOptionsBuilder()
         {
-            _dependencyCollection.AddDependency(ApiHandlerOptionDefaults.QueryFactory);
-            _dependencyCollection.AddDependency(RetryDependency.Default);
+            _disposeClient = true;
+
+            DependencyCollection.AddDependency(ApiHandlerOptionDefaults.QueryFactory);
+            DependencyCollection.AddDependency(RetryDependency.Default);
         }
 
-        internal ApiHandlerOptionsBuilder(HttpClient baseClient, bool disposeClient = true) : this()
+        internal ApiHandlerOptionsBuilder(HttpClient baseClient, bool disposeClient = true)
         {
             _disposeClient = disposeClient;
             _baseClient = baseClient;
+
+            DependencyCollection.AddDependency(ApiHandlerOptionDefaults.QueryFactory);
+            DependencyCollection.AddDependency(RetryDependency.Default);
         }
+
+        #endregion
 
         /// <summary>
         /// The Source the <see cref="ApiHandler"/> will use to make API requests against
@@ -48,22 +61,20 @@ namespace DeltaWare.SereneApi
         /// <param name="source">The source of the Server, EG: http://someservice.com:8080</param>
         /// <param name="resource">The API resource that the <see cref="ApiHandler"/> will interact with</param>
         /// <param name="resourcePrecursor">The Resource Precursor this applied before the Resource. By default this is set to "api/"</param>
-        public ApiHandlerOptionsBuilder UseSource(string source, string resource, string resourcePrecursor = null)
+        public void UseSource(string source, string resource, string resourcePrecursor = null)
         {
-            if (_clientOverride != null)
+            if (ClientOverride != null)
             {
                 throw new MethodAccessException("This method cannot be called alongside UseClientOverride");
             }
 
-            if (_source != null)
+            if (Source != null)
             {
                 throw new MethodAccessException("This method cannot be called twice");
             }
 
             // The Resource Precursors default value will be used if a null or whitespace value is provided.
-            _source = ApiHandlerOptionsHelper.CreateApiSource(source, resource, resourcePrecursor);
-
-            return this;
+            Source = ApiHandlerOptionsHelper.CreateApiSource(source, resource, resourcePrecursor);
         }
 
         /// <summary>
@@ -71,67 +82,92 @@ namespace DeltaWare.SereneApi
         /// This should only be used for Unit Testing
         /// </summary>
         /// <param name="clientOverride">The <see cref="HttpClient"/> to be used when making API requests.</param>
-        public ApiHandlerOptionsBuilder UseClientOverride(HttpClient clientOverride, bool disposeClient = true)
+        public void UseClientOverride(HttpClient clientOverride, bool disposeClient = true)
         {
+            if (Source != null)
+            {
+                throw new MethodAccessException("This method cannot be called alongside UseSource");
+            }
+
             if (_baseClient != null)
             {
                 throw new MethodAccessException("This method cannot be called when using the ApiHandlerFactory");
             }
 
-            if (_source != null)
-            {
-                throw new MethodAccessException("This method cannot be called alongside UseSource");
-            }
+            ClientOverride = clientOverride;
 
-            _clientOverride = clientOverride;
-            _disposeClient = disposeClient;
-
-            return this;
+            DisposeClientOverride = disposeClient;
         }
 
         /// <summary>
         /// Sets the timeout to be used by the <see cref="ApiHandler"/> when making API requests. By default this value is set to 30 seconds
         /// </summary>
         /// <param name="timeoutPeriod">The <see cref="TimeSpan"/> to be used as the timeout period by the <see cref="ApiHandler"/></param>
-        public ApiHandlerOptionsBuilder SetTimeoutPeriod(TimeSpan timeoutPeriod)
+        public void SetTimeoutPeriod(TimeSpan timeoutPeriod)
         {
-            _timeout = timeoutPeriod;
-
-            return this;
+            Timeout = timeoutPeriod;
         }
 
         /// <summary>
         /// Adds an <see cref="ILogger"/> to the <see cref="ApiHandler"/> allowing built in Logging
         /// </summary>
         /// <param name="logger">The <see cref="ILogger"/> to be used for Logging</param>
-        public ApiHandlerOptionsBuilder AddLogger(ILogger logger)
+        public void AddLogger(ILogger logger)
         {
-            _dependencyCollection.AddDependency(logger);
-
-            return this;
+            DependencyCollection.AddDependency(logger);
         }
 
-        public IApiHandlerOptions BuildOptions()
+        /// <summary>
+        /// When enabled, upon a timeout the <see cref="ApiHandler"/> will re-attempt the request. By Default this is disabled
+        /// </summary>
+        /// <param name="retryCount">How many times the <see cref="ApiHandler"/> will re-attempt the request</param>
+        public void EnableRetryOnTimeout(uint retryCount)
         {
-            HttpClient httpClient;
-
-            if (_clientOverride != null)
+            if (retryCount < 1)
             {
-                httpClient = _clientOverride;
+                throw new ArgumentException("To Enable Retry on Timeout the RetryCount must be greater than 0");
+            }
+
+            DependencyCollection.AddDependency(new RetryDependency(retryCount));
+        }
+
+        /// <summary>
+        /// Overrides the default <see cref="HttpResponseHeaders"/> with the supplied <see cref="HttpResponseHeaders"/>
+        /// </summary>
+        /// <param name="requestHeaderBuilder">Builds the <see cref="HttpResponseHeaders"/></param>
+        public void UseHttpRequestHeaders(Action<HttpRequestHeaders> requestHeaderBuilder)
+        {
+            RequestHeaderBuilder = requestHeaderBuilder;
+        }
+
+        /// <summary>
+        /// Overrides the default <see cref="QueryFactory"/> with the supplied <see cref="IQueryFactory"/>
+        /// </summary>
+        /// <param name="queryFactory">The <see cref="IQueryFactory"/> to be used when building Queries</param>
+        public void UseQueryFactory(IQueryFactory queryFactory)
+        {
+            DependencyCollection.AddDependency(queryFactory);
+        }
+
+        public virtual IApiHandlerOptions BuildOptions()
+        {
+            if (ClientOverride != null)
+            {
+                DependencyCollection.AddDependency(ClientOverride, DisposeClientOverride ? DependencyBinding.Bound : DependencyBinding.Unbound);
             }
             else
             {
-                httpClient = _baseClient;
+                HttpClient httpClient = _baseClient ?? new HttpClient();
 
-                httpClient.BaseAddress = _source;
-                httpClient.Timeout = _timeout;
+                httpClient.BaseAddress = Source;
+                httpClient.Timeout = Timeout;
 
-                _requestHeaderBuilder.Invoke(httpClient.DefaultRequestHeaders);
+                RequestHeaderBuilder.Invoke(httpClient.DefaultRequestHeaders);
+
+                DependencyCollection.AddDependency(httpClient, _disposeClient ? DependencyBinding.Bound : DependencyBinding.Unbound);
             }
 
-            _dependencyCollection.AddDependency(httpClient, _disposeClient ? DependencyBinding.Bound : DependencyBinding.Unbound);
-
-            IApiHandlerOptions options = new ApiHandlerOptions(_dependencyCollection, _source);
+            IApiHandlerOptions options = new ApiHandlerOptions(DependencyCollection, Source);
 
             return options;
         }

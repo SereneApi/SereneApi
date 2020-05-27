@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DeltaWare.SereneApi.Types.Dependencies
+﻿namespace DeltaWare.SereneApi.Types.Dependencies
 {
     public readonly struct RetryDependency
     {
