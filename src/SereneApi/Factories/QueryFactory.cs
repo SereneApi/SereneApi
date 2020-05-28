@@ -7,18 +7,18 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
-namespace SereneApi
+namespace SereneApi.Factories
 {
     public class QueryFactory : IQueryFactory
     {
-        protected readonly ObjectStringFormatter Formatter;
+        protected readonly ObjectToStringFormatter Formatter;
 
         public QueryFactory()
         {
             Formatter = DefaultQueryFormatter;
         }
 
-        public QueryFactory(ObjectStringFormatter formatter)
+        public QueryFactory(ObjectToStringFormatter formatter)
         {
             Formatter = formatter;
         }

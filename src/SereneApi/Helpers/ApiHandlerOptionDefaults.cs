@@ -1,6 +1,7 @@
 ﻿using SereneApi.Interfaces;
 using System;
 using System.Net.Http.Headers;
+using SereneApi.Factories;
 
 namespace SereneApi.Helpers
 {

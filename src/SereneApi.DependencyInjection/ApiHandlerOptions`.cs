@@ -18,7 +18,7 @@ namespace SereneApi.DependencyInjection
 
         #endregion
 
-        public ApiHandlerOptions(IDependencyCollection dependencyCollection, Uri source) : base(dependencyCollection, source)
+        public ApiHandlerOptions(IDependencyCollection dependencyCollection, Uri source, string resource) : base(dependencyCollection, source, resource)
         {
         }
     }

@@ -15,13 +15,17 @@ namespace SereneApi.Types
         /// <inheritdoc cref="IApiHandlerOptions.Source"/>
         public Uri Source { get; }
 
+        /// <inheritdoc cref="IApiHandlerOptions.Resource"/>
+        public string Resource { get; }
+
         #endregion
         #region Constructors
 
-        public ApiHandlerOptions(IDependencyCollection dependencyCollection, Uri source)
+        public ApiHandlerOptions(IDependencyCollection dependencyCollection, Uri source, string resource)
         {
             Dependencies = dependencyCollection;
             Source = source;
+            Resource = resource;
         }
 
         #endregion

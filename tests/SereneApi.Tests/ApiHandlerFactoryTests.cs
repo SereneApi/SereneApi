@@ -1,4 +1,5 @@
-﻿using SereneApi.Tests.Handlers;
+﻿using SereneApi.Factories;
+using SereneApi.Tests.Handlers;
 using Xunit;
 
 namespace SereneApi.Tests
@@ -11,12 +12,12 @@ namespace SereneApi.Tests
         {
             ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterHandler<UsersApiHandler>(o =>
+            handlerFactory.RegisterHandler<UserApiHandler>(o =>
             {
                 o.UseSource("http://localhost", "Users");
             });
 
-            UsersApiHandler usersApi = handlerFactory.Build<UsersApiHandler>();
+            UserApiHandler userApi = handlerFactory.Build<UserApiHandler>();
 
             handlerFactory.Dispose();
         }

@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace SereneApi
 {
     /// <summary>
-    /// When Inherited; Provides tools and methods required for implementing a RESTful Api consumer.
+    /// When Inherited; Provides the methods required for implementing a RESTful Api consumer.
     /// </summary>
     [DebuggerDisplay("Source:{_httpClient.BaseAddress}; Timeout:{_httpClient.Timeout}")]
     public abstract class ApiHandler : IDisposable
@@ -36,16 +36,43 @@ namespace SereneApi
         /// <summary>
         /// The <see cref="ILogger"/> this <see cref="ApiHandler"/> will use
         /// </summary>
-        private ILogger _logger;
+        private readonly ILogger _logger;
 
         /// <summary>
         /// The <see cref="IQueryFactory"/> that will be used for creating queries
         /// </summary>
-        private IQueryFactory _queryFactory;
+        private readonly IQueryFactory _queryFactory;
 
-        private RetryDependency _retry;
+        private readonly RetryDependency _retry;
 
         #endregion
+        #endregion
+        #region Properties
+
+        /// <summary>
+        /// The <see cref="HttpClient"/> used by the <see cref="ApiHandler"/> for all requests
+        /// </summary>
+        protected virtual HttpClient Client => _httpClient;
+
+        /// <summary>
+        /// <inheritdoc cref="IApiHandlerOptions.Source"/>
+        /// </summary>
+        public Uri Source => _options.Source;
+
+        /// <summary>
+        /// <inheritdoc cref="IApiHandlerOptions.Resource"/>
+        /// </summary>
+        public string Resource => _options.Resource;
+
+        /// <summary>
+        /// How long a request will stay alive before expiring
+        /// </summary>
+        public TimeSpan Timeout => Client.Timeout;
+
+        /// <summary>
+        /// How many times the <see cref="ApiHandler"/> will retry a request after it has timed out
+        /// </summary>
+        public uint RetryCount => _retry.Count;
 
         #endregion
         #region Constructors
@@ -65,22 +92,11 @@ namespace SereneApi
                 throw new ArgumentException("No HttpClient was provided");
             }
 
-            AddDependencies();
-
-            #endregion
-        }
-
-        private void AddDependencies()
-        {
             _options.Dependencies.TryGetDependency(out _logger);
             _options.Dependencies.TryGetDependency(out _queryFactory);
             _options.Dependencies.TryGetDependency(out _retry);
 
-            AddDependencies(_options.Dependencies);
-        }
-
-        protected virtual void AddDependencies(IDependencyCollection dependencies)
-        {
+            #endregion
         }
 
         #endregion
@@ -261,11 +277,11 @@ namespace SereneApi
                 {
                     responseMessage = method switch
                     {
-                        ApiMethod.Post => await _httpClient.PostAsJsonAsync(route),
-                        ApiMethod.Get => await _httpClient.GetAsync(route),
-                        ApiMethod.Put => await _httpClient.PutAsJsonAsync(route),
-                        ApiMethod.Patch => await _httpClient.PatchAsJsonAsync(route),
-                        ApiMethod.Delete => await _httpClient.DeleteAsync(route),
+                        ApiMethod.Post => await Client.PostAsJsonAsync(route),
+                        ApiMethod.Get => await Client.GetAsync(route),
+                        ApiMethod.Put => await Client.PutAsJsonAsync(route),
+                        ApiMethod.Patch => await Client.PatchAsJsonAsync(route),
+                        ApiMethod.Delete => await Client.DeleteAsync(route),
                         _ => throw new ArgumentOutOfRangeException(nameof(method), method, "An incorrect ApiMethod Value was supplied.")
                     };
 
@@ -326,11 +342,11 @@ namespace SereneApi
                 {
                     responseMessage = method switch
                     {
-                        ApiMethod.Post => await _httpClient.PostAsJsonAsync(route),
-                        ApiMethod.Get => await _httpClient.GetAsync(route),
-                        ApiMethod.Put => await _httpClient.PutAsJsonAsync(route),
-                        ApiMethod.Patch => await _httpClient.PatchAsJsonAsync(route),
-                        ApiMethod.Delete => await _httpClient.DeleteAsync(route),
+                        ApiMethod.Post => await Client.PostAsJsonAsync(route),
+                        ApiMethod.Get => await Client.GetAsync(route),
+                        ApiMethod.Put => await Client.PutAsJsonAsync(route),
+                        ApiMethod.Patch => await Client.PatchAsJsonAsync(route),
+                        ApiMethod.Delete => await Client.DeleteAsync(route),
                         _ => throw new ArgumentOutOfRangeException(nameof(method), method, "An incorrect ApiMethod Value was supplied.")
                     };
 
@@ -392,10 +408,10 @@ namespace SereneApi
                 {
                     responseMessage = method switch
                     {
-                        ApiMethod.Post => await _httpClient.PostAsJsonAsync(route, inBodyContent),
+                        ApiMethod.Post => await Client.PostAsJsonAsync(route, inBodyContent),
                         ApiMethod.Get => throw new ArgumentException("Get cannot be used in conjunction with an InBody Request"),
-                        ApiMethod.Put => await _httpClient.PutAsJsonAsync(route, inBodyContent),
-                        ApiMethod.Patch => await _httpClient.PatchAsJsonAsync(route, inBodyContent),
+                        ApiMethod.Put => await Client.PutAsJsonAsync(route, inBodyContent),
+                        ApiMethod.Patch => await Client.PatchAsJsonAsync(route, inBodyContent),
                         ApiMethod.Delete => throw new ArgumentException("Delete cannot be used in conjunction with an InBody Request"),
                         _ => throw new ArgumentOutOfRangeException(nameof(method), method,
                             "An incorrect ApiMethod Value was supplied.")
@@ -460,10 +476,10 @@ namespace SereneApi
                 {
                     responseMessage = method switch
                     {
-                        ApiMethod.Post => await _httpClient.PostAsJsonAsync(route, inBodyContent),
+                        ApiMethod.Post => await Client.PostAsJsonAsync(route, inBodyContent),
                         ApiMethod.Get => throw new ArgumentException("Get cannot be used in conjunction with an InBody Request"),
-                        ApiMethod.Put => await _httpClient.PutAsJsonAsync(route, inBodyContent),
-                        ApiMethod.Patch => await _httpClient.PatchAsJsonAsync(route, inBodyContent),
+                        ApiMethod.Put => await Client.PutAsJsonAsync(route, inBodyContent),
+                        ApiMethod.Patch => await Client.PatchAsJsonAsync(route, inBodyContent),
                         ApiMethod.Delete => throw new ArgumentException("Delete cannot be used in conjunction with an InBody Request"),
                         _ => throw new ArgumentOutOfRangeException(nameof(method), method, "An incorrect ApiMethod Value was supplied.")
                     };

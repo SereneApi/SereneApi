@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using SereneApi.DependencyInjection;
+using System.Collections.Generic;
 
+// Do not change namespace
+// ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.Configuration
 {
     public static class IConfigurationExtensions
     {
-        public static readonly string ApiConfigKey = "ApiConfig";
-
-        public static TValue Get<TValue>(this IConfiguration configuration, string key, bool required = true)
+        internal static TValue Get<TValue>(this IConfiguration configuration, string key, bool required = true)
         {
             if (configuration.GetSection(key).Exists())
             {
@@ -15,7 +16,7 @@ namespace Microsoft.Extensions.Configuration
 
             if (required)
             {
-                throw new KeyNotFoundException($"Could not find {key} inside appsettings.json");
+                throw new KeyNotFoundException($"Could not find {key} inside the Configuration");
             }
 
             return default;
@@ -28,16 +29,16 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="apiKey">The <see cref="IConfiguration"/> name containing the API Configuration</param>
         public static IConfiguration GetApiConfig(this IConfiguration configuration, string apiKey)
         {
-            if (!configuration.GetSection(ApiConfigKey).Exists())
+            if (!configuration.GetSection(ConfigurationConstants.ApiConfigKey).Exists())
             {
-                throw new KeyNotFoundException($"Could not find {ApiConfigKey} inside appsettings.json");
+                throw new KeyNotFoundException($"Could not find {ConfigurationConstants.ApiConfigKey} inside the Configuration");
             }
 
-            IConfiguration apiConfiguration = configuration.GetSection(ApiConfigKey);
+            IConfiguration apiConfiguration = configuration.GetSection(ConfigurationConstants.ApiConfigKey);
 
             if (!apiConfiguration.GetSection(apiKey).Exists())
             {
-                throw new KeyNotFoundException($"Could not find {ApiConfigKey}:{apiKey} inside appsettings.json");
+                throw new KeyNotFoundException($"Could not find {ConfigurationConstants.ApiConfigKey}:{apiKey} inside the Configuration");
             }
 
             return apiConfiguration.GetSection(apiKey);

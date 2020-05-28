@@ -11,5 +11,7 @@
         public const bool ResourceIsRequired = true;
         public const bool ResourcePathIsRequired = false;
         public const bool TimeoutIsRequired = false;
+
+        public const string ApiConfigKey = "ApiConfig";
     }
 }

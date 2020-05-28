@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 
-namespace SereneApi
+namespace SereneApi.Factories
 {
     public class ApiHandlerFactory : IApiHandlerFactory, IDisposable
     {

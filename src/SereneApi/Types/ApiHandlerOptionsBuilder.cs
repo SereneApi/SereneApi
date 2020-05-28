@@ -15,14 +15,16 @@ namespace SereneApi.Types
 
         private readonly HttpClient _baseClient;
 
-        private readonly bool _disposeClient;
+        private readonly bool _disposeClient = true;
 
         #endregion
         #region Properties
 
-        protected DependencyCollection DependencyCollection { get; } = new DependencyCollection();
+        protected DependencyCollection DependencyCollection { get; }
 
         protected Uri Source { get; set; }
+
+        protected string Resource { get; set; }
 
         protected HttpClient ClientOverride;
 
@@ -37,19 +39,16 @@ namespace SereneApi.Types
 
         public ApiHandlerOptionsBuilder()
         {
-            _disposeClient = true;
+            DependencyCollection = new DependencyCollection();
 
             DependencyCollection.AddDependency(ApiHandlerOptionDefaults.QueryFactory);
             DependencyCollection.AddDependency(RetryDependency.Default);
         }
 
-        internal ApiHandlerOptionsBuilder(HttpClient baseClient, bool disposeClient = true)
+        internal ApiHandlerOptionsBuilder(HttpClient baseClient, bool disposeClient = true) : this()
         {
             _disposeClient = disposeClient;
             _baseClient = baseClient;
-
-            DependencyCollection.AddDependency(ApiHandlerOptionDefaults.QueryFactory);
-            DependencyCollection.AddDependency(RetryDependency.Default);
         }
 
         #endregion
@@ -74,6 +73,7 @@ namespace SereneApi.Types
 
             // The Resource Precursors default value will be used if a null or whitespace value is provided.
             Source = ApiHandlerOptionsHelper.FormatSource(source, resource, resourcePath);
+            Resource = resource;
         }
 
         /// <summary>
@@ -83,6 +83,11 @@ namespace SereneApi.Types
         /// <param name="clientOverride">The <see cref="HttpClient"/> to be used when making API requests.</param>
         public void UseClientOverride(HttpClient clientOverride, bool disposeClient = true)
         {
+            if (ClientOverride != null)
+            {
+                throw new MethodAccessException("This method cannot be called twice");
+            }
+
             if (Source != null)
             {
                 throw new MethodAccessException("This method cannot be called alongside UseSource");
@@ -94,6 +99,9 @@ namespace SereneApi.Types
             }
 
             ClientOverride = clientOverride;
+
+            Source = clientOverride.BaseAddress;
+            Resource = ApiHandlerOptionsHelper.GetResource(Source);
 
             DisposeClientOverride = disposeClient;
         }
@@ -137,7 +145,7 @@ namespace SereneApi.Types
         }
 
         /// <summary>
-        /// Overrides the default <see cref="QueryFactory"/> with the supplied <see cref="IQueryFactory"/>
+        /// Overrides the default <see cref="DefaultQueryFactory"/> with the supplied <see cref="IQueryFactory"/>
         /// </summary>
         /// <param name="queryFactory">The <see cref="IQueryFactory"/> to be used when building Queries</param>
         public void UseQueryFactory(IQueryFactory queryFactory)
@@ -145,6 +153,7 @@ namespace SereneApi.Types
             DependencyCollection.AddDependency(queryFactory);
         }
 
+        /// <inheritdoc cref="IApiHandlerOptionsBuilder.BuildOptions"/>
         public virtual IApiHandlerOptions BuildOptions()
         {
             if (ClientOverride != null)
@@ -163,7 +172,7 @@ namespace SereneApi.Types
                 DependencyCollection.AddDependency(httpClient, _disposeClient ? DependencyBinding.Bound : DependencyBinding.Unbound);
             }
 
-            IApiHandlerOptions options = new ApiHandlerOptions(DependencyCollection, Source);
+            IApiHandlerOptions options = new ApiHandlerOptions(DependencyCollection, Source, Resource);
 
             return options;
         }
