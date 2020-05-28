@@ -160,7 +160,7 @@ namespace SereneApi.Types
         /// Overrides the default <see cref="ICredentials"/> used by the <see cref="ApiHandler"/>
         /// </summary>
         /// <param name="credentials">The <see cref="ICredentials"/> to be used when making requests.</param>
-        public void AddCredentials(ICredentials credentials)
+        public void UseCredentials(ICredentials credentials)
         {
             if (ClientOverride != null)
             {

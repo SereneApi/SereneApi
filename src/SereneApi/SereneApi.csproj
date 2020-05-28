@@ -13,18 +13,14 @@
     <Product>SereneApi</Product>
     <PackageProjectUrl>https://github.com/armorall171/SereneApi#what-is-serene-api</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.3.2-alpha</Version>
+    <Version>1.0.3.3-alpha</Version>
     <NeutralLanguage>en-AU</NeutralLanguage>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
     <PackageIcon>api.png</PackageIcon>
     <PackageId>SereneApi</PackageId>
-    <PackageReleaseNotes>* Added: CreateApiHandler extension to HttpClient, allowing for easy creation of Handlers. At present once done, the HttpClient will be disposed of by the Handler. In future there may be a method added in the builder to override this.
-* Added: Multiple Readonly Properties to the ApiHandler allowing more information to be presented at runtime, this includes Source, Resource, Timeout and RetryCount.
-* Removed: AddDependencies to the ApiHandler, this means you will only have access to the Dependencies in the constructor and should be making dependencies readonly.
-* Removed: Some visible method extensions for HttpClient. These are not required for the End Users use.
-* Moved: All Factories into the Factory namespace.</PackageReleaseNotes>
+    <PackageReleaseNotes>* Added: UseCredentials Method to the ApiOptionsBuilder, this allows the Default Credentials used by the Handler to be overriden.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

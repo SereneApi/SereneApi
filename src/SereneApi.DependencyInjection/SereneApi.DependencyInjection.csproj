@@ -14,14 +14,14 @@ SereneApi.DependencyInjection adds support for AspNet DI and Configuration.</Des
 		<Product>SereneApi</Product>
 		<PackageProjectUrl>https://github.com/armorall171/SereneApi#what-is-serene-api</PackageProjectUrl>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>1.0.3.2-alpha</Version>
+		<Version>1.0.3.3-alpha</Version>
 		<NeutralLanguage>en-AU</NeutralLanguage>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
 		<PackageIcon>api.png</PackageIcon>
 		<PackageId>SereneApi.DependencyInjection</PackageId>
-		<PackageReleaseNotes>* Changed: Internal code and Comments for Configuration and Builder.</PackageReleaseNotes>
+		<PackageReleaseNotes>* Added: UseCredentials Method to the ApiOptionsBuilder, this allows the Default Credentials used by the Handler to be overriden.</PackageReleaseNotes>
 	</PropertyGroup>
 
   <ItemGroup>
