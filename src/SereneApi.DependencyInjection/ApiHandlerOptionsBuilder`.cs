@@ -41,6 +41,7 @@ namespace SereneApi.DependencyInjection
             string resourcePath = configuration.Get<string>(ConfigurationConstants.ResourcePathKey, ConfigurationConstants.ResourcePathIsRequired);
 
             Source = ApiHandlerOptionsHelper.FormatSource(source, resource, resourcePath);
+            Resource = ApiHandlerOptionsHelper.GetResource(Source);
 
             TimeSpan timeout = configuration.Get<TimeSpan>(ConfigurationConstants.TimeoutKey, ConfigurationConstants.TimeoutIsRequired);
 
@@ -106,7 +107,7 @@ namespace SereneApi.DependencyInjection
                 DependencyCollection.AddDependency(clientFactory.CreateClient(typeof(TApiHandler).ToString()));
             }
 
-            ApiHandlerOptions<TApiHandler> options = new ApiHandlerOptions<TApiHandler>(DependencyCollection, Source);
+            ApiHandlerOptions<TApiHandler> options = new ApiHandlerOptions<TApiHandler>(DependencyCollection, Source, Resource);
 
             return options;
         }

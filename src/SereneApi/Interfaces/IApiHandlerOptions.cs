@@ -13,5 +13,10 @@ namespace SereneApi.Interfaces
         /// The Source being used by the <see cref="ApiHandler"/>
         /// </summary>
         Uri Source { get; }
+
+        /// <summary>
+        /// The Resource the <see cref="ApiHandler"/> is accessing
+        /// </summary>
+        string Resource { get; }
     }
 }

@@ -24,6 +24,8 @@ namespace SereneApi.Types
 
         protected Uri Source { get; set; }
 
+        protected string Resource { get; set; }
+
         protected HttpClient ClientOverride;
 
         protected bool DisposeClientOverride;
@@ -74,6 +76,7 @@ namespace SereneApi.Types
 
             // The Resource Precursors default value will be used if a null or whitespace value is provided.
             Source = ApiHandlerOptionsHelper.FormatSource(source, resource, resourcePath);
+            Resource = resource;
         }
 
         /// <summary>
@@ -83,6 +86,11 @@ namespace SereneApi.Types
         /// <param name="clientOverride">The <see cref="HttpClient"/> to be used when making API requests.</param>
         public void UseClientOverride(HttpClient clientOverride, bool disposeClient = true)
         {
+            if (ClientOverride != null)
+            {
+                throw new MethodAccessException("This method cannot be called twice");
+            }
+
             if (Source != null)
             {
                 throw new MethodAccessException("This method cannot be called alongside UseSource");
@@ -94,6 +102,9 @@ namespace SereneApi.Types
             }
 
             ClientOverride = clientOverride;
+
+            Source = clientOverride.BaseAddress;
+            Resource = ApiHandlerOptionsHelper.GetResource(Source);
 
             DisposeClientOverride = disposeClient;
         }
@@ -163,7 +174,7 @@ namespace SereneApi.Types
                 DependencyCollection.AddDependency(httpClient, _disposeClient ? DependencyBinding.Bound : DependencyBinding.Unbound);
             }
 
-            IApiHandlerOptions options = new ApiHandlerOptions(DependencyCollection, Source);
+            IApiHandlerOptions options = new ApiHandlerOptions(DependencyCollection, Source, Resource);
 
             return options;
         }

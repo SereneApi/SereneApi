@@ -48,6 +48,29 @@ namespace SereneApi
         #endregion
 
         #endregion
+        #region Properties
+
+        /// <summary>
+        /// <inheritdoc cref="IApiHandlerOptions.Source"/>
+        /// </summary>
+        public Uri Source => _options.Source;
+
+        /// <summary>
+        /// <inheritdoc cref="IApiHandlerOptions.Resource"/>
+        /// </summary>
+        public string Resource => _options.Resource;
+
+        /// <summary>
+        /// How long a request will stay alive before expiring
+        /// </summary>
+        public TimeSpan Timeout => _httpClient.Timeout;
+
+        /// <summary>
+        /// How many times the <see cref="ApiHandler"/> will retry a request after it has timed out
+        /// </summary>
+        public uint RetryCount => _retry.Count;
+
+        #endregion
         #region Constructors
 
         /// <summary>

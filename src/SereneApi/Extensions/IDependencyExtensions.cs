@@ -2,6 +2,7 @@
 using System;
 
 // Do note change namespace
+// ReSharper disable once CheckNamespace
 namespace SereneApi.Types
 {
     internal static class IDependencyExtensions

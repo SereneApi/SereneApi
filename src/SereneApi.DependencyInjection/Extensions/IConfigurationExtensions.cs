@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+// Do not change namespace
+// ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.Configuration
 {
     public static class IConfigurationExtensions

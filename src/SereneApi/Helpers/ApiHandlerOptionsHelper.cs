@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace SereneApi.Helpers
 {
@@ -18,6 +19,14 @@ namespace SereneApi.Helpers
             string formattedSource = string.Format(ApiHandlerOptionDefaults.SourceFormat, source, resourcePath, resource);
 
             return new Uri(formattedSource);
+        }
+
+        /// <summary>
+        /// Gets the last path from the <see cref="Uri"/>
+        /// </summary>
+        public static string GetResource(Uri source)
+        {
+            return source.ToString().Split('/').Last();
         }
     }
 }

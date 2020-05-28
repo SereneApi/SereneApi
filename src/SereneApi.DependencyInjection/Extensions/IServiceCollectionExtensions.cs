@@ -4,6 +4,8 @@ using SereneApi.DependencyInjection;
 using SereneApi.Types;
 using System;
 
+// Do not change namespace
+// ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
 {
     public static class IServiceCollectionExtensions
