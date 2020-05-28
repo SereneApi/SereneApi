@@ -1,8 +1,8 @@
-﻿using System;
+﻿using SereneApi.Interfaces;
+using SereneApi.Types;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using SereneApi.Interfaces;
-using SereneApi.Types;
 
 namespace SereneApi.Factories
 {

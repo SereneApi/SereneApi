@@ -6,7 +6,6 @@ using SereneApi.Types.Dependencies;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using SereneApi.Factories;
 
 namespace SereneApi.Types
 {
@@ -39,7 +38,7 @@ namespace SereneApi.Types
         #region Constructors
 
         public ApiHandlerOptionsBuilder()
-        { 
+        {
             DependencyCollection = new DependencyCollection();
 
             DependencyCollection.AddDependency(ApiHandlerOptionDefaults.QueryFactory);

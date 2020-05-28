@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using SereneApi.DependencyInjection;
+﻿using SereneApi.DependencyInjection;
+using System.Collections.Generic;
 
 // Do not change namespace
 // ReSharper disable once CheckNamespace
