@@ -17,10 +17,11 @@ Serene removes this code clutter allowing for clean single line methods to be us
 >Extends **SereneApi** adding support for AspNet Dependency Injection.  <br>
 [![Nuget](https://img.shields.io/nuget/v/SereneApi.DependencyInjection.svg?style=flat-square)](https://www.nuget.org/packages/SereneApi.DependencyInjection/)
 * SereneApi.Extras | *Environment* - Standard 2.1
->Adds Extras and Helpers that are involded with consuming specific APIs.  <br>
+>Adds Extras and Helpers that are involded with consuming specific 3rd party APIs.  <br>
 [![Nuget](https://img.shields.io/nuget/v/SereneApi.Extras.svg?style=flat-square)](https://www.nuget.org/packages/SereneApi.Extras/)
 # Planed Features
 * Unit Tests...
+* More control over logging, are logs being generated for exceptions and messages.
 * ~~Extend In Body Requests to allow Action Templates and Parameters.~~
 * ~~Improve Options adding Generic Dependencies.~~
 * ~~Make it available on NUGET!~~
