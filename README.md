@@ -11,13 +11,13 @@ Serene removes this code clutter allowing for clean single line methods to be us
 
 **Current Releases**
 * SereneApi | *Environment* - Standard 2.1
-Adds  **SereneApi** to your project.
+>Adds  **SereneApi** to your project.  <br>
 [![Nuget](https://img.shields.io/nuget/v/SereneApi.svg?style=flat-square)](https://www.nuget.org/packages/SereneApi/)
 * SereneApi.DependencyInjection | *Environment* - Core 3.1
-Extends **SereneApi** adding support for AspNet Dependency Injection.
+>Extends **SereneApi** adding support for AspNet Dependency Injection.  <br>
 [![Nuget](https://img.shields.io/nuget/v/SereneApi.DependencyInjection.svg?style=flat-square)](https://www.nuget.org/packages/SereneApi.DependencyInjection/)
 * SereneApi.Extras | *Environment* - Standard 2.1
-Adds Extras and Helpers that are involded with consuming specific APIs
+>Adds Extras and Helpers that are involded with consuming specific APIs.  <br>
 [![Nuget](https://img.shields.io/nuget/v/SereneApi.Extras.svg?style=flat-square)](https://www.nuget.org/packages/SereneApi.Extras/)
 # Planed Features
 * Unit Tests...
