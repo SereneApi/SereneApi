@@ -6,20 +6,21 @@
     <RootNamespace>SereneApi.Extras</RootNamespace>
 	  <RepositoryUrl>https://github.com/armorall171/SereneApi</RepositoryUrl>
 	  <RepositoryType>GIT</RepositoryType>
-	  <PackageTags>API; REST; RESTful</PackageTags>
+	  <PackageTags>API; Datatables</PackageTags>
 	  <Description>Serene API Extras provides simple to use Helpers to allow easier coupling with existing APIs.</Description>
 	  <Authors>Bradley Clarke</Authors>
 	  <Company>DeltaWare</Company>
 	  <Product>SereneApi</Product>
 	  <PackageProjectUrl>https://github.com/armorall171/SereneApi#what-is-serene-api</PackageProjectUrl>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <Version>0.1.1.2</Version>
+	  <Version>0.1.1.1</Version>
 	  <NeutralLanguage>en-AU</NeutralLanguage>
 	  <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 	  <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	  <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
 	  <PackageId>SereneApi.Extras</PackageId>
 	  <PackageIcon>api.png</PackageIcon>
+	  <PackageReleaseNotes>Contains tools for interfacing with JQuery DataTables</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

@@ -6,18 +6,21 @@
 		<RepositoryUrl>https://github.com/armorall171/SereneApi</RepositoryUrl>
 		<RepositoryType>GIT</RepositoryType>
 		<PackageTags>API; REST; RESTful</PackageTags>
-		<Description>Serene API is a small library intended to provide a straightforward way of consuming RESTful APIs requiring as little code &amp; setup as possible whilst providing a powerful set of tools.</Description>
+		<Description>Serene API is a small library intended to provide a straightforward way of consuming RESTful APIs requiring as little code &amp; setup as possible whilst providing a powerful set of tools.
+
+SereneApi.DependencyInjection adds support for AspNet DI and Configuration.</Description>
 		<Authors>Bradley Clarke</Authors>
 		<Company>DeltaWare</Company>
 		<Product>SereneApi</Product>
 		<PackageProjectUrl>https://github.com/armorall171/SereneApi#what-is-serene-api</PackageProjectUrl>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>0.1.1.3</Version>
+		<Version>1.0.3.1-alpha</Version>
 		<NeutralLanguage>en-AU</NeutralLanguage>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
 		<PackageIcon>api.png</PackageIcon>
+		<PackageId>SereneApi.DependencyInjection</PackageId>
 	</PropertyGroup>
 
   <ItemGroup>
