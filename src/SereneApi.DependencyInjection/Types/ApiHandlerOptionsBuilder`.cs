@@ -1,14 +1,15 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using System.Net;
+using System.Net.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SereneApi.Enums;
 using SereneApi.Helpers;
 using SereneApi.Interfaces;
 using SereneApi.Types;
-using System;
-using System.Net.Http;
 
-namespace SereneApi.DependencyInjection
+namespace SereneApi.DependencyInjection.Types
 {
     /// <summary>
     /// The <see cref="ApiHandlerOptionsBuilder{TApiHandler}"/> is used to build new instances of the <see cref="SereneApi.DepedencyInjection.ApiHandlerOptions"/> class
@@ -92,6 +93,9 @@ namespace SereneApi.DependencyInjection
                     client.Timeout = Timeout;
 
                     RequestHeaderBuilder.Invoke(client.DefaultRequestHeaders);
+                }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+                {
+                    Credentials = Credentials
                 });
             }
 
