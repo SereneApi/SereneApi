@@ -6,6 +6,7 @@ using SereneApi.Types.Dependencies;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using SereneApi.Factories;
 
 namespace SereneApi.Types
 {
@@ -15,12 +16,12 @@ namespace SereneApi.Types
 
         private readonly HttpClient _baseClient;
 
-        private readonly bool _disposeClient;
+        private readonly bool _disposeClient = true;
 
         #endregion
         #region Properties
 
-        protected DependencyCollection DependencyCollection { get; } = new DependencyCollection();
+        protected DependencyCollection DependencyCollection { get; }
 
         protected Uri Source { get; set; }
 
@@ -38,20 +39,17 @@ namespace SereneApi.Types
         #region Constructors
 
         public ApiHandlerOptionsBuilder()
-        {
-            _disposeClient = true;
+        { 
+            DependencyCollection = new DependencyCollection();
 
             DependencyCollection.AddDependency(ApiHandlerOptionDefaults.QueryFactory);
             DependencyCollection.AddDependency(RetryDependency.Default);
         }
 
-        internal ApiHandlerOptionsBuilder(HttpClient baseClient, bool disposeClient = true)
+        internal ApiHandlerOptionsBuilder(HttpClient baseClient, bool disposeClient = true) : this()
         {
             _disposeClient = disposeClient;
             _baseClient = baseClient;
-
-            DependencyCollection.AddDependency(ApiHandlerOptionDefaults.QueryFactory);
-            DependencyCollection.AddDependency(RetryDependency.Default);
         }
 
         #endregion
@@ -148,7 +146,7 @@ namespace SereneApi.Types
         }
 
         /// <summary>
-        /// Overrides the default <see cref="QueryFactory"/> with the supplied <see cref="IQueryFactory"/>
+        /// Overrides the default <see cref="DefaultQueryFactory"/> with the supplied <see cref="IQueryFactory"/>
         /// </summary>
         /// <param name="queryFactory">The <see cref="IQueryFactory"/> to be used when building Queries</param>
         public void UseQueryFactory(IQueryFactory queryFactory)
@@ -156,6 +154,7 @@ namespace SereneApi.Types
             DependencyCollection.AddDependency(queryFactory);
         }
 
+        /// <inheritdoc cref="IApiHandlerOptionsBuilder.BuildOptions"/>
         public virtual IApiHandlerOptions BuildOptions()
         {
             if (ClientOverride != null)

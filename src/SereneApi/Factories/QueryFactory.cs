@@ -1,24 +1,24 @@
-﻿using SereneApi.Delegates;
-using SereneApi.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using SereneApi.Delegates;
+using SereneApi.Interfaces;
 
-namespace SereneApi
+namespace SereneApi.Factories
 {
     public class QueryFactory : IQueryFactory
     {
-        protected readonly ObjectStringFormatter Formatter;
+        protected readonly ObjectToStringFormatter Formatter;
 
         public QueryFactory()
         {
             Formatter = DefaultQueryFormatter;
         }
 
-        public QueryFactory(ObjectStringFormatter formatter)
+        public QueryFactory(ObjectToStringFormatter formatter)
         {
             Formatter = formatter;
         }

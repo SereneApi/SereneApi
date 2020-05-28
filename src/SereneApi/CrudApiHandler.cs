@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using SereneApi.Enums;
 using SereneApi.Interfaces;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ namespace SereneApi
         private readonly ILogger _logger;
 
         /// <summary>
-        /// Instantiates a new Instance of the <see cref="CrudApiHandler{TResource,TIdentifier}"/>.
+        /// Instantiates a new Instance of the <see cref="CrudApiHandler{TResource,TIdentifier}"/>
         /// </summary>
         /// <param name="options"></param>
         protected CrudApiHandler(IApiHandlerOptions options) : base(options)

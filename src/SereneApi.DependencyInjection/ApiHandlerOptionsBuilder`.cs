@@ -72,6 +72,7 @@ namespace SereneApi.DependencyInjection
             _serviceCollection = serviceCollection;
         }
 
+        /// <inheritdoc cref="IApiHandlerOptionsBuilder.BuildOptions"/>
         public new ApiHandlerOptions<TApiHandler> BuildOptions()
         {
             ILogger<TApiHandler> logger = _loggerFactory.CreateLogger<TApiHandler>();

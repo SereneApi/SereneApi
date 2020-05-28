@@ -5,5 +5,5 @@ namespace SereneApi.Delegates
     /// Formats objects to strings
     /// </summary>
     /// <param name="queryObject">Input Object to be formatted</param>
-    public delegate string ObjectStringFormatter(object queryObject);
+    public delegate string ObjectToStringFormatter(object queryObject);
 }

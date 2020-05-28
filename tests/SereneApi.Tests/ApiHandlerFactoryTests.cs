@@ -1,4 +1,5 @@
-﻿using SereneApi.Tests.Handlers;
+﻿using SereneApi.Factories;
+using SereneApi.Tests.Handlers;
 using Xunit;
 
 namespace SereneApi.Tests
