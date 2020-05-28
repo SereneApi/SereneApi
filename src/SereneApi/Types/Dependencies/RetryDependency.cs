@@ -1,4 +1,6 @@
-﻿namespace DeltaWare.SereneApi.Types.Dependencies
+﻿using SereneApi.Helpers;
+
+namespace SereneApi.Types.Dependencies
 {
     public readonly struct RetryDependency
     {

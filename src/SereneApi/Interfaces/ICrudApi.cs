@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DeltaWare.SereneApi.Interfaces
+namespace SereneApi.Interfaces
 {
     /// <summary>
     /// When Inherited; provides the necessary methods for implementing RESTful CRUD Api consumer

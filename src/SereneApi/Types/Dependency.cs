@@ -1,8 +1,8 @@
-﻿using DeltaWare.SereneApi.Enums;
-using DeltaWare.SereneApi.Interfaces;
+﻿using SereneApi.Enums;
+using SereneApi.Interfaces;
 using System;
 
-namespace DeltaWare.SereneApi.Types
+namespace SereneApi.Types
 {
     public class Dependency<TDependency> : IDependency, IDisposable
     {

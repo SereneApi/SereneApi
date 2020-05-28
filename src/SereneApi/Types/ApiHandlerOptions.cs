@@ -1,8 +1,8 @@
-﻿using DeltaWare.SereneApi.Interfaces;
+﻿using SereneApi.Interfaces;
 using System;
 using System.Diagnostics;
 
-namespace DeltaWare.SereneApi
+namespace SereneApi.Types
 {
     [DebuggerDisplay("Source: {Source.ToString()}")]
     public class ApiHandlerOptions : IApiHandlerOptions, IDisposable

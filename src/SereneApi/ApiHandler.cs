@@ -1,8 +1,8 @@
-﻿using DeltaWare.SereneApi.Enums;
-using DeltaWare.SereneApi.Interfaces;
-using DeltaWare.SereneApi.Types;
-using DeltaWare.SereneApi.Types.Dependencies;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using SereneApi.Enums;
+using SereneApi.Interfaces;
+using SereneApi.Types;
+using SereneApi.Types.Dependencies;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -11,13 +11,13 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace DeltaWare.SereneApi
+namespace SereneApi
 {
     /// <summary>
     /// When Inherited; Provides tools and methods required for implementing a RESTful Api consumer.
     /// </summary>
     [DebuggerDisplay("Source:{_httpClient.BaseAddress}; Timeout:{_httpClient.Timeout}")]
-    public abstract partial class ApiHandler : IDisposable
+    public abstract class ApiHandler : IDisposable
     {
         #region Variables
 

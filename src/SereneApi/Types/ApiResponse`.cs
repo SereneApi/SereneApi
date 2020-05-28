@@ -1,7 +1,7 @@
-﻿using DeltaWare.SereneApi.Interfaces;
+﻿using SereneApi.Interfaces;
 using System;
 
-namespace DeltaWare.SereneApi.Types
+namespace SereneApi.Types
 {
     public readonly struct ApiResponse<TResult> : IApiResponse<TResult>
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace DeltaWare.SereneApi.Interfaces
+namespace SereneApi.Interfaces
 {
     public interface IQueryFactory
     {

@@ -1,5 +1,5 @@
 ﻿
-namespace DeltaWare.SereneApi.Delegates
+namespace SereneApi.Delegates
 {
     /// <summary>
     /// Formats objects to strings

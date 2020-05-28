@@ -1,10 +1,10 @@
-﻿using DeltaWare.SereneApi.Enums;
-using DeltaWare.SereneApi.Interfaces;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using SereneApi.Enums;
+using SereneApi.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DeltaWare.SereneApi
+namespace SereneApi
 {
     /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}"/>
     public abstract class CrudApiHandler<TResource, TIdentifier> : ApiHandler, ICrudApi<TResource, TIdentifier> where TResource : class where TIdentifier : struct

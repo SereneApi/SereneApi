@@ -1,7 +1,8 @@
-﻿using DeltaWare.SereneApi.Interfaces;
+﻿using SereneApi.Interfaces;
+using SereneApi.Types;
 using System;
 
-namespace DeltaWare.SereneApi.DependencyInjection
+namespace SereneApi.DependencyInjection
 {
     /// <summary>
     /// The <see cref="ApiHandlerOptions{TApiHandler}"/> to be used by the <see cref="ApiHandler"/> when making API requests

@@ -1,24 +1,23 @@
 ﻿using System;
 
-namespace DeltaWare.SereneApi.Helpers
+namespace SereneApi.Helpers
 {
     public static class ApiHandlerOptionsHelper
     {
         /// <summary>
-        /// Creates the Source to be used by a <see cref="ApiHandler"/>
+        /// Formats the Source for the <see cref="ApiHandler"/> to use when making requests
         /// </summary>
         /// <param name="source">The source of the Api http://someservice.com:8080</param>
         /// <param name="resource">The API Resource for Requests to be made to</param>
         /// <param name="resourcePath">The Path to the Api Resource, by default this is set to "api/"</param>
         /// <returns></returns>
-        public static Uri CreateApiSource(string source, string resource, string resourcePath = null)
+        public static Uri FormatSource(string source, string resource, string resourcePath = null)
         {
-            if (string.IsNullOrWhiteSpace(resourcePath))
-            {
-                resourcePath = ApiHandlerOptionDefaults.ResourcePrecursor;
-            }
+            resourcePath = ApiHandlerOptionsRules.GetResourcePath(resourcePath);
 
-            return new Uri($"{source}/{resourcePath}{resource}");
+            string formattedSource = string.Format(ApiHandlerOptionDefaults.SourceFormat, source, resourcePath, resource);
+
+            return new Uri(formattedSource);
         }
     }
 }

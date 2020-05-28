@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DeltaWare.SereneApi.Enums
+namespace SereneApi.Enums
 {
     /// <summary>
     /// <see cref="DependencyBinding"/> controls how <see cref="IDisposable"/>s will be handled when a <see cref="Dependency"/> is disposed of

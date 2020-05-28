@@ -1,14 +1,13 @@
-﻿using DeltaWare.SereneApi.Enums;
-using DeltaWare.SereneApi.Helpers;
-using DeltaWare.SereneApi.Interfaces;
-using DeltaWare.SereneApi.Types;
-using DeltaWare.SereneApi.Types.Dependencies;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using SereneApi.Enums;
+using SereneApi.Helpers;
+using SereneApi.Interfaces;
+using SereneApi.Types.Dependencies;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
-namespace DeltaWare.SereneApi
+namespace SereneApi.Types
 {
     public class ApiHandlerOptionsBuilder : IApiHandlerOptionsBuilder
     {
@@ -60,8 +59,8 @@ namespace DeltaWare.SereneApi
         /// </summary>
         /// <param name="source">The source of the Server, EG: http://someservice.com:8080</param>
         /// <param name="resource">The API resource that the <see cref="ApiHandler"/> will interact with</param>
-        /// <param name="resourcePrecursor">The Resource Precursor this applied before the Resource. By default this is set to "api/"</param>
-        public void UseSource(string source, string resource, string resourcePrecursor = null)
+        /// <param name="resourcePath">The Path preceding the Resource. By default this is set to "api/"</param>
+        public void UseSource(string source, string resource, string resourcePath = null)
         {
             if (ClientOverride != null)
             {
@@ -74,7 +73,7 @@ namespace DeltaWare.SereneApi
             }
 
             // The Resource Precursors default value will be used if a null or whitespace value is provided.
-            Source = ApiHandlerOptionsHelper.CreateApiSource(source, resource, resourcePrecursor);
+            Source = ApiHandlerOptionsHelper.FormatSource(source, resource, resourcePath);
         }
 
         /// <summary>
@@ -123,10 +122,7 @@ namespace DeltaWare.SereneApi
         /// <param name="retryCount">How many times the <see cref="ApiHandler"/> will re-attempt the request</param>
         public void EnableRetryOnTimeout(uint retryCount)
         {
-            if (retryCount < 1)
-            {
-                throw new ArgumentException("To Enable Retry on Timeout the RetryCount must be greater than 0");
-            }
+            ApiHandlerOptionsRules.ValidateRetryCount(retryCount);
 
             DependencyCollection.AddDependency(new RetryDependency(retryCount));
         }

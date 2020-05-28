@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DeltaWare.SereneApi.Interfaces
+namespace SereneApi.Interfaces
 {
     public interface IApiHandlerOptions
     {

@@ -1,9 +1,9 @@
-﻿using DeltaWare.SereneApi.Enums;
-using DeltaWare.SereneApi.Interfaces;
+﻿using SereneApi.Enums;
+using SereneApi.Interfaces;
 using System;
 using System.Collections.Generic;
 
-namespace DeltaWare.SereneApi.Types
+namespace SereneApi.Types
 {
     public class DependencyCollection : IDependencyCollection, IDisposable
     {

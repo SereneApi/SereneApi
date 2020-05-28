@@ -1,7 +1,7 @@
-﻿using DeltaWare.SereneApi.Enums;
+﻿using SereneApi.Enums;
 using System;
 
-namespace DeltaWare.SereneApi.Interfaces
+namespace SereneApi.Interfaces
 {
     public interface IDependency
     {

@@ -1,6 +1,7 @@
-﻿using DeltaWare.SereneApi;
-using DeltaWare.SereneApi.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+﻿using Microsoft.Extensions.DependencyInjection.Extensions;
+using SereneApi;
+using SereneApi.DependencyInjection;
+using SereneApi.Types;
 using System;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -14,17 +15,19 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAdd(new ServiceDescriptor(typeof(ApiHandlerOptions<TApiImplementation>),
                 p => CreateApiHandlerOptions(optionsAction, p, services), ServiceLifetime.Singleton));
 
-            services.Add(new ServiceDescriptor(typeof(DeltaWare.SereneApi.DependencyInjection.ApiHandlerOptions),
+            services.Add(new ServiceDescriptor(typeof(ApiHandlerOptions),
                 p => p.GetRequiredService<ApiHandlerOptions<TApiImplementation>>(), ServiceLifetime.Singleton));
         }
 
         private static ApiHandlerOptions<TApiImplementation> CreateApiHandlerOptions<TApiImplementation>(Action<IServiceProvider, ApiHandlerOptionsBuilder<TApiImplementation>> optionsAction, IServiceProvider serviceProvider, IServiceCollection services) where TApiImplementation : ApiHandler
         {
-            ApiHandlerOptionsBuilder<TApiImplementation> builder = new ApiHandlerOptionsBuilder<TApiImplementation>(new ApiHandlerOptions<TApiImplementation>());
+            ApiHandlerOptionsBuilder<TApiImplementation> builder = new ApiHandlerOptionsBuilder<TApiImplementation>();
 
             optionsAction.Invoke(serviceProvider, builder);
 
-            return builder.BuildApiOptions(services);
+            builder.AddServicesCollection(services);
+
+            return builder.BuildOptions();
         }
 
 

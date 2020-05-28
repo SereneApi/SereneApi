@@ -1,5 +1,4 @@
-﻿using DeltaWare.SereneApi;
-using DeltaWare.SereneApi.Interfaces;
+﻿using SereneApi.Interfaces;
 
 namespace SereneApi.Tests.Handlers
 {
