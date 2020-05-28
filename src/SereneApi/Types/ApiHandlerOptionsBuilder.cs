@@ -4,6 +4,7 @@ using SereneApi.Helpers;
 using SereneApi.Interfaces;
 using SereneApi.Types.Dependencies;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
@@ -33,6 +34,8 @@ namespace SereneApi.Types
         protected Action<HttpRequestHeaders> RequestHeaderBuilder = ApiHandlerOptionDefaults.DefaultRequestHeadersBuilder;
 
         protected TimeSpan Timeout = ApiHandlerOptionDefaults.TimeoutPeriod;
+
+        protected ICredentials Credentials { get; set; } = CredentialCache.DefaultCredentials;
 
         #endregion
         #region Constructors
@@ -153,6 +156,20 @@ namespace SereneApi.Types
             DependencyCollection.AddDependency(queryFactory);
         }
 
+        /// <summary>
+        /// Overrides the default <see cref="ICredentials"/> used by the <see cref="ApiHandler"/>
+        /// </summary>
+        /// <param name="credentials">The <see cref="ICredentials"/> to be used when making requests.</param>
+        public void AddCredentials(ICredentials credentials)
+        {
+            if (ClientOverride != null)
+            {
+                throw new MethodAccessException("This method cannot be called alongside UseClientOverride");
+            }
+
+            Credentials = credentials;
+        }
+
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.BuildOptions"/>
         public virtual IApiHandlerOptions BuildOptions()
         {
@@ -162,7 +179,12 @@ namespace SereneApi.Types
             }
             else
             {
-                HttpClient httpClient = _baseClient ?? new HttpClient();
+                HttpClientHandler clientHandler = new HttpClientHandler
+                {
+                    Credentials = Credentials
+                };
+
+                HttpClient httpClient = _baseClient ?? new HttpClient(clientHandler);
 
                 httpClient.BaseAddress = Source;
                 httpClient.Timeout = Timeout;

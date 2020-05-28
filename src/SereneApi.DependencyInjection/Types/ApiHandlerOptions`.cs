@@ -1,8 +1,8 @@
-﻿using SereneApi.Interfaces;
+﻿using System;
+using SereneApi.Interfaces;
 using SereneApi.Types;
-using System;
 
-namespace SereneApi.DependencyInjection
+namespace SereneApi.DependencyInjection.Types
 {
     /// <summary>
     /// The <see cref="ApiHandlerOptions{TApiHandler}"/> to be used by the <see cref="ApiHandler"/> when making API requests
