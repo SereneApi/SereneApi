@@ -1,16 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>DeltaWare.SereneApi.Extras</AssemblyName>
-    <RootNamespace>DeltaWare.SereneApi.Extras</RootNamespace>
+    <RootNamespace>SereneApi.Extras</RootNamespace>
 	  <RepositoryUrl>https://github.com/armorall171/SereneApi</RepositoryUrl>
 	  <RepositoryType>GIT</RepositoryType>
 	  <PackageTags>API; REST; RESTful</PackageTags>
 	  <Description>Serene API Extras provides simple to use Helpers to allow easier coupling with existing APIs.</Description>
 	  <Authors>Bradley Clarke</Authors>
 	  <Company>DeltaWare</Company>
-	  <Product>SereneApi.Extras</Product>
+	  <Product>SereneApi</Product>
 	  <PackageProjectUrl>https://github.com/armorall171/SereneApi#what-is-serene-api</PackageProjectUrl>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	  <Version>0.1.1.2</Version>
@@ -18,7 +18,7 @@
 	  <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 	  <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	  <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
-	  <PackageId>DeltaWare.SereneApi.Extras</PackageId>
+	  <PackageId>SereneApi.Extras</PackageId>
 	  <PackageIcon>api.png</PackageIcon>
   </PropertyGroup>
 

@@ -1,4 +1,4 @@
-﻿namespace DeltaWare.SereneApi.Enums
+﻿namespace SereneApi.Enums
 {
     /// <summary>
     /// The API Method in which the RESTful request will be made.

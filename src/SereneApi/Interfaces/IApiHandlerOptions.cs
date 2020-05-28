@@ -1,22 +1,17 @@
-﻿using Microsoft.Extensions.Logging;
-using System.Net.Http;
+﻿using System;
 
-namespace DeltaWare.SereneApi.Interfaces
+namespace SereneApi.Interfaces
 {
     public interface IApiHandlerOptions
     {
-        ILogger Logger { get; }
-
-        IQueryFactory QueryFactory { get; }
+        /// <summary>
+        /// The Dependencies required by the <see cref="ApiHandler"/>
+        /// </summary>
+        IDependencyCollection Dependencies { get; }
 
         /// <summary>
-        /// The <see cref="HttpClient"/> that the <see cref="ApiHandler"/> will use to make requests.
+        /// The Source being used by the <see cref="ApiHandler"/>
         /// </summary>
-        HttpClient HttpClient { get; }
-
-        /// <summary>
-        /// The numbers of times the <see cref="ApiHandler"/> will re-attempt the connection.
-        /// </summary>
-        uint RetryCount { get; }
+        Uri Source { get; }
     }
 }

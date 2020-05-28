@@ -1,4 +1,4 @@
-﻿namespace DeltaWare.SereneApi.Interfaces
+﻿namespace SereneApi.Interfaces
 {
     public interface IApiResponse<out TEntity> : IApiResponse
     {

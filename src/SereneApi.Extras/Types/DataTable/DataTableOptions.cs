@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DeltaWare.SereneApi.Extras.Types.DataTable
+namespace SereneApi.Extras.Types.DataTable
 {
     public class DataTableOptions
     {

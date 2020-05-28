@@ -1,9 +1,10 @@
-﻿using DeltaWare.SereneApi.Interfaces;
+﻿using SereneApi.Interfaces;
+using SereneApi.Types;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 
-namespace DeltaWare.SereneApi
+namespace SereneApi
 {
     public class ApiHandlerFactory : IApiHandlerFactory, IDisposable
     {

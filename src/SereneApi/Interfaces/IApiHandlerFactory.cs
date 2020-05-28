@@ -1,6 +1,7 @@
-﻿using System;
+﻿using SereneApi.Types;
+using System;
 
-namespace DeltaWare.SereneApi.Interfaces
+namespace SereneApi.Interfaces
 {
     internal interface IApiHandlerFactory
     {

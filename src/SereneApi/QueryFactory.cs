@@ -1,5 +1,5 @@
-﻿using DeltaWare.SereneApi.Delegates;
-using DeltaWare.SereneApi.Interfaces;
+﻿using SereneApi.Delegates;
+using SereneApi.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
-namespace DeltaWare.SereneApi
+namespace SereneApi
 {
     public class QueryFactory : IQueryFactory
     {
@@ -99,7 +99,7 @@ namespace DeltaWare.SereneApi
 
             StringBuilder queryBuilder = new StringBuilder();
 
-            // Add the question mark to the front of the query.
+            // AddDependency the question mark to the front of the query.
             queryBuilder.Append("?");
 
             // Enumerate all indexes except for the last index.

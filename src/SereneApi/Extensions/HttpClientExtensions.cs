@@ -1,8 +1,9 @@
-﻿using DeltaWare.SereneApi;
+﻿using SereneApi;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
+// Do not change namespace
 namespace System.Net.Http
 {
     public static class HttpClientExtensions
