@@ -1,6 +1,7 @@
 ﻿using SereneApi.Interfaces;
 using System;
 using System.Net.Http.Headers;
+using SereneApi.Factories;
 
 namespace SereneApi.Helpers
 {
@@ -12,7 +13,7 @@ namespace SereneApi.Helpers
         /// <summary>
         /// The default <see cref="IQueryFactory"/> that will ne used by the <see cref="ApiHandler"/>
         /// </summary>
-        public static readonly IQueryFactory QueryFactory = new DefaultQueryFactory();
+        public static readonly IQueryFactory QueryFactory = new QueryFactory();
 
         /// <summary>
         /// The default Timeout Period that is used by the <see cref="ApiHandler"/>
