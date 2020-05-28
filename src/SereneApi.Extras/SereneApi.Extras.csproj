@@ -19,7 +19,7 @@
 	  <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	  <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
 	  <PackageId>SereneApi.Extras</PackageId>
-	  <PackageIcon>api.png</PackageIcon>
+	  <PackageIcon>nuget_logo.png</PackageIcon>
 	  <PackageReleaseNotes>Contains tools for interfacing with JQuery DataTables</PackageReleaseNotes>
   </PropertyGroup>
 
@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\api.png">
+    <None Include="..\..\nuget_logo.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>

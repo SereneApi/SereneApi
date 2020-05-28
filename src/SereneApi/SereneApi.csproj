@@ -18,7 +18,7 @@
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
-    <PackageIcon>api.png</PackageIcon>
+    <PackageIcon>nuget_logo.png</PackageIcon>
     <PackageId>SereneApi</PackageId>
     <PackageReleaseNotes>* Added: CreateApiHandler extension to HttpClient, allowing for easy creation of Handlers. At present once done, the HttpClient will be disposed of by the Handler. In future there may be a method added in the builder to override this.
 * Added: Multiple Readonly Properties to the ApiHandler allowing more information to be presented at runtime, this includes Source, Resource, Timeout and RetryCount.
@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\api.png">
+    <None Include="..\..\nuget_logo.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
