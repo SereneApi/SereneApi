@@ -195,13 +195,13 @@ namespace SereneApi
         /// </summary>
         /// <typeparam name="TContent">The type to be serialized and sent in the body of the request</typeparam>
         /// <param name="method">The RESTful <see cref="ApiMethod"/> to be used</param>
-        /// <param name="bodyContent">The object serialized and sent in the body of the request</param>
+        /// <param name="inBodyContent">The object serialized and sent in the body of the request</param>
         /// <param name="endpoint">The <see cref="endpoint"/> to be appended to the end of the Url</param>
-        protected virtual Task<IApiResponse> InBodyRequestAsync<TContent>(ApiMethod method, TContent bodyContent, object endpoint = null)
+        protected virtual Task<IApiResponse> InBodyRequestAsync<TContent>(ApiMethod method, TContent inBodyContent, object endpoint = null)
         {
             Uri route = GenerateRoute(endpoint);
 
-            return InBodyRequestAsync<TContent>(method, route, bodyContent);
+            return InBodyRequestAsync<TContent>(method, route, inBodyContent);
         }
 
         /// <summary>
@@ -209,16 +209,16 @@ namespace SereneApi
         /// </summary>
         /// <typeparam name="TContent"></typeparam>
         /// <param name="method"></param>
-        /// <param name="bodyContent"></param>
+        /// <param name="inBodyContent"></param>
         /// <param name="endpointTemplate"></param>
         /// <param name="endpointParameters"></param>
-        protected virtual Task<IApiResponse> InBodyRequestAsync<TContent>(ApiMethod method, TContent bodyContent, string endpointTemplate, params object[] endpointParameters)
+        protected virtual Task<IApiResponse> InBodyRequestAsync<TContent>(ApiMethod method, TContent inBodyContent, string endpointTemplate, params object[] endpointParameters)
         {
             string endpoint = FormatEndpointTemplate(endpointTemplate, endpointParameters);
 
             Uri route = GenerateRoute(endpoint);
 
-            return InBodyRequestAsync<TContent>(method, route, bodyContent);
+            return InBodyRequestAsync<TContent>(method, route, inBodyContent);
         }
 
         /// <summary>
@@ -227,13 +227,13 @@ namespace SereneApi
         /// <typeparam name="TContent"></typeparam>
         /// <typeparam name="TResponse"></typeparam>
         /// <param name="method"></param>
-        /// <param name="bodyContent"></param>
+        /// <param name="inBodyContent"></param>
         /// <param name="endpoint"></param>
-        protected virtual Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(ApiMethod method, TContent bodyContent, object endpoint = null)
+        protected virtual Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(ApiMethod method, TContent inBodyContent, object endpoint = null)
         {
             Uri route = GenerateRoute(endpoint);
 
-            return InBodyRequestAsync<TContent, TResponse>(method, route, bodyContent);
+            return InBodyRequestAsync<TContent, TResponse>(method, route, inBodyContent);
         }
 
         /// <summary>
@@ -242,16 +242,16 @@ namespace SereneApi
         /// <typeparam name="TContent"></typeparam>
         /// <typeparam name="TResponse"></typeparam>
         /// <param name="method"></param>
-        /// <param name="bodyContent"></param>
+        /// <param name="inBodyContent"></param>
         /// <param name="endpointTemplate"></param>
         /// <param name="endpointParameters"></param>
-        protected virtual Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(ApiMethod method, TContent bodyContent, string endpointTemplate, params object[] endpointParameters)
+        protected virtual Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(ApiMethod method, TContent inBodyContent, string endpointTemplate, params object[] endpointParameters)
         {
             string endpoint = FormatEndpointTemplate(endpointTemplate, endpointParameters);
 
             Uri route = GenerateRoute(endpoint);
 
-            return InBodyRequestAsync<TContent, TResponse>(method, route, bodyContent);
+            return InBodyRequestAsync<TContent, TResponse>(method, route, inBodyContent);
         }
 
         #endregion
@@ -392,8 +392,8 @@ namespace SereneApi
         /// <typeparam name="TContent">The type to be serialized and sent in the body of the request</typeparam>
         /// <param name="method">The RESTful API <see cref="ApiMethod"/> to be used</param>
         /// <param name="route">The <see cref="Uri"/> to be used for the request</param>
-        /// <param name="inBodyContent">The object serialized and sent in the body of the request</param>
-        protected async Task<IApiResponse> InBodyRequestAsync<TContent>(ApiMethod method, Uri route, TContent inBodyContent)
+        /// <param name="ininBodyContent">The object serialized and sent in the body of the request</param>
+        protected async Task<IApiResponse> InBodyRequestAsync<TContent>(ApiMethod method, Uri route, TContent ininBodyContent)
         {
             HttpResponseMessage responseMessage = null;
 
@@ -408,10 +408,10 @@ namespace SereneApi
                 {
                     responseMessage = method switch
                     {
-                        ApiMethod.Post => await Client.PostAsJsonAsync(route, inBodyContent),
+                        ApiMethod.Post => await Client.PostAsJsonAsync(route, ininBodyContent),
                         ApiMethod.Get => throw new ArgumentException("Get cannot be used in conjunction with an InBody Request"),
-                        ApiMethod.Put => await Client.PutAsJsonAsync(route, inBodyContent),
-                        ApiMethod.Patch => await Client.PatchAsJsonAsync(route, inBodyContent),
+                        ApiMethod.Put => await Client.PutAsJsonAsync(route, ininBodyContent),
+                        ApiMethod.Patch => await Client.PatchAsJsonAsync(route, ininBodyContent),
                         ApiMethod.Delete => throw new ArgumentException("Delete cannot be used in conjunction with an InBody Request"),
                         _ => throw new ArgumentOutOfRangeException(nameof(method), method,
                             "An incorrect ApiMethod Value was supplied.")
@@ -460,8 +460,8 @@ namespace SereneApi
         /// <typeparam name="TContent">The type to be serialized and sent in the body of the request</typeparam>
         /// <param name="method">The RESTful API <see cref="ApiMethod"/> to be used</param>
         /// <param name="route">The <see cref="Uri"/> to be used for the request</param>
-        /// <param name="inBodyContent">The object serialized and sent in the body of the request</param>
-        protected async Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(ApiMethod method, Uri route, TContent inBodyContent)
+        /// <param name="ininBodyContent">The object serialized and sent in the body of the request</param>
+        protected async Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(ApiMethod method, Uri route, TContent ininBodyContent)
         {
             HttpResponseMessage responseMessage = null;
 
@@ -476,10 +476,10 @@ namespace SereneApi
                 {
                     responseMessage = method switch
                     {
-                        ApiMethod.Post => await Client.PostAsJsonAsync(route, inBodyContent),
+                        ApiMethod.Post => await Client.PostAsJsonAsync(route, ininBodyContent),
                         ApiMethod.Get => throw new ArgumentException("Get cannot be used in conjunction with an InBody Request"),
-                        ApiMethod.Put => await Client.PutAsJsonAsync(route, inBodyContent),
-                        ApiMethod.Patch => await Client.PatchAsJsonAsync(route, inBodyContent),
+                        ApiMethod.Put => await Client.PutAsJsonAsync(route, ininBodyContent),
+                        ApiMethod.Patch => await Client.PatchAsJsonAsync(route, ininBodyContent),
                         ApiMethod.Delete => throw new ArgumentException("Delete cannot be used in conjunction with an InBody Request"),
                         _ => throw new ArgumentOutOfRangeException(nameof(method), method, "An incorrect ApiMethod Value was supplied.")
                     };

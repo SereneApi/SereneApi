@@ -13,7 +13,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.DependencyInjecti
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E98EEDA7-F6ED-4EA9-B2B6-D79DBD9145B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SereneApi.Extras", "src\SereneApi.Extras\SereneApi.Extras.csproj", "{9FB42A77-052D-4A95-A345-8670AF08C668}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Extras", "src\SereneApi.Extras\SereneApi.Extras.csproj", "{9FB42A77-052D-4A95-A345-8670AF08C668}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DDFBB5BA-0CC9-48A9-80DF-C1707C5B2139}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE.md = LICENSE.md
+		nuget_logo.png = nuget_logo.png
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
