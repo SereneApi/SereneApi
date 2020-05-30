@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SereneApi.DependencyInjection" Version="1.0.3.4-alpha" />
+    <PackageReference Include="SereneApi.Abstractions" Version="1.0.1.1-alpha" />
   </ItemGroup>
 
 </Project>

@@ -1,13 +1,12 @@
-using DependencyInjection.API.Interfaces;
+using DependencyInjection.API;
 using DependencyInjection.WebUi.Handlers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
-namespace Service
+namespace DependencyInjection.WebUi
 {
     public class Startup
     {
@@ -23,10 +22,13 @@ namespace Service
         {
 
 
-            // Add an ApiHandler to the services collection, this enabled DI functionality.
-            services.AddApiHandler<IUserApi, UserApiHandler>(o =>
+            // Add an ApiHandler to the services collection, this enables DI functionality.
+            services.AddApiHandler<IStudentApi, StudentApiHandler>(o =>
             {
-                o.UseConfiguration(Configuration.GetApiConfig("Users"));
+                // Under appsettings.conf, there is an array called ApiConfig.
+                // Inside that array is another array called "Student" as you can see below we are getting that.
+                // Users contains two values, Source and Resource.
+                o.UseConfiguration(Configuration.GetApiConfig("Student"));
             });
 
 

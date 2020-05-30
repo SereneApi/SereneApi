@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="SereneApi.DependencyInjection" Version="1.0.3.5-alpha" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DependencyInjection.API\DependencyInjection.API.csproj" />
   </ItemGroup>
 

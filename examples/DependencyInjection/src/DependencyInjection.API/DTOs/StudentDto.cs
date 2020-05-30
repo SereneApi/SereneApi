@@ -2,7 +2,7 @@
 
 namespace DependencyInjection.API.DTOs
 {
-    public class UserDto
+    public class StudentDto
     {
         public long Id { get; set; }
 
