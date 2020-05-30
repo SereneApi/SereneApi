@@ -1,13 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using DependencyInjection.WebUi.Handlers;
+using DependencyInjection.WebUi.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Service
 {
@@ -23,6 +21,12 @@ namespace Service
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApiHandler<IUserApi, UserApiHandler>((provider, builder) =>
+            {
+                builder.UseConfiguration(Configuration.GetApiConfig("UsersApi"));
+                builder.AddLoggerFactory(provider.GetRequiredService<ILoggerFactory>());
+            });
+
             services.AddRazorPages();
         }
 
