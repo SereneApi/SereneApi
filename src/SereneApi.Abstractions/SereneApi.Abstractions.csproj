@@ -2,8 +2,8 @@
 
   <PropertyGroup>
 	  <TargetFramework>netstandard2.1</TargetFramework>
-	  <AssemblyName>DeltaWare.SereneApi.Abstraction</AssemblyName>
-	  <RootNamespace>SereneApi.Abstraction</RootNamespace>
+	  <AssemblyName>DeltaWare.SereneApi.Abstractions</AssemblyName>
+	  <RootNamespace>SereneApi.Abstractions</RootNamespace>
 	  <RepositoryUrl>https://github.com/armorall171/SereneApi</RepositoryUrl>
 	  <RepositoryType>GIT</RepositoryType>
 	  <PackageTags>API; REST; RESTful; Abstraction; Response</PackageTags>
@@ -19,12 +19,16 @@
 	  <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	  <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
 	  <PackageIcon>nuget_logo.png</PackageIcon>
-	  <PackageId>SereneApi.Abstraction</PackageId>
+	  <PackageId>SereneApi.Abstractions</PackageId>
 	  <PackageReleaseNotes>* Moved IApiResponse interfaces to this library</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="..\..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\..\nuget_logo.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>

@@ -13,14 +13,16 @@
     <Product>SereneApi</Product>
     <PackageProjectUrl>https://github.com/armorall171/SereneApi#what-is-serene-api</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.3.3-alpha</Version>
+    <Version>1.0.3.5-alpha</Version>
     <NeutralLanguage>en-AU</NeutralLanguage>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
     <PackageIcon>nuget_logo.png</PackageIcon>
     <PackageId>SereneApi</PackageId>
-    <PackageReleaseNotes>* Added: UseCredentials Method to the ApiOptionsBuilder, this allows the Default Credentials used by the Handler to be overriden.</PackageReleaseNotes>
+    <PackageReleaseNotes>Added: SereneApi.Abstractions Dependency
+
+Removed!: IApiResponse types into Abstractions, this was done so middleware does not require the full library to imeplemt IApi interfaces</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -40,7 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SereneApi.Abstraction\SereneApi.Abstraction.csproj" />
+    <ProjectReference Include="..\SereneApi.Abstractions\SereneApi.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>
