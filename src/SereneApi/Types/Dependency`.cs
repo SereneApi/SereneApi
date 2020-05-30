@@ -4,10 +4,11 @@ using System;
 
 namespace SereneApi.Types
 {
-    public class Dependency<TDependency> : IDependency, IDisposable
+    public class Dependency<TDependency> : IDependency<TDependency>, IDisposable
     {
         public DependencyBinding Binding { get; }
 
+        /// <inheritdoc cref="IDependency{TDependency}.Instance"/>
         public TDependency Instance { get; }
 
         public Type Type => typeof(TDependency);
