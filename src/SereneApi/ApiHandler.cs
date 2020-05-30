@@ -97,6 +97,8 @@ namespace SereneApi
             _options.Dependencies.TryGetDependency(out _retry);
 
             #endregion
+
+            _logger?.LogTrace($"{GetType()} has been instantiated");
         }
 
         #endregion
@@ -110,6 +112,8 @@ namespace SereneApi
         protected virtual Task<IApiResponse> InPathRequestAsync(ApiMethod method, object endpoint = null)
         {
             Uri route = GenerateRoute(endpoint);
+
+            _logger?.LogTrace("Performing an InPathRequest against {RequestRoute}", route);
 
             return InPathRequestAsync(method, route);
         }
@@ -126,6 +130,8 @@ namespace SereneApi
 
             Uri route = GenerateRoute(endpoint);
 
+            _logger?.LogTrace("Performing an InPathRequest against {RequestRoute}", route);
+
             return InPathRequestAsync(method, route);
         }
 
@@ -138,6 +144,8 @@ namespace SereneApi
         protected virtual Task<IApiResponse<TResponse>> InPathRequestAsync<TResponse>(ApiMethod method, object endpoint = null)
         {
             Uri route = GenerateRoute(endpoint);
+
+            _logger?.LogTrace("Performing an InPathRequest against {RequestRoute}", route);
 
             return InPathRequestAsync<TResponse>(method, route);
         }
@@ -154,6 +162,8 @@ namespace SereneApi
 
             Uri route = GenerateRoute(endpoint);
 
+            _logger?.LogTrace("Performing an InPathRequest against {RequestRoute}", route);
+
             return InPathRequestAsync<TResponse>(method, route);
         }
 
@@ -169,6 +179,8 @@ namespace SereneApi
         protected virtual Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQueryContent>(ApiMethod method, TQueryContent queryContent, Expression<Func<TQueryContent, object>> query, object endpoint = null) where TQueryContent : class
         {
             Uri route = GenerateRouteWithQuery(endpoint, queryContent, query);
+
+            _logger?.LogTrace("Performing an InPathRequest against {RequestRoute}", route);
 
             return InPathRequestAsync<TResponse>(method, route);
         }
@@ -187,6 +199,8 @@ namespace SereneApi
         {
             Uri route = GenerateRouteWithQuery(endpointTemplate, queryContent, query, endpointParameters);
 
+            _logger?.LogTrace("Performing an InPathRequest against {RequestRoute}", route);
+
             return InPathRequestAsync<TResponse>(method, route);
         }
 
@@ -200,6 +214,8 @@ namespace SereneApi
         protected virtual Task<IApiResponse> InBodyRequestAsync<TContent>(ApiMethod method, TContent inBodyContent, object endpoint = null)
         {
             Uri route = GenerateRoute(endpoint);
+
+            _logger?.LogTrace("Performing an InBodyRequest against {RequestRoute}", route);
 
             return InBodyRequestAsync<TContent>(method, route, inBodyContent);
         }
@@ -218,6 +234,8 @@ namespace SereneApi
 
             Uri route = GenerateRoute(endpoint);
 
+            _logger?.LogTrace("Performing an InBodyRequest against {RequestRoute}", route);
+
             return InBodyRequestAsync<TContent>(method, route, inBodyContent);
         }
 
@@ -232,6 +250,8 @@ namespace SereneApi
         protected virtual Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(ApiMethod method, TContent inBodyContent, object endpoint = null)
         {
             Uri route = GenerateRoute(endpoint);
+
+            _logger?.LogTrace("Performing an InBodyRequest against {RequestRoute}", route);
 
             return InBodyRequestAsync<TContent, TResponse>(method, route, inBodyContent);
         }
@@ -250,6 +270,8 @@ namespace SereneApi
             string endpoint = FormatEndpointTemplate(endpointTemplate, endpointParameters);
 
             Uri route = GenerateRoute(endpoint);
+
+            _logger?.LogTrace("Performing an InBodyRequest against {RequestRoute}", route);
 
             return InBodyRequestAsync<TContent, TResponse>(method, route, inBodyContent);
         }
@@ -287,7 +309,7 @@ namespace SereneApi
 
                     retryingRequest = false;
                 }
-                catch (ArgumentException)
+                catch (ArgumentOutOfRangeException)
                 {
                     // An incorrect ApiMethod value was supplied. So we want this exception to bubble up to the caller.
                     throw;
@@ -352,7 +374,7 @@ namespace SereneApi
 
                     retryingRequest = false;
                 }
-                catch (ArgumentException)
+                catch (ArgumentOutOfRangeException)
                 {
                     // An incorrect ApiMethod value was supplied. So we want this exception to bubble up to the caller.
                     throw;
@@ -532,7 +554,9 @@ namespace SereneApi
         {
             if (responseMessage == null)
             {
-                return ApiResponse<TResponse>.Failure("No Response was returned.");
+                _logger?.LogWarning("Received an Empty Http Response");
+
+                return ApiResponse<TResponse>.Failure("Received an Empty Http Response");
             }
 
             if (!responseMessage.IsSuccessStatusCode)
@@ -552,8 +576,9 @@ namespace SereneApi
             }
             catch (Exception exception)
             {
-                return ApiResponse<TResponse>.Failure("Could not deserialize returned value.", exception);
+                _logger?.LogError(exception, "Could not deserialize the returned value");
 
+                return ApiResponse<TResponse>.Failure("Could not deserialize returned value.", exception);
             }
         }
 
@@ -565,9 +590,9 @@ namespace SereneApi
         {
             if (responseMessage == null)
             {
-                _logger?.LogWarning("Received an Empty Http Response Message");
+                _logger?.LogWarning("Received an Empty Http Response");
 
-                return ApiResponse.Failure("Received an Empty Http Response Message");
+                return ApiResponse.Failure("Received an Empty Http Response");
             }
 
             if (!responseMessage.IsSuccessStatusCode)
@@ -685,6 +710,8 @@ namespace SereneApi
         /// </summary>
         public void Dispose()
         {
+            _logger?.LogTrace($"{GetType()} is being disposed");
+
             Dispose(true);
 
             GC.SuppressFinalize(this);
