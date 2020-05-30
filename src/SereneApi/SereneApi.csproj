@@ -13,14 +13,21 @@
     <Product>SereneApi</Product>
     <PackageProjectUrl>https://github.com/armorall171/SereneApi#what-is-serene-api</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.3.3-alpha</Version>
+    <Version>1.0.3.4-alpha</Version>
     <NeutralLanguage>en-AU</NeutralLanguage>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
     <PackageIcon>nuget_logo.png</PackageIcon>
     <PackageId>SereneApi</PackageId>
-    <PackageReleaseNotes>* Added: UseCredentials Method to the ApiOptionsBuilder, this allows the Default Credentials used by the Handler to be overriden.</PackageReleaseNotes>
+    <PackageReleaseNotes>Added: More Logging to ApiHandler
+
+Moved: IApiOptions to primary namespace
+
+Added: IDependency&lt;&gt; interface to allow for easier creation of Dependencies.
+Improved: GetInstance for depenecies as it now used the new generic interface instead of the type.
+
+Removed: RegisterHandler method from IApiHandlerFactory interface</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
