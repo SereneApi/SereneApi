@@ -1,4 +1,4 @@
-﻿using SereneApi.Abstraction;
+﻿using SereneApi.Abstractions;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
