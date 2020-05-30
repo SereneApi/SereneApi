@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using SereneApi.Abstraction;
 using SereneApi.Enums;
 using SereneApi.Interfaces;
 using System.Collections.Generic;
