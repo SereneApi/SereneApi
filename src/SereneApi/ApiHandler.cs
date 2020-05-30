@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using SereneApi.Abstraction;
+using SereneApi.Abstractions;
 using SereneApi.Enums;
 using SereneApi.Interfaces;
 using SereneApi.Types;

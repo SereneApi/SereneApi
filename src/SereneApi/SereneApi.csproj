@@ -13,21 +13,16 @@
     <Product>SereneApi</Product>
     <PackageProjectUrl>https://github.com/armorall171/SereneApi#what-is-serene-api</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.3.4-alpha</Version>
+    <Version>1.0.3.5-alpha</Version>
     <NeutralLanguage>en-AU</NeutralLanguage>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
     <PackageIcon>nuget_logo.png</PackageIcon>
     <PackageId>SereneApi</PackageId>
-    <PackageReleaseNotes>Added: More Logging to ApiHandler
+    <PackageReleaseNotes>Added: SereneApi.Abstractions Dependency
 
-Moved: IApiOptions to primary namespace
-
-Added: IDependency&lt;&gt; interface to allow for easier creation of Dependencies.
-Improved: GetInstance for depenecies as it now used the new generic interface instead of the type.
-
-Removed: RegisterHandler method from IApiHandlerFactory interface</PackageReleaseNotes>
+Removed!: IApiResponse types into Abstractions, this was done so middleware does not require the full library to imeplemt IApi interfaces</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -47,7 +42,7 @@ Removed: RegisterHandler method from IApiHandlerFactory interface</PackageReleas
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SereneApi.Abstraction\SereneApi.Abstraction.csproj" />
+    <ProjectReference Include="..\SereneApi.Abstractions\SereneApi.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>
