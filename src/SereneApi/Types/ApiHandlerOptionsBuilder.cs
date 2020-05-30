@@ -10,7 +10,7 @@ using System.Net.Http.Headers;
 
 namespace SereneApi.Types
 {
-    public class ApiHandlerOptionsBuilder : IApiHandlerOptionsBuilder
+    public class ApiHandlerOptionsBuilder
     {
         #region Variables
 
@@ -170,8 +170,7 @@ namespace SereneApi.Types
             Credentials = credentials;
         }
 
-        /// <inheritdoc cref="IApiHandlerOptionsBuilder.BuildOptions"/>
-        public virtual IApiHandlerOptions BuildOptions()
+        internal virtual IApiHandlerOptions BuildOptions()
         {
             if (ClientOverride != null)
             {

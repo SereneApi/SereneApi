@@ -1,6 +1,4 @@
-﻿using SereneApi.Interfaces;
-
-namespace SereneApi.Tests.Handlers
+﻿namespace SereneApi.Tests.Handlers
 {
     public class UsersApiHandler : ApiHandler
     {
