@@ -31,11 +31,11 @@ namespace SereneApi.Types
 
         protected bool DisposeClientOverride;
 
-        protected Action<HttpRequestHeaders> RequestHeaderBuilder = ApiHandlerOptionDefaults.DefaultRequestHeadersBuilder;
+        protected Action<HttpRequestHeaders> RequestHeaderBuilder = ApiHandlerOptionDefaults.RequestHeadersBuilder;
 
         protected TimeSpan Timeout = ApiHandlerOptionDefaults.TimeoutPeriod;
 
-        protected ICredentials Credentials { get; set; } = CredentialCache.DefaultCredentials;
+        protected ICredentials Credentials { get; set; } = ApiHandlerOptionDefaults.Credentials;
 
         #endregion
         #region Constructors
