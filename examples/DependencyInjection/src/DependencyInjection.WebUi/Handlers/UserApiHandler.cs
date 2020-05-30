@@ -1,4 +1,4 @@
-﻿using DependencyInjection.WebUi.Interfaces;
+﻿using DependencyInjection.API.Interfaces;
 using SereneApi;
 using SereneApi.DependencyInjection.Types;
 

@@ -30,6 +30,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DependencyInjection.Service
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DependencyInjection.WebUi", "examples\DependencyInjection\src\DependencyInjection.WebUi\DependencyInjection.WebUi.csproj", "{F92CC81A-C39C-4938-BE3E-1B10EE3E5CA4}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DependencyInjection.API", "examples\DependencyInjection\src\DependencyInjection.API\DependencyInjection.API.csproj", "{AD2DE70B-FFE2-4ED9-8CC2-5BBB6213C10A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,10 @@ Global
 		{F92CC81A-C39C-4938-BE3E-1B10EE3E5CA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F92CC81A-C39C-4938-BE3E-1B10EE3E5CA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F92CC81A-C39C-4938-BE3E-1B10EE3E5CA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD2DE70B-FFE2-4ED9-8CC2-5BBB6213C10A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD2DE70B-FFE2-4ED9-8CC2-5BBB6213C10A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD2DE70B-FFE2-4ED9-8CC2-5BBB6213C10A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD2DE70B-FFE2-4ED9-8CC2-5BBB6213C10A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +80,7 @@ Global
 		{518244F8-568F-457B-8684-CAD8AD9A3D0E} = {2A33ED7C-69F6-430E-89C9-9CBE557B57CC}
 		{BD59168B-B511-417F-B89C-F3EDA406C14E} = {518244F8-568F-457B-8684-CAD8AD9A3D0E}
 		{F92CC81A-C39C-4938-BE3E-1B10EE3E5CA4} = {518244F8-568F-457B-8684-CAD8AD9A3D0E}
+		{AD2DE70B-FFE2-4ED9-8CC2-5BBB6213C10A} = {518244F8-568F-457B-8684-CAD8AD9A3D0E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1434419F-CF49-4407-B3E1-F554AA0DBC33}

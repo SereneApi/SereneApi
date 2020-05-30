@@ -1,5 +1,5 @@
+using DependencyInjection.API.Interfaces;
 using DependencyInjection.WebUi.Handlers;
-using DependencyInjection.WebUi.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -21,11 +21,15 @@ namespace Service
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddApiHandler<IUserApi, UserApiHandler>((provider, builder) =>
+
+
+            // Add an ApiHandler to the services collection, this enabled DI functionality.
+            services.AddApiHandler<IUserApi, UserApiHandler>(o =>
             {
-                builder.UseConfiguration(Configuration.GetApiConfig("UsersApi"));
-                builder.AddLoggerFactory(provider.GetRequiredService<ILoggerFactory>());
+                o.UseConfiguration(Configuration.GetApiConfig("Users"));
             });
+
+
 
             services.AddRazorPages();
         }
