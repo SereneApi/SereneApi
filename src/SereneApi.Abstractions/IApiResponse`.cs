@@ -1,4 +1,4 @@
-﻿namespace SereneApi.Interfaces
+﻿namespace SereneApi.Abstractions
 {
     public interface IApiResponse<out TEntity> : IApiResponse
     {
