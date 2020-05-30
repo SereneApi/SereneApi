@@ -46,4 +46,8 @@ Removed: RegisterHandler method from IApiHandlerFactory interface</PackageReleas
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SereneApi.Abstraction\SereneApi.Abstraction.csproj" />
+  </ItemGroup>
+
 </Project>
