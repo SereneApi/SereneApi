@@ -1,13 +1,12 @@
-﻿using System;
-using System.Net;
-using System.Net.Http;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SereneApi.Enums;
 using SereneApi.Helpers;
 using SereneApi.Interfaces;
 using SereneApi.Types;
+using System;
+using System.Net.Http;
 
 namespace SereneApi.DependencyInjection.Types
 {
@@ -25,7 +24,7 @@ namespace SereneApi.DependencyInjection.Types
         /// Note: Source and Resource MUST be supplied if this is used, ResourcePrecursor and Timeout are optional
         /// </summary>
         /// <param name="configuration">The <see cref="IConfiguration"/> the values will be retrieved from</param>
-        public ApiHandlerOptionsBuilder UseConfiguration(IConfiguration configuration)
+        public void UseConfiguration(IConfiguration configuration)
         {
             if (ClientOverride != null)
             {
@@ -55,8 +54,6 @@ namespace SereneApi.DependencyInjection.Types
             {
                 Timeout = timeout;
             }
-
-            return this;
         }
 
         /// <summary>
@@ -73,8 +70,7 @@ namespace SereneApi.DependencyInjection.Types
             _serviceCollection = serviceCollection;
         }
 
-        /// <inheritdoc cref="IApiHandlerOptionsBuilder.BuildOptions"/>
-        public new ApiHandlerOptions<TApiHandler> BuildOptions()
+        internal ApiHandlerOptions<TApiHandler> BuildOptions()
         {
             ILogger<TApiHandler> logger = _loggerFactory.CreateLogger<TApiHandler>();
 

@@ -10,7 +10,7 @@ using System.Net.Http.Headers;
 
 namespace SereneApi.Types
 {
-    public class ApiHandlerOptionsBuilder : IApiHandlerOptionsBuilder
+    public class ApiHandlerOptionsBuilder
     {
         #region Variables
 
@@ -31,11 +31,11 @@ namespace SereneApi.Types
 
         protected bool DisposeClientOverride;
 
-        protected Action<HttpRequestHeaders> RequestHeaderBuilder = ApiHandlerOptionDefaults.DefaultRequestHeadersBuilder;
+        protected Action<HttpRequestHeaders> RequestHeaderBuilder = ApiHandlerOptionDefaults.RequestHeadersBuilder;
 
         protected TimeSpan Timeout = ApiHandlerOptionDefaults.TimeoutPeriod;
 
-        protected ICredentials Credentials { get; set; } = CredentialCache.DefaultCredentials;
+        protected ICredentials Credentials { get; set; } = ApiHandlerOptionDefaults.Credentials;
 
         #endregion
         #region Constructors
@@ -170,8 +170,7 @@ namespace SereneApi.Types
             Credentials = credentials;
         }
 
-        /// <inheritdoc cref="IApiHandlerOptionsBuilder.BuildOptions"/>
-        public virtual IApiHandlerOptions BuildOptions()
+        internal virtual IApiHandlerOptions BuildOptions()
         {
             if (ClientOverride != null)
             {
