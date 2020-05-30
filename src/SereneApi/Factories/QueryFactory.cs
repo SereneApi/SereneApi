@@ -9,24 +9,24 @@ using System.Text;
 
 namespace SereneApi.Factories
 {
-    public class QueryFactory : IQueryFactory
+    public sealed class QueryFactory : IQueryFactory
     {
-        protected readonly ObjectToStringFormatter Formatter;
+        private readonly ObjectToStringFormatter _formatter;
 
         public QueryFactory()
         {
-            Formatter = DefaultQueryFormatter;
+            _formatter = DefaultQueryFormatter;
         }
 
         public QueryFactory(ObjectToStringFormatter formatter)
         {
-            Formatter = formatter;
+            _formatter = formatter;
         }
 
         /// <summary>
         /// All public properties will be used to build the query.
         /// </summary>
-        public virtual string Build<TQueryable>(TQueryable query)
+        public string Build<TQueryable>(TQueryable query)
         {
             List<string> querySections = new List<string>();
 
@@ -36,7 +36,7 @@ namespace SereneApi.Factories
             {
                 object value = property.GetValue(query);
 
-                string valueString = Formatter(value);
+                string valueString = _formatter(value);
 
                 if (!string.IsNullOrEmpty(valueString))
                 {
@@ -52,7 +52,7 @@ namespace SereneApi.Factories
         /// </summary>
         /// <param name="selector"></param>
         /// <returns></returns>
-        public virtual string Build<TQueryable>(TQueryable query, Expression<Func<TQueryable, object>> selector)
+        public string Build<TQueryable>(TQueryable query, Expression<Func<TQueryable, object>> selector)
         {
             List<string> querySections = new List<string>();
 
@@ -72,7 +72,7 @@ namespace SereneApi.Factories
 
                 object value = property.GetValue(query);
 
-                string valueString = Formatter(value);
+                string valueString = _formatter(value);
 
                 if (!string.IsNullOrEmpty(valueString))
                 {
@@ -83,7 +83,7 @@ namespace SereneApi.Factories
             return BuildQuery(querySections);
         }
 
-        protected virtual string BuildQuery(IReadOnlyList<string> querySections)
+        private static string BuildQuery(IReadOnlyList<string> querySections)
         {
             // No sections return empty string.
             if (querySections.Count == 0)
@@ -115,7 +115,7 @@ namespace SereneApi.Factories
             return queryBuilder.ToString();
         }
 
-        protected virtual string BuildQuerySection(string name, string value)
+        private static string BuildQuerySection(string name, string value)
         {
             return $"{name}={value}";
         }

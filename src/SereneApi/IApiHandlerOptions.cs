@@ -1,6 +1,7 @@
-﻿using System;
+﻿using SereneApi.Interfaces;
+using System;
 
-namespace SereneApi.Interfaces
+namespace SereneApi
 {
     public interface IApiHandlerOptions
     {
