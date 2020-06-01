@@ -12,7 +12,7 @@ namespace SereneApi.Tests
         {
             ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterHandler<UserApiHandler>(o =>
+            handlerFactory.AddApiHandler<UserApiHandler>(o =>
             {
                 o.UseSource("http://localhost", "Users");
             });
