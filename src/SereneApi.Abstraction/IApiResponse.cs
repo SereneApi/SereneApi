@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SereneApi.Abstractions
+namespace SereneApi.Abstraction
 {
     public interface IApiResponse
     {

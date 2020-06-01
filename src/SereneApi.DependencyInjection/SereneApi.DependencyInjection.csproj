@@ -21,7 +21,7 @@ SereneApi.DependencyInjection adds support for AspNet DI and Configuration.</Des
 		<Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
 		<PackageIcon>nuget_logo.png</PackageIcon>
 		<PackageId>SereneApi.DependencyInjection</PackageId>
-		<PackageReleaseNotes>Added: SereneApi.Abstractions Dependency
+		<PackageReleaseNotes>Added: SereneApi.Abstraction Dependency
 
 Removed!: IApiResponse types into Abstractions, this was done so middleware does not require the full library to imeplemt IApi interfaces</PackageReleaseNotes>
 	</PropertyGroup>
