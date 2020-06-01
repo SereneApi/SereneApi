@@ -19,7 +19,6 @@ namespace DependencyInjection.Service.Controllers
                 // It is important we return the correct response.
                 // The ApiHandler uses this to confirm if the request was successful.
                 // The message passed in this response will be returned in the ApiResponse.
-                // This can be useful for passing messages to your UI.
                 return NotFound($"Could not find a student with the Id:{id}");
             }
 

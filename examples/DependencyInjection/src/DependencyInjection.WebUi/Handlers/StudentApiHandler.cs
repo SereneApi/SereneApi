@@ -20,16 +20,20 @@ namespace DependencyInjection.WebUi.Handlers
 
         public Task<IApiResponse<StudentDto>> GetAsync(long studentId)
         {
+            // This GET request will use the students Id as a parameter for the request.
             return InPathRequestAsync<StudentDto>(ApiMethod.Get, studentId);
         }
 
         public Task<IApiResponse<List<StudentDto>>> GetAllAsync()
         {
+            // This is a simple GET request with no endpoint or parameters provided.
             return InPathRequestAsync<List<StudentDto>>(ApiMethod.Get);
         }
 
         public Task<IApiResponse<List<StudentDto>>> FindByGivenAndLastName(StudentDto student)
         {
+            // In this example, only the Given and Last name values will used for the query.
+            // The query created would be ?GivenName=value&LastName=value
             return InPathRequestWithQueryAsync<List<StudentDto>, StudentDto>(ApiMethod.Get, student,
                 s => new { s.GivenName, s.LastName });
         }
