@@ -170,7 +170,7 @@ namespace SereneApi.Types
             Credentials = credentials;
         }
 
-        internal virtual IApiHandlerOptions BuildOptions()
+        internal IApiHandlerOptions BuildOptions()
         {
             if (ClientOverride != null)
             {

@@ -20,7 +20,7 @@
     <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
     <PackageIcon>nuget_logo.png</PackageIcon>
     <PackageId>SereneApi</PackageId>
-    <PackageReleaseNotes>Added: SereneApi.Abstractions Dependency
+    <PackageReleaseNotes>Added: SereneApi.Abstraction Dependency
 
 Removed!: IApiResponse types into Abstractions, this was done so middleware does not require the full library to imeplemt IApi interfaces</PackageReleaseNotes>
   </PropertyGroup>
@@ -42,7 +42,7 @@ Removed!: IApiResponse types into Abstractions, this was done so middleware does
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SereneApi.Abstractions\SereneApi.Abstractions.csproj" />
+    <ProjectReference Include="..\SereneApi.Abstraction\SereneApi.Abstraction.csproj" />
   </ItemGroup>
 
 </Project>

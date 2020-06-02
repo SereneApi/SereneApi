@@ -1,4 +1,4 @@
-﻿using SereneApi.Abstractions;
+﻿using SereneApi.Abstraction;
 using System;
 
 namespace SereneApi.Types

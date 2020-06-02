@@ -18,6 +18,19 @@ namespace SereneApi.Helpers
 
             string formattedSource = string.Format(ApiHandlerOptionDefaults.SourceFormat, source, resourcePath, resource);
 
+            int lastCharPosition = formattedSource.Length - 1;
+
+            if (lastCharPosition < 0)
+            {
+                throw new ArgumentException("Source must not be empty");
+            }
+
+            if (formattedSource[lastCharPosition] == '/')
+            {
+                // Protect against having a / in the last position of the source
+                formattedSource = formattedSource.Substring(lastCharPosition);
+            }
+
             return new Uri(formattedSource);
         }
 
