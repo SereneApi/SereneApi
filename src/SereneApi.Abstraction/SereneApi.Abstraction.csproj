@@ -13,14 +13,14 @@
 	  <Product>SereneApi</Product>
 	  <PackageProjectUrl>https://github.com/armorall171/SereneApi#what-is-serene-api</PackageProjectUrl>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <Version>1.0.1.1-alpha</Version>
+	  <Version>1.0.1.2-alpha</Version>
 	  <NeutralLanguage>en-AU</NeutralLanguage>
 	  <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 	  <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	  <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
 	  <PackageIcon>nuget_logo.png</PackageIcon>
 	  <PackageId>SereneApi.Abstraction</PackageId>
-	  <PackageReleaseNotes>* Moved IApiResponse interfaces to this library</PackageReleaseNotes>
+	  <PackageReleaseNotes>* Renamed Abstrractions to Abstraction</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
