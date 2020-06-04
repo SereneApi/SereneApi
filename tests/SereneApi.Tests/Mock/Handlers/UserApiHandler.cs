@@ -1,4 +1,4 @@
-﻿namespace SereneApi.Tests.Handlers
+﻿namespace SereneApi.Tests.Mock.Handlers
 {
     public class UserApiHandler : ApiHandler
     {
