@@ -24,13 +24,15 @@ namespace SereneApi.Types
 
         protected DependencyCollection DependencyCollection { get; }
 
+        protected bool OverrideUseCredentials { get; private set; }
+
         protected Uri Source { get; set; }
 
         protected string Resource { get; set; }
 
-        protected HttpClient ClientOverride;
+        protected HttpClient ClientOverride { get; set; }
 
-        protected bool DisposeClientOverride;
+        protected bool DisposeClientOverride { get; set; }
 
         protected Action<HttpRequestHeaders> RequestHeaderBuilder = ApiHandlerOptionDefaults.RequestHeadersBuilder;
 
@@ -99,7 +101,7 @@ namespace SereneApi.Types
 
             if (_baseClient != null)
             {
-                throw new MethodAccessException("This method cannot be called when using the ApiHandlerFactory");
+                throw new MethodAccessException("This method cannot be called when creating a ApiHandler from an HttpClient");
             }
 
             ClientOverride = clientOverride;
@@ -181,6 +183,27 @@ namespace SereneApi.Types
             Credentials = credentials;
         }
 
+        /// <summary>
+        /// Overrides the default <see cref="HttpClientHandler"/> used by the <see cref="ApiHandler"/>.
+        /// </summary>
+        /// <param name="overrideUseCredentials">If False the Credentials supplied by the UseCredentials method will be used.</param>
+        public void UseHttpMessageHandler(Action<HttpClientHandler> builder, bool overrideUseCredentials = false)
+        {
+            if (_baseClient != null)
+            {
+                throw new MethodAccessException("This method cannot be called when creating a ApiHandler from an HttpClient");
+            }
+
+            HttpClientHandler handler = new HttpClientHandler();
+
+            builder.Invoke(handler);
+
+            // Unbound as the HttpClient controls its lifetime.
+            DependencyCollection.AddDependency(handler, Binding.Unbound);
+
+            OverrideUseCredentials = overrideUseCredentials;
+        }
+
         internal IApiHandlerOptions BuildOptions()
         {
             if (ClientOverride != null)
@@ -189,12 +212,29 @@ namespace SereneApi.Types
             }
             else
             {
-                HttpClientHandler clientHandler = new HttpClientHandler
-                {
-                    Credentials = Credentials
-                };
+                HttpClient httpClient;
 
-                HttpClient httpClient = _baseClient ?? new HttpClient(clientHandler);
+                if (_baseClient != null)
+                {
+                    httpClient = _baseClient;
+                }
+                else
+                {
+                    bool hasHttpClientHandler =
+                        DependencyCollection.TryGetDependency(out HttpClientHandler clientHandler);
+
+                    if (!hasHttpClientHandler)
+                    {
+                        clientHandler = new HttpClientHandler();
+                    }
+
+                    if (!(hasHttpClientHandler && OverrideUseCredentials))
+                    {
+                        clientHandler.Credentials = Credentials;
+                    }
+
+                    httpClient = new HttpClient(clientHandler);
+                }
 
                 httpClient.BaseAddress = Source;
                 httpClient.Timeout = Timeout;

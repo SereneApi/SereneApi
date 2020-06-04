@@ -60,6 +60,12 @@ namespace SereneApi.Types
             return false;
         }
 
+        /// <inheritdoc cref="IDependencyCollection.HasDependency{TDependency}"/>
+        public bool HasDependency<TDependency>()
+        {
+            return _dependencyTypeMap.ContainsKey(typeof(TDependency));
+        }
+
         #region IDisposable
 
         private volatile bool _disposed;

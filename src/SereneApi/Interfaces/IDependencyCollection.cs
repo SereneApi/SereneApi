@@ -15,5 +15,12 @@
         /// <param name="dependencyInstance">The <see cref="TDependency"/> that was found.</param>
         /// <returns></returns>
         bool TryGetDependency<TDependency>(out TDependency dependencyInstance);
+
+        /// <summary>
+        /// Returns a <see cref="bool"/> specifying if the <see cref="IDependencyCollection"/> contains the specified type.
+        /// </summary>
+        /// <typeparam name="TDependency"></typeparam>
+        /// <returns></returns>
+        bool HasDependency<TDependency>();
     }
 }

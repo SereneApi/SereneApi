@@ -15,7 +15,7 @@ namespace System.Net.Http
 
         /// <summary>
         /// Creates a new <see cref="ApiHandler"/> using the <see cref="HttpClient"/> for the requests.
-        /// The <see cref="HttpClient"/> will not be disposed of by the <see cref="ApiHandler"/>.
+        /// The <see cref="HttpClient"/> will be disposed of by the <see cref="ApiHandler"/>.
         /// </summary>
         public static TApiHandler CreateApiHandler<TApiHandler>(this HttpClient client, Action<ApiHandlerOptionsBuilder> optionsAction = null) where TApiHandler : ApiHandler
         {
@@ -24,7 +24,7 @@ namespace System.Net.Http
 
             ApiHandlerOptionsBuilder builder = new ApiHandlerOptionsBuilder();
 
-            builder.UseClientOverride(client, false);
+            builder.UseClientOverride(client, true);
 
             optionsAction?.Invoke(builder);
 
