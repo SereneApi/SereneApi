@@ -59,7 +59,7 @@ namespace SereneApi.Tests.Types
             response.HasException.ShouldBe(false);
             response.Exception.ShouldBeNull();
             response.Message.ShouldBe(message);
-            response.Result.ShouldBe(string.Empty);
+            response.Result.ShouldBeNull();
         }
 
         [Fact]
@@ -88,7 +88,7 @@ namespace SereneApi.Tests.Types
             response.HasException.ShouldBe(true);
             response.Exception.ShouldBe(argumentException);
             response.Message.ShouldBe(message);
-            response.Result.ShouldBe(string.Empty);
+            response.Result.ShouldBeNull();
         }
     }
 }
