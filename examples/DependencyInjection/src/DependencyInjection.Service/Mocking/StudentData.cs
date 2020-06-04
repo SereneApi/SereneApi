@@ -14,7 +14,7 @@ namespace DependencyInjection.Service.Mocking
             LastName = "Smith",
             Id = 0
         };
-        
+
         public static StudentDto StudentB { get; } = new StudentDto
         {
             BirthDate = new DateTime(2002, 07, 13),

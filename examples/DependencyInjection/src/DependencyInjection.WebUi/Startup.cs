@@ -1,13 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DependencyInjection.API;
 using DependencyInjection.WebUi.Handlers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -45,7 +39,7 @@ namespace DependencyInjection.WebUi
             {
                 // Instead of using appsettings. You can also manually specify the source information.
                 builder.UseSource("http://localhost:52279", "Class");
-                
+
                 // Using the provider you can inject a logger factory.
                 builder.AddLoggerFactory(provider.GetRequiredService<ILoggerFactory>());
             });

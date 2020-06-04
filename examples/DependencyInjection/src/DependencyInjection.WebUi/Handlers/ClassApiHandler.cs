@@ -1,5 +1,4 @@
-﻿using ApiCommon;
-using DependencyInjection.API;
+﻿using DependencyInjection.API;
 using DependencyInjection.API.DTOs;
 
 namespace DependencyInjection.WebUi.Handlers

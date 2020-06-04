@@ -2,8 +2,6 @@
 using DependencyInjection.API.DTOs;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ApiCommon;
-using ApiCommon.Enums;
 
 namespace DependencyInjection.WebUi.Handlers
 {

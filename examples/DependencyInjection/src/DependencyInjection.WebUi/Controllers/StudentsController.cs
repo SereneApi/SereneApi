@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using ApiCommon;
-using DependencyInjection.API;
+﻿using DependencyInjection.API;
 using DependencyInjection.API.DTOs;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DependencyInjection.WebUi.Controllers
 {
