@@ -1,7 +1,7 @@
 ﻿using DependencyInjection.API.DTOs;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ApiCommon;
+using SereneApi.Abstraction;
 
 namespace DependencyInjection.API
 {

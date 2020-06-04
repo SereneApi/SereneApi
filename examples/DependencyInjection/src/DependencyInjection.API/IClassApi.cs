@@ -1,5 +1,5 @@
-﻿using ApiCommon.Interfaces;
-using DependencyInjection.API.DTOs;
+﻿using DependencyInjection.API.DTOs;
+using SereneApi.Interfaces;
 
 namespace DependencyInjection.API
 {

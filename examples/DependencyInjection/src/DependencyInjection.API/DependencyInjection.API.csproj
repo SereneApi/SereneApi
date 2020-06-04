@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\src\SereneApi.Abstraction\SereneApi.Abstraction.csproj" />
+    <ProjectReference Include="..\..\..\..\src\SereneApi\SereneApi.csproj" />
   </ItemGroup>
 
 </Project>
