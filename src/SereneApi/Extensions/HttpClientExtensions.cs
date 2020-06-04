@@ -1,4 +1,5 @@
 ﻿using SereneApi;
+using SereneApi.Helpers;
 using SereneApi.Types;
 using System.Text;
 using System.Text.Json;
@@ -14,13 +15,16 @@ namespace System.Net.Http
 
         /// <summary>
         /// Creates a new <see cref="ApiHandler"/> using the <see cref="HttpClient"/> for the requests.
-        /// The <see cref="HttpClient"/> will be disposed of by the <see cref="ApiHandler"/>
+        /// The <see cref="HttpClient"/> will not be disposed of by the <see cref="ApiHandler"/>.
         /// </summary>
         public static TApiHandler CreateApiHandler<TApiHandler>(this HttpClient client, Action<ApiHandlerOptionsBuilder> optionsAction = null) where TApiHandler : ApiHandler
         {
+            // The base address of the HttpClient should not be change, so instead an exception will be thrown.
+            SourceHelpers.CheckIfValid(client.BaseAddress.ToString());
+
             ApiHandlerOptionsBuilder builder = new ApiHandlerOptionsBuilder();
 
-            builder.UseClientOverride(client, true);
+            builder.UseClientOverride(client, false);
 
             optionsAction?.Invoke(builder);
 

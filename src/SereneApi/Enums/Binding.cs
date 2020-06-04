@@ -3,9 +3,9 @@
 namespace SereneApi.Enums
 {
     /// <summary>
-    /// <see cref="DependencyBinding"/> controls how <see cref="IDisposable"/>s will be handled when a <see cref="Dependency"/> is disposed of
+    /// <see cref="Binding"/> controls how <see cref="IDisposable"/>s will be handled when a <see cref="Dependency"/> is disposed of
     /// </summary>
-    public enum DependencyBinding
+    public enum Binding
     {
         /// <summary>
         /// The objects lifetime is bound to the <see cref="Dependency"/> and will be disposed of

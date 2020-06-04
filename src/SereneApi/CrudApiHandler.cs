@@ -24,37 +24,37 @@ namespace SereneApi
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.GetAsync"/>
         public Task<IApiResponse<TResource>> GetAsync(TIdentifier identity)
         {
-            return InPathRequestAsync<TResource>(ApiMethod.Get, identity);
+            return InPathRequestAsync<TResource>(Method.Get, identity);
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.GetAllAsync"/>
         public Task<IApiResponse<IList<TResource>>> GetAllAsync()
         {
-            return InPathRequestAsync<IList<TResource>>(ApiMethod.Get);
+            return InPathRequestAsync<IList<TResource>>(Method.Get);
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.CreateAsync"/>
         public Task<IApiResponse<TResource>> CreateAsync(TResource resource)
         {
-            return InBodyRequestAsync<TResource, TResource>(ApiMethod.Post, resource);
+            return InBodyRequestAsync<TResource, TResource>(Method.Post, resource);
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.DeleteAsync"/>
         public Task<IApiResponse> DeleteAsync(TIdentifier identifier)
         {
-            return InPathRequestAsync(ApiMethod.Delete, identifier);
+            return InPathRequestAsync(Method.Delete, identifier);
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.ReplaceAsync"/>
         public Task<IApiResponse<TResource>> ReplaceAsync(TResource resource)
         {
-            return InBodyRequestAsync<TResource, TResource>(ApiMethod.Put, resource);
+            return InBodyRequestAsync<TResource, TResource>(Method.Put, resource);
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.UpdateAsync"/>
         public Task<IApiResponse<TResource>> UpdateAsync(TResource resource)
         {
-            return InBodyRequestAsync<TResource, TResource>(ApiMethod.Patch, resource);
+            return InBodyRequestAsync<TResource, TResource>(Method.Patch, resource);
         }
     }
 }

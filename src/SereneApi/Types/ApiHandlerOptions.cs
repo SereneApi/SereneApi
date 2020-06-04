@@ -33,6 +33,11 @@ namespace SereneApi.Types
 
         private volatile bool _disposed;
 
+        internal bool IsDisposed()
+        {
+            return _disposed;
+        }
+
         public void Dispose()
         {
             Dispose(true);

@@ -1,6 +1,6 @@
 ﻿namespace SereneApi.Interfaces
 {
-    internal interface IApiHandlerFactory
+    public interface IApiHandlerFactory
     {
         TApiHandler Build<TApiHandler>() where TApiHandler : ApiHandler;
     }

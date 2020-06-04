@@ -3,7 +3,7 @@
     /// <summary>
     /// The API Method in which the RESTful request will be made.
     /// </summary>
-    public enum ApiMethod
+    public enum Method
     {
         /// <summary>
         /// CREATE

@@ -3,6 +3,7 @@ using SereneApi.Interfaces;
 using System;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace SereneApi
 {
@@ -24,7 +25,7 @@ namespace SereneApi
         /// <summary>
         /// The default Resource Precursor that is used by the <see cref="ApiHandler"/>
         /// </summary>
-        public const string ResourcePrecursor = "api/";
+        public const string ResourcePath = "api/";
 
         /// <summary>
         /// The default <see cref="HttpContentHeaders"/> that is used by the <see cref="ApiHandler"/>
@@ -37,12 +38,23 @@ namespace SereneApi
 
         public static ICredentials Credentials { get; } = CredentialCache.DefaultCredentials;
 
+        /// <summary>
+        /// The Default retry count used by the <see cref="ApiHandler"/>
+        /// </summary>
         public const uint RetryCount = 0;
 
         /// <summary>
         /// The Source format string, used to create the Api Source.
-        /// {0 = Source}; {1 = Resource Path}; {2 = Resource}
+        /// {0 = Source}; {1 = Resource Path}; {2 = Resource}.
         /// </summary>
-        public const string SourceFormat = "{0}/{1}{2}";
+        public const string SourceFormat = "{0}/{1}{2}/";
+
+        /// <summary>
+        /// The Default <see cref="JsonSerializerOptions"/> used by the <see cref="ApiHandler"/>.
+        /// </summary>
+        public static JsonSerializerOptions JsonSerializerOptionsBuilder = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
     }
 }

@@ -34,7 +34,7 @@ namespace SereneApi.Factories
         /// </summary>
         /// <typeparam name="TApiHandler"></typeparam>
         /// <param name="optionsAction"></param>
-        public void AddApiHandler<TApiHandler>(Action<ApiHandlerOptionsBuilder> optionsAction) where TApiHandler : ApiHandler
+        public void RegisterHandlerOptions<TApiHandler>(Action<ApiHandlerOptionsBuilder> optionsAction) where TApiHandler : ApiHandler
         {
             Type handlerType = typeof(TApiHandler);
 
