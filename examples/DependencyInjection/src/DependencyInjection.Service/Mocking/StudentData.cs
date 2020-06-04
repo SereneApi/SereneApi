@@ -14,10 +14,20 @@ namespace DependencyInjection.Service.Mocking
             LastName = "Smith",
             Id = 0
         };
+        
+        public static StudentDto StudentB { get; } = new StudentDto
+        {
+            BirthDate = new DateTime(2002, 07, 13),
+            Email = "Alfred.Bleck@someschool.edu",
+            GivenName = "Alfred",
+            LastName = "Bleck",
+            Id = 1
+        };
 
         public static List<StudentDto> Students { get; } = new List<StudentDto>
         {
-            StudentA
+            StudentA,
+            StudentB
         };
     }
 }

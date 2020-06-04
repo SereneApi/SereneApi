@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SereneApi.Abstractions" Version="1.0.1.1-alpha" />
+    <ProjectReference Include="..\..\..\..\src\SereneApi.Abstraction\SereneApi.Abstraction.csproj" />
   </ItemGroup>
 
 </Project>

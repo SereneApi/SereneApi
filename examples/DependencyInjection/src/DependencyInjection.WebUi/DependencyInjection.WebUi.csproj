@@ -5,11 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SereneApi.DependencyInjection" Version="1.0.3.5-alpha" />
+    <ProjectReference Include="..\..\..\..\src\SereneApi\SereneApi.csproj" />
+    <ProjectReference Include="..\DependencyInjection.API\DependencyInjection.API.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DependencyInjection.API\DependencyInjection.API.csproj" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.4.1" />
   </ItemGroup>
+
 
 </Project>
