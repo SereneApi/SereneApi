@@ -1,4 +1,6 @@
-﻿namespace SereneApi.Enums
+﻿// Do not change namespace
+// ReSharper disable once CheckNamespace
+namespace SereneApi
 {
     /// <summary>
     /// The API Method in which the RESTful request will be made.

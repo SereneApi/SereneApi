@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SereneApi.DependencyInjection.Interfaces;
 using SereneApi.Enums;
 using SereneApi.Helpers;
 using SereneApi.Interfaces;
@@ -12,17 +13,13 @@ using System.Net.Http;
 namespace SereneApi.DependencyInjection.Types
 {
     /// <summary>
-    /// The <see cref="ApiHandlerOptionsBuilder{TApiHandler}"/> is used to build new instances of the <see cref="SereneApi.DepedencyInjection.ApiHandlerOptions"/> class
+    /// The <see cref="ApiHandlerOptionsBuilder{TApiHandler}"/> is used to build new instances of the <see cref="ApiHandlerOptions{TApiHandler}"/> class
     /// </summary>
-    public class ApiHandlerOptionsBuilder<TApiHandler> : ApiHandlerOptionsBuilder where TApiHandler : ApiHandler
+    public class ApiHandlerOptionsBuilder<TApiHandler> : ApiHandlerOptionsBuilder, IApiHandlerOptionsBuilder<TApiHandler> where TApiHandler : ApiHandler
     {
         private IServiceCollection _serviceCollection;
 
-        /// <summary>
-        /// Gets the Source, Resource, ResourcePrecursor and Timeout period from the <see cref="IConfiguration"/>.
-        /// Note: Source and Resource MUST be supplied if this is used, ResourcePrecursor and Timeout are optional
-        /// </summary>
-        /// <param name="configuration">The <see cref="IConfiguration"/> the values will be retrieved from</param>
+        /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiHandler}.UseConfiguration"/>
         public void UseConfiguration(IConfiguration configuration)
         {
             if (ClientOverride != null)
@@ -70,10 +67,7 @@ namespace SereneApi.DependencyInjection.Types
             #endregion
         }
 
-        /// <summary>
-        /// Adds an <see cref="ILoggerFactory"/> to the <see cref="ApiHandler"/> allowing built in Logging
-        /// </summary>
-        /// <param name="loggerFactory">The <see cref="IQueryFactory"/> to be used for Logging</param>
+        /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiHandler}.AddLoggerFactory"/>
         public void AddLoggerFactory(ILoggerFactory loggerFactory)
         {
             ILogger logger = loggerFactory.CreateLogger<TApiHandler>();
@@ -81,7 +75,7 @@ namespace SereneApi.DependencyInjection.Types
             DependencyCollection.AddDependency(logger);
         }
 
-        internal void AddServicesCollection(IServiceCollection serviceCollection)
+        public void AddServicesCollection(IServiceCollection serviceCollection)
         {
             _serviceCollection = serviceCollection;
 
@@ -89,7 +83,7 @@ namespace SereneApi.DependencyInjection.Types
             DependencyCollection.AddDependency(_serviceCollection, Binding.Unbound);
         }
 
-        internal IApiHandlerOptions<TApiHandler> BuildOptions()
+        public new IApiHandlerOptions<TApiHandler> BuildOptions()
         {
             bool usingClientFactory = Source == null;
 

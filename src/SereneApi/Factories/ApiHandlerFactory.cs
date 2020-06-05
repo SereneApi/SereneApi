@@ -3,12 +3,15 @@ using SereneApi.Types;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text.Json;
 
 namespace SereneApi.Factories
 {
     public class ApiHandlerFactory : IApiHandlerFactory, IDisposable
     {
-        private readonly Dictionary<Type, IApiHandlerOptions> _handlers = new Dictionary<Type, IApiHandlerOptions>();
+        private readonly Dictionary<Type, Action<IApiHandlerOptionsBuilder>> _handlers = new Dictionary<Type, Action<IApiHandlerOptionsBuilder>>();
+
+        private readonly Dictionary<Type, IApiHandlerFactoryExtensions> _handlerExtensions = new Dictionary<Type, IApiHandlerFactoryExtensions>();
 
         private readonly Dictionary<Type, HttpClient> _clients = new Dictionary<Type, HttpClient>();
 
@@ -19,12 +22,35 @@ namespace SereneApi.Factories
         /// <returns></returns>
         public TApiHandler Build<TApiHandler>() where TApiHandler : ApiHandler
         {
-            if (!_handlers.TryGetValue(typeof(TApiHandler), out IApiHandlerOptions options))
+            Type handlerType = typeof(TApiHandler);
+
+            if (!_handlers.TryGetValue(handlerType, out Action<IApiHandlerOptionsBuilder> optionsBuilderAction))
             {
                 throw new ArgumentException($"{nameof(TApiHandler)} has not been registered.");
             }
 
-            TApiHandler handler = (TApiHandler)Activator.CreateInstance(typeof(TApiHandler), options);
+            if (!_clients.TryGetValue(handlerType, out HttpClient client))
+            {
+                ApiHandlerFactoryExtensions<TApiHandler> extensions = (ApiHandlerFactoryExtensions<TApiHandler>)_handlerExtensions[handlerType];
+
+                if (extensions.DependencyCollection.TryGetDependency(out HttpMessageHandler messageHandler))
+                {
+                    client = new HttpClient(messageHandler);
+                }
+                else
+                {
+                    client = new HttpClient();
+                }
+
+                _clients.Add(handlerType, client);
+            }
+
+            // Disable client disposal for this ApiHandler as this factory has ownership of the client.
+            ApiHandlerOptionsBuilder options = new ApiHandlerOptionsBuilder(client, false);
+
+            optionsBuilderAction.Invoke(options);
+
+            TApiHandler handler = (TApiHandler)Activator.CreateInstance(typeof(TApiHandler), options.BuildOptions());
 
             return handler;
         }
@@ -34,7 +60,7 @@ namespace SereneApi.Factories
         /// </summary>
         /// <typeparam name="TApiHandler"></typeparam>
         /// <param name="optionsAction"></param>
-        public void RegisterHandlerOptions<TApiHandler>(Action<ApiHandlerOptionsBuilder> optionsAction) where TApiHandler : ApiHandler
+        public IApiHandlerFactoryExtensions RegisterHandlerOptions<TApiHandler>(Action<IApiHandlerOptionsBuilder> optionsAction) where TApiHandler : ApiHandler
         {
             Type handlerType = typeof(TApiHandler);
 
@@ -43,15 +69,22 @@ namespace SereneApi.Factories
                 throw new ArgumentException($"Cannot Register Multiple Instances of {nameof(TApiHandler)}");
             }
 
-            HttpClient client = new HttpClient();
+            _handlers.Add(handlerType, optionsAction);
 
-            // Disable client disposal for this ApiHandler as this factory has ownership of the client.
-            ApiHandlerOptionsBuilder optionsBuilder = new ApiHandlerOptionsBuilder(client, false);
+            ApiHandlerFactoryExtensions<TApiHandler> extensions = new ApiHandlerFactoryExtensions<TApiHandler>();
 
-            optionsAction.Invoke(optionsBuilder);
+            ApiHandlerOptionsBuilder builder = new ApiHandlerOptionsBuilder();
 
-            _handlers.Add(handlerType, optionsBuilder.BuildOptions());
-            _clients.Add(handlerType, client);
+            optionsAction.Invoke(builder);
+
+            if (builder.DependencyCollection.TryGetDependency(out JsonSerializerOptions serializerOptions))
+            {
+                extensions.DependencyCollection.AddDependency(serializerOptions);
+            }
+
+            _handlerExtensions.Add(handlerType, extensions);
+
+            return extensions;
         }
 
         #region IDisposable
@@ -74,15 +107,6 @@ namespace SereneApi.Factories
 
             if (disposing)
             {
-                // Dispose of options anyway to be sure there are no other disposables contained.
-                foreach (IApiHandlerOptions options in _handlers.Values)
-                {
-                    if (options is IDisposable disposableOptions)
-                    {
-                        disposableOptions.Dispose();
-                    }
-                }
-
                 // Now dispose the clients.
                 foreach (HttpClient client in _clients.Values)
                 {
