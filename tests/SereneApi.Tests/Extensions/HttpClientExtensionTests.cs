@@ -1,4 +1,4 @@
-﻿using SereneApi.Tests.Mock.Handlers;
+﻿using SereneApi.Tests.Mock;
 using Shouldly;
 using System;
 using System.Net.Http;
@@ -21,9 +21,9 @@ namespace SereneApi.Tests.Extensions
                 BaseAddress = source
             };
 
-            using UserApiHandler userApi = client.CreateApiHandler<UserApiHandler>();
+            using TestApiHandler testApi = client.CreateApiHandler<TestApiHandler>();
 
-            userApi.Source.ShouldBe(source);
+            testApi.Source.ShouldBe(source);
         }
 
         [Theory]
@@ -41,7 +41,7 @@ namespace SereneApi.Tests.Extensions
 
             Should.Throw<ArgumentException>(() =>
             {
-                client.CreateApiHandler<UserApiHandler>();
+                client.CreateApiHandler<TestApiHandler>();
             });
         }
     }

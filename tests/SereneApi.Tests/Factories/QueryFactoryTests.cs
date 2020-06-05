@@ -1,5 +1,6 @@
 ﻿using SereneApi.Factories;
 using SereneApi.Interfaces;
+using SereneApi.Tests.Mock;
 using Shouldly;
 using System;
 using Xunit;
@@ -8,28 +9,19 @@ namespace SereneApi.Tests.Factories
 {
     public class QueryFactoryTests
     {
-        private class QueryObject
-        {
-            public int Age { get; set; }
-
-            public string Name { get; set; }
-
-            public DateTime BirthDate { get; set; }
-        }
-
         [Fact]
         public void BuildQuery()
         {
             IQueryFactory queryFactory = new QueryFactory();
 
-            QueryObject queryObject = new QueryObject
+            MockPersonDto personDto = new MockPersonDto
             {
                 Age = 18,
                 Name = "John Smith",
                 BirthDate = new DateTime(2000, 05, 15)
             };
 
-            string query = queryFactory.Build(queryObject);
+            string query = queryFactory.Build(personDto);
 
             query.ShouldBe("?Age=18&Name=John Smith&BirthDate=2000-05-15");
         }
@@ -39,14 +31,14 @@ namespace SereneApi.Tests.Factories
         {
             IQueryFactory queryFactory = new QueryFactory();
 
-            QueryObject queryObject = new QueryObject
+            MockPersonDto personDto = new MockPersonDto
             {
                 Age = 18,
                 Name = "John Smith",
                 BirthDate = new DateTime(2000, 05, 15, 05, 35, 20)
             };
 
-            string query = queryFactory.Build(queryObject);
+            string query = queryFactory.Build(personDto);
 
             query.ShouldBe("?Age=18&Name=John Smith&BirthDate=2000-05-15 05:35:20");
         }
@@ -56,7 +48,7 @@ namespace SereneApi.Tests.Factories
         {
             IQueryFactory queryFactory = new QueryFactory();
 
-            QueryObject queryObject = new QueryObject
+            MockPersonDto personDto = new MockPersonDto
             {
                 Age = 18,
                 Name = "John Smith",
@@ -65,7 +57,7 @@ namespace SereneApi.Tests.Factories
 
             Should.Throw<ArgumentException>(() =>
             {
-                queryFactory.Build(queryObject, o => new { });
+                queryFactory.Build(personDto, o => new { });
             });
         }
 
@@ -74,14 +66,14 @@ namespace SereneApi.Tests.Factories
         {
             IQueryFactory queryFactory = new QueryFactory();
 
-            QueryObject queryObject = new QueryObject
+            MockPersonDto personDto = new MockPersonDto
             {
                 Age = 18,
                 Name = "John Smith",
                 BirthDate = new DateTime(2000, 05, 15, 05, 35, 20)
             };
 
-            string query = queryFactory.Build(queryObject, o => new { o.Age });
+            string query = queryFactory.Build(personDto, o => new { o.Age });
 
             query.ShouldBe("?Age=18");
         }
@@ -91,14 +83,14 @@ namespace SereneApi.Tests.Factories
         {
             IQueryFactory queryFactory = new QueryFactory();
 
-            QueryObject queryObject = new QueryObject
+            MockPersonDto personDto = new MockPersonDto
             {
                 Age = 18,
                 Name = "John Smith",
                 BirthDate = new DateTime(2000, 05, 15, 05, 35, 20)
             };
 
-            string query = queryFactory.Build(queryObject, o => new { o.Age, o.Name });
+            string query = queryFactory.Build(personDto, o => new { o.Age, o.Name });
 
             query.ShouldBe("?Age=18&Name=John Smith");
         }
@@ -108,14 +100,14 @@ namespace SereneApi.Tests.Factories
         {
             IQueryFactory queryFactory = new QueryFactory(CustomQueryFormatter);
 
-            QueryObject queryObject = new QueryObject
+            MockPersonDto personDto = new MockPersonDto
             {
                 Age = 18,
                 Name = "John Smith",
                 BirthDate = new DateTime(2000, 05, 15, 05, 35, 20)
             };
 
-            string query = queryFactory.Build(queryObject);
+            string query = queryFactory.Build(personDto);
 
             query.ShouldBe("?Age=18&Name=John Smith&BirthDate=15-05-2000");
         }

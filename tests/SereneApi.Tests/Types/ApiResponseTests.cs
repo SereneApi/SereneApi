@@ -1,5 +1,4 @@
-﻿using SereneApi.Abstraction;
-using SereneApi.Types;
+﻿using SereneApi.Types;
 using Shouldly;
 using System;
 using Xunit;
@@ -16,7 +15,7 @@ namespace SereneApi.Tests.Types
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
             response.Exception.ShouldBeNull();
-            response.Message.ShouldBe(string.Empty);
+            response.Message.ShouldBeNull();
         }
 
         [Fact]
@@ -29,7 +28,7 @@ namespace SereneApi.Tests.Types
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
             response.Exception.ShouldBeNull();
-            response.Message.ShouldBe(string.Empty);
+            response.Message.ShouldBeNull();
             response.Result.ShouldBe(resultString);
         }
 

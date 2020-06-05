@@ -1,6 +1,6 @@
 ﻿using SereneApi.Factories;
 using SereneApi.Interfaces;
-using SereneApi.Tests.Mock.Handlers;
+using SereneApi.Tests.Mock;
 using Shouldly;
 using System;
 using Xunit;
@@ -20,15 +20,15 @@ namespace SereneApi.Tests.Factories
 
             ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterHandlerOptions<UserApiHandler>(o =>
+            handlerFactory.RegisterHandlerOptions<TestApiHandler>(o =>
             {
                 o.UseSource(source, resource);
             });
 
-            UserApiHandler userApi = handlerFactory.Build<UserApiHandler>();
+            TestApiHandler testApiHandler = handlerFactory.Build<TestApiHandler>();
 
-            userApi.Source.ShouldBe(sourceUri);
-            userApi.Resource.ShouldBe(resource);
+            testApiHandler.Source.ShouldBe(sourceUri);
+            testApiHandler.Resource.ShouldBe(resource);
 
             handlerFactory.Dispose();
         }
@@ -51,15 +51,15 @@ namespace SereneApi.Tests.Factories
 
             ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterHandlerOptions<UserApiHandler>(o =>
+            handlerFactory.RegisterHandlerOptions<TestApiHandler>(o =>
             {
                 o.UseSource(source, resource, resourcePath);
             });
 
-            UserApiHandler userApi = handlerFactory.Build<UserApiHandler>();
+            TestApiHandler testApiHandler = handlerFactory.Build<TestApiHandler>();
 
-            userApi.Source.ShouldBe(sourceUri);
-            userApi.Resource.ShouldBe(resource);
+            testApiHandler.Source.ShouldBe(sourceUri);
+            testApiHandler.Resource.ShouldBe(resource);
 
             handlerFactory.Dispose();
         }
@@ -69,14 +69,14 @@ namespace SereneApi.Tests.Factories
         {
             ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterHandlerOptions<UserApiHandler>(o =>
+            handlerFactory.RegisterHandlerOptions<TestApiHandler>(o =>
             {
                 o.UseSource("http://localhost", "Users");
             });
 
             Should.Throw<ArgumentException>(() =>
             {
-                handlerFactory.RegisterHandlerOptions<UserApiHandler>(o =>
+                handlerFactory.RegisterHandlerOptions<TestApiHandler>(o =>
                 {
                     o.UseSource("http://localhost", "Users");
                 });
@@ -90,7 +90,7 @@ namespace SereneApi.Tests.Factories
 
             Should.Throw<ArgumentException>(() =>
             {
-                handlerFactory.Build<UserApiHandler>();
+                handlerFactory.Build<TestApiHandler>();
             });
         }
     }

@@ -1,10 +1,8 @@
-﻿using SereneApi.Abstraction;
-using SereneApi.Enums;
-using System;
+﻿using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace SereneApi.Tests
+namespace SereneApi.Tests.Mock
 {
     public class TestApiHandler : ApiHandler
     {
