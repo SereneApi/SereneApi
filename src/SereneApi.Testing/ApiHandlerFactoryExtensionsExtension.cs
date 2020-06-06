@@ -1,4 +1,5 @@
-﻿using SereneApi.Interfaces;
+﻿using SereneApi.Helpers;
+using SereneApi.Interfaces;
 using SereneApi.Types;
 using System;
 using System.Net;
@@ -9,7 +10,7 @@ namespace SereneApi.Testing
 {
     public static class ApiHandlerFactoryExtensionsExtension
     {
-        public static IApiHandlerFactoryExtensions WithMoqResponse(this IApiHandlerFactoryExtensions extensions, HttpResponseMessage response, Uri requestUri = null)
+        public static IApiHandlerFactoryExtensions WithMockResponse(this IApiHandlerFactoryExtensions extensions, HttpResponseMessage response, Uri requestUri = null)
         {
             CoreOptions coreOptions = GetCoreOptions(extensions);
 
@@ -20,16 +21,16 @@ namespace SereneApi.Testing
             return extensions;
         }
 
-        public static IApiHandlerFactoryExtensions WithMoqResponse(this IApiHandlerFactoryExtensions extensions, Action<HttpResponseMessage> responseAction, Uri requestUri = null)
+        public static IApiHandlerFactoryExtensions WithMockResponse(this IApiHandlerFactoryExtensions extensions, Action<HttpResponseMessage> responseAction, Uri requestUri = null)
         {
             HttpResponseMessage response = new HttpResponseMessage();
 
             responseAction.Invoke(response);
 
-            return WithMoqResponse(extensions, response, requestUri);
+            return WithMockResponse(extensions, response, requestUri);
         }
 
-        public static IApiHandlerFactoryExtensions WithMoqResponse<TContent>(this IApiHandlerFactoryExtensions extensions, TContent content, Uri requestUri = null, JsonSerializerOptions serializerOptionsOverride = null)
+        public static IApiHandlerFactoryExtensions WithMockResponse<TContent>(this IApiHandlerFactoryExtensions extensions, TContent content, Uri requestUri = null, JsonSerializerOptions serializerOptionsOverride = null)
         {
             CoreOptions coreOptions = GetCoreOptions(extensions);
 
@@ -58,14 +59,34 @@ namespace SereneApi.Testing
                 Content = new StringContent($"{stringContent}")
             };
 
-            return WithMoqResponse(extensions, response, requestUri);
+            return WithMockResponse(extensions, response, requestUri);
         }
 
         public static IApiHandlerFactoryExtensions WithTimeoutResponse(this IApiHandlerFactoryExtensions extensions)
         {
             CoreOptions coreOptions = GetCoreOptions(extensions);
 
-            HttpMessageHandler mockHttpMessage = new TimeoutMessageHandler();
+            HttpMessageHandler mockHttpMessage = new MockHttpMessageHandler();
+
+            coreOptions.DependencyCollection.AddDependency(mockHttpMessage);
+
+            return extensions;
+        }
+
+        public static IApiHandlerFactoryExtensions WithTimeout(this IApiHandlerFactoryExtensions extensions, uint timeoutCount)
+        {
+            CoreOptions coreOptions = GetCoreOptions(extensions);
+
+            if (!coreOptions.DependencyCollection.TryGetDependency(out HttpMessageHandler handler))
+            {
+                throw new MethodAccessException("This method can only be called after AddMockRequest");
+            }
+
+            ApiHandlerOptionsRules.ValidateRetryCount(timeoutCount);
+
+            MockHttpMessageHandler mockHandler = (MockHttpMessageHandler)handler;
+
+            HttpMessageHandler mockHttpMessage = mockHandler.AddTimeoutUntilSuccess((int)timeoutCount);
 
             coreOptions.DependencyCollection.AddDependency(mockHttpMessage);
 

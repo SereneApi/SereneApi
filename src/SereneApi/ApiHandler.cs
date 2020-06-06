@@ -191,12 +191,12 @@ namespace SereneApi
         /// Performs an in Path Request with query support returning a <see cref="TResponse"/>
         /// </summary>
         /// <typeparam name="TResponse">The type to be deserialized by the <see cref="ApiHandler"/> from the response</typeparam>
-        /// <typeparam name="TQueryContent">The type to be sent in the query</typeparam>
+        /// <typeparam name="TQuery">The type to be sent in the query</typeparam>
         /// <param name="method">The RESTful API <see cref="Method"/> to be used</param>
         /// <param name="endpoint">The <see cref="endpoint"/> to be performed</param>
         /// <param name="queryContent"> <see cref="queryContent"/> to be used when generating the <see cref="query"/></param>
         /// <param name="query">Selects parts of the <see cref="queryContent"/> to be converted into a query</param>
-        protected virtual Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQueryContent>(Method method, TQueryContent queryContent, Expression<Func<TQueryContent, object>> query, object endpoint = null) where TQueryContent : class
+        protected virtual Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQuery>(Method method, TQuery queryContent, Expression<Func<TQuery, object>> query, object endpoint = null) where TQuery : class
         {
             CheckIfDisposed();
 
@@ -211,13 +211,13 @@ namespace SereneApi
         /// Performs an in Path Request with query support returning a <see cref="TResponse"/>. The <see cref="endpointParameters"/> will be appended to the Url
         /// </summary>
         /// <typeparam name="TResponse">The type to be deserialized by the <see cref="ApiHandler"/> from the response</typeparam>
-        /// <typeparam name="TQueryContent">The type to be sent in the query</typeparam>
+        /// <typeparam name="TQuery">The type to be sent in the query</typeparam>
         /// <param name="method">The RESTful API <see cref="Method"/> to be used</param>
         /// <param name="endpointTemplate">The endpoint to be performed, supports templates for string formatting with <see cref="endpointParameters"/></param>
         /// <param name="queryContent">The <see cref="queryContent"/> to be used when generating the <see cref="query"/></param>
         /// <param name="query">Selects parts of the <see cref="queryContent"/> to be converted into a query</param>
         /// <param name="endpointParameters">The <see cref="endpointParameters"/> to be appended to the Url</param>
-        protected virtual Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQueryContent>(Method method, TQueryContent queryContent, Expression<Func<TQueryContent, object>> query, string endpointTemplate, params object[] endpointParameters) where TQueryContent : class
+        protected virtual Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQuery>(Method method, TQuery queryContent, Expression<Func<TQuery, object>> query, string endpointTemplate, params object[] endpointParameters) where TQuery : class
         {
             CheckIfDisposed();
 
@@ -726,7 +726,7 @@ namespace SereneApi
             string endpoint = string.Format(template, parameters);
 
             // If the length is different the endpoint has been formatted correctly.
-            if (endpoint.Length != template.Length)
+            if (endpoint != template)
             {
                 return $"{endpoint}";
             }

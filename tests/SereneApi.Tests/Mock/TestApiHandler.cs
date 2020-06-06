@@ -30,14 +30,14 @@ namespace SereneApi.Tests.Mock
             return base.InPathRequestAsync<TResponse>(method, endpointTemplate, endpointParameters);
         }
 
-        public new Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQueryContent>(Method method, TQueryContent queryContent, Expression<Func<TQueryContent, object>> query, object endpoint = null) where TQueryContent : class
+        public new Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQuery>(Method method, TQuery queryContent, Expression<Func<TQuery, object>> query, object endpoint = null) where TQuery : class
         {
-            return base.InPathRequestWithQueryAsync<TResponse, TQueryContent>(method, queryContent, query, endpoint);
+            return base.InPathRequestWithQueryAsync<TResponse, TQuery>(method, queryContent, query, endpoint);
         }
 
-        public new Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQueryContent>(Method method, TQueryContent queryContent, Expression<Func<TQueryContent, object>> query, string endpointTemplate, params object[] endpointParameters) where TQueryContent : class
+        public new Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQuery>(Method method, TQuery queryContent, Expression<Func<TQuery, object>> query, string endpointTemplate, params object[] endpointParameters) where TQuery : class
         {
-            return base.InPathRequestWithQueryAsync<TResponse, TQueryContent>(method, queryContent, query, endpointTemplate, endpointParameters);
+            return base.InPathRequestWithQueryAsync<TResponse, TQuery>(method, queryContent, query, endpointTemplate, endpointParameters);
         }
 
         public new Task<IApiResponse> InBodyRequestAsync<TContent>(Method method, TContent inBodyContent, object endpoint = null)

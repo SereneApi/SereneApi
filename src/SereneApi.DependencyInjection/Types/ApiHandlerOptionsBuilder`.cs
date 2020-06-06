@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using SereneApi.DependencyInjection.Interfaces;
 using SereneApi.Enums;
 using SereneApi.Helpers;
-using SereneApi.Interfaces;
 using SereneApi.Types;
 using SereneApi.Types.Dependencies;
 using System;

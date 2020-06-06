@@ -109,12 +109,12 @@ Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(Method met
 The most advanced out of the three types of requests. Allowing custom queries from the supplied, whilst also offering built-in functionality to specify what properties are to be used for the query.
 >**Take Note:** In Path Requests with Queries supports all 5 Methods. Post, Get, Put, Patch and Delete.
 
-The main difference between the With Query Request and the In Path Request is the addition of the \<TQueryContent> Type parameter and the query expression. The query expression will provide a new object based on the selected properties, the new object will be used for query generation. If there is no query expression provided all of the properties available in content will be used in the query.
+The main difference between the With Query Request and the In Path Request is the addition of the \<TQuery> Type parameter and the query expression. The query expression will provide a new object based on the selected properties, the new object will be used for query generation. If there is no query expression provided all of the properties available in content will be used in the query.
 ```csharp
-Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQueryContent>(Method method, TQueryContent queryContent, Expression<Func<TQueryContent, object>> query, object endpoint = null)
+Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQuery>(Method method, TQuery queryContent, Expression<Func<TQuery, object>> query, object endpoint = null)
 ```
 ```csharp
-Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQueryContent>(Method method, TQueryContent queryContent, Expression<Func<TQueryContent, object>> query, string endpointTemplate, params object[] endpointParameters)
+Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQuery>(Method method, TQuery queryContent, Expression<Func<TQuery, object>> query, string endpointTemplate, params object[] endpointParameters)
 ```
 ## CrudApiHandler
 
