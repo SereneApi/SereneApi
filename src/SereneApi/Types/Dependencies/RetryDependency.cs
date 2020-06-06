@@ -1,4 +1,7 @@
-﻿namespace SereneApi.Types.Dependencies
+﻿using System;
+using System.Threading.Tasks;
+
+namespace SereneApi.Types.Dependencies
 {
     public readonly struct RetryDependency
     {
