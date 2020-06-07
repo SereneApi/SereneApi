@@ -1,10 +1,12 @@
-﻿namespace SereneApi.Types.Dependencies
+﻿using SereneApi.Helpers;
+
+namespace SereneApi.Types.Dependencies
 {
     public readonly struct RetryDependency
     {
-        public uint Count { get; }
+        public int Count { get; }
 
-        public RetryDependency(uint count)
+        public RetryDependency(int count)
         {
             Count = count;
         }

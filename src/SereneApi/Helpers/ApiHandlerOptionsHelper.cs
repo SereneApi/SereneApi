@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-
-namespace SereneApi.Helpers
+﻿namespace SereneApi.Helpers
 {
     /// <summary>
     /// Contains methods to help with <see cref="IApiHandlerOptions"/>

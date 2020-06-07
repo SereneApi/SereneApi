@@ -11,7 +11,7 @@ namespace SereneApi.Tests.Helper
         [InlineData(1)]
         [InlineData(3)]
         [InlineData(5)]
-        public void ValidRetryCountPass(uint count)
+        public void ValidRetryCountPass(int count)
         {
             Should.NotThrow(() =>
             {
@@ -22,7 +22,7 @@ namespace SereneApi.Tests.Helper
         [Theory]
         [InlineData(0)]
         [InlineData(6)]
-        public void ValidRetryCountFail(uint count)
+        public void ValidRetryCountFail(int count)
         {
             Should.Throw<ArgumentException>(() =>
             {

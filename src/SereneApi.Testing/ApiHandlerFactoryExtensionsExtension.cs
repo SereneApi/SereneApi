@@ -73,7 +73,20 @@ namespace SereneApi.Testing
             return extensions;
         }
 
-        public static IApiHandlerFactoryExtensions WithTimeout(this IApiHandlerFactoryExtensions extensions, uint timeoutCount)
+        public static IApiHandlerFactoryExtensions WithTimeoutResponse(this IApiHandlerFactoryExtensions extensions, TimeSpan timeout)
+        {
+            CoreOptions coreOptions = GetCoreOptions(extensions);
+
+            MockHttpMessageHandler mockHttpMessage = new MockHttpMessageHandler();
+
+            mockHttpMessage.AddWaitUntilSuccess(timeout);
+
+            coreOptions.DependencyCollection.AddDependency((HttpMessageHandler)mockHttpMessage);
+
+            return extensions;
+        }
+
+        public static IApiHandlerFactoryExtensions WithTimeout(this IApiHandlerFactoryExtensions extensions, int timeoutCount)
         {
             CoreOptions coreOptions = GetCoreOptions(extensions);
 
@@ -84,11 +97,44 @@ namespace SereneApi.Testing
 
             ApiHandlerOptionsRules.ValidateRetryCount(timeoutCount);
 
-            MockHttpMessageHandler mockHandler = (MockHttpMessageHandler)handler;
+            ((MockHttpMessageHandler)handler).AddTimeoutUntilSuccess(timeoutCount);
 
-            HttpMessageHandler mockHttpMessage = mockHandler.AddTimeoutUntilSuccess((int)timeoutCount);
+            coreOptions.DependencyCollection.AddDependency(handler);
 
-            coreOptions.DependencyCollection.AddDependency(mockHttpMessage);
+            return extensions;
+        }
+
+        public static IApiHandlerFactoryExtensions WithTimeout(this IApiHandlerFactoryExtensions extensions, TimeSpan waitTime)
+        {
+            CoreOptions coreOptions = GetCoreOptions(extensions);
+
+            if (!coreOptions.DependencyCollection.TryGetDependency(out HttpMessageHandler handler))
+            {
+                throw new MethodAccessException("This method can only be called after AddMockRequest");
+            }
+
+            ((MockHttpMessageHandler)handler).AddWaitUntilSuccess(waitTime);
+
+            coreOptions.DependencyCollection.AddDependency(handler);
+
+            return extensions;
+        }
+
+        public static IApiHandlerFactoryExtensions WithTimeout(this IApiHandlerFactoryExtensions extensions, int timeoutCount, TimeSpan waitTime)
+        {
+            CoreOptions coreOptions = GetCoreOptions(extensions);
+
+            if (!coreOptions.DependencyCollection.TryGetDependency(out HttpMessageHandler handler))
+            {
+                throw new MethodAccessException("This method can only be called after AddMockRequest");
+            }
+
+            ApiHandlerOptionsRules.ValidateRetryCount(timeoutCount);
+
+            ((MockHttpMessageHandler)handler).AddTimeoutUntilSuccess(timeoutCount);
+            ((MockHttpMessageHandler)handler).AddWaitUntilSuccess(waitTime);
+
+            coreOptions.DependencyCollection.AddDependency(handler);
 
             return extensions;
         }

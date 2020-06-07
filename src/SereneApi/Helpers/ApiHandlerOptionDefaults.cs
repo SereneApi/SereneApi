@@ -3,9 +3,8 @@ using SereneApi.Interfaces;
 using System;
 using System.Net;
 using System.Net.Http.Headers;
-using System.Text.Json;
 
-namespace SereneApi
+namespace SereneApi.Helpers
 {
     /// <summary>
     /// Contains the default values to be used by the <see cref="ApiHandler"/>
@@ -41,14 +40,6 @@ namespace SereneApi
         /// <summary>
         /// The Default retry count used by the <see cref="ApiHandler"/>
         /// </summary>
-        public const uint RetryCount = 0;
-
-        /// <summary>
-        /// The Default <see cref="JsonSerializerOptions"/> used by the <see cref="ApiHandler"/>.
-        /// </summary>
-        public static JsonSerializerOptions JsonSerializerOptionsBuilder = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        };
+        public const int RetryCount = 0;
     }
 }

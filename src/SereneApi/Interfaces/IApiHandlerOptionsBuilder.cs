@@ -3,7 +3,6 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text.Json;
 
 namespace SereneApi.Interfaces
 {
@@ -39,22 +38,12 @@ namespace SereneApi.Interfaces
         /// When set, upon a timeout the <see cref="ApiHandler"/> will re-attempt the request. By Default this is disabled.
         /// </summary>
         /// <param name="retryCount">How many times the <see cref="ApiHandler"/> will re-attempt the request.</param>
-        void SetRetryOnTimeout(uint retryCount);
+        void SetRetryOnTimeout(int retryCount);
 
         /// <summary>
         /// Overrides the default <see cref="HttpResponseHeaders"/> with the supplied <see cref="HttpResponseHeaders"/>.
         /// </summary>
         void UseHttpRequestHeaders(Action<HttpRequestHeaders> requestHeaderBuilder);
-
-        /// <summary>
-        /// Overrides the default <see cref="JsonSerializerOptions"/> with the supplied <see cref="JsonSerializerOptions"/>.
-        /// </summary>
-        void UseJsonSerializerOptions(JsonSerializerOptions jsonSerializerOptions);
-
-        /// <summary>
-        /// Overrides the default <see cref="JsonSerializerOptions"/> with the supplied <see cref="JsonSerializerOptions"/>.
-        /// </summary>
-        void UseJsonSerializerOptions(Action<JsonSerializerOptions> builder);
 
         /// <summary>
         /// Overrides the default <see cref="IQueryFactory"/> with the supplied <see cref="IQueryFactory"/>.

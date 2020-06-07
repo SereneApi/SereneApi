@@ -11,9 +11,11 @@ namespace SereneApi.Testing
 
         private readonly Uri _requestUri;
 
-        private readonly int _timeoutsUntilSuccess;
+        private int _timeoutsUntilSuccess;
 
         private uint _timeoutCount;
+
+        private TimeSpan _waitTime = TimeSpan.Zero;
 
         /// <summary>
         /// Will only ever return Timeouts.
@@ -28,18 +30,21 @@ namespace SereneApi.Testing
         /// </summary>
         /// <param name="mockResponse">The response to be returned.</param>
         /// <param name="requestUri">The expected Request Uri, throws an exception if they do not add up.</param>
-        /// <param name="timeoutsUntilSuccess">How many times the request will timeout until returning the response.</param>
-        public MockHttpMessageHandler(HttpResponseMessage mockResponse, Uri requestUri = null, int timeoutsUntilSuccess = 0)
+        public MockHttpMessageHandler(HttpResponseMessage mockResponse, Uri requestUri = null)
         {
             _mockResponse = mockResponse;
             _requestUri = requestUri;
-            _timeoutsUntilSuccess = timeoutsUntilSuccess;
         }
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             return Task.Factory.StartNew(() =>
             {
+                if (_waitTime != TimeSpan.Zero && _timeoutCount < _timeoutsUntilSuccess)
+                {
+                    Thread.Sleep(_waitTime);
+                }
+
                 if (_timeoutsUntilSuccess >= 0 || _timeoutCount == _timeoutsUntilSuccess)
                 {
                     if (_requestUri == null || request.RequestUri == _requestUri)
@@ -56,9 +61,14 @@ namespace SereneApi.Testing
             }, cancellationToken);
         }
 
-        public MockHttpMessageHandler AddTimeoutUntilSuccess(int timeoutsUntilSuccess)
+        public void AddTimeoutUntilSuccess(int timeoutsUntilSuccess)
         {
-            return new MockHttpMessageHandler(_mockResponse, _requestUri, _timeoutsUntilSuccess);
+            _timeoutsUntilSuccess = timeoutsUntilSuccess;
+        }
+
+        public void AddWaitUntilSuccess(TimeSpan waitTime)
+        {
+            _waitTime = waitTime;
         }
     }
 }

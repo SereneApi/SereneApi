@@ -2,13 +2,12 @@
 using SereneApi.Enums;
 using SereneApi.Helpers;
 using SereneApi.Interfaces;
+using SereneApi.Serializers;
 using SereneApi.Types.Dependencies;
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text.Json;
 
 namespace SereneApi.Types
 {
@@ -47,7 +46,7 @@ namespace SereneApi.Types
         public ApiHandlerOptionsBuilder()
         {
             DependencyCollection.AddDependency(ApiHandlerOptionDefaults.QueryFactory);
-            DependencyCollection.AddDependency(ApiHandlerOptionDefaults.JsonSerializerOptionsBuilder);
+            DependencyCollection.AddDependency(JsonSerializer.Default);
             DependencyCollection.AddDependency(RetryDependency.Default);
         }
 
@@ -137,7 +136,7 @@ namespace SereneApi.Types
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.SetRetryOnTimeout"/>
-        public void SetRetryOnTimeout(uint retryCount)
+        public void SetRetryOnTimeout(int retryCount)
         {
             ApiHandlerOptionsRules.ValidateRetryCount(retryCount);
 
@@ -153,26 +152,6 @@ namespace SereneApi.Types
             }
 
             RequestHeaderBuilder = requestHeaderBuilder;
-        }
-
-        /// <inheritdoc>
-        ///     <cref>IApiHandlerOptionsBuilder.UseJsonSerializerOptions</cref>
-        /// </inheritdoc>
-        public void UseJsonSerializerOptions(JsonSerializerOptions jsonSerializerOptions)
-        {
-            DependencyCollection.AddDependency(jsonSerializerOptions);
-        }
-
-        /// <inheritdoc>
-        ///     <cref>IApiHandlerOptionsBuilder.UseJsonSerializerOptions</cref>
-        /// </inheritdoc>
-        public void UseJsonSerializerOptions(Action<JsonSerializerOptions> builder)
-        {
-            JsonSerializerOptions options = new JsonSerializerOptions();
-
-            builder?.Invoke(options);
-
-            UseJsonSerializerOptions(options);
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseQueryFactory"/>

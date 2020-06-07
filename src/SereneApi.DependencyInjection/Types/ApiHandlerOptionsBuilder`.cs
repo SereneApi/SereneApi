@@ -56,7 +56,7 @@ namespace SereneApi.DependencyInjection.Types
             #endregion
             #region Retry Count
 
-            uint retryCount = configuration.Get<uint>(ConfigurationConstants.RetryCountKey, ConfigurationConstants.RetryIsRequired);
+            int retryCount = configuration.Get<int>(ConfigurationConstants.RetryCountKey, ConfigurationConstants.RetryIsRequired);
 
             ApiHandlerOptionsRules.ValidateRetryCount(retryCount);
 
