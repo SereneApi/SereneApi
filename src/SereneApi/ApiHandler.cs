@@ -55,15 +55,14 @@ namespace SereneApi
         /// </summary>
         protected virtual HttpClient Client => _httpClient;
 
-        /// <summary>
         /// <inheritdoc cref="IApiHandlerOptions.Source"/>
-        /// </summary>
         public Uri Source => _options.Source;
 
-        /// <summary>
         /// <inheritdoc cref="IApiHandlerOptions.Resource"/>
-        /// </summary>
         public string Resource => _options.Resource;
+
+        /// <inheritdoc cref="IApiHandlerOptions.ResourcePath"/>
+        public string ResourcePath => _options.ResourcePath;
 
         /// <summary>
         /// How long a request will stay alive before expiring
@@ -647,11 +646,11 @@ namespace SereneApi
 
             if (endpoint == null)
             {
-                route = new Uri(string.Empty, UriKind.Relative);
+                route = new Uri($"{ResourcePath}{Resource}", UriKind.Relative);
             }
             else
             {
-                route = new Uri($"{endpoint}", UriKind.Relative);
+                route = new Uri($"{ResourcePath}{Resource}/{endpoint}", UriKind.Relative);
             }
 
             return route;
@@ -692,7 +691,7 @@ namespace SereneApi
         {
             string queryString = GenerateQuery(content, query);
 
-            Uri route = new Uri($"{endpoint}{queryString}", UriKind.Relative);
+            Uri route = new Uri($"{ResourcePath}{Resource}{endpoint}{queryString}", UriKind.Relative);
 
             return route;
         }
@@ -711,7 +710,7 @@ namespace SereneApi
 
             string queryString = GenerateQuery(content, query);
 
-            Uri route = new Uri($"{action}{queryString}", UriKind.Relative);
+            Uri route = new Uri($"{ResourcePath}{Resource}/{action}{queryString}", UriKind.Relative);
 
             return route;
         }
@@ -737,8 +736,10 @@ namespace SereneApi
                 throw new ArgumentException("Multiple Parameters must be used with a format-table endpoint template.");
             }
 
+            endpoint = template;
+
             // Return an endpoint without formatting the template and appending the only parameter to the end.
-            return $"{template}/{parameters[0]}";
+            return $"{endpoint}/{parameters[0]}";
         }
 
         #endregion

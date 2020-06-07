@@ -44,12 +44,6 @@ namespace SereneApi
         public const uint RetryCount = 0;
 
         /// <summary>
-        /// The Source format string, used to create the Api Source.
-        /// {0 = Source}; {1 = Resource Path}; {2 = Resource}.
-        /// </summary>
-        public const string SourceFormat = "{0}/{1}{2}/";
-
-        /// <summary>
         /// The Default <see cref="JsonSerializerOptions"/> used by the <see cref="ApiHandler"/>.
         /// </summary>
         public static JsonSerializerOptions JsonSerializerOptionsBuilder = new JsonSerializerOptions

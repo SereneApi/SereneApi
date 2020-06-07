@@ -18,14 +18,18 @@ namespace SereneApi.Types
         /// <inheritdoc cref="IApiHandlerOptions.Resource"/>
         public string Resource { get; }
 
+        /// <inheritdoc cref="IApiHandlerOptions.ResourcePath"/>
+        public string ResourcePath { get; }
+
         #endregion
         #region Constructors
 
-        public ApiHandlerOptions(IDependencyCollection dependencyCollection, Uri source, string resource)
+        public ApiHandlerOptions(IDependencyCollection dependencyCollection, Uri source, string resource, string resourcePath)
         {
             Dependencies = dependencyCollection;
             Source = source;
             Resource = resource;
+            ResourcePath = resourcePath;
         }
 
         #endregion

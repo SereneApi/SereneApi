@@ -35,8 +35,9 @@ namespace SereneApi.DependencyInjection.Types
             string resource = configuration.Get<string>(ConfigurationConstants.ResourceKey, ConfigurationConstants.ResourceIsRequired);
             string resourcePath = configuration.Get<string>(ConfigurationConstants.ResourcePathKey, ConfigurationConstants.ResourcePathIsRequired);
 
-            Source = ApiHandlerOptionsHelper.FormatSource(source, resource, resourcePath);
-            Resource = null;
+            Source = new Uri(SourceHelpers.EnsureSourceSlashTermination(source));
+            Resource = SourceHelpers.EnsureSourceNoSlashTermination(resource);
+            ResourcePath = ApiHandlerOptionsHelper.UseOrGetDefaultResourcePath(resourcePath);
 
             #region Timeout
 
@@ -113,7 +114,7 @@ namespace SereneApi.DependencyInjection.Types
                 DependencyCollection.AddDependency(clientFactory.CreateClient(typeof(TApiHandler).ToString()));
             }
 
-            ApiHandlerOptions<TApiHandler> options = new ApiHandlerOptions<TApiHandler>(DependencyCollection, Source, Resource);
+            ApiHandlerOptions<TApiHandler> options = new ApiHandlerOptions<TApiHandler>(DependencyCollection, Source, Resource, ResourcePath);
 
             return options;
         }

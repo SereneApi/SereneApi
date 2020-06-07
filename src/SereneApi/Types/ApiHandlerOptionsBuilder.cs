@@ -4,6 +4,7 @@ using SereneApi.Helpers;
 using SereneApi.Interfaces;
 using SereneApi.Types.Dependencies;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -27,6 +28,8 @@ namespace SereneApi.Types
         protected Uri Source { get; set; }
 
         protected string Resource { get; set; }
+
+        protected string ResourcePath { get; set; }
 
         protected HttpClient ClientOverride { get; set; }
 
@@ -59,6 +62,16 @@ namespace SereneApi.Types
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseSource"/>
         public void UseSource(string source, string resource, string resourcePath = null)
         {
+            if (string.IsNullOrWhiteSpace(source))
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            if (string.IsNullOrWhiteSpace(resource))
+            {
+                throw new ArgumentException(nameof(resource));
+            }
+
             if (ClientOverride != null)
             {
                 throw new MethodAccessException("This method cannot be called after UseClientOverride");
@@ -70,8 +83,9 @@ namespace SereneApi.Types
             }
 
             // The Resource Precursors default value will be used if a null or whitespace value is provided.
-            Source = ApiHandlerOptionsHelper.FormatSource(source, resource, resourcePath);
-            Resource = resource;
+            Source = new Uri(SourceHelpers.EnsureSourceSlashTermination(source));
+            Resource = SourceHelpers.EnsureSourceNoSlashTermination(resource);
+            ResourcePath = ApiHandlerOptionsHelper.UseOrGetDefaultResourcePath(resourcePath);
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseClientOverride"/>
@@ -277,7 +291,7 @@ namespace SereneApi.Types
                 DependencyCollection.AddDependency(httpClient, _disposeClient ? Binding.Bound : Binding.Unbound);
             }
 
-            IApiHandlerOptions options = new ApiHandlerOptions(DependencyCollection, Source, Resource);
+            IApiHandlerOptions options = new ApiHandlerOptions(DependencyCollection, Source, Resource, ResourcePath);
 
             return options;
         }

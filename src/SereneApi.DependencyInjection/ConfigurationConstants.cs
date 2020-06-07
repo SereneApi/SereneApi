@@ -11,7 +11,7 @@
         public const string RetryCountKey = "RetryCount";
 
         public const bool SourceIsRequired = true;
-        public const bool ResourceIsRequired = false;
+        public const bool ResourceIsRequired = true;
         public const bool ResourcePathIsRequired = false;
         public const bool TimeoutIsRequired = false;
         public const bool RetryIsRequired = false;

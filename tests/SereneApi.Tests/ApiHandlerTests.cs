@@ -14,7 +14,7 @@ namespace SereneApi.Tests
         [Fact]
         public async Task SuccessfulGetRequestAsync()
         {
-            Uri requestUri = new Uri("http://localhost/api/Persons/");
+            Uri requestUri = new Uri("http://localhost/api/Persons");
 
             using ApiHandlerFactory factory = new ApiHandlerFactory();
 
@@ -39,7 +39,7 @@ namespace SereneApi.Tests
         [Fact]
         public async Task SuccessfulGetRequestGenericAsync()
         {
-            Uri requestUri = new Uri("http://localhost/api/Persons/");
+            Uri requestUri = new Uri("http://localhost/api/Persons");
 
             using ApiHandlerFactory factory = new ApiHandlerFactory();
 
@@ -148,7 +148,7 @@ namespace SereneApi.Tests
         [Fact]
         public async Task UnSuccessfulGetRequestAsync()
         {
-            Uri requestUri = new Uri("http://localhost/api/Persons/");
+            Uri requestUri = new Uri("http://localhost/api/Persons");
 
             const string reasonPhrase = "Could not find the specified person";
 
@@ -176,7 +176,7 @@ namespace SereneApi.Tests
         [Fact]
         public async Task UnSuccessfulGetRequestGenericAsync()
         {
-            Uri requestUri = new Uri("http://localhost/api/Persons/");
+            Uri requestUri = new Uri("http://localhost/api/Persons");
 
             const string reasonPhrase = "Could not find the specified person";
 
@@ -248,7 +248,7 @@ namespace SereneApi.Tests
         [Fact]
         public async Task SuccessfulGetRequestWithTimeoutAsync()
         {
-            Uri requestUri = new Uri("http://localhost/api/Persons/");
+            Uri requestUri = new Uri("http://localhost/api/Persons");
 
             using ApiHandlerFactory factory = new ApiHandlerFactory();
 
@@ -275,7 +275,7 @@ namespace SereneApi.Tests
         [Fact]
         public async Task SuccessfulGetRequestWithTimeoutGenericAsync()
         {
-            Uri requestUri = new Uri("http://localhost/api/Persons/");
+            Uri requestUri = new Uri("http://localhost/api/Persons");
 
             using ApiHandlerFactory factory = new ApiHandlerFactory();
 
@@ -305,7 +305,7 @@ namespace SereneApi.Tests
         [Fact]
         public async Task UnSuccessfulGetRequestWithTimeoutAsync()
         {
-            Uri requestUri = new Uri("http://localhost/api/Persons/");
+            Uri requestUri = new Uri("http://localhost/api/Persons");
 
             const string reasonPhrase = "Could not find the specified person";
 
@@ -335,7 +335,7 @@ namespace SereneApi.Tests
         [Fact]
         public async Task UnSuccessfulGetRequestWithTimeoutGenericAsync()
         {
-            Uri requestUri = new Uri("http://localhost/api/Persons/");
+            Uri requestUri = new Uri("http://localhost/api/Persons");
 
             const string reasonPhrase = "Could not find the specified person";
 
