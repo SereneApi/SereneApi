@@ -14,18 +14,12 @@ namespace SereneApi.Tests
         [Fact]
         public void GetRequestWithInvalidTemplateA()
         {
-            Uri requestUri = new Uri("http://localhost/api/Persons");
-
             using ApiHandlerFactory factory = new ApiHandlerFactory();
 
             factory.RegisterHandlerOptions<TestApiHandler>(builder =>
             {
                 builder.UseSource("http://localhost", "Persons");
-            })
-            .WithMockResponse(r =>
-            {
-                r.StatusCode = HttpStatusCode.OK;
-            }, requestUri);
+            });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -38,18 +32,12 @@ namespace SereneApi.Tests
         [Fact]
         public void GetRequestWithInvalidTemplateB()
         {
-            Uri requestUri = new Uri("http://localhost/api/Persons");
-
             using ApiHandlerFactory factory = new ApiHandlerFactory();
 
             factory.RegisterHandlerOptions<TestApiHandler>(builder =>
             {
                 builder.UseSource("http://localhost", "Persons");
-            })
-            .WithMockResponse(r =>
-            {
-                r.StatusCode = HttpStatusCode.OK;
-            }, requestUri);
+            });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -58,12 +46,82 @@ namespace SereneApi.Tests
                 await apiHandler.InPathRequestAsync(Method.Get, "{0}/Friends", 1, 2);
             });
         }
+        
+        [Fact]
+        public void ExceptionInBodyGet()
+        {
+            using ApiHandlerFactory factory = new ApiHandlerFactory();
+
+            factory.RegisterHandlerOptions<TestApiHandler>(builder =>
+            {
+                builder.UseSource("http://localhost", "Persons");
+            });
+
+            using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
+
+            Should.Throw<ArgumentException>(async () =>
+            {
+                await apiHandler.InBodyRequestAsync(Method.Get, MockPersonDto.John);
+            });
+        }
+        
+        [Fact]
+        public void ExceptionInBodyGetGeneric()
+        {
+            using ApiHandlerFactory factory = new ApiHandlerFactory();
+
+            factory.RegisterHandlerOptions<TestApiHandler>(builder =>
+            {
+                builder.UseSource("http://localhost", "Persons");
+            });
+
+            using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
+
+            Should.Throw<ArgumentException>(async () =>
+            {
+                await apiHandler.InBodyRequestAsync<MockPersonDto, MockPersonDto>(Method.Get, MockPersonDto.John);
+            });
+        }
+
+        [Fact]
+        public void ExceptionInBodyDelete()
+        {
+            using ApiHandlerFactory factory = new ApiHandlerFactory();
+
+            factory.RegisterHandlerOptions<TestApiHandler>(builder =>
+            {
+                builder.UseSource("http://localhost", "Persons");
+            });
+
+            using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
+
+            Should.Throw<ArgumentException>(async () =>
+            {
+                await apiHandler.InBodyRequestAsync(Method.Delete, MockPersonDto.John);
+            });
+        }
+
+        [Fact]
+        public void ExceptionInBodyDeleteGeneric()
+        {
+            using ApiHandlerFactory factory = new ApiHandlerFactory();
+
+            factory.RegisterHandlerOptions<TestApiHandler>(builder =>
+            {
+                builder.UseSource("http://localhost", "Persons");
+            });
+
+            using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
+
+            Should.Throw<ArgumentException>(async () =>
+            {
+                await apiHandler.InBodyRequestAsync<MockPersonDto, MockPersonDto>(Method.Delete, MockPersonDto.John);
+            });
+        }
 
         [Fact]
         public async Task SuccessfulGetRequestAsync()
         {
-            Uri requestUri = new Uri("http://localhost/api/Persons");
-
             using ApiHandlerFactory factory = new ApiHandlerFactory();
 
             factory.RegisterHandlerOptions<TestApiHandler>(builder =>
@@ -73,7 +131,8 @@ namespace SereneApi.Tests
             .WithMockResponse(r =>
             {
                 r.StatusCode = HttpStatusCode.OK;
-            }, requestUri);
+            })
+            .HasRequestUri("http://localhost/api/Persons");
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -87,15 +146,14 @@ namespace SereneApi.Tests
         [Fact]
         public async Task SuccessfulGetRequestGenericAsync()
         {
-            Uri requestUri = new Uri("http://localhost/api/Persons");
-
             using ApiHandlerFactory factory = new ApiHandlerFactory();
 
             factory.RegisterHandlerOptions<TestApiHandler>(builder =>
             {
                 builder.UseSource("http://localhost", "Persons");
             })
-            .WithMockResponse(MockPersonDto.John, requestUri);
+            .WithMockResponse(MockPersonDto.John)
+            .HasRequestUri("http://localhost/api/Persons");
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -115,8 +173,6 @@ namespace SereneApi.Tests
         [Fact]
         public async Task SuccessfulGetRequestWithTemplateAsync()
         {
-            Uri requestUri = new Uri("http://localhost/api/Persons/100/Details");
-
             using ApiHandlerFactory factory = new ApiHandlerFactory();
 
             factory.RegisterHandlerOptions<TestApiHandler>(builder =>
@@ -126,7 +182,8 @@ namespace SereneApi.Tests
             .WithMockResponse(r =>
             {
                 r.StatusCode = HttpStatusCode.OK;
-            }, requestUri);
+            })
+            .HasRequestUri("http://localhost/api/Persons/100/Details");
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -140,15 +197,14 @@ namespace SereneApi.Tests
         [Fact]
         public async Task SuccessfulGetRequestWithTemplateGenericAsync()
         {
-            Uri requestUri = new Uri("http://localhost/api/Persons/100/Details");
-
             using ApiHandlerFactory factory = new ApiHandlerFactory();
 
             factory.RegisterHandlerOptions<TestApiHandler>(builder =>
             {
                 builder.UseSource("http://localhost", "Persons");
             })
-            .WithMockResponse(MockPersonDto.John, requestUri);
+            .WithMockResponse(MockPersonDto.John)
+            .HasRequestUri("http://localhost/api/Persons/100/Details");
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -168,15 +224,14 @@ namespace SereneApi.Tests
         [Fact]
         public async Task SuccessfulGetRequestWithQueryGenericAsync()
         {
-            Uri requestUri = new Uri("http://localhost/api/Persons?Age=18&Name=John Smith");
-
             using ApiHandlerFactory factory = new ApiHandlerFactory();
 
             factory.RegisterHandlerOptions<TestApiHandler>(builder =>
             {
                 builder.UseSource("http://localhost", "Persons");
             })
-            .WithMockResponse(MockPersonDto.John, requestUri);
+            .WithMockResponse(MockPersonDto.John)
+            .HasRequestUri("http://localhost/api/Persons?Age=18&Name=John Smith");
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -196,15 +251,14 @@ namespace SereneApi.Tests
         [Fact]
         public async Task SuccessfulGetRequestWithQueryAndTemplateGenericAsync()
         {
-            Uri requestUri = new Uri("http://localhost/api/Persons/1/Friends?Name=John Smith");
-
             using ApiHandlerFactory factory = new ApiHandlerFactory();
 
             factory.RegisterHandlerOptions<TestApiHandler>(builder =>
             {
                 builder.UseSource("http://localhost", "Persons");
             })
-            .WithMockResponse(MockPersonDto.John, requestUri);
+            .WithMockResponse(MockPersonDto.John)
+            .HasRequestUri("http://localhost/api/Persons/1/Friends?Name=John Smith");
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -224,8 +278,6 @@ namespace SereneApi.Tests
         [Fact]
         public async Task UnSuccessfulGetRequestAsync()
         {
-            Uri requestUri = new Uri("http://localhost/api/Persons");
-
             const string reasonPhrase = "Could not find the specified person";
 
             using ApiHandlerFactory factory = new ApiHandlerFactory();
@@ -238,7 +290,8 @@ namespace SereneApi.Tests
             {
                 r.StatusCode = HttpStatusCode.NotFound;
                 r.ReasonPhrase = reasonPhrase;
-            }, requestUri);
+            })
+            .HasRequestUri("http://localhost/api/Persons");
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -252,8 +305,6 @@ namespace SereneApi.Tests
         [Fact]
         public async Task UnSuccessfulGetRequestGenericAsync()
         {
-            Uri requestUri = new Uri("http://localhost/api/Persons");
-
             const string reasonPhrase = "Could not find the specified person";
 
             using ApiHandlerFactory factory = new ApiHandlerFactory();
@@ -266,7 +317,8 @@ namespace SereneApi.Tests
             {
                 r.StatusCode = HttpStatusCode.NotFound;
                 r.ReasonPhrase = reasonPhrase;
-            }, requestUri);
+            })
+            .HasRequestUri("http://localhost/api/Persons");
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -326,8 +378,6 @@ namespace SereneApi.Tests
         [Fact]
         public async Task SuccessfulGetRequestWithTimeoutAsync()
         {
-            Uri requestUri = new Uri("http://localhost/api/Persons");
-
             using ApiHandlerFactory factory = new ApiHandlerFactory();
 
             factory.RegisterHandlerOptions<TestApiHandler>(builder =>
@@ -339,8 +389,9 @@ namespace SereneApi.Tests
             .WithMockResponse(r =>
             {
                 r.StatusCode = HttpStatusCode.OK;
-            }, requestUri)
-            .WithTimeout(2, new TimeSpan(0, 0, 15));
+            })
+            .WithTimeout(2, new TimeSpan(0, 0, 15))
+            .HasRequestUri("http://localhost/api/Persons");
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -351,13 +402,12 @@ namespace SereneApi.Tests
             response.Exception.ShouldBeNull();
 
             apiHandler.RetryCount.ShouldBe(3);
+            apiHandler.Timeout.ShouldBe(new TimeSpan(0, 0, 3));
         }
 
         [Fact]
         public async Task SuccessfulGetRequestWithTimeoutGenericAsync()
         {
-            Uri requestUri = new Uri("http://localhost/api/Persons");
-
             using ApiHandlerFactory factory = new ApiHandlerFactory();
 
             factory.RegisterHandlerOptions<TestApiHandler>(builder =>
@@ -365,8 +415,9 @@ namespace SereneApi.Tests
                 builder.UseSource("http://localhost", "Persons");
                 builder.SetRetryOnTimeout(3);
             })
-            .WithMockResponse(MockPersonDto.John, requestUri)
-            .WithTimeout(2);
+            .WithMockResponse(MockPersonDto.John)
+            .WithTimeout(2)
+            .HasRequestUri("http://localhost/api/Persons");
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -388,8 +439,6 @@ namespace SereneApi.Tests
         [Fact]
         public async Task UnSuccessfulGetRequestWithTimeoutAsync()
         {
-            Uri requestUri = new Uri("http://localhost/api/Persons");
-
             const string reasonPhrase = "Could not find the specified person";
 
             using ApiHandlerFactory factory = new ApiHandlerFactory();
@@ -403,8 +452,9 @@ namespace SereneApi.Tests
             {
                 r.StatusCode = HttpStatusCode.NotFound;
                 r.ReasonPhrase = reasonPhrase;
-            }, requestUri)
-            .WithTimeout(2);
+            })
+            .WithTimeout(2)
+            .HasRequestUri("http://localhost/api/Persons");
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -420,8 +470,6 @@ namespace SereneApi.Tests
         [Fact]
         public async Task UnSuccessfulGetRequestWithTimeoutGenericAsync()
         {
-            Uri requestUri = new Uri("http://localhost/api/Persons");
-
             const string reasonPhrase = "Could not find the specified person";
 
             using ApiHandlerFactory factory = new ApiHandlerFactory();
@@ -436,8 +484,9 @@ namespace SereneApi.Tests
             {
                 r.StatusCode = HttpStatusCode.NotFound;
                 r.ReasonPhrase = reasonPhrase;
-            }, requestUri)
-            .WithTimeout(2, new TimeSpan(0, 0, 15));
+            })
+            .WithTimeout(2, new TimeSpan(0, 0, 15))
+            .HasRequestUri("http://localhost/api/Persons");
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -449,6 +498,113 @@ namespace SereneApi.Tests
             response.Result.ShouldBeNull();
 
             apiHandler.RetryCount.ShouldBe(3);
+            apiHandler.Timeout.ShouldBe(new TimeSpan(0, 0, 3));
+        }
+
+        [Fact]
+        public async Task SuccessfulPostRequestAsync()
+        {
+            using ApiHandlerFactory factory = new ApiHandlerFactory();
+
+            factory.RegisterHandlerOptions<TestApiHandler>(builder =>
+                {
+                    builder.UseSource("http://localhost", "Persons");
+                })
+                .WithMockResponse(r =>
+                {
+                    r.StatusCode = HttpStatusCode.OK;
+                })
+                .HasRequestUri("http://localhost/api/Persons")
+                .HasRequestContent("{\"Age\":18,\"Name\":\"John Smith\",\"BirthDate\":\"2000-05-15T05:35:20\"}");
+
+            using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
+
+            IApiResponse response = await apiHandler.InBodyRequestAsync(Method.Post, MockPersonDto.John);
+
+            response.WasSuccessful.ShouldBe(true);
+            response.Message.ShouldBeNull();
+            response.Exception.ShouldBeNull();
+        }
+
+        [Fact]
+        public async Task SuccessfulPostRequestGenericAsync()
+        {
+            using ApiHandlerFactory factory = new ApiHandlerFactory();
+
+            factory.RegisterHandlerOptions<TestApiHandler>(builder =>
+                {
+                    builder.UseSource("http://localhost", "Persons");
+                })
+                .WithMockResponse(MockPersonDto.John)
+                .HasRequestUri("http://localhost/api/Persons")
+                .HasRequestContent("{\"Age\":18,\"Name\":\"John Smith\",\"BirthDate\":\"2000-05-15T05:35:20\"}");
+
+            using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
+
+            IApiResponse<MockPersonDto> response = await apiHandler.InBodyRequestAsync<MockPersonDto, MockPersonDto>(Method.Post, MockPersonDto.John);
+
+            response.WasSuccessful.ShouldBe(true);
+            response.Message.ShouldBeNull();
+            response.Exception.ShouldBeNull();
+
+            MockPersonDto personResult = response.Result;
+
+            personResult.BirthDate.ShouldBe(MockPersonDto.John.BirthDate);
+            personResult.Name.ShouldBe(MockPersonDto.John.Name);
+            personResult.Age.ShouldBe(MockPersonDto.John.Age);
+        }
+
+        [Fact]
+        public async Task SuccessfulPostRequestWithTemplateAsync()
+        {
+            using ApiHandlerFactory factory = new ApiHandlerFactory();
+
+            factory.RegisterHandlerOptions<TestApiHandler>(builder =>
+                {
+                    builder.UseSource("http://localhost", "Persons");
+                })
+                .WithMockResponse(r =>
+                {
+                    r.StatusCode = HttpStatusCode.OK;
+                })
+                .HasRequestUri("http://localhost/api/Persons/100/Details")
+                .HasRequestContent("{\"Age\":18,\"Name\":\"John Smith\",\"BirthDate\":\"2000-05-15T05:35:20\"}");
+
+            using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
+
+            IApiResponse response = await apiHandler.InBodyRequestAsync(Method.Post, MockPersonDto.John, "{0}/Details", 100);
+
+            response.WasSuccessful.ShouldBe(true);
+            response.Message.ShouldBeNull();
+            response.Exception.ShouldBeNull();
+        }
+
+        [Fact]
+        public async Task SuccessfulPostRequestWithTemplateGenericAsync()
+        {
+            using ApiHandlerFactory factory = new ApiHandlerFactory();
+
+            factory.RegisterHandlerOptions<TestApiHandler>(builder =>
+                {
+                    builder.UseSource("http://localhost", "Persons");
+                })
+                .WithMockResponse(MockPersonDto.John)
+                .HasRequestUri("http://localhost/api/Persons/100/Details")
+                .HasRequestContent("{\"Age\":18,\"Name\":\"John Smith\",\"BirthDate\":\"2000-05-15T05:35:20\"}");
+
+            using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
+
+            IApiResponse<MockPersonDto> response = await apiHandler.InBodyRequestAsync< MockPersonDto, MockPersonDto>(Method.Post, MockPersonDto.John, "{0}/Details", 100);
+
+            response.WasSuccessful.ShouldBe(true);
+            response.Message.ShouldBeNull();
+            response.Exception.ShouldBeNull();
+
+            MockPersonDto personResult = response.Result;
+
+            personResult.BirthDate.ShouldBe(MockPersonDto.John.BirthDate);
+            personResult.Name.ShouldBe(MockPersonDto.John.Name);
+            personResult.Age.ShouldBe(MockPersonDto.John.Age);
         }
     }
 

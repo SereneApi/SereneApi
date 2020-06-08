@@ -124,14 +124,14 @@ namespace SereneApi
                 return ApiResponse.Failure("Received an Empty Http Response");
             }
 
-            if (!responseMessage.IsSuccessStatusCode)
+            if (responseMessage.IsSuccessStatusCode)
             {
-                _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}", responseMessage.StatusCode, responseMessage.ReasonPhrase);
-
-                return ApiResponse.Failure(responseMessage.ReasonPhrase);
+                return ApiResponse.Success();
             }
 
-            return ApiResponse.Success();
+            _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}", responseMessage.StatusCode, responseMessage.ReasonPhrase);
+
+            return ApiResponse.Failure(responseMessage.ReasonPhrase);
         }
 
         #endregion

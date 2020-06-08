@@ -9,13 +9,15 @@ namespace SereneApi.Testing
     {
         private readonly HttpResponseMessage _mockResponse;
 
-        private readonly Uri _requestUri;
+        private Uri _requestUri;
 
         private int _timeoutsUntilSuccess;
 
         private uint _timeoutCount;
 
         private TimeSpan _waitTime = TimeSpan.Zero;
+
+        private string _expectedContent;
 
         /// <summary>
         /// Will only ever return Timeouts.
@@ -30,16 +32,17 @@ namespace SereneApi.Testing
         /// </summary>
         /// <param name="mockResponse">The response to be returned.</param>
         /// <param name="requestUri">The expected Request Uri, throws an exception if they do not add up.</param>
-        public MockHttpMessageHandler(HttpResponseMessage mockResponse, Uri requestUri = null)
+        public MockHttpMessageHandler(HttpResponseMessage mockResponse)
         {
             _mockResponse = mockResponse;
-            _requestUri = requestUri;
         }
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             return Task.Factory.StartNew(() =>
             {
+                string result = request.Content?.ReadAsStringAsync().Result;
+
                 if (_waitTime != TimeSpan.Zero && _timeoutCount < _timeoutsUntilSuccess)
                 {
                     Thread.Sleep(_waitTime);
@@ -61,14 +64,12 @@ namespace SereneApi.Testing
             }, cancellationToken);
         }
 
-        public void AddTimeoutUntilSuccess(int timeoutsUntilSuccess)
-        {
-            _timeoutsUntilSuccess = timeoutsUntilSuccess;
-        }
+        public void AddTimeoutUntilSuccess(int timeoutsUntilSuccess) => _timeoutsUntilSuccess = timeoutsUntilSuccess;
 
-        public void AddWaitUntilSuccess(TimeSpan waitTime)
-        {
-            _waitTime = waitTime;
-        }
+        public void AddWaitUntilSuccess(TimeSpan waitTime) => _waitTime = waitTime;
+
+        public void CheckContent(string expectedContent) => _expectedContent = expectedContent;
+
+        public void CheckRequestUri(Uri requestUri) => _requestUri = requestUri;
     }
 }
