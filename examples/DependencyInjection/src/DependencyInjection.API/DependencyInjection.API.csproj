@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\SereneApi.Abstraction\SereneApi.Abstraction.csproj" />
+    <ProjectReference Include="..\..\..\..\src\SereneApi\SereneApi.csproj" />
+  </ItemGroup>
+
+</Project>

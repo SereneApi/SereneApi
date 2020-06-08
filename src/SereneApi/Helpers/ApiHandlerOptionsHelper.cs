@@ -1,45 +1,32 @@
-﻿using System;
-using System.Linq;
-
-namespace SereneApi.Helpers
+﻿namespace SereneApi.Helpers
 {
+    /// <summary>
+    /// Contains methods to help with <see cref="IApiHandlerOptions"/>
+    /// </summary>
     public static class ApiHandlerOptionsHelper
     {
         /// <summary>
-        /// Formats the Source for the <see cref="ApiHandler"/> to use when making requests
+        /// If the resource path is null or whitespace the default value will be used.
+        /// If the string contains anything other than whitespace the value provided will be used.
+        /// Setting an Empty string will disable the default value.
         /// </summary>
-        /// <param name="source">The source of the Api http://someservice.com:8080</param>
-        /// <param name="resource">The API Resource for Requests to be made to</param>
-        /// <param name="resourcePath">The Path to the Api Resource, by default this is set to "api/"</param>
-        /// <returns></returns>
-        public static Uri FormatSource(string source, string resource, string resourcePath = null)
+        public static string UseOrGetDefaultResourcePath(string resourcePath)
         {
-            resourcePath = ApiHandlerOptionsRules.GetResourcePath(resourcePath);
-
-            string formattedSource = string.Format(ApiHandlerOptionDefaults.SourceFormat, source, resourcePath, resource);
-
-            int lastCharPosition = formattedSource.Length - 1;
-
-            if (lastCharPosition < 0)
+            // If an empty string is supplied, the default value is disabled.
+            if (resourcePath == string.Empty)
             {
-                throw new ArgumentException("Source must not be empty");
+                return string.Empty;
             }
 
-            if (formattedSource[lastCharPosition] == '/')
+            // Null or whitespace strings will enabled the default.
+            if (string.IsNullOrWhiteSpace(resourcePath))
             {
-                // Protect against having a / in the last position of the source
-                formattedSource = formattedSource.Substring(lastCharPosition);
+                resourcePath = ApiHandlerOptionDefaults.ResourcePath;
             }
 
-            return new Uri(formattedSource);
-        }
+            resourcePath = SourceHelpers.EnsureSourceSlashTermination(resourcePath);
 
-        /// <summary>
-        /// Gets the last path from the <see cref="Uri"/>
-        /// </summary>
-        public static string GetResource(Uri source)
-        {
-            return source.ToString().Split('/').Last();
+            return resourcePath;
         }
     }
 }

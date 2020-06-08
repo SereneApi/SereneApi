@@ -2,6 +2,7 @@
 using SereneApi.Enums;
 using SereneApi.Helpers;
 using SereneApi.Interfaces;
+using SereneApi.Serializers;
 using SereneApi.Types.Dependencies;
 using System;
 using System.Net;
@@ -10,7 +11,7 @@ using System.Net.Http.Headers;
 
 namespace SereneApi.Types
 {
-    public class ApiHandlerOptionsBuilder
+    public class ApiHandlerOptionsBuilder : CoreOptions, IApiHandlerOptionsBuilder
     {
         #region Variables
 
@@ -21,15 +22,17 @@ namespace SereneApi.Types
         #endregion
         #region Properties
 
-        protected DependencyCollection DependencyCollection { get; }
+        protected bool OverrideUseCredentials { get; private set; }
 
         protected Uri Source { get; set; }
 
         protected string Resource { get; set; }
 
-        protected HttpClient ClientOverride;
+        protected string ResourcePath { get; set; }
 
-        protected bool DisposeClientOverride;
+        protected HttpClient ClientOverride { get; set; }
+
+        protected bool DisposeClientOverride { get; set; }
 
         protected Action<HttpRequestHeaders> RequestHeaderBuilder = ApiHandlerOptionDefaults.RequestHeadersBuilder;
 
@@ -42,9 +45,8 @@ namespace SereneApi.Types
 
         public ApiHandlerOptionsBuilder()
         {
-            DependencyCollection = new DependencyCollection();
-
             DependencyCollection.AddDependency(ApiHandlerOptionDefaults.QueryFactory);
+            DependencyCollection.AddDependency(JsonSerializer.Default);
             DependencyCollection.AddDependency(RetryDependency.Default);
         }
 
@@ -56,17 +58,22 @@ namespace SereneApi.Types
 
         #endregion
 
-        /// <summary>
-        /// The Source the <see cref="ApiHandler"/> will use to make API requests against
-        /// </summary>
-        /// <param name="source">The source of the Server, EG: http://someservice.com:8080</param>
-        /// <param name="resource">The API resource that the <see cref="ApiHandler"/> will interact with</param>
-        /// <param name="resourcePath">The Path preceding the Resource. By default this is set to "api/"</param>
+        /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseSource"/>
         public void UseSource(string source, string resource, string resourcePath = null)
         {
+            if (string.IsNullOrWhiteSpace(source))
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            if (string.IsNullOrWhiteSpace(resource))
+            {
+                throw new ArgumentException(nameof(resource));
+            }
+
             if (ClientOverride != null)
             {
-                throw new MethodAccessException("This method cannot be called alongside UseClientOverride");
+                throw new MethodAccessException("This method cannot be called after UseClientOverride");
             }
 
             if (Source != null)
@@ -75,17 +82,19 @@ namespace SereneApi.Types
             }
 
             // The Resource Precursors default value will be used if a null or whitespace value is provided.
-            Source = ApiHandlerOptionsHelper.FormatSource(source, resource, resourcePath);
-            Resource = resource;
+            Source = new Uri(SourceHelpers.EnsureSourceSlashTermination(source));
+            Resource = SourceHelpers.EnsureSourceNoSlashTermination(resource);
+            ResourcePath = ApiHandlerOptionsHelper.UseOrGetDefaultResourcePath(resourcePath);
         }
 
-        /// <summary>
-        /// Overrides the Client with the supplied <see cref="HttpClient"/> this will disable the supplied Source, Timeout and <see cref="HttpRequestHeaders"/>.
-        /// This should only be used for Unit Testing
-        /// </summary>
-        /// <param name="clientOverride">The <see cref="HttpClient"/> to be used when making API requests.</param>
+        /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseClientOverride"/>
         public void UseClientOverride(HttpClient clientOverride, bool disposeClient = true)
         {
+            if (_baseClient != null)
+            {
+                throw new MethodAccessException("This method cannot be called when creating a ApiHandler from an HttpClient");
+            }
+
             if (ClientOverride != null)
             {
                 throw new MethodAccessException("This method cannot be called twice");
@@ -93,107 +102,175 @@ namespace SereneApi.Types
 
             if (Source != null)
             {
-                throw new MethodAccessException("This method cannot be called alongside UseSource");
+                throw new MethodAccessException("This method cannot be called after UseSource");
             }
 
-            if (_baseClient != null)
+            if (DependencyCollection.HasDependency<HttpClientHandler>())
             {
-                throw new MethodAccessException("This method cannot be called when using the ApiHandlerFactory");
+                throw new MethodAccessException("This method cannot be called after UseHttpClientHandler");
+            }
+
+            if (DependencyCollection.HasDependency<HttpMessageHandler>())
+            {
+                throw new MethodAccessException("This method cannot be called after UseHttpMessageHandler");
             }
 
             ClientOverride = clientOverride;
 
             Source = clientOverride.BaseAddress;
-            Resource = ApiHandlerOptionsHelper.GetResource(Source);
+            Resource = null;
 
             DisposeClientOverride = disposeClient;
         }
 
-        /// <summary>
-        /// Sets the timeout to be used by the <see cref="ApiHandler"/> when making API requests. By default this value is set to 30 seconds
-        /// </summary>
-        /// <param name="timeoutPeriod">The <see cref="TimeSpan"/> to be used as the timeout period by the <see cref="ApiHandler"/></param>
+        /// <inheritdoc cref="IApiHandlerOptionsBuilder.SetTimeoutPeriod"/>
         public void SetTimeoutPeriod(TimeSpan timeoutPeriod)
         {
             Timeout = timeoutPeriod;
         }
 
-        /// <summary>
-        /// Adds an <see cref="ILogger"/> to the <see cref="ApiHandler"/> allowing built in Logging
-        /// </summary>
-        /// <param name="logger">The <see cref="ILogger"/> to be used for Logging</param>
+        /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddLogger"/>
         public void AddLogger(ILogger logger)
         {
             DependencyCollection.AddDependency(logger);
         }
 
-        /// <summary>
-        /// When enabled, upon a timeout the <see cref="ApiHandler"/> will re-attempt the request. By Default this is disabled
-        /// </summary>
-        /// <param name="retryCount">How many times the <see cref="ApiHandler"/> will re-attempt the request</param>
-        public void EnableRetryOnTimeout(uint retryCount)
+        /// <inheritdoc cref="IApiHandlerOptionsBuilder.SetRetryOnTimeout"/>
+        public void SetRetryOnTimeout(int retryCount)
         {
             ApiHandlerOptionsRules.ValidateRetryCount(retryCount);
 
             DependencyCollection.AddDependency(new RetryDependency(retryCount));
         }
 
-        /// <summary>
-        /// Overrides the default <see cref="HttpResponseHeaders"/> with the supplied <see cref="HttpResponseHeaders"/>
-        /// </summary>
-        /// <param name="requestHeaderBuilder">Builds the <see cref="HttpResponseHeaders"/></param>
+        /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseHttpRequestHeaders"/>
         public void UseHttpRequestHeaders(Action<HttpRequestHeaders> requestHeaderBuilder)
         {
+            if (ClientOverride != null)
+            {
+                throw new MethodAccessException("This method cannot be called after UseClientOverride");
+            }
+
             RequestHeaderBuilder = requestHeaderBuilder;
         }
 
-        /// <summary>
-        /// Overrides the default <see cref="DefaultQueryFactory"/> with the supplied <see cref="IQueryFactory"/>
-        /// </summary>
-        /// <param name="queryFactory">The <see cref="IQueryFactory"/> to be used when building Queries</param>
+        /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseQueryFactory"/>
         public void UseQueryFactory(IQueryFactory queryFactory)
         {
             DependencyCollection.AddDependency(queryFactory);
         }
 
-        /// <summary>
-        /// Overrides the default <see cref="ICredentials"/> used by the <see cref="ApiHandler"/>
-        /// </summary>
-        /// <param name="credentials">The <see cref="ICredentials"/> to be used when making requests.</param>
+        /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseCredentials"/>
         public void UseCredentials(ICredentials credentials)
         {
             if (ClientOverride != null)
             {
-                throw new MethodAccessException("This method cannot be called alongside UseClientOverride");
+                throw new MethodAccessException("This method cannot be called after UseClientOverride");
             }
 
             Credentials = credentials;
         }
 
-        internal IApiHandlerOptions BuildOptions()
+        /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseHttpMessageHandler"/>
+        public void UseHttpMessageHandler(HttpMessageHandler httpMessageHandler)
+        {
+            if (_baseClient != null)
+            {
+                throw new MethodAccessException("This method cannot be called when creating a ApiHandler from an HttpClient");
+            }
+
+            if (ClientOverride != null)
+            {
+                throw new MethodAccessException("This method cannot be called after UseClientOverride");
+            }
+
+            if (DependencyCollection.HasDependency<HttpClientHandler>())
+            {
+                throw new MethodAccessException("This method cannot be called after UseHttpClientHandler");
+            }
+
+            DependencyCollection.AddDependency(httpMessageHandler, Binding.Unbound);
+        }
+
+        /// <inheritdoc>
+        ///     <cref>IApiHandlerOptionsBuilder.UseHttpClientHandler</cref>
+        /// </inheritdoc>
+        public void UseHttpClientHandler(HttpClientHandler httpClientHandler, bool overrideUseCredentials = false)
+        {
+            if (_baseClient != null)
+            {
+                throw new MethodAccessException("This method cannot be called when creating a ApiHandler from an HttpClient");
+            }
+
+            if (ClientOverride != null)
+            {
+                throw new MethodAccessException("This method cannot be called after UseClientOverride");
+            }
+
+            if (DependencyCollection.HasDependency<HttpMessageHandler>())
+            {
+                throw new MethodAccessException("This method cannot be called after UseHttpMessageHandler");
+            }
+
+            // Unbound as the HttpClient controls its lifetime.
+            DependencyCollection.AddDependency(httpClientHandler, Binding.Unbound);
+
+            OverrideUseCredentials = overrideUseCredentials;
+        }
+
+        /// <inheritdoc>
+        ///     <cref>IApiHandlerOptionsBuilder.UseHttpClientHandler</cref>
+        /// </inheritdoc>
+        public void UseHttpClientHandler(Action<HttpClientHandler> builder, bool overrideUseCredentials = false)
+        {
+            HttpClientHandler handler = new HttpClientHandler();
+
+            builder.Invoke(handler);
+
+            UseHttpClientHandler(handler, overrideUseCredentials);
+        }
+
+        public IApiHandlerOptions BuildOptions()
         {
             if (ClientOverride != null)
             {
-                DependencyCollection.AddDependency(ClientOverride, DisposeClientOverride ? DependencyBinding.Bound : DependencyBinding.Unbound);
+                DependencyCollection.AddDependency(ClientOverride, DisposeClientOverride ? Binding.Bound : Binding.Unbound);
             }
             else
             {
-                HttpClientHandler clientHandler = new HttpClientHandler
-                {
-                    Credentials = Credentials
-                };
+                HttpClient httpClient;
 
-                HttpClient httpClient = _baseClient ?? new HttpClient(clientHandler);
+                if (_baseClient != null)
+                {
+                    httpClient = _baseClient;
+                }
+                else
+                {
+                    bool hasHttpClientHandler =
+                        DependencyCollection.TryGetDependency(out HttpClientHandler clientHandler);
+
+                    if (!hasHttpClientHandler)
+                    {
+                        clientHandler = new HttpClientHandler();
+                    }
+
+                    if (!(hasHttpClientHandler && OverrideUseCredentials))
+                    {
+                        clientHandler.Credentials = Credentials;
+                    }
+
+                    httpClient = new HttpClient(clientHandler);
+                }
 
                 httpClient.BaseAddress = Source;
                 httpClient.Timeout = Timeout;
 
                 RequestHeaderBuilder.Invoke(httpClient.DefaultRequestHeaders);
 
-                DependencyCollection.AddDependency(httpClient, _disposeClient ? DependencyBinding.Bound : DependencyBinding.Unbound);
+                DependencyCollection.AddDependency(httpClient, _disposeClient ? Binding.Bound : Binding.Unbound);
             }
 
-            IApiHandlerOptions options = new ApiHandlerOptions(DependencyCollection, Source, Resource);
+            IApiHandlerOptions options = new ApiHandlerOptions(DependencyCollection, Source, Resource, ResourcePath);
 
             return options;
         }
