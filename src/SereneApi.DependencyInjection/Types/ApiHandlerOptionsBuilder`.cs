@@ -1,29 +1,24 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SereneApi.DependencyInjection.Interfaces;
 using SereneApi.Enums;
 using SereneApi.Helpers;
-using SereneApi.Interfaces;
 using SereneApi.Types;
+using SereneApi.Types.Dependencies;
 using System;
 using System.Net.Http;
 
 namespace SereneApi.DependencyInjection.Types
 {
     /// <summary>
-    /// The <see cref="ApiHandlerOptionsBuilder{TApiHandler}"/> is used to build new instances of the <see cref="SereneApi.DepedencyInjection.ApiHandlerOptions"/> class
+    /// The <see cref="ApiHandlerOptionsBuilder{TApiHandler}"/> is used to build new instances of the <see cref="ApiHandlerOptions{TApiHandler}"/> class
     /// </summary>
-    public class ApiHandlerOptionsBuilder<TApiHandler> : ApiHandlerOptionsBuilder where TApiHandler : ApiHandler
+    public class ApiHandlerOptionsBuilder<TApiHandler> : ApiHandlerOptionsBuilder, IApiHandlerOptionsBuilder<TApiHandler> where TApiHandler : ApiHandler
     {
-        private ILoggerFactory _loggerFactory;
-
         private IServiceCollection _serviceCollection;
 
-        /// <summary>
-        /// Gets the Source, Resource, ResourcePrecursor and Timeout period from the <see cref="IConfiguration"/>.
-        /// Note: Source and Resource MUST be supplied if this is used, ResourcePrecursor and Timeout are optional
-        /// </summary>
-        /// <param name="configuration">The <see cref="IConfiguration"/> the values will be retrieved from</param>
+        /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiHandler}.UseConfiguration"/>
         public void UseConfiguration(IConfiguration configuration)
         {
             if (ClientOverride != null)
@@ -40,8 +35,11 @@ namespace SereneApi.DependencyInjection.Types
             string resource = configuration.Get<string>(ConfigurationConstants.ResourceKey, ConfigurationConstants.ResourceIsRequired);
             string resourcePath = configuration.Get<string>(ConfigurationConstants.ResourcePathKey, ConfigurationConstants.ResourcePathIsRequired);
 
-            Source = ApiHandlerOptionsHelper.FormatSource(source, resource, resourcePath);
-            Resource = ApiHandlerOptionsHelper.GetResource(Source);
+            Source = new Uri(SourceHelpers.EnsureSourceSlashTermination(source));
+            Resource = SourceHelpers.EnsureSourceNoSlashTermination(resource);
+            ResourcePath = ApiHandlerOptionsHelper.UseOrGetDefaultResourcePath(resourcePath);
+
+            #region Timeout
 
             TimeSpan timeout = configuration.Get<TimeSpan>(ConfigurationConstants.TimeoutKey, ConfigurationConstants.TimeoutIsRequired);
 
@@ -54,31 +52,39 @@ namespace SereneApi.DependencyInjection.Types
             {
                 Timeout = timeout;
             }
+
+            #endregion
+            #region Retry Count
+
+            int retryCount = configuration.Get<int>(ConfigurationConstants.RetryCountKey, ConfigurationConstants.RetryIsRequired);
+
+            ApiHandlerOptionsRules.ValidateRetryCount(retryCount);
+
+            RetryDependency retryDependency = new RetryDependency(retryCount);
+
+            DependencyCollection.AddDependency(retryDependency);
+
+            #endregion
         }
 
-        /// <summary>
-        /// Adds an <see cref="ILoggerFactory"/> to the <see cref="ApiHandler"/> allowing built in Logging
-        /// </summary>
-        /// <param name="loggerFactory">The <see cref="IQueryFactory"/> to be used for Logging</param>
+        /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiHandler}.AddLoggerFactory"/>
         public void AddLoggerFactory(ILoggerFactory loggerFactory)
         {
-            _loggerFactory = loggerFactory;
-        }
-
-        internal void AddServicesCollection(IServiceCollection serviceCollection)
-        {
-            _serviceCollection = serviceCollection;
-        }
-
-        internal ApiHandlerOptions<TApiHandler> BuildOptions()
-        {
-            ILogger<TApiHandler> logger = _loggerFactory.CreateLogger<TApiHandler>();
+            ILogger logger = loggerFactory.CreateLogger<TApiHandler>();
 
             DependencyCollection.AddDependency(logger);
+        }
+
+        public void AddServicesCollection(IServiceCollection serviceCollection)
+        {
+            _serviceCollection = serviceCollection;
 
             // Leaving unbound until testing can be done.
-            DependencyCollection.AddDependency(_serviceCollection, DependencyBinding.Unbound);
+            DependencyCollection.AddDependency(_serviceCollection, Binding.Unbound);
+        }
 
+        public new IApiHandlerOptions<TApiHandler> BuildOptions()
+        {
             bool usingClientFactory = Source == null;
 
             if (usingClientFactory)
@@ -104,11 +110,11 @@ namespace SereneApi.DependencyInjection.Types
                 IHttpClientFactory clientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
 
                 // The ClientFactory is Unbound as the Service Provider is controlling its lifetime.
-                DependencyCollection.AddDependency(clientFactory, DependencyBinding.Unbound);
+                DependencyCollection.AddDependency(clientFactory, Binding.Unbound);
                 DependencyCollection.AddDependency(clientFactory.CreateClient(typeof(TApiHandler).ToString()));
             }
 
-            ApiHandlerOptions<TApiHandler> options = new ApiHandlerOptions<TApiHandler>(DependencyCollection, Source, Resource);
+            ApiHandlerOptions<TApiHandler> options = new ApiHandlerOptions<TApiHandler>(DependencyCollection, Source, Resource, ResourcePath);
 
             return options;
         }

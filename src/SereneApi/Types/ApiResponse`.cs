@@ -1,5 +1,4 @@
-﻿using SereneApi.Abstraction;
-using System;
+﻿using System;
 
 namespace SereneApi.Types
 {
@@ -21,7 +20,7 @@ namespace SereneApi.Types
 
             Result = result;
 
-            Message = string.Empty;
+            Message = null;
 
             Exception = null;
         }

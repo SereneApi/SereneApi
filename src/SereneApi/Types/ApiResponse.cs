@@ -1,5 +1,4 @@
-﻿using SereneApi.Abstraction;
-using System;
+﻿using System;
 
 namespace SereneApi.Types
 {
@@ -31,7 +30,7 @@ namespace SereneApi.Types
             Exception = exception;
         }
 
-        public static IApiResponse Success() => new ApiResponse(string.Empty);
+        public static IApiResponse Success() => new ApiResponse(null);
 
         public static IApiResponse Failure(string message, Exception exception = null) => new ApiResponse(message, exception);
     }

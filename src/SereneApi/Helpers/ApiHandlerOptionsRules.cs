@@ -2,31 +2,27 @@
 
 namespace SereneApi.Helpers
 {
-    internal class ApiHandlerOptionsRules
+    public class ApiHandlerOptionsRules
     {
-        private const uint _minimumRetryCount = 1;
+        public const uint MinimumRetryCount = 1;
 
-        public static void ValidateRetryCount(uint retryCount)
-        {
-            if (retryCount < _minimumRetryCount)
-            {
-                throw new ArgumentException($"To Enable Retry on Timeout the RetryCount must be greater than {_minimumRetryCount - 1}");
-            }
-        }
+        public const uint MaximumRetryCount = 5;
+
 
         /// <summary>
-        /// If the resource path is null or whitespace the default value will be used.
-        /// If the string contains anything other than whitespace the value provided will be used.
-        /// Setting an Empty string will override the default
+        /// Throws an <see cref="ArgumentException"/> if the Retry Count is invalid.
         /// </summary>
-        public static string GetResourcePath(string resourcePath)
+        public static void ValidateRetryCount(int retryCount)
         {
-            if (string.IsNullOrWhiteSpace(resourcePath))
+            if (retryCount < MinimumRetryCount)
             {
-                return ApiHandlerOptionDefaults.ResourcePrecursor;
+                throw new ArgumentException($"To Enable Retry on Timeout the RetryCount must be greater than or equal to {MinimumRetryCount}");
             }
 
-            return resourcePath;
+            if (retryCount > MaximumRetryCount)
+            {
+                throw new ArgumentException($"To Enable Retry on Timeout the RetryCount must be less than or equal to {MaximumRetryCount}");
+            }
         }
     }
 }

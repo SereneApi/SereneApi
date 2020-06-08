@@ -1,7 +1,7 @@
 ﻿using SereneApi;
+using SereneApi.Helpers;
+using SereneApi.Interfaces;
 using SereneApi.Types;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 // Do not change namespace
@@ -14,10 +14,13 @@ namespace System.Net.Http
 
         /// <summary>
         /// Creates a new <see cref="ApiHandler"/> using the <see cref="HttpClient"/> for the requests.
-        /// The <see cref="HttpClient"/> will be disposed of by the <see cref="ApiHandler"/>
+        /// The <see cref="HttpClient"/> will be disposed of by the <see cref="ApiHandler"/>.
         /// </summary>
-        public static TApiHandler CreateApiHandler<TApiHandler>(this HttpClient client, Action<ApiHandlerOptionsBuilder> optionsAction = null) where TApiHandler : ApiHandler
+        public static TApiHandler CreateApiHandler<TApiHandler>(this HttpClient client, Action<IApiHandlerOptionsBuilder> optionsAction = null) where TApiHandler : ApiHandler
         {
+            // The base address of the HttpClient should not be change, so instead an exception will be thrown.
+            SourceHelpers.CheckIfValid(client.BaseAddress.ToString());
+
             ApiHandlerOptionsBuilder builder = new ApiHandlerOptionsBuilder();
 
             builder.UseClientOverride(client, true);
@@ -37,9 +40,9 @@ namespace System.Net.Http
             return client.PostAsync(requestUri, null);
         }
 
-        internal static Task<HttpResponseMessage> PostAsJsonAsync<TContent>(this HttpClient client, Uri requestUri, TContent content)
+        internal static Task<HttpResponseMessage> PostAsJsonAsync(this HttpClient client, Uri requestUri, StringContent content)
         {
-            return client.PostAsync(requestUri, content.ToStringContent());
+            return client.PostAsync(requestUri, content);
         }
 
         internal static Task<HttpResponseMessage> PutAsJsonAsync(this HttpClient client, Uri requestUri)
@@ -47,9 +50,9 @@ namespace System.Net.Http
             return client.PutAsync(requestUri, null);
         }
 
-        internal static Task<HttpResponseMessage> PutAsJsonAsync<TContent>(this HttpClient client, Uri requestUri, TContent content)
+        internal static Task<HttpResponseMessage> PutAsJsonAsync(this HttpClient client, Uri requestUri, StringContent content)
         {
-            return client.PutAsync(requestUri, content.ToStringContent());
+            return client.PutAsync(requestUri, content);
         }
 
         internal static Task<HttpResponseMessage> PatchAsJsonAsync(this HttpClient client, Uri requestUri)
@@ -57,18 +60,18 @@ namespace System.Net.Http
             return client.PatchAsync(requestUri, null);
         }
 
-        internal static Task<HttpResponseMessage> PatchAsJsonAsync<TContent>(this HttpClient client, Uri requestUri, TContent content)
+        internal static Task<HttpResponseMessage> PatchAsJsonAsync(this HttpClient client, Uri requestUri, StringContent content)
         {
-            return client.PatchAsync(requestUri, content.ToStringContent());
+            return client.PatchAsync(requestUri, content);
         }
 
         #endregion
         #region Private Methods
 
-        private static StringContent ToStringContent<TContent>(this TContent content)
-        {
-            return new StringContent(JsonSerializer.Serialize(content), Encoding.UTF8, "application/json");
-        }
+        //private static StringContent ToStringContent<TContent>(this TContent content)
+        //{
+        //    return new StringContent(JsonSerializer.Serialize(content), Encoding.UTF8, "application/json");
+        //}
 
         #endregion
     }
