@@ -20,7 +20,7 @@
 	  <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
 	  <PackageId>SereneApi.Extras</PackageId>
 	  <PackageIcon>nuget_logo.png</PackageIcon>
-	  <PackageReleaseNotes>Contains tools for interfacing with JQuery DataTables</PackageReleaseNotes>
+	  <PackageReleaseNotes></PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

@@ -46,7 +46,7 @@ namespace SereneApi.Tests
                 await apiHandler.InPathRequestAsync(Method.Get, "{0}/Friends", 1, 2);
             });
         }
-        
+
         [Fact]
         public void ExceptionInBodyGet()
         {
@@ -64,7 +64,7 @@ namespace SereneApi.Tests
                 await apiHandler.InBodyRequestAsync(Method.Get, MockPersonDto.John);
             });
         }
-        
+
         [Fact]
         public void ExceptionInBodyGetGeneric()
         {
@@ -594,7 +594,7 @@ namespace SereneApi.Tests
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
-            IApiResponse<MockPersonDto> response = await apiHandler.InBodyRequestAsync< MockPersonDto, MockPersonDto>(Method.Post, MockPersonDto.John, "{0}/Details", 100);
+            IApiResponse<MockPersonDto> response = await apiHandler.InBodyRequestAsync<MockPersonDto, MockPersonDto>(Method.Post, MockPersonDto.John, "{0}/Details", 100);
 
             response.WasSuccessful.ShouldBe(true);
             response.Message.ShouldBeNull();

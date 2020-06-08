@@ -14,14 +14,14 @@ SereneApi.DependencyInjection adds support for AspNet DI and Configuration.</Des
 		<Product>SereneApi</Product>
 		<PackageProjectUrl>https://github.com/armorall171/SereneApi#what-is-serene-api</PackageProjectUrl>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>1.0.3.6-alpha</Version>
+		<Version>1.0.4.1-beta</Version>
 		<NeutralLanguage>en-AU</NeutralLanguage>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
 		<PackageIcon>nuget_logo.png</PackageIcon>
 		<PackageId>SereneApi.DependencyInjection</PackageId>
-		<PackageReleaseNotes>Improved: Source creation</PackageReleaseNotes>
+		<PackageReleaseNotes></PackageReleaseNotes>
 	</PropertyGroup>
 
   <ItemGroup>

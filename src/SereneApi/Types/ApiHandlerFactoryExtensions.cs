@@ -1,5 +1,4 @@
 ﻿using SereneApi.Interfaces;
-using System;
 
 namespace SereneApi.Types
 {
