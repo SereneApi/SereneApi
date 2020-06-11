@@ -4,11 +4,23 @@ using System;
 using System.Linq.Expressions;
 using System.Net.Http;
 using System.Threading.Tasks;
+using SereneApi.Interfaces;
 
 namespace SereneApi
 {
     public abstract partial class ApiHandler
     {
+        public Task<IApiResponse> PerformRequestAsync(Action<IApiRequestBuilder> requestBuilder)
+        {
+
+        }
+        
+        public Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(Action<IApiRequestBuilder> requestBuilder)
+        {
+
+        }
+
+
         #region Action Methods
 
         /// <summary>

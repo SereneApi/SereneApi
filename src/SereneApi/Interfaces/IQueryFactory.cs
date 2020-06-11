@@ -8,6 +8,5 @@ namespace SereneApi.Interfaces
         string Build<TQueryable>(TQueryable query);
 
         string Build<TQueryable>(TQueryable query, Expression<Func<TQueryable, object>> selector);
-
     }
 }

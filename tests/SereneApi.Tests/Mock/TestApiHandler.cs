@@ -10,6 +10,27 @@ namespace SereneApi.Tests.Mock
         {
         }
 
+        public async Task<IApiResponse> Test()
+        {
+            return await PerformRequestAsync(builder =>
+            {
+                builder.UsingMethod(Method.Post);
+                builder.AddQuery(MockPersonDto.John, dto => new {dto.Age});
+                builder.AddInBodyContent(MockPersonDto.John);
+                builder.WithEndPoint("{0}/Details", MockPersonDto.John.Name);
+            });
+        }
+        
+        public async Task<IApiResponse<TResponse>> Test<TResponse>()
+        {
+            return await PerformRequestAsync<TResponse>(builder =>
+            {
+                builder.UsingMethod(Method.Post);
+                builder.AddInBodyContent(MockPersonDto.John);
+                builder.WithEndPoint("");
+            });
+        }
+
         public new Task<IApiResponse> InPathRequestAsync(Method method, object endpoint = null)
         {
             return base.InPathRequestAsync(method, endpoint);

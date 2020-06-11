@@ -4,6 +4,8 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using SereneApi.Types;
+using SereneApi.Types.Content;
 
 namespace SereneApi.Serializers
 {
@@ -43,20 +45,20 @@ namespace SereneApi.Serializers
             return await System.Text.Json.JsonSerializer.DeserializeAsync<TObject>(contentStream, _deserializerOptions);
         }
 
-        public StringContent Serialize<TObject>(TObject value)
+        public IApiRequestContent Serialize<TObject>(TObject value)
         {
             string jsonContent = System.Text.Json.JsonSerializer.Serialize(value, _serializerOptions);
 
-            return new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            return new JsonContent(jsonContent, Encoding.UTF8, MediaType.ApplicationJson);
         }
 
-        public Task<StringContent> SerializeAsync<TObject>(TObject value)
+        public Task<IApiRequestContent> SerializeAsync<TObject>(TObject value)
         {
             return Task.Factory.StartNew(() =>
             {
                 string jsonContent = System.Text.Json.JsonSerializer.Serialize(value, _serializerOptions);
 
-                return new StringContent(jsonContent, Encoding.UTF8, "application/json");
+                return (IApiRequestContent)new JsonContent(jsonContent, Encoding.UTF8, MediaType.ApplicationJson);
             });
         }
 
