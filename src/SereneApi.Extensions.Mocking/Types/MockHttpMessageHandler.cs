@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SereneApi.Testing
+namespace SereneApi.Extensions.Mocking.Types
 {
     internal class MockHttpMessageHandler : HttpMessageHandler
     {

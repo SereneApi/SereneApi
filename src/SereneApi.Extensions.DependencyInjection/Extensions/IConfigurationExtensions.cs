@@ -1,4 +1,4 @@
-﻿using SereneApi.DependencyInjection;
+﻿using SereneApi.Extensions.DependencyInjection;
 using System.Collections.Generic;
 
 // Do not change namespace
@@ -20,6 +20,11 @@ namespace Microsoft.Extensions.Configuration
             }
 
             return default;
+        }
+
+        internal static bool ContainsKey(this IConfiguration configuration, string key)
+        {
+            return configuration.GetSection(key).Exists();
         }
 
         /// <summary>

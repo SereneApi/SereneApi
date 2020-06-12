@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>DeltaWare.SereneApi.Extensions.Mocking</AssemblyName>
+    <PackageId>SereneApi.Extensions.Mocking</PackageId>
+    <Authors>Bradley Clarke</Authors>
+    <Company>DeltaWare</Company>
+    <Product>SereneApi</Product>
   </PropertyGroup>
 
   <ItemGroup>

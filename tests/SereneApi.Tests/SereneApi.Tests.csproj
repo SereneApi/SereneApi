@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\SereneApi.Testing\SereneApi.Testing.csproj" />
+    <ProjectReference Include="..\..\src\SereneApi.Extensions.Mocking\SereneApi.Extensions.Mocking.csproj" />
     <ProjectReference Include="..\..\src\SereneApi\SereneApi.csproj" />
   </ItemGroup>
 

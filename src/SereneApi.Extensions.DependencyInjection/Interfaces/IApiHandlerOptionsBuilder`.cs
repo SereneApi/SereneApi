@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using SereneApi.Interfaces;
 
-namespace SereneApi.DependencyInjection.Interfaces
+namespace SereneApi.Extensions.DependencyInjection.Interfaces
 {
     public interface IApiHandlerOptionsBuilder<TApiHandler> : IApiHandlerOptionsBuilder where TApiHandler : ApiHandler
     {

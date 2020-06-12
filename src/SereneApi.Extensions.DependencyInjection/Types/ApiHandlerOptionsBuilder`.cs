@@ -1,15 +1,17 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SereneApi.DependencyInjection.Interfaces;
 using SereneApi.Enums;
+using SereneApi.Extensions.DependencyInjection.Interfaces;
+using SereneApi.Factories;
 using SereneApi.Helpers;
+using SereneApi.Interfaces;
 using SereneApi.Types;
 using SereneApi.Types.Dependencies;
 using System;
 using System.Net.Http;
 
-namespace SereneApi.DependencyInjection.Types
+namespace SereneApi.Extensions.DependencyInjection.Types
 {
     /// <summary>
     /// The <see cref="ApiHandlerOptionsBuilder{TApiHandler}"/> is used to build new instances of the <see cref="ApiHandlerOptions{TApiHandler}"/> class
@@ -17,6 +19,10 @@ namespace SereneApi.DependencyInjection.Types
     public class ApiHandlerOptionsBuilder<TApiHandler> : ApiHandlerOptionsBuilder, IApiHandlerOptionsBuilder<TApiHandler> where TApiHandler : ApiHandler
     {
         private IServiceCollection _serviceCollection;
+
+        internal ApiHandlerOptionsBuilder(DependencyCollection dependencyCollection) : base(dependencyCollection)
+        {
+        }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiHandler}.UseConfiguration"/>
         public void UseConfiguration(IConfiguration configuration)
@@ -56,13 +62,18 @@ namespace SereneApi.DependencyInjection.Types
             #endregion
             #region Retry Count
 
-            int retryCount = configuration.Get<int>(ConfigurationConstants.RetryCountKey, ConfigurationConstants.RetryIsRequired);
+            if (configuration.ContainsKey(ConfigurationConstants.RetryCountKey))
+            {
+                int retryCount = configuration.Get<int>(ConfigurationConstants.RetryCountKey, ConfigurationConstants.RetryIsRequired);
 
-            ApiHandlerOptionsRules.ValidateRetryCount(retryCount);
+                ApiHandlerOptionsRules.ValidateRetryCount(retryCount);
+    
+                RetryDependency retryDependency = new RetryDependency(retryCount);
 
-            RetryDependency retryDependency = new RetryDependency(retryCount);
+                DependencyCollection.AddDependency(retryDependency);
+            }
 
-            DependencyCollection.AddDependency(retryDependency);
+            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory(Resource, ResourcePath));
 
             #endregion
         }
@@ -85,9 +96,17 @@ namespace SereneApi.DependencyInjection.Types
 
         public new IApiHandlerOptions<TApiHandler> BuildOptions()
         {
-            bool usingClientFactory = Source == null;
+            if (DependencyCollection.TryGetDependency(out HttpMessageHandler messageHandler))
+            {
+                _serviceCollection.AddHttpClient(typeof(TApiHandler).ToString(), client =>
+                {
+                    client.BaseAddress = Source;
+                    client.Timeout = Timeout;
 
-            if (usingClientFactory)
+                    RequestHeaderBuilder.Invoke(client.DefaultRequestHeaders);
+                }).ConfigurePrimaryHttpMessageHandler(() => messageHandler);
+            }
+            else
             {
                 _serviceCollection.AddHttpClient(typeof(TApiHandler).ToString(), client =>
                 {
@@ -105,14 +124,11 @@ namespace SereneApi.DependencyInjection.Types
 
             DependencyCollection.AddDependency(serviceProvider);
 
-            if (usingClientFactory)
-            {
-                IHttpClientFactory clientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
+            IHttpClientFactory clientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
 
-                // The ClientFactory is Unbound as the Service Provider is controlling its lifetime.
-                DependencyCollection.AddDependency(clientFactory, Binding.Unbound);
-                DependencyCollection.AddDependency(clientFactory.CreateClient(typeof(TApiHandler).ToString()));
-            }
+            // The ClientFactory is Unbound as the Service Provider is controlling its lifetime.
+            DependencyCollection.AddDependency(clientFactory, Binding.Unbound);
+            DependencyCollection.AddDependency(clientFactory.CreateClient(typeof(TApiHandler).ToString()));
 
             ApiHandlerOptions<TApiHandler> options = new ApiHandlerOptions<TApiHandler>(DependencyCollection, Source, Resource, ResourcePath);
 

@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using SereneApi.Extensions;
+using SereneApi.Interfaces;
 using SereneApi.Types;
 using System;
 using System.Linq.Expressions;
@@ -7,9 +9,32 @@ using System.Threading.Tasks;
 
 namespace SereneApi
 {
+    // Async Implementation
     public abstract partial class ApiHandler
     {
         #region Action Methods
+
+        public Task<IApiResponse> PerformRequestAsync(Action<IApiRequestBuilder> requestAction)
+        {
+            ApiRequestBuilder requestBuilder = new ApiRequestBuilder(_routeFactory, _queryFactory, _serializer);
+
+            requestAction.Invoke(requestBuilder);
+
+            IApiRequest request = requestBuilder.BuildRequest();
+
+            return PerformRequestBaseAsync(request);
+        }
+
+        public Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(Action<IApiRequestBuilder> requestAction)
+        {
+            ApiRequestBuilder requestBuilder = new ApiRequestBuilder(_routeFactory, _queryFactory, _serializer);
+
+            requestAction.Invoke(requestBuilder);
+
+            IApiRequest request = requestBuilder.BuildRequest();
+
+            return PerformRequestBaseAsync<TResponse>(request);
+        }
 
         /// <summary>
         /// Performs an in Path Request. The <see cref="endpoint"/> will be appended to the Url
@@ -20,11 +45,11 @@ namespace SereneApi
         {
             CheckIfDisposed();
 
-            Uri route = GenerateRoute(endpoint);
-
-            _logger?.LogTrace("Performing an InPathRequest against {RequestRoute}", route);
-
-            return BaseInPathRequestAsync(method, route);
+            return PerformRequestAsync(builder =>
+            {
+                builder.UsingMethod(method);
+                builder.WithEndPoint(endpoint);
+            });
         }
 
         /// <summary>
@@ -37,13 +62,11 @@ namespace SereneApi
         {
             CheckIfDisposed();
 
-            string endpoint = FormatEndpointTemplate(endpointTemplate, endpointParameters);
-
-            Uri route = GenerateRoute(endpoint);
-
-            _logger?.LogTrace("Performing an InPathRequest against {RequestRoute}", route);
-
-            return BaseInPathRequestAsync(method, route);
+            return PerformRequestAsync(builder =>
+            {
+                builder.UsingMethod(method);
+                builder.WithEndPoint(endpointTemplate, endpointParameters);
+            });
         }
 
         /// <summary>
@@ -56,11 +79,11 @@ namespace SereneApi
         {
             CheckIfDisposed();
 
-            Uri route = GenerateRoute(endpoint);
-
-            _logger?.LogTrace("Performing an InPathRequest against {RequestRoute}", route);
-
-            return BaseInPathRequestAsync<TResponse>(method, route);
+            return PerformRequestAsync<TResponse>(builder =>
+            {
+                builder.UsingMethod(method);
+                builder.WithEndPoint(endpoint);
+            });
         }
 
         /// <summary>
@@ -73,13 +96,11 @@ namespace SereneApi
         {
             CheckIfDisposed();
 
-            string endpoint = FormatEndpointTemplate(endpointTemplate, endpointParameters);
-
-            Uri route = GenerateRoute(endpoint);
-
-            _logger?.LogTrace("Performing an InPathRequest against {RequestRoute}", route);
-
-            return BaseInPathRequestAsync<TResponse>(method, route);
+            return PerformRequestAsync<TResponse>(builder =>
+            {
+                builder.UsingMethod(method);
+                builder.WithEndPoint(endpointTemplate, endpointParameters);
+            });
         }
 
         /// <summary>
@@ -95,11 +116,12 @@ namespace SereneApi
         {
             CheckIfDisposed();
 
-            Uri route = GenerateRouteWithQuery(endpoint, queryContent, query);
-
-            _logger?.LogTrace("Performing an InPathRequest against {RequestRoute}", route);
-
-            return BaseInPathRequestAsync<TResponse>(method, route);
+            return PerformRequestAsync<TResponse>(builder =>
+            {
+                builder.UsingMethod(method);
+                builder.WithEndPoint(endpoint);
+                builder.AddQuery(queryContent, query);
+            });
         }
 
         /// <summary>
@@ -116,11 +138,12 @@ namespace SereneApi
         {
             CheckIfDisposed();
 
-            Uri route = GenerateRouteWithQuery(endpointTemplate, queryContent, query, endpointParameters);
-
-            _logger?.LogTrace("Performing an InPathRequest against {RequestRoute}", route);
-
-            return BaseInPathRequestAsync<TResponse>(method, route);
+            return PerformRequestAsync<TResponse>(builder =>
+            {
+                builder.UsingMethod(method);
+                builder.WithEndPoint(endpointTemplate, endpointParameters);
+                builder.AddQuery(queryContent, query);
+            });
         }
 
         /// <summary>
@@ -134,11 +157,12 @@ namespace SereneApi
         {
             CheckIfDisposed();
 
-            Uri route = GenerateRoute(endpoint);
-
-            _logger?.LogTrace("Performing an InBodyRequest against {RequestRoute}", route);
-
-            return BaseInBodyRequestAsync<TContent>(method, route, inBodyContent);
+            return PerformRequestAsync(builder =>
+            {
+                builder.UsingMethod(method);
+                builder.WithEndPoint(endpoint);
+                builder.AddInBodyContent(inBodyContent);
+            });
         }
 
         /// <summary>
@@ -153,13 +177,12 @@ namespace SereneApi
         {
             CheckIfDisposed();
 
-            string endpoint = FormatEndpointTemplate(endpointTemplate, endpointParameters);
-
-            Uri route = GenerateRoute(endpoint);
-
-            _logger?.LogTrace("Performing an InBodyRequest against {RequestRoute}", route);
-
-            return BaseInBodyRequestAsync<TContent>(method, route, inBodyContent);
+            return PerformRequestAsync(builder =>
+            {
+                builder.UsingMethod(method);
+                builder.WithEndPoint(endpointTemplate, endpointParameters);
+                builder.AddInBodyContent(inBodyContent);
+            });
         }
 
         /// <summary>
@@ -174,11 +197,12 @@ namespace SereneApi
         {
             CheckIfDisposed();
 
-            Uri route = GenerateRoute(endpoint);
-
-            _logger?.LogTrace("Performing an InBodyRequest against {RequestRoute}", route);
-
-            return BaseInBodyRequestAsync<TContent, TResponse>(method, route, inBodyContent);
+            return PerformRequestAsync<TResponse>(builder =>
+            {
+                builder.UsingMethod(method);
+                builder.WithEndPoint(endpoint);
+                builder.AddInBodyContent(inBodyContent);
+            });
         }
 
         /// <summary>
@@ -194,17 +218,158 @@ namespace SereneApi
         {
             CheckIfDisposed();
 
-            string endpoint = FormatEndpointTemplate(endpointTemplate, endpointParameters);
-
-            Uri route = GenerateRoute(endpoint);
-
-            _logger?.LogTrace("Performing an InBodyRequest against {RequestRoute}", route);
-
-            return BaseInBodyRequestAsync<TContent, TResponse>(method, route, inBodyContent);
+            return PerformRequestAsync<TResponse>(builder =>
+            {
+                builder.UsingMethod(method);
+                builder.WithEndPoint(endpointTemplate, endpointParameters);
+                builder.AddInBodyContent(inBodyContent);
+            });
         }
 
         #endregion
         #region Base Action Methods
+
+        public async Task<IApiResponse> PerformRequestBaseAsync(IApiRequest request)
+        {
+            CheckIfDisposed();
+
+            HttpResponseMessage responseMessage;
+
+            Uri endPoint = request.EndPoint;
+
+            Method method = request.Method;
+
+            try
+            {
+                if (request.Content == null)
+                {
+                    responseMessage = await RetryRequestAsync(async () =>
+                    {
+                        return method switch
+                        {
+                            Method.Post => await Client.PostAsJsonAsync(endPoint),
+                            Method.Get => await Client.GetAsync(endPoint),
+                            Method.Put => await Client.PutAsJsonAsync(endPoint),
+                            Method.Patch => await Client.PatchAsJsonAsync(endPoint),
+                            Method.Delete => await Client.DeleteAsync(endPoint),
+                            _ => throw new ArgumentOutOfRangeException(nameof(endPoint), method,
+                                "An incorrect Method Value was supplied.")
+                        };
+                    }, endPoint);
+                }
+                else
+                {
+                    StringContent content = request.Content.ToStringContent();
+
+                    responseMessage = await RetryRequestAsync(async () =>
+                    {
+                        return method switch
+                        {
+                            Method.Post => await Client.PostAsJsonAsync(endPoint, content),
+                            Method.Get => throw new ArgumentException(
+                                "Get cannot be used in conjunction with an InBody Request"),
+                            Method.Put => await Client.PutAsJsonAsync(endPoint, content),
+                            Method.Patch => await Client.PatchAsJsonAsync(endPoint, content),
+                            Method.Delete => throw new ArgumentException(
+                                "Delete cannot be used in conjunction with an InBody Request"),
+                            _ => throw new ArgumentOutOfRangeException(nameof(method), method,
+                                "An incorrect Method Value was supplied.")
+                        };
+                    }, endPoint);
+                }
+            }
+            catch (ArgumentException)
+            {
+                // An incorrect Method value was supplied. So we want this exception to bubble up to the caller.
+                throw;
+            }
+            catch (TimeoutException timeoutException)
+            {
+                return ApiResponse.Failure("The Request Timed Out; Retry limit reached", timeoutException);
+            }
+            catch (Exception exception)
+            {
+                _logger?.LogError(exception,
+                    "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
+                    method.ToString(), endPoint);
+
+                return ApiResponse.Failure($"An Exception occured whilst performing a HTTP {method} Request",
+                    exception);
+            }
+
+            return ProcessResponse(responseMessage);
+        }
+
+        public async Task<IApiResponse<TResponse>> PerformRequestBaseAsync<TResponse>(IApiRequest request)
+        {
+            CheckIfDisposed();
+
+            HttpResponseMessage responseMessage;
+
+            Uri endPoint = request.EndPoint;
+
+            Method method = request.Method;
+
+            try
+            {
+                if (request.Content == null)
+                {
+                    responseMessage = await RetryRequestAsync(async () =>
+                    {
+                        return method switch
+                        {
+                            Method.Post => await Client.PostAsJsonAsync(endPoint),
+                            Method.Get => await Client.GetAsync(endPoint),
+                            Method.Put => await Client.PutAsJsonAsync(endPoint),
+                            Method.Patch => await Client.PatchAsJsonAsync(endPoint),
+                            Method.Delete => await Client.DeleteAsync(endPoint),
+                            _ => throw new ArgumentOutOfRangeException(nameof(endPoint), method,
+                                "An incorrect Method Value was supplied.")
+                        };
+                    }, endPoint);
+                }
+                else
+                {
+                    StringContent content = request.Content.ToStringContent();
+
+                    responseMessage = await RetryRequestAsync(async () =>
+                    {
+                        return method switch
+                        {
+                            Method.Post => await Client.PostAsJsonAsync(endPoint, content),
+                            Method.Get => throw new ArgumentException(
+                                "Get cannot be used in conjunction with an InBody Request"),
+                            Method.Put => await Client.PutAsJsonAsync(endPoint, content),
+                            Method.Patch => await Client.PatchAsJsonAsync(endPoint, content),
+                            Method.Delete => throw new ArgumentException(
+                                "Delete cannot be used in conjunction with an InBody Request"),
+                            _ => throw new ArgumentOutOfRangeException(nameof(method), method,
+                                "An incorrect Method Value was supplied.")
+                        };
+                    }, endPoint);
+                }
+            }
+            catch (ArgumentException)
+            {
+                // An incorrect Method value was supplied. So we want this exception to bubble up to the caller.
+                throw;
+            }
+            catch (TimeoutException timeoutException)
+            {
+                return ApiResponse<TResponse>.Failure("The Request Timed Out; Retry limit reached", timeoutException);
+            }
+            catch (Exception exception)
+            {
+                _logger?.LogError(exception,
+                    "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
+                    method.ToString(), endPoint);
+
+                return ApiResponse<TResponse>.Failure($"An Exception occured whilst performing a HTTP {method} Request",
+                    exception);
+            }
+
+            return await ProcessResponseAsync<TResponse>(responseMessage);
+        }
 
         /// <summary>
         /// Retries the request to the specified retry count.
@@ -248,218 +413,6 @@ namespace SereneApi
             throw new TimeoutException($"The Request to \"{route}\" has Timed Out; Retry limit reached. Retired {requestsAttempted}");
         }
 
-        /// <summary>
-        /// Performs an in Path Request
-        /// </summary>
-        /// <param name="method">The RESTful API <see cref="Method"/> to be used</param>
-        /// <param name="route">The <see cref="Uri"/> to be used for the request</param>
-        protected async Task<IApiResponse> BaseInPathRequestAsync(Method method, Uri route)
-        {
-            CheckIfDisposed();
-
-            HttpResponseMessage responseMessage;
-
-            try
-            {
-                responseMessage = await RetryRequestAsync(async () =>
-                {
-                    return method switch
-                    {
-                        Method.Post => await Client.PostAsJsonAsync(route),
-                        Method.Get => await Client.GetAsync(route),
-                        Method.Put => await Client.PutAsJsonAsync(route),
-                        Method.Patch => await Client.PatchAsJsonAsync(route),
-                        Method.Delete => await Client.DeleteAsync(route),
-                        _ => throw new ArgumentOutOfRangeException(nameof(method), method,
-                            "An incorrect Method Value was supplied.")
-                    };
-                }, route);
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                // An incorrect Method value was supplied. So we want this exception to bubble up to the caller.
-                throw;
-            }
-            catch (TimeoutException timeoutException)
-            {
-                return ApiResponse.Failure("The Request Timed Out; Retry limit reached", timeoutException);
-            }
-            catch (Exception exception)
-            {
-                _logger?.LogError(exception,
-                    "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
-                    method.ToString(), route);
-
-                return ApiResponse.Failure($"An Exception occured whilst performing a HTTP {method} Request",
-                    exception);
-            }
-
-            return ProcessResponse(responseMessage);
-        }
-
-        /// <summary>
-        /// Performs an in Path Request returning a <see cref="TResponse"/>
-        /// </summary>
-        /// <typeparam name="TResponse"></typeparam>
-        /// <param name="method">The RESTful API <see cref="Method"/> to be used</param>
-        /// <param name="route">The <see cref="Uri"/> to be used for the request</param>
-        protected async Task<IApiResponse<TResponse>> BaseInPathRequestAsync<TResponse>(Method method, Uri route)
-        {
-            CheckIfDisposed();
-
-            HttpResponseMessage responseMessage;
-
-            try
-            {
-                responseMessage = await RetryRequestAsync(async () =>
-                {
-                    return method switch
-                    {
-                        Method.Post => await Client.PostAsJsonAsync(route),
-                        Method.Get => await Client.GetAsync(route),
-                        Method.Put => await Client.PutAsJsonAsync(route),
-                        Method.Patch => await Client.PatchAsJsonAsync(route),
-                        Method.Delete => await Client.DeleteAsync(route),
-                        _ => throw new ArgumentOutOfRangeException(nameof(method), method,
-                            "An incorrect Method Value was supplied.")
-                    };
-                }, route);
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                // An incorrect Method value was supplied. So we want this exception to bubble up to the caller.
-                throw;
-            }
-            catch (TimeoutException timeoutException)
-            {
-                return ApiResponse<TResponse>.Failure("The Request Timed Out; Retry limit reached", timeoutException);
-            }
-            catch (Exception exception)
-            {
-                _logger?.LogError(exception,
-                    "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
-                    method.ToString(), route);
-
-                return ApiResponse<TResponse>.Failure($"An Exception occured whilst performing a HTTP {method} Request",
-                    exception);
-            }
-
-            return await ProcessResponseAsync<TResponse>(responseMessage);
-        }
-
-        /// <summary>
-        /// Performs an in Body Request
-        /// </summary>
-        /// <typeparam name="TContent">The type to be serialized and sent in the body of the request</typeparam>
-        /// <param name="method">The RESTful API <see cref="Method"/> to be used</param>
-        /// <param name="route">The <see cref="Uri"/> to be used for the request</param>
-        /// <param name="inBodyContent">The object serialized and sent in the body of the request</param>
-        protected async Task<IApiResponse> BaseInBodyRequestAsync<TContent>(Method method, Uri route,
-            TContent inBodyContent)
-        {
-            CheckIfDisposed();
-
-            HttpResponseMessage responseMessage;
-
-            try
-            {
-                StringContent content = await _serializer.SerializeAsync(inBodyContent);
-
-                responseMessage = await RetryRequestAsync(async () =>
-                {
-                    return method switch
-                    {
-                        Method.Post => await Client.PostAsJsonAsync(route, content),
-                        Method.Get => throw new ArgumentException(
-                            "Get cannot be used in conjunction with an InBody Request"),
-                        Method.Put => await Client.PutAsJsonAsync(route, content),
-                        Method.Patch => await Client.PatchAsJsonAsync(route, content),
-                        Method.Delete => throw new ArgumentException(
-                            "Delete cannot be used in conjunction with an InBody Request"),
-                        _ => throw new ArgumentOutOfRangeException(nameof(method), method,
-                            "An incorrect Method Value was supplied.")
-                    };
-                }, route);
-            }
-            catch (ArgumentException)
-            {
-                // An incorrect Method value was supplied. So we want this exception to bubble up to the caller.
-                throw;
-            }
-            catch (TimeoutException timeoutException)
-            {
-                return ApiResponse.Failure("The Request Timed Out; Retry limit reached", timeoutException);
-            }
-            catch (Exception exception)
-            {
-                _logger?.LogError(exception,
-                    "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
-                    method.ToString(), route);
-
-                return ApiResponse.Failure($"An Exception occured whilst performing a HTTP {method} Request",
-                    exception);
-            }
-
-            return ProcessResponse(responseMessage);
-        }
-
-        /// <summary>
-        /// Performs an in Body Request returning a <see cref="TResponse"/>
-        /// </summary>
-        /// <typeparam name="TResponse"></typeparam>
-        /// <typeparam name="TContent">The type to be serialized and sent in the body of the request</typeparam>
-        /// <param name="method">The RESTful API <see cref="Method"/> to be used</param>
-        /// <param name="route">The <see cref="Uri"/> to be used for the request</param>
-        /// <param name="inBodyContent">The object serialized and sent in the body of the request</param>
-        protected async Task<IApiResponse<TResponse>> BaseInBodyRequestAsync<TContent, TResponse>(Method method,
-            Uri route, TContent inBodyContent)
-        {
-            CheckIfDisposed();
-
-            HttpResponseMessage responseMessage;
-
-            try
-            {
-                StringContent content = await _serializer.SerializeAsync(inBodyContent);
-
-                responseMessage = await RetryRequestAsync(async () =>
-                {
-                    return method switch
-                    {
-                        Method.Post => await Client.PostAsJsonAsync(route, content),
-                        Method.Get => throw new ArgumentException(
-                            "Get cannot be used in conjunction with an InBody Request"),
-                        Method.Put => await Client.PutAsJsonAsync(route, content),
-                        Method.Patch => await Client.PatchAsJsonAsync(route, content),
-                        Method.Delete => throw new ArgumentException(
-                            "Delete cannot be used in conjunction with an InBody Request"),
-                        _ => throw new ArgumentOutOfRangeException(nameof(method), method,
-                            "An incorrect Method Value was supplied.")
-                    };
-                }, route);
-            }
-            catch (ArgumentException)
-            {
-                // An incorrect Method value was supplied. So we want this exception to bubble up to the caller.
-                throw;
-            }
-            catch (TimeoutException timeoutException)
-            {
-                return ApiResponse<TResponse>.Failure("The Request Timed Out; Retry limit reached", timeoutException);
-            }
-            catch (Exception exception)
-            {
-                _logger?.LogError(exception,
-                    "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
-                    method.ToString(), route);
-
-                return ApiResponse<TResponse>.Failure($"An Exception occured whilst performing a HTTP {method} Request",
-                    exception);
-            }
-
-            return await ProcessResponseAsync<TResponse>(responseMessage);
-        }
-
         #endregion
 
         /// <summary>
@@ -485,6 +438,13 @@ namespace SereneApi
 
             try
             {
+                if (responseMessage.Content == null)
+                {
+                    _logger.LogWarning("No content was received in the response.");
+
+                    return ApiResponse<TResponse>.Failure("No content was received in the response.");
+                }
+
                 TResponse response = await _serializer.DeserializeAsync<TResponse>(responseMessage.Content);
 
                 return ApiResponse<TResponse>.Success(response);

@@ -1,6 +1,6 @@
 ﻿namespace SereneApi.Interfaces
 {
-    public interface IApiHandlerFactoryExtensions
+    public interface IRegisterApiHandlerExtensions
     {
     }
 }

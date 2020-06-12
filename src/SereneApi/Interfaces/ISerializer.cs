@@ -20,8 +20,8 @@ namespace SereneApi.Interfaces
         /// <param name="content">The content to be deserializes.</param>
         Task<TObject> DeserializeAsync<TObject>(HttpContent content);
 
-        StringContent Serialize<TObject>(TObject value);
+        IApiRequestContent Serialize<TObject>(TObject value);
 
-        Task<StringContent> SerializeAsync<TObject>(TObject value);
+        Task<IApiRequestContent> SerializeAsync<TObject>(TObject value);
     }
 }

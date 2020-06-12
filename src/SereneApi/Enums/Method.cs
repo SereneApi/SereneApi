@@ -8,6 +8,10 @@ namespace SereneApi
     public enum Method
     {
         /// <summary>
+        /// No <see cref="Method"/> selected
+        /// </summary>
+        None,
+        /// <summary>
         /// CREATE
         /// </summary>
         Post,

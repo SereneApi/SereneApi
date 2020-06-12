@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using SereneApi.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SereneApi.Abstraction;
 
 namespace SereneApi
 {

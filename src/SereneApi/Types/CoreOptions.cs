@@ -8,6 +8,16 @@
         /// <summary>
         /// The Dependencies required for the Options to function.
         /// </summary>
-        public DependencyCollection DependencyCollection { get; } = new DependencyCollection();
+        public DependencyCollection DependencyCollection { get; }
+
+        protected CoreOptions()
+        {
+            DependencyCollection = new DependencyCollection();
+        }
+
+        protected CoreOptions(DependencyCollection dependencyCollection)
+        {
+            DependencyCollection = dependencyCollection;
+        }
     }
 }
