@@ -51,6 +51,13 @@ namespace SereneApi.Types
             DependencyCollection.AddDependency(RetryDependency.Default);
         }
 
+        protected ApiHandlerOptionsBuilder(DependencyCollection dependencyCollection) : base(dependencyCollection)
+        {
+            DependencyCollection.AddDependency(ApiHandlerOptionDefaults.QueryFactory);
+            DependencyCollection.AddDependency(JsonSerializer.Default);
+            DependencyCollection.AddDependency(RetryDependency.Default);
+        }
+
         internal ApiHandlerOptionsBuilder(HttpClient baseClient, bool disposeClient = true) : this()
         {
             _disposeClient = disposeClient;

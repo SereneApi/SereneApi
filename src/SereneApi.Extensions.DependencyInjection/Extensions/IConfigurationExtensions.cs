@@ -22,6 +22,11 @@ namespace Microsoft.Extensions.Configuration
             return default;
         }
 
+        internal static bool ContainsKey(this IConfiguration configuration, string key)
+        {
+            return configuration.GetSection(key).Exists();
+        }
+
         /// <summary>
         /// Returns the <see cref="IConfiguration"/> from within ApiConfig that matches the specified <see cref="apiKey"/>
         /// </summary>

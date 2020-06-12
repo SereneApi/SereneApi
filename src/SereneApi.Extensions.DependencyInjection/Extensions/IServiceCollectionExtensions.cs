@@ -58,7 +58,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static IApiHandlerOptions<TApiImplementation> CreateApiHandlerOptions<TApiImplementation>(Action<IApiHandlerOptionsBuilder<TApiImplementation>> optionsAction, IRegisterApiHandlerExtensions registerExtensions, IServiceCollection services) where TApiImplementation : ApiHandler
         {
-            ApiHandlerOptionsBuilder<TApiImplementation> builder = new ApiHandlerOptionsBuilder<TApiImplementation>();
+            CoreOptions options = GetCoreOptions(registerExtensions);
+
+            ApiHandlerOptionsBuilder<TApiImplementation> builder = new ApiHandlerOptionsBuilder<TApiImplementation>(options.DependencyCollection);
 
             optionsAction.Invoke(builder);
 
@@ -69,13 +71,25 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static IApiHandlerOptions<TApiImplementation> CreateApiHandlerOptions<TApiImplementation>(Action<IApiHandlerOptionsBuilder<TApiImplementation>, IServiceProvider> optionsAction, IRegisterApiHandlerExtensions registerExtensions, IServiceProvider serviceProvider, IServiceCollection services) where TApiImplementation : ApiHandler
         {
-            ApiHandlerOptionsBuilder<TApiImplementation> builder = new ApiHandlerOptionsBuilder<TApiImplementation>();
+            CoreOptions options = GetCoreOptions(registerExtensions);
+
+            ApiHandlerOptionsBuilder<TApiImplementation> builder = new ApiHandlerOptionsBuilder<TApiImplementation>(options.DependencyCollection);
 
             optionsAction.Invoke(builder, serviceProvider);
 
             builder.AddServicesCollection(services);
 
             return builder.BuildOptions();
+        }
+
+        private static CoreOptions GetCoreOptions(IRegisterApiHandlerExtensions extensions)
+        {
+            if (extensions is CoreOptions coreOptions)
+            {
+                return coreOptions;
+            }
+
+            throw new TypeAccessException($"Must be of type or inherit from {nameof(CoreOptions)}");
         }
     }
 }

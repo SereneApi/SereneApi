@@ -1,4 +1,6 @@
+using System.Net;
 using DependencyInjection.API;
+using DependencyInjection.API.DTOs;
 using DependencyInjection.WebUi.Handlers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using SereneApi.Extensions.Mocking;
 
 namespace DependencyInjection.WebUi
 {
@@ -32,7 +35,7 @@ namespace DependencyInjection.WebUi
                 // Under appsettings.conf, there is an array called ApiConfig.
                 // Inside that array is another array called "Student" as you can see below we are getting that.
                 builder.UseConfiguration(Configuration.GetApiConfig("Student"));
-            });
+            }).WithMockResponse(StudentDto.JohnSmith);
 
             // Here a provider is also being used, this allows you to get services that have been registered with dependency injection
             services.RegisterApiHandler<IClassApi, ClassApiHandler>((builder, provider) =>

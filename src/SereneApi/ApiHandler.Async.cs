@@ -438,6 +438,13 @@ namespace SereneApi
 
             try
             {
+                if (responseMessage.Content == null)
+                {
+                    _logger.LogWarning("No content was received in the response.");
+
+                    return ApiResponse<TResponse>.Failure("No content was received in the response.");
+                }
+
                 TResponse response = await _serializer.DeserializeAsync<TResponse>(responseMessage.Content);
 
                 return ApiResponse<TResponse>.Success(response);
