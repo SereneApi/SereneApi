@@ -9,9 +9,9 @@ using System.Text.Json;
 
 namespace SereneApi.Extensions.Mocking
 {
-    public static class ApiHandlerFactoryExtensionsExtension
+    public static class IRegisterApiHandlerExtensionsExtensions
     {
-        public static IApiHandlerFactoryExtensions WithMockResponse(this IApiHandlerFactoryExtensions extensions, HttpResponseMessage response)
+        public static IRegisterApiHandlerExtensions WithMockResponse(this IRegisterApiHandlerExtensions extensions, HttpResponseMessage response)
         {
             CoreOptions coreOptions = GetCoreOptions(extensions);
 
@@ -22,7 +22,7 @@ namespace SereneApi.Extensions.Mocking
             return extensions;
         }
 
-        public static IApiHandlerFactoryExtensions WithMockResponse(this IApiHandlerFactoryExtensions extensions, Action<HttpResponseMessage> responseAction)
+        public static IRegisterApiHandlerExtensions WithMockResponse(this IRegisterApiHandlerExtensions extensions, Action<HttpResponseMessage> responseAction)
         {
             HttpResponseMessage response = new HttpResponseMessage();
 
@@ -31,7 +31,7 @@ namespace SereneApi.Extensions.Mocking
             return WithMockResponse(extensions, response);
         }
 
-        public static IApiHandlerFactoryExtensions WithMockResponse<TContent>(this IApiHandlerFactoryExtensions extensions, TContent content, JsonSerializerOptions serializerOptionsOverride = null)
+        public static IRegisterApiHandlerExtensions WithMockResponse<TContent>(this IRegisterApiHandlerExtensions extensions, TContent content, JsonSerializerOptions serializerOptionsOverride = null)
         {
             CoreOptions coreOptions = GetCoreOptions(extensions);
 
@@ -63,7 +63,7 @@ namespace SereneApi.Extensions.Mocking
             return WithMockResponse(extensions, response);
         }
 
-        public static IApiHandlerFactoryExtensions WithTimeoutResponse(this IApiHandlerFactoryExtensions extensions)
+        public static IRegisterApiHandlerExtensions WithTimeoutResponse(this IRegisterApiHandlerExtensions extensions)
         {
             CoreOptions coreOptions = GetCoreOptions(extensions);
 
@@ -74,7 +74,7 @@ namespace SereneApi.Extensions.Mocking
             return extensions;
         }
 
-        public static IApiHandlerFactoryExtensions WithTimeoutResponse(this IApiHandlerFactoryExtensions extensions, TimeSpan timeout)
+        public static IRegisterApiHandlerExtensions WithTimeoutResponse(this IRegisterApiHandlerExtensions extensions, TimeSpan timeout)
         {
             CoreOptions coreOptions = GetCoreOptions(extensions);
 
@@ -87,7 +87,7 @@ namespace SereneApi.Extensions.Mocking
             return extensions;
         }
 
-        public static IApiHandlerFactoryExtensions WithTimeout(this IApiHandlerFactoryExtensions extensions, int timeoutCount)
+        public static IRegisterApiHandlerExtensions WithTimeout(this IRegisterApiHandlerExtensions extensions, int timeoutCount)
         {
             CoreOptions coreOptions = GetCoreOptions(extensions);
 
@@ -105,7 +105,7 @@ namespace SereneApi.Extensions.Mocking
             return extensions;
         }
 
-        public static IApiHandlerFactoryExtensions WithTimeout(this IApiHandlerFactoryExtensions extensions, TimeSpan waitTime)
+        public static IRegisterApiHandlerExtensions WithTimeout(this IRegisterApiHandlerExtensions extensions, TimeSpan waitTime)
         {
             CoreOptions coreOptions = GetCoreOptions(extensions);
 
@@ -121,7 +121,7 @@ namespace SereneApi.Extensions.Mocking
             return extensions;
         }
 
-        public static IApiHandlerFactoryExtensions WithTimeout(this IApiHandlerFactoryExtensions extensions, int timeoutCount, TimeSpan waitTime)
+        public static IRegisterApiHandlerExtensions WithTimeout(this IRegisterApiHandlerExtensions extensions, int timeoutCount, TimeSpan waitTime)
         {
             CoreOptions coreOptions = GetCoreOptions(extensions);
 
@@ -140,7 +140,7 @@ namespace SereneApi.Extensions.Mocking
             return extensions;
         }
 
-        public static IApiHandlerFactoryExtensions HasRequestContent(this IApiHandlerFactoryExtensions extensions, string expectedContent)
+        public static IRegisterApiHandlerExtensions HasRequestContent(this IRegisterApiHandlerExtensions extensions, string expectedContent)
         {
             CoreOptions coreOptions = GetCoreOptions(extensions);
 
@@ -156,7 +156,7 @@ namespace SereneApi.Extensions.Mocking
             return extensions;
         }
 
-        public static IApiHandlerFactoryExtensions HasRequestUri(this IApiHandlerFactoryExtensions extensions, string expectedUri)
+        public static IRegisterApiHandlerExtensions HasRequestUri(this IRegisterApiHandlerExtensions extensions, string expectedUri)
         {
             CoreOptions coreOptions = GetCoreOptions(extensions);
 
@@ -172,7 +172,7 @@ namespace SereneApi.Extensions.Mocking
             return extensions;
         }
 
-        private static CoreOptions GetCoreOptions(IApiHandlerFactoryExtensions extensions)
+        private static CoreOptions GetCoreOptions(IRegisterApiHandlerExtensions extensions)
         {
             if (extensions is CoreOptions coreOptions)
             {

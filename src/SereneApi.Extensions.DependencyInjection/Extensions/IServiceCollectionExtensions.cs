@@ -3,6 +3,8 @@ using SereneApi;
 using SereneApi.Extensions.DependencyInjection.Interfaces;
 using SereneApi.Extensions.DependencyInjection.Types;
 using System;
+using SereneApi.Interfaces;
+using SereneApi.Types;
 
 // Do not change namespace
 // ReSharper disable once CheckNamespace
@@ -17,15 +19,19 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TApiImplementation">The implementation of the <see cref="ApiHandler"/> to be registered as a service</typeparam>
         /// <param name="services">The <see cref="IServiceCollection" /> to add services to</param>
         /// <param name="optionsAction">An action to configure the <see cref="ApiHandler"/></param>
-        public static void AddApiHandler<TApiDefinition, TApiImplementation>(this IServiceCollection services, Action<IApiHandlerOptionsBuilder<TApiImplementation>> optionsAction) where TApiDefinition : class where TApiImplementation : ApiHandler, TApiDefinition
+        public static IRegisterApiHandlerExtensions RegisterApiHandler<TApiDefinition, TApiImplementation>(this IServiceCollection services, Action<IApiHandlerOptionsBuilder<TApiImplementation>> optionsAction) where TApiDefinition : class where TApiImplementation : ApiHandler, TApiDefinition
         {
+            RegisterApiHandlerExtensions registerExtensions = new RegisterApiHandlerExtensions();
+
             services.TryAddScoped<TApiDefinition, TApiImplementation>();
 
             services.TryAdd(new ServiceDescriptor(typeof(IApiHandlerOptions<TApiImplementation>),
-                p => CreateApiHandlerOptions(optionsAction, services), ServiceLifetime.Scoped));
+                p => CreateApiHandlerOptions(optionsAction, registerExtensions, services), ServiceLifetime.Scoped));
 
             services.Add(new ServiceDescriptor(typeof(IApiHandlerOptions),
                 p => p.GetRequiredService<IApiHandlerOptions<TApiImplementation>>(), ServiceLifetime.Scoped));
+
+            return registerExtensions;
         }
 
         /// <summary>
@@ -35,18 +41,22 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TApiImplementation">The implementation of the <see cref="ApiHandler"/> to be registered as a service</typeparam>
         /// <param name="services">The <see cref="IServiceCollection" /> to add services to</param>
         /// <param name="optionsAction">An action to configure the <see cref="ApiHandler"/> with an <see cref="IServiceProvider"/> to get already registered services</param>
-        public static void AddApiHandler<TApiDefinition, TApiImplementation>(this IServiceCollection services, Action<IApiHandlerOptionsBuilder<TApiImplementation>, IServiceProvider> optionsAction) where TApiDefinition : class where TApiImplementation : ApiHandler, TApiDefinition
+        public static IRegisterApiHandlerExtensions RegisterApiHandler<TApiDefinition, TApiImplementation>(this IServiceCollection services, Action<IApiHandlerOptionsBuilder<TApiImplementation>, IServiceProvider> optionsAction) where TApiDefinition : class where TApiImplementation : ApiHandler, TApiDefinition
         {
+            RegisterApiHandlerExtensions registerExtensions = new RegisterApiHandlerExtensions();
+
             services.TryAddScoped<TApiDefinition, TApiImplementation>();
 
             services.TryAdd(new ServiceDescriptor(typeof(IApiHandlerOptions<TApiImplementation>),
-                p => CreateApiHandlerOptions(optionsAction, p, services), ServiceLifetime.Scoped));
+                p => CreateApiHandlerOptions(optionsAction, registerExtensions, p, services), ServiceLifetime.Scoped));
 
             services.Add(new ServiceDescriptor(typeof(IApiHandlerOptions),
                 p => p.GetRequiredService<IApiHandlerOptions<TApiImplementation>>(), ServiceLifetime.Scoped));
+
+            return registerExtensions;
         }
 
-        private static IApiHandlerOptions<TApiImplementation> CreateApiHandlerOptions<TApiImplementation>(Action<IApiHandlerOptionsBuilder<TApiImplementation>> optionsAction, IServiceCollection services) where TApiImplementation : ApiHandler
+        private static IApiHandlerOptions<TApiImplementation> CreateApiHandlerOptions<TApiImplementation>(Action<IApiHandlerOptionsBuilder<TApiImplementation>> optionsAction, IRegisterApiHandlerExtensions registerExtensions, IServiceCollection services) where TApiImplementation : ApiHandler
         {
             ApiHandlerOptionsBuilder<TApiImplementation> builder = new ApiHandlerOptionsBuilder<TApiImplementation>();
 
@@ -57,7 +67,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder.BuildOptions();
         }
 
-        private static IApiHandlerOptions<TApiImplementation> CreateApiHandlerOptions<TApiImplementation>(Action<IApiHandlerOptionsBuilder<TApiImplementation>, IServiceProvider> optionsAction, IServiceProvider serviceProvider, IServiceCollection services) where TApiImplementation : ApiHandler
+        private static IApiHandlerOptions<TApiImplementation> CreateApiHandlerOptions<TApiImplementation>(Action<IApiHandlerOptionsBuilder<TApiImplementation>, IServiceProvider> optionsAction, IRegisterApiHandlerExtensions registerExtensions, IServiceProvider serviceProvider, IServiceCollection services) where TApiImplementation : ApiHandler
         {
             ApiHandlerOptionsBuilder<TApiImplementation> builder = new ApiHandlerOptionsBuilder<TApiImplementation>();
 

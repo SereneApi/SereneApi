@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SereneApi.Interfaces
+namespace SereneApi.Abstraction
 {
     /// <summary>
     /// When Inherited; provides the necessary methods for implementing RESTful CRUD Api consumer

@@ -1,7 +1,7 @@
 ﻿using DependencyInjection.API;
 using DependencyInjection.API.DTOs;
 using SereneApi;
-using SereneApi.DependencyInjection;
+using SereneApi.Extensions.DependencyInjection.Interfaces;
 
 namespace DependencyInjection.WebUi.Handlers
 {
