@@ -9,7 +9,7 @@ namespace SereneApi.Interfaces
 
         void WithEndPoint(object parameter);
 
-        void WithEndPoint(string endpoint, params object[] parameters);
+        void WithEndPoint(string endPointTemplate, params object[] templateParameters);
 
         void UsingMethod(Method method);
 

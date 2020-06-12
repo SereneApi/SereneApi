@@ -1,27 +1,37 @@
-﻿using SereneApi.Interfaces;
+﻿using SereneApi.Helpers;
+using SereneApi.Interfaces;
 using System;
 using System.Linq;
-using SereneApi.Helpers;
 
 namespace SereneApi.Factories
 {
     public sealed class RouteFactory : IRouteFactory
     {
-        private readonly string _resource;
-
-        private readonly string _resourcePath;
-
+        #region Variables
+        
         private string _query;
 
         private object[] _parameters;
 
         private string _endpoint;
 
+        #endregion
+        #region Properties
+
+        public string Resource { get; }
+        
+        public string ResourcePath { get; }
+
+        #endregion
+        #region Constructors
+
         public RouteFactory(string resource, string resourcePath)
         {
-            _resource = resource;
-            _resourcePath = resourcePath;
+            Resource = resource;
+            ResourcePath = resourcePath;
         }
+        
+        #endregion
 
         public void AddQuery(string queryString)
         {
@@ -35,7 +45,7 @@ namespace SereneApi.Factories
 
         public void AddParameters(params object[] parameters)
         {
-            if (parameters != null)
+            if (_parameters != null)
             {
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
@@ -55,7 +65,7 @@ namespace SereneApi.Factories
 
         public Uri BuildRoute()
         {
-            string route = $"{_resourcePath}{_resource}";
+            string route = $"{ResourcePath}{Resource}";
 
             if (_parameters != null)
             {
@@ -75,7 +85,7 @@ namespace SereneApi.Factories
                     route += $"/{template}";
                 }
             }
-            else if(!string.IsNullOrWhiteSpace(_endpoint))
+            else if (!string.IsNullOrWhiteSpace(_endpoint))
             {
                 route += $"/{_endpoint}";
             }
@@ -86,7 +96,7 @@ namespace SereneApi.Factories
             }
 
             Clear();
-            
+
             return new Uri(route, UriKind.Relative);
         }
 
@@ -97,7 +107,7 @@ namespace SereneApi.Factories
             _query = null;
         }
 
-        private string FormatEndpointTemplate(string endpointTemplate, params object[] templateParameters)
+        private static string FormatEndpointTemplate(string endpointTemplate, params object[] templateParameters)
         {
             #region Format Check Logic
 

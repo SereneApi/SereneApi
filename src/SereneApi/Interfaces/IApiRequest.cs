@@ -1,9 +1,13 @@
-﻿namespace SereneApi.Interfaces
+﻿using System;
+
+namespace SereneApi.Interfaces
 {
     public interface IApiRequest
     {
-        string EndPoint { get; }
+        Uri EndPoint { get; }
 
         Method Method { get; }
+
+        IApiRequestContent Content { get; }
     }
 }

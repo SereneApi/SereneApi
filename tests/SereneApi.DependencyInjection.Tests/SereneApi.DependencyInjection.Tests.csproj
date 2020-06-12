@@ -5,7 +5,7 @@
 
     <IsPackable>false</IsPackable>
 
-    <AssemblyName>SereneApi.DependencyInjection.Tests</AssemblyName>
+    <AssemblyName>SereneApi.Extensions.DependencyInjection.Tests</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\SereneApi.DependencyInjection\SereneApi.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\src\SereneApi.Extensions.DependencyInjection\SereneApi.Extensions.DependencyInjection.csproj" />
   </ItemGroup>
 
 </Project>

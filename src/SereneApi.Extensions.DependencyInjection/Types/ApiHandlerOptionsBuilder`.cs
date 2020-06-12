@@ -1,15 +1,17 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SereneApi.DependencyInjection.Interfaces;
 using SereneApi.Enums;
+using SereneApi.Extensions.DependencyInjection.Interfaces;
+using SereneApi.Factories;
 using SereneApi.Helpers;
+using SereneApi.Interfaces;
 using SereneApi.Types;
 using SereneApi.Types.Dependencies;
 using System;
 using System.Net.Http;
 
-namespace SereneApi.DependencyInjection.Types
+namespace SereneApi.Extensions.DependencyInjection.Types
 {
     /// <summary>
     /// The <see cref="ApiHandlerOptionsBuilder{TApiHandler}"/> is used to build new instances of the <see cref="ApiHandlerOptions{TApiHandler}"/> class
@@ -63,6 +65,7 @@ namespace SereneApi.DependencyInjection.Types
             RetryDependency retryDependency = new RetryDependency(retryCount);
 
             DependencyCollection.AddDependency(retryDependency);
+            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory(Resource, ResourcePath));
 
             #endregion
         }

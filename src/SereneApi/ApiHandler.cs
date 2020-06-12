@@ -41,7 +41,7 @@ namespace SereneApi
         private readonly RetryDependency _retry;
 
         private readonly ISerializer _serializer;
-        
+
         #endregion
         #region Properties
 
@@ -95,7 +95,7 @@ namespace SereneApi
 
             _queryFactory = _options.Dependencies.GetDependency<IQueryFactory>();
             _routeFactory = _options.Dependencies.GetDependency<IRouteFactory>();
-            
+
             _serializer = _options.Dependencies.GetDependency<ISerializer>();
 
             #endregion

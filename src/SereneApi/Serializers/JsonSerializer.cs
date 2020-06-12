@@ -1,11 +1,11 @@
 ﻿using SereneApi.Interfaces;
+using SereneApi.Types;
+using SereneApi.Types.Content;
 using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using SereneApi.Types;
-using SereneApi.Types.Content;
 
 namespace SereneApi.Serializers
 {

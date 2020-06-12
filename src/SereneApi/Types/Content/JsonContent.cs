@@ -17,6 +17,5 @@ namespace SereneApi.Types.Content
             Encoding = encoding;
             MediaType = mediaTypeType;
         }
-
     }
 }

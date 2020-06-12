@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Tests", "tests\Se
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi", "src\SereneApi\SereneApi.csproj", "{AD315370-6A83-41FF-BB62-1B920B9572D3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.DependencyInjection", "src\SereneApi.DependencyInjection\SereneApi.DependencyInjection.csproj", "{76C4C878-DFC9-4645-8CC4-3A0E17BEA59F}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.DependencyInjection.Tests", "tests\SereneApi.DependencyInjection.Tests\SereneApi.DependencyInjection.Tests.csproj", "{2FF25BCD-0894-4CAA-AC1C-6540682A78B9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E98EEDA7-F6ED-4EA9-B2B6-D79DBD9145B2}"
@@ -24,7 +22,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Abstraction", "src\SereneApi.Abstraction\SereneApi.Abstraction.csproj", "{3595DCB6-9D17-4175-9461-702D07C49059}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Testing", "src\SereneApi.Testing\SereneApi.Testing.csproj", "{F318BA59-249D-4446-8DD0-FA37F58BC741}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Extensions.DependencyInjection", "src\SereneApi.Extensions.DependencyInjection\SereneApi.Extensions.DependencyInjection.csproj", "{05D1C724-9F2A-4766-9492-5798AC455592}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Extensions.Mocking", "src\SereneApi.Extensions.Mocking\SereneApi.Extensions.Mocking.csproj", "{7DD4E08C-9D08-4E34-AD15-355E2C30B70E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,10 +40,6 @@ Global
 		{AD315370-6A83-41FF-BB62-1B920B9572D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD315370-6A83-41FF-BB62-1B920B9572D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD315370-6A83-41FF-BB62-1B920B9572D3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{76C4C878-DFC9-4645-8CC4-3A0E17BEA59F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{76C4C878-DFC9-4645-8CC4-3A0E17BEA59F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{76C4C878-DFC9-4645-8CC4-3A0E17BEA59F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{76C4C878-DFC9-4645-8CC4-3A0E17BEA59F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2FF25BCD-0894-4CAA-AC1C-6540682A78B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2FF25BCD-0894-4CAA-AC1C-6540682A78B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FF25BCD-0894-4CAA-AC1C-6540682A78B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -56,10 +52,14 @@ Global
 		{3595DCB6-9D17-4175-9461-702D07C49059}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3595DCB6-9D17-4175-9461-702D07C49059}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3595DCB6-9D17-4175-9461-702D07C49059}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F318BA59-249D-4446-8DD0-FA37F58BC741}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F318BA59-249D-4446-8DD0-FA37F58BC741}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F318BA59-249D-4446-8DD0-FA37F58BC741}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F318BA59-249D-4446-8DD0-FA37F58BC741}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05D1C724-9F2A-4766-9492-5798AC455592}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05D1C724-9F2A-4766-9492-5798AC455592}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05D1C724-9F2A-4766-9492-5798AC455592}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05D1C724-9F2A-4766-9492-5798AC455592}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DD4E08C-9D08-4E34-AD15-355E2C30B70E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DD4E08C-9D08-4E34-AD15-355E2C30B70E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DD4E08C-9D08-4E34-AD15-355E2C30B70E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DD4E08C-9D08-4E34-AD15-355E2C30B70E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

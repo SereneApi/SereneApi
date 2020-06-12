@@ -1,8 +1,7 @@
-﻿using SereneApi.Interfaces;
+﻿using SereneApi.Helpers;
+using SereneApi.Interfaces;
 using System;
-using System.Globalization;
 using System.Linq.Expressions;
-using SereneApi.Helpers;
 
 namespace SereneApi.Types
 {
@@ -28,6 +27,13 @@ namespace SereneApi.Types
 
         private IApiRequestContent _content;
 
+        public ApiRequestBuilder(IRouteFactory routeFactory, IQueryFactory queryFactory, ISerializer serializer)
+        {
+            _routeFactory = routeFactory;
+            _queryFactory = queryFactory;
+            _serializer = serializer;
+        }
+
         public void WithEndPoint(string endPoint)
         {
             if (!string.IsNullOrWhiteSpace(_endPoint))
@@ -45,7 +51,7 @@ namespace SereneApi.Types
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
-            _endPoint = parameter.ToString();
+            _endPoint = parameter?.ToString();
         }
 
         public void WithEndPoint(string endpointTemplate, params object[] templateParameters)
@@ -106,7 +112,13 @@ namespace SereneApi.Types
 
         public IApiRequest BuildRequest()
         {
-            Uri route = _routeFactory.BuildRouteWithQuery()
+            _routeFactory.AddQuery(_query);
+            _routeFactory.AddEndpoint(_endPoint);
+            _routeFactory.AddParameters(_endPointParameters);
+
+            Uri endPoint = _routeFactory.BuildRoute();
+
+            return new ApiRequest(_method, endPoint, _content);
         }
     }
 }

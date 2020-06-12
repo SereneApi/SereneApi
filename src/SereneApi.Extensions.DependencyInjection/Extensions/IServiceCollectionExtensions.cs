@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection.Extensions;
 using SereneApi;
-using SereneApi.DependencyInjection.Interfaces;
-using SereneApi.DependencyInjection.Types;
+using SereneApi.Extensions.DependencyInjection.Interfaces;
+using SereneApi.Extensions.DependencyInjection.Types;
 using System;
 
 // Do not change namespace

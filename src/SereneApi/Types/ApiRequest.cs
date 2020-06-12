@@ -1,21 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Text;
-using SereneApi.Interfaces;
+﻿using SereneApi.Interfaces;
+using System;
 
 namespace SereneApi.Types
 {
     public class ApiRequest : IApiRequest
     {
-        public string EndPoint { get; }
+        public Uri EndPoint { get; }
 
         public Method Method { get; }
 
-        public ApiRequest(Method method, string endPoint)
+        public IApiRequestContent Content { get; }
+
+        public ApiRequest(Method method, Uri endPoint = null, IApiRequestContent content = null)
         {
             Method = method;
             EndPoint = endPoint;
+            Content = content;
         }
     }
 

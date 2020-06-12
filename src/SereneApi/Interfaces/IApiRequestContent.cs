@@ -1,5 +1,5 @@
-﻿using System.Text;
-using SereneApi.Types;
+﻿using SereneApi.Types;
+using System.Text;
 
 namespace SereneApi.Interfaces
 {

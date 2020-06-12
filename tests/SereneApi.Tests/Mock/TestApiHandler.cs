@@ -15,12 +15,12 @@ namespace SereneApi.Tests.Mock
             return await PerformRequestAsync(builder =>
             {
                 builder.UsingMethod(Method.Post);
-                builder.AddQuery(MockPersonDto.John, dto => new {dto.Age});
+                builder.AddQuery(MockPersonDto.John, dto => new { dto.Age });
                 builder.AddInBodyContent(MockPersonDto.John);
                 builder.WithEndPoint("{0}/Details", MockPersonDto.John.Name);
             });
         }
-        
+
         public async Task<IApiResponse<TResponse>> Test<TResponse>()
         {
             return await PerformRequestAsync<TResponse>(builder =>

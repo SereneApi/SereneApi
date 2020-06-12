@@ -39,7 +39,7 @@ namespace SereneApi.Types
         {
             if (!_dependencyTypeMap.TryGetValue(typeof(TDependency), out IDependency dependency))
             {
-                throw new KeyNotFoundException($"Could not find that specified dependency {nameof(TDependency)}");
+                throw new KeyNotFoundException($"Could not find the specified dependency {typeof(TDependency)}");
             }
 
             return dependency.GetInstance<TDependency>();

@@ -1,4 +1,4 @@
-﻿using SereneApi.DependencyInjection;
+﻿using SereneApi.Extensions.DependencyInjection;
 using System.Collections.Generic;
 
 // Do not change namespace

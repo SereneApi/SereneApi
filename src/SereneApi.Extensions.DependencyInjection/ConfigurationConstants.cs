@@ -1,4 +1,4 @@
-﻿namespace SereneApi.DependencyInjection
+﻿namespace SereneApi.Extensions.DependencyInjection
 {
     internal class ConfigurationConstants
     {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SereneApi.Enums;
+using SereneApi.Factories;
 using SereneApi.Helpers;
 using SereneApi.Interfaces;
 using SereneApi.Serializers;
@@ -85,6 +86,8 @@ namespace SereneApi.Types
             Source = new Uri(SourceHelpers.EnsureSourceSlashTermination(source));
             Resource = SourceHelpers.EnsureSourceNoSlashTermination(resource);
             ResourcePath = ApiHandlerOptionsHelper.UseOrGetDefaultResourcePath(resourcePath);
+
+            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory(Resource, ResourcePath));
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseClientOverride"/>
@@ -97,7 +100,7 @@ namespace SereneApi.Types
 
             if (ClientOverride != null)
             {
-                throw new MethodAccessException("This method cannot be called twice");
+                ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
             if (Source != null)
@@ -121,6 +124,8 @@ namespace SereneApi.Types
             Resource = null;
 
             DisposeClientOverride = disposeClient;
+
+            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory(string.Empty, string.Empty));
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.SetTimeoutPeriod"/>

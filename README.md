@@ -16,9 +16,9 @@ Serene removes this code clutter allowing for clean single line methods to be us
 * SereneApi.Abstraction | *Environment* - Standard 2.1
 >Contains abstracted components.  <br>
 [![Nuget](https://img.shields.io/nuget/v/SereneApi.Abstraction.svg?style=flat-square)](https://www.nuget.org/packages/SereneApi.Abstraction/)
-* SereneApi.DependencyInjection | *Environment* - Core 3.1
+* SereneApi.Extensions.DependencyInjection | *Environment* - Core 3.1
 >Extends **SereneApi** adding support for AspNet Dependency Injection.  <br>
-[![Nuget](https://img.shields.io/nuget/v/SereneApi.DependencyInjection.svg?style=flat-square)](https://www.nuget.org/packages/SereneApi.DependencyInjection/)
+[![Nuget](https://img.shields.io/nuget/v/SereneApi.Extensions.DependencyInjection.svg?style=flat-square)](https://www.nuget.org/packages/SereneApi.Extensions.DependencyInjection/)
 * SereneApi.Extras | *Environment* - Standard 2.1
 >Adds Extras and Helpers that are involded with consuming specific 3rd party APIs.  <br>
 [![Nuget](https://img.shields.io/nuget/v/SereneApi.Extras.svg?style=flat-square)](https://www.nuget.org/packages/SereneApi.Extras/)

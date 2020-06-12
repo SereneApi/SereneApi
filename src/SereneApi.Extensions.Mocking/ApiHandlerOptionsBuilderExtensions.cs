@@ -1,11 +1,12 @@
-﻿using SereneApi.Interfaces;
+﻿using SereneApi.Extensions.Mocking.Types;
+using SereneApi.Interfaces;
 using SereneApi.Types;
 using System;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 
-namespace SereneApi.Testing
+namespace SereneApi.Extensions.Mocking
 {
     public static class ApiHandlerOptionsBuilderExtensions
     {
