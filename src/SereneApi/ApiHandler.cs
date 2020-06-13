@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using SereneApi.Abstraction.Enums;
+using SereneApi.Extensions;
 using SereneApi.Interfaces;
 using SereneApi.Types;
 using SereneApi.Types.Dependencies;
@@ -124,17 +126,19 @@ namespace SereneApi
             {
                 _logger?.LogWarning("Received an Empty Http Response");
 
-                return ApiResponse.Failure("Received an Empty Http Response");
+                return ApiResponse.Failure(Status.None, "Received an Empty Http Response");
             }
 
-            if (responseMessage.IsSuccessStatusCode)
+            Status status = responseMessage.StatusCode.ToStatus();
+
+            if (status.IsSuccessCode())
             {
-                return ApiResponse.Success();
+                return ApiResponse.Success(status);
             }
 
             _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}", responseMessage.StatusCode, responseMessage.ReasonPhrase);
 
-            return ApiResponse.Failure(responseMessage.ReasonPhrase);
+            return ApiResponse.Failure(status, responseMessage.ReasonPhrase);
         }
 
         #endregion

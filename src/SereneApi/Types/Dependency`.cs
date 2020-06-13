@@ -10,57 +10,21 @@ namespace SereneApi.Types
     /// </summary>
     /// <typeparam name="TDependency"></typeparam>
     [DebuggerDisplay("Type:{Type}; Binding:{Binding}")]
-    public class Dependency<TDependency> : IDependency<TDependency>, IDisposable
+    public class Dependency<TDependency> : Dependency, IDependency<TDependency>
     {
-        /// <inheritdoc cref="IDependency.Binding"/>
-        public Binding Binding { get; }
-
         /// <inheritdoc cref="IDependency{TDependency}.Instance"/>
-        public TDependency Instance { get; }
+        public new TDependency Instance => (TDependency)base.Instance;
 
         /// <inheritdoc cref="IDependency{TDependency}.Type"/>
-        public Type Type => typeof(TDependency);
+        public new Type Type => typeof(TDependency);
 
         /// <summary>
         /// Creates a new Instance of the <see cref="Dependency{TDependency}"/>.
         /// </summary>
         /// <param name="instance"></param>
         /// <param name="binding"></param>
-        internal Dependency(TDependency instance, Binding binding = Binding.Bound)
+        internal Dependency(TDependency instance, Binding binding = Binding.Bound) : base(instance, binding)
         {
-            Instance = instance;
-            Binding = binding;
         }
-
-        #region IDisposable
-
-        private volatile bool _disposed;
-
-        /// <summary>
-        /// Disposes the current instance of the <see cref="Dependency{TDependency}"/>.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (_disposed)
-            {
-                return;
-            }
-
-            if (disposing && Binding == Binding.Bound && Instance is IDisposable disposableImplementation)
-            {
-                disposableImplementation.Dispose();
-            }
-
-            _disposed = true;
-        }
-
-        #endregion
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace SereneApi.Interfaces
+﻿using System.Collections.Generic;
+
+namespace SereneApi.Interfaces
 {
     public interface IDependencyCollection
     {
@@ -7,6 +9,12 @@
         /// </summary>
         /// <typeparam name="TDependency">The <see cref="TDependency"/> to be returned.</typeparam>
         TDependency GetDependency<TDependency>();
+
+        /// <summary>
+        /// Returns all <see cref="IDependency"/>s that implement the specified Type.
+        /// </summary>
+        /// <typeparam name="TDependency">The implemented type to be returned.</typeparam>
+        List<TDependency> GetDependencies<TDependency>();
 
         /// <summary>
         /// Returns a <see cref="bool"/> specifying if the <see cref="TDependency"/> was found.

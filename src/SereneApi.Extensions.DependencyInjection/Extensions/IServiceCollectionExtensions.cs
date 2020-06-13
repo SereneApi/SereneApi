@@ -2,9 +2,9 @@
 using SereneApi;
 using SereneApi.Extensions.DependencyInjection.Interfaces;
 using SereneApi.Extensions.DependencyInjection.Types;
-using System;
 using SereneApi.Interfaces;
 using SereneApi.Types;
+using System;
 
 // Do not change namespace
 // ReSharper disable once CheckNamespace

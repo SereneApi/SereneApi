@@ -67,7 +67,7 @@ namespace SereneApi.Extensions.DependencyInjection.Types
                 int retryCount = configuration.Get<int>(ConfigurationConstants.RetryCountKey, ConfigurationConstants.RetryIsRequired);
 
                 ApiHandlerOptionsRules.ValidateRetryCount(retryCount);
-    
+
                 RetryDependency retryDependency = new RetryDependency(retryCount);
 
                 DependencyCollection.AddDependency(retryDependency);

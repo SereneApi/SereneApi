@@ -1,9 +1,12 @@
-﻿using System;
+﻿using SereneApi.Abstraction.Enums;
+using System;
 
 namespace SereneApi.Types
 {
     public readonly struct ApiResponse : IApiResponse
     {
+        public Status Status { get; }
+
         public bool WasSuccessful { get; }
 
         public bool HasException => Exception != null;
@@ -12,26 +15,24 @@ namespace SereneApi.Types
 
         public Exception Exception { get; }
 
-        private ApiResponse(string message)
+        private ApiResponse(Status status)
         {
             WasSuccessful = true;
-
-            Message = message;
-
+            Message = null;
+            Status = status;
             Exception = null;
         }
 
-        private ApiResponse(string message, Exception exception)
+        private ApiResponse(Status status, string message, Exception exception)
         {
             WasSuccessful = false;
-
             Message = message;
-
+            Status = status;
             Exception = exception;
         }
 
-        public static IApiResponse Success() => new ApiResponse(null);
+        public static IApiResponse Success(Status status) => new ApiResponse(status);
 
-        public static IApiResponse Failure(string message, Exception exception = null) => new ApiResponse(message, exception);
+        public static IApiResponse Failure(Status status, string message, Exception exception = null) => new ApiResponse(status, message, exception);
     }
 }

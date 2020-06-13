@@ -1,4 +1,3 @@
-using System.Net;
 using DependencyInjection.API;
 using DependencyInjection.API.DTOs;
 using DependencyInjection.WebUi.Handlers;
@@ -9,7 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using SereneApi.Extensions.Mocking;
 
 namespace DependencyInjection.WebUi
 {

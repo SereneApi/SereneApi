@@ -1,9 +1,9 @@
 ﻿using DependencyInjection.API;
 using DependencyInjection.API.DTOs;
 using SereneApi;
+using SereneApi.Extensions.DependencyInjection.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SereneApi.Extensions.DependencyInjection.Interfaces;
 
 namespace DependencyInjection.WebUi.Handlers
 {

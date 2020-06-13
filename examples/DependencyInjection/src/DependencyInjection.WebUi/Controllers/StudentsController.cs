@@ -1,9 +1,9 @@
 ﻿using DependencyInjection.API;
 using DependencyInjection.API.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using SereneApi;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SereneApi;
 
 namespace DependencyInjection.WebUi.Controllers
 {

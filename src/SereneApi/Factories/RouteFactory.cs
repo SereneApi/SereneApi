@@ -8,7 +8,7 @@ namespace SereneApi.Factories
     public sealed class RouteFactory : IRouteFactory
     {
         #region Variables
-        
+
         private string _query;
 
         private object[] _parameters;
@@ -19,7 +19,7 @@ namespace SereneApi.Factories
         #region Properties
 
         public string Resource { get; }
-        
+
         public string ResourcePath { get; }
 
         #endregion
@@ -30,7 +30,7 @@ namespace SereneApi.Factories
             Resource = resource;
             ResourcePath = resourcePath;
         }
-        
+
         #endregion
 
         public void AddQuery(string queryString)

@@ -1,4 +1,5 @@
-﻿using SereneApi.Types;
+﻿using SereneApi.Abstraction.Enums;
+using SereneApi.Types;
 using Shouldly;
 using System;
 using Xunit;
@@ -10,25 +11,30 @@ namespace SereneApi.Tests.Types
         [Fact]
         public void ApiHandlerSuccess()
         {
-            IApiResponse response = ApiResponse.Success();
+            Status status = Status.Ok;
+
+            IApiResponse response = ApiResponse.Success(status);
 
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
             response.Exception.ShouldBeNull();
             response.Message.ShouldBeNull();
+            response.Status.ShouldBe(status);
         }
 
         [Fact]
         public void ApiHandlerGenericSuccess()
         {
             string resultString = "Success!";
+            Status status = Status.Ok;
 
-            IApiResponse<string> response = ApiResponse<string>.Success(resultString);
+            IApiResponse<string> response = ApiResponse<string>.Success(status, resultString);
 
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
             response.Exception.ShouldBeNull();
             response.Message.ShouldBeNull();
+            response.Status.ShouldBe(status);
             response.Result.ShouldBe(resultString);
         }
 
@@ -38,11 +44,14 @@ namespace SereneApi.Tests.Types
         [InlineData("This is a test message.")]
         public void ApiHandlerFailureMessage(string message)
         {
-            IApiResponse response = ApiResponse.Failure(message);
+            Status status = Status.InternalServerError;
+
+            IApiResponse response = ApiResponse.Failure(status, message);
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(false);
             response.Exception.ShouldBeNull();
+            response.Status.ShouldBe(status);
             response.Message.ShouldBe(message);
         }
 
@@ -52,12 +61,15 @@ namespace SereneApi.Tests.Types
         [InlineData("This is a test message.")]
         public void ApiHandlerGenericFailureMessage(string message)
         {
-            IApiResponse<string> response = ApiResponse<string>.Failure(message);
+            Status status = Status.InternalServerError;
+
+            IApiResponse<string> response = ApiResponse<string>.Failure(status, message);
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(false);
             response.Exception.ShouldBeNull();
             response.Message.ShouldBe(message);
+            response.Status.ShouldBe(status);
             response.Result.ShouldBeNull();
         }
 
@@ -66,12 +78,14 @@ namespace SereneApi.Tests.Types
         {
             string message = "An Exception Happened.";
             ArgumentException argumentException = new ArgumentException("Bad params man");
+            Status status = Status.InternalServerError;
 
-            IApiResponse response = ApiResponse.Failure(message, argumentException);
+            IApiResponse response = ApiResponse.Failure(status, message, argumentException);
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(true);
             response.Exception.ShouldBe(argumentException);
+            response.Status.ShouldBe(status);
             response.Message.ShouldBe(message);
         }
 
@@ -80,13 +94,15 @@ namespace SereneApi.Tests.Types
         {
             string message = "An Exception Happened.";
             ArgumentException argumentException = new ArgumentException("Bad params man");
+            Status status = Status.InternalServerError;
 
-            IApiResponse<string> response = ApiResponse<string>.Failure(message, argumentException);
+            IApiResponse<string> response = ApiResponse<string>.Failure(status, message, argumentException);
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(true);
             response.Exception.ShouldBe(argumentException);
             response.Message.ShouldBe(message);
+            response.Status.ShouldBe(status);
             response.Result.ShouldBeNull();
         }
     }
