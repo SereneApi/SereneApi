@@ -3,6 +3,7 @@ using SereneApi.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace SereneApi.Types
 {
@@ -39,10 +40,17 @@ namespace SereneApi.Types
         {
             if (!_dependencyTypeMap.TryGetValue(typeof(TDependency), out IDependency dependency))
             {
-                throw new KeyNotFoundException($"Could not find that specified dependency {nameof(TDependency)}");
+                throw new KeyNotFoundException($"Could not find the specified dependency {typeof(TDependency)}");
             }
 
             return dependency.GetInstance<TDependency>();
+        }
+
+        public List<TInterface> GetDependencies<TInterface>()
+        {
+            IEnumerable<TInterface> dependencies = _dependencyTypeMap.Where(m => m.Key.GetInterfaces().Contains(typeof(TInterface))).Select(m => (TInterface)m.Value.Instance);
+
+            return dependencies.ToList();
         }
 
         /// <inheritdoc cref="IDependencyCollection.TryGetDependency{TDependency}"/>

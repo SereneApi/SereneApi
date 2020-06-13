@@ -19,6 +19,11 @@ namespace SereneApi.Types
                 return dependencyValue.Instance;
             }
 
+            if (dependency.Instance.GetType() == typeof(TDependency))
+            {
+                return (TDependency)dependency.Instance;
+            }
+
             throw new ArgumentException($"The dependency must be of type {typeof(IDependency<TDependency>)}");
         }
     }

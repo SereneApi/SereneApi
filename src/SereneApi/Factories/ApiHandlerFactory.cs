@@ -11,7 +11,7 @@ namespace SereneApi.Factories
     {
         private readonly Dictionary<Type, Action<IApiHandlerOptionsBuilder>> _handlers = new Dictionary<Type, Action<IApiHandlerOptionsBuilder>>();
 
-        private readonly Dictionary<Type, IApiHandlerFactoryExtensions> _handlerExtensions = new Dictionary<Type, IApiHandlerFactoryExtensions>();
+        private readonly Dictionary<Type, IRegisterApiHandlerExtensions> _handlerExtensions = new Dictionary<Type, IRegisterApiHandlerExtensions>();
 
         private readonly Dictionary<Type, HttpClient> _clients = new Dictionary<Type, HttpClient>();
 
@@ -31,7 +31,7 @@ namespace SereneApi.Factories
 
             if (!_clients.TryGetValue(handlerType, out HttpClient client))
             {
-                ApiHandlerFactoryExtensions<TApiHandler> extensions = (ApiHandlerFactoryExtensions<TApiHandler>)_handlerExtensions[handlerType];
+                RegisterApiHandlerExtensions extensions = (RegisterApiHandlerExtensions)_handlerExtensions[handlerType];
 
                 if (extensions.DependencyCollection.TryGetDependency(out HttpMessageHandler messageHandler))
                 {
@@ -60,7 +60,7 @@ namespace SereneApi.Factories
         /// </summary>
         /// <typeparam name="TApiHandler"></typeparam>
         /// <param name="optionsAction"></param>
-        public IApiHandlerFactoryExtensions RegisterHandlerOptions<TApiHandler>(Action<IApiHandlerOptionsBuilder> optionsAction) where TApiHandler : ApiHandler
+        public IRegisterApiHandlerExtensions RegisterHandlerOptions<TApiHandler>(Action<IApiHandlerOptionsBuilder> optionsAction) where TApiHandler : ApiHandler
         {
             Type handlerType = typeof(TApiHandler);
 
@@ -71,9 +71,9 @@ namespace SereneApi.Factories
 
             _handlers.Add(handlerType, optionsAction);
 
-            ApiHandlerFactoryExtensions<TApiHandler> extensions = new ApiHandlerFactoryExtensions<TApiHandler>();
-
             ApiHandlerOptionsBuilder builder = new ApiHandlerOptionsBuilder();
+
+            RegisterApiHandlerExtensions extensions = new RegisterApiHandlerExtensions(builder.DependencyCollection);
 
             optionsAction.Invoke(builder);
 
