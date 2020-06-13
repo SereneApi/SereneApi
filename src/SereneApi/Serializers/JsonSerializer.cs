@@ -1,9 +1,7 @@
 ﻿using SereneApi.Interfaces;
-using SereneApi.Types;
 using SereneApi.Types.Content;
 using System.IO;
 using System.Net.Http;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -11,12 +9,14 @@ namespace SereneApi.Serializers
 {
     public class JsonSerializer : ISerializer
     {
-        private readonly JsonSerializerOptions _deserializerOptions = DefaultDeserializerOptions;
+        private readonly JsonSerializerOptions _deserializerOptions;
 
-        private readonly JsonSerializerOptions _serializerOptions = DefaultSerializerOptions;
+        private readonly JsonSerializerOptions _serializerOptions;
 
         public JsonSerializer()
         {
+            _deserializerOptions = DefaultDeserializerOptions;
+            _serializerOptions = DefaultSerializerOptions;
         }
 
         public JsonSerializer(JsonSerializerOptions sharedOptions)
@@ -49,7 +49,7 @@ namespace SereneApi.Serializers
         {
             string jsonContent = System.Text.Json.JsonSerializer.Serialize(value, _serializerOptions);
 
-            return new JsonContent(jsonContent, Encoding.UTF8, MediaType.ApplicationJson);
+            return new JsonContent(jsonContent);
         }
 
         public Task<IApiRequestContent> SerializeAsync<TObject>(TObject value)
@@ -58,7 +58,7 @@ namespace SereneApi.Serializers
             {
                 string jsonContent = System.Text.Json.JsonSerializer.Serialize(value, _serializerOptions);
 
-                return (IApiRequestContent)new JsonContent(jsonContent, Encoding.UTF8, MediaType.ApplicationJson);
+                return (IApiRequestContent)new JsonContent(jsonContent);
             });
         }
 

@@ -135,7 +135,17 @@ namespace SereneApi.Types
             DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory(string.Empty, string.Empty));
         }
 
-        /// <inheritdoc cref="IApiHandlerOptionsBuilder.SetTimeoutPeriod"/>
+        /// <inheritdoc>
+        ///     <cref>IApiHandlerOptionsBuilder.SetTimeoutPeriod</cref>
+        /// </inheritdoc>
+        public void SetTimeoutPeriod(int seconds)
+        {
+            Timeout = new TimeSpan(0, 0, seconds);
+        }
+
+        /// <inheritdoc>
+        ///     <cref>IApiHandlerOptionsBuilder.SetTimeoutPeriod</cref>
+        /// </inheritdoc>
         public void SetTimeoutPeriod(TimeSpan timeoutPeriod)
         {
             Timeout = timeoutPeriod;

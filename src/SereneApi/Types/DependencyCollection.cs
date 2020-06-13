@@ -3,6 +3,7 @@ using SereneApi.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace SereneApi.Types
 {
@@ -43,6 +44,13 @@ namespace SereneApi.Types
             }
 
             return dependency.GetInstance<TDependency>();
+        }
+
+        public List<TInterface> GetDependencies<TInterface>()
+        {
+            IEnumerable<TInterface> dependencies = _dependencyTypeMap.Where(m => m.Key.GetInterfaces().Contains(typeof(TInterface))).Select(m => (TInterface)m.Value.Instance);
+
+            return dependencies.ToList();
         }
 
         /// <inheritdoc cref="IDependencyCollection.TryGetDependency{TDependency}"/>

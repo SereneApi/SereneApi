@@ -1,5 +1,4 @@
-﻿using SereneApi.Extensions.Mocking;
-using SereneApi.Factories;
+﻿using SereneApi.Factories;
 using SereneApi.Tests.Mock;
 using Shouldly;
 using System;

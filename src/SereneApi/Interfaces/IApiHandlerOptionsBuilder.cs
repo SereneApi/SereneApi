@@ -25,6 +25,12 @@ namespace SereneApi.Interfaces
         /// <summary>
         /// Sets the timeout to be used by the <see cref="ApiHandler"/> when making API requests. By default this value is set to 30 seconds.
         /// </summary>
+        /// <param name="seconds">the time in seconds before the request will be timed out.</param>
+        void SetTimeoutPeriod(int seconds);
+
+        /// <summary>
+        /// Sets the timeout to be used by the <see cref="ApiHandler"/> when making API requests. By default this value is set to 30 seconds.
+        /// </summary>
         /// <param name="timeoutPeriod">The <see cref="TimeSpan"/> to be used as the timeout period by the <see cref="ApiHandler"/>.</param>
         void SetTimeoutPeriod(TimeSpan timeoutPeriod);
 

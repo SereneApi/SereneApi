@@ -72,7 +72,7 @@ namespace SereneApi.Factories
             _handlers.Add(handlerType, optionsAction);
 
             ApiHandlerOptionsBuilder builder = new ApiHandlerOptionsBuilder();
-            
+
             RegisterApiHandlerExtensions extensions = new RegisterApiHandlerExtensions(builder.DependencyCollection);
 
             optionsAction.Invoke(builder);
