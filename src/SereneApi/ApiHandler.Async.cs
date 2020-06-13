@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using SereneApi.Abstraction.Enums;
 using SereneApi.Extensions;
 using SereneApi.Interfaces;
 using SereneApi.Types;
@@ -285,7 +286,7 @@ namespace SereneApi
             }
             catch (TimeoutException timeoutException)
             {
-                return ApiResponse.Failure("The Request Timed Out; Retry limit reached", timeoutException);
+                return ApiResponse.Failure(Status.None, "The Request Timed Out; Retry limit reached", timeoutException);
             }
             catch (Exception exception)
             {
@@ -293,7 +294,7 @@ namespace SereneApi
                     "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
                     method.ToString(), endPoint);
 
-                return ApiResponse.Failure($"An Exception occured whilst performing a HTTP {method} Request",
+                return ApiResponse.Failure(Status.None, $"An Exception occured whilst performing a HTTP {method} Request",
                     exception);
             }
 
@@ -356,7 +357,7 @@ namespace SereneApi
             }
             catch (TimeoutException timeoutException)
             {
-                return ApiResponse<TResponse>.Failure("The Request Timed Out; Retry limit reached", timeoutException);
+                return ApiResponse<TResponse>.Failure(Status.None, "The Request Timed Out; Retry limit reached", timeoutException);
             }
             catch (Exception exception)
             {
@@ -364,7 +365,7 @@ namespace SereneApi
                     "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
                     method.ToString(), endPoint);
 
-                return ApiResponse<TResponse>.Failure($"An Exception occured whilst performing a HTTP {method} Request",
+                return ApiResponse<TResponse>.Failure(Status.None, $"An Exception occured whilst performing a HTTP {method} Request",
                     exception);
             }
 
@@ -426,14 +427,16 @@ namespace SereneApi
             {
                 _logger?.LogWarning("Received an Empty Http Response");
 
-                return ApiResponse<TResponse>.Failure("Received an Empty Http Response");
+                return ApiResponse<TResponse>.Failure(Status.None, "Received an Empty Http Response");
             }
 
-            if (!responseMessage.IsSuccessStatusCode)
+            Status status = responseMessage.StatusCode.ToStatus();
+
+            if (!status.IsSuccessCode())
             {
                 _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}", responseMessage.StatusCode, responseMessage.ReasonPhrase);
 
-                return ApiResponse<TResponse>.Failure(responseMessage.ReasonPhrase);
+                return ApiResponse<TResponse>.Failure(status, responseMessage.ReasonPhrase);
             }
 
             try
@@ -442,18 +445,18 @@ namespace SereneApi
                 {
                     _logger.LogWarning("No content was received in the response.");
 
-                    return ApiResponse<TResponse>.Failure("No content was received in the response.");
+                    return ApiResponse<TResponse>.Failure(status, "No content was received in the response.");
                 }
 
                 TResponse response = await _serializer.DeserializeAsync<TResponse>(responseMessage.Content);
 
-                return ApiResponse<TResponse>.Success(response);
+                return ApiResponse<TResponse>.Success(status, response);
             }
             catch (Exception exception)
             {
                 _logger?.LogError(exception, "Could not deserialize the returned value");
 
-                return ApiResponse<TResponse>.Failure("Could not deserialize returned value.", exception);
+                return ApiResponse<TResponse>.Failure(status, "Could not deserialize returned value.", exception);
             }
         }
     }

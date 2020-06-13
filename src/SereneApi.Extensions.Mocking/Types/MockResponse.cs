@@ -1,9 +1,11 @@
-﻿using SereneApi.Extensions.Mocking.Interfaces;
+﻿using SereneApi.Abstraction.Enums;
+using SereneApi.Extensions.Mocking.Interfaces;
 using SereneApi.Extensions.Mocking.Types.Dependencies;
 using SereneApi.Interfaces;
 using SereneApi.Types;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SereneApi.Extensions.Mocking.Types
@@ -12,12 +14,18 @@ namespace SereneApi.Extensions.Mocking.Types
     {
         private readonly IApiRequestContent _response;
 
+        public Status Status { get; }
+
+        public string Message { get; }
+
         public ISerializer Serializer { get; }
 
-        public MockResponse(IApiRequestContent response, ISerializer serializer)
+        public MockResponse(Status status, string message, IApiRequestContent response, ISerializer serializer)
         {
             _response = response;
 
+            Message = message;
+            Status = status;
             Serializer = serializer;
 
             DependencyCollection.AddDependency(serializer);
@@ -31,11 +39,11 @@ namespace SereneApi.Extensions.Mocking.Types
             return whitelistDependencies.Count == 0 || whitelistDependencies.Any(w => w.Validate(value));
         }
 
-        public async Task<IApiRequestContent> GetResponseAsync()
+        public async Task<IApiRequestContent> GetResponseAsync(CancellationToken cancellationToken = default)
         {
             if (DependencyCollection.TryGetDependency(out DelayResponseDependency delay))
             {
-                await delay.DelayAsync();
+                await delay.DelayAsync(cancellationToken);
             }
 
             return _response;

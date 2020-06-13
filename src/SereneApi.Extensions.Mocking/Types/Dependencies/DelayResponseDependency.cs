@@ -19,19 +19,27 @@ namespace SereneApi.Extensions.Mocking.Types.Dependencies
             _delayCount = delayCount;
         }
 
-        public Task DelayAsync()
+        public Task DelayAsync(CancellationToken cancellationToken = default)
         {
             return Task.Factory.StartNew(() =>
             {
-                if (_delayCount <= 0)
+                if (DelayCount > 0)
                 {
-                    return;
+                    if (_delayCount <= 0)
+                    {
+                        return;
+                    }
+
+                    _delayCount--;
                 }
 
-                _delayCount--;
+                bool canceled = cancellationToken.WaitHandle.WaitOne(DelayTime);
 
-                Thread.Sleep(DelayTime);
-            });
+                if (canceled)
+                {
+                    throw new TaskCanceledException();
+                }
+            }, cancellationToken);
         }
     }
 }

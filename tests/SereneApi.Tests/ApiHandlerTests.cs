@@ -1,8 +1,9 @@
-﻿using SereneApi.Factories;
+﻿using SereneApi.Abstraction.Enums;
+using SereneApi.Extensions.Mocking;
+using SereneApi.Factories;
 using SereneApi.Tests.Mock;
 using Shouldly;
 using System;
-using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -127,11 +128,12 @@ namespace SereneApi.Tests
             {
                 builder.UseSource("http://localhost", "Persons");
             })
-            .WithMockResponse(r =>
+            .WithMockResponses(r =>
             {
-                r.StatusCode = HttpStatusCode.OK;
-            })
-            .HasRequestUri("http://localhost/api/Persons");
+                r.AddMockResponse(Status.Ok)
+                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith("http://localhost/api/Persons");
+            });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -151,8 +153,12 @@ namespace SereneApi.Tests
             {
                 builder.UseSource("http://localhost", "Persons");
             })
-            .WithMockResponse(MockPersonDto.John)
-            .HasRequestUri("http://localhost/api/Persons");
+            .WithMockResponses(r =>
+            {
+                r.AddMockResponse(MockPersonDto.John)
+                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith("http://localhost/api/Persons");
+            });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -178,11 +184,12 @@ namespace SereneApi.Tests
             {
                 builder.UseSource("http://localhost", "Persons");
             })
-            .WithMockResponse(r =>
+            .WithMockResponses(r =>
             {
-                r.StatusCode = HttpStatusCode.OK;
-            })
-            .HasRequestUri("http://localhost/api/Persons/100/Details");
+                r.AddMockResponse(Status.Ok)
+                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith("http://localhost/api/Persons/100/Details");
+            });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -202,8 +209,12 @@ namespace SereneApi.Tests
             {
                 builder.UseSource("http://localhost", "Persons");
             })
-            .WithMockResponse(MockPersonDto.John)
-            .HasRequestUri("http://localhost/api/Persons/100/Details");
+            .WithMockResponses(r =>
+            {
+                r.AddMockResponse(MockPersonDto.John)
+                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith("http://localhost/api/Persons/100/Details");
+            });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -229,8 +240,12 @@ namespace SereneApi.Tests
             {
                 builder.UseSource("http://localhost", "Persons");
             })
-            .WithMockResponse(MockPersonDto.John)
-            .HasRequestUri("http://localhost/api/Persons?Age=18&Name=John Smith");
+            .WithMockResponses(r =>
+            {
+                r.AddMockResponse(MockPersonDto.John)
+                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith("http://localhost/api/Persons?Age=18&Name=John Smith");
+            });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -256,8 +271,12 @@ namespace SereneApi.Tests
             {
                 builder.UseSource("http://localhost", "Persons");
             })
-            .WithMockResponse(MockPersonDto.John)
-            .HasRequestUri("http://localhost/api/Persons/1/Friends?Name=John Smith");
+            .WithMockResponses(r =>
+            {
+                r.AddMockResponse(MockPersonDto.John)
+                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith("http://localhost/api/Persons?Name=John Smith");
+            });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -285,12 +304,12 @@ namespace SereneApi.Tests
             {
                 builder.UseSource("http://localhost", "Persons");
             })
-            .WithMockResponse(r =>
+            .WithMockResponses(r =>
             {
-                r.StatusCode = HttpStatusCode.NotFound;
-                r.ReasonPhrase = reasonPhrase;
-            })
-            .HasRequestUri("http://localhost/api/Persons");
+                r.AddMockResponse(Status.NotFound, reasonPhrase)
+                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith("http://localhost/api/Persons");
+            });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -312,12 +331,12 @@ namespace SereneApi.Tests
             {
                 builder.UseSource("http://localhost", "Persons");
             })
-            .WithMockResponse(r =>
+            .WithMockResponses(r =>
             {
-                r.StatusCode = HttpStatusCode.NotFound;
-                r.ReasonPhrase = reasonPhrase;
-            })
-            .HasRequestUri("http://localhost/api/Persons");
+                r.AddMockResponse(Status.NotFound, reasonPhrase)
+                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith("http://localhost/api/Persons");
+            });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -337,8 +356,14 @@ namespace SereneApi.Tests
             factory.RegisterHandlerOptions<TestApiHandler>(builder =>
             {
                 builder.UseSource("http://localhost", "Persons");
+                builder.SetTimeoutPeriod(5);
             })
-            .WithTimeoutResponse();
+            .WithMockResponses(r =>
+            {
+                r.AddMockResponse(MockPersonDto.John)
+                    .ResponseIsDelayed(10)
+                    .RespondsToRequestsWith(Method.Get);
+            });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -359,8 +384,14 @@ namespace SereneApi.Tests
             {
                 builder.UseSource("http://localhost", "Persons");
                 builder.SetRetryOnTimeout(3);
+                builder.SetTimeoutPeriod(5);
             })
-            .WithTimeoutResponse();
+            .WithMockResponses(r =>
+            {
+                r.AddMockResponse(MockPersonDto.John)
+                    .ResponseIsDelayed(10)
+                    .RespondsToRequestsWith(Method.Get);
+            });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -383,14 +414,15 @@ namespace SereneApi.Tests
             {
                 builder.UseSource("http://localhost", "Persons");
                 builder.SetRetryOnTimeout(3);
-                builder.SetTimeoutPeriod(new TimeSpan(0, 0, 3));
+                builder.SetTimeoutPeriod(5);
             })
-            .WithMockResponse(r =>
+            .WithMockResponses(r =>
             {
-                r.StatusCode = HttpStatusCode.OK;
-            })
-            .WithTimeout(2, new TimeSpan(0, 0, 15))
-            .HasRequestUri("http://localhost/api/Persons");
+                r.AddMockResponse(Status.Ok)
+                    .ResponseIsDelayed(10, 2)
+                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith("http://localhost/api/Persons");
+            });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -401,7 +433,7 @@ namespace SereneApi.Tests
             response.Exception.ShouldBeNull();
 
             apiHandler.RetryCount.ShouldBe(3);
-            apiHandler.Timeout.ShouldBe(new TimeSpan(0, 0, 3));
+            apiHandler.Timeout.ShouldBe(new TimeSpan(0, 0, 5));
         }
 
         [Fact]
@@ -413,10 +445,15 @@ namespace SereneApi.Tests
             {
                 builder.UseSource("http://localhost", "Persons");
                 builder.SetRetryOnTimeout(3);
+                builder.SetTimeoutPeriod(5);
             })
-            .WithMockResponse(MockPersonDto.John)
-            .WithTimeout(2)
-            .HasRequestUri("http://localhost/api/Persons");
+            .WithMockResponses(r =>
+            {
+                r.AddMockResponse(MockPersonDto.John)
+                    .ResponseIsDelayed(10, 2)
+                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith("http://localhost/api/Persons");
+            });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -446,14 +483,15 @@ namespace SereneApi.Tests
             {
                 builder.UseSource("http://localhost", "Persons");
                 builder.SetRetryOnTimeout(3);
+                builder.SetTimeoutPeriod(5);
             })
-            .WithMockResponse(r =>
+            .WithMockResponses(r =>
             {
-                r.StatusCode = HttpStatusCode.NotFound;
-                r.ReasonPhrase = reasonPhrase;
-            })
-            .WithTimeout(2)
-            .HasRequestUri("http://localhost/api/Persons");
+                r.AddMockResponse(Status.NotFound, reasonPhrase)
+                    .ResponseIsDelayed(10, 2)
+                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith("http://localhost/api/Persons");
+            });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -477,15 +515,15 @@ namespace SereneApi.Tests
             {
                 builder.UseSource("http://localhost", "Persons");
                 builder.SetRetryOnTimeout(3);
-                builder.SetTimeoutPeriod(new TimeSpan(0, 0, 3));
+                builder.SetTimeoutPeriod(5);
             })
-            .WithMockResponse(r =>
+            .WithMockResponses(r =>
             {
-                r.StatusCode = HttpStatusCode.NotFound;
-                r.ReasonPhrase = reasonPhrase;
-            })
-            .WithTimeout(2, new TimeSpan(0, 0, 15))
-            .HasRequestUri("http://localhost/api/Persons");
+                r.AddMockResponse(Status.NotFound, reasonPhrase)
+                    .ResponseIsDelayed(10, 2)
+                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith("http://localhost/api/Persons");
+            });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -497,7 +535,7 @@ namespace SereneApi.Tests
             response.Result.ShouldBeNull();
 
             apiHandler.RetryCount.ShouldBe(3);
-            apiHandler.Timeout.ShouldBe(new TimeSpan(0, 0, 3));
+            apiHandler.Timeout.ShouldBe(new TimeSpan(0, 0, 5));
         }
 
         [Fact]
@@ -506,15 +544,16 @@ namespace SereneApi.Tests
             using ApiHandlerFactory factory = new ApiHandlerFactory();
 
             factory.RegisterHandlerOptions<TestApiHandler>(builder =>
-                {
-                    builder.UseSource("http://localhost", "Persons");
-                })
-                .WithMockResponse(r =>
-                {
-                    r.StatusCode = HttpStatusCode.OK;
-                })
-                .HasRequestUri("http://localhost/api/Persons")
-                .HasRequestContent("{\"Age\":18,\"Name\":\"John Smith\",\"BirthDate\":\"2000-05-15T05:35:20\"}");
+            {
+                builder.UseSource("http://localhost", "Persons");
+            })
+            .WithMockResponses(r =>
+            {
+                r.AddMockResponse(Status.Ok)
+                    .RespondsToRequestsWith(Method.Post)
+                    .RespondsToRequestsWith("http://localhost/api/Persons")
+                    .RespondsToRequestsWith(MockPersonDto.John);
+            });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -531,12 +570,14 @@ namespace SereneApi.Tests
             using ApiHandlerFactory factory = new ApiHandlerFactory();
 
             factory.RegisterHandlerOptions<TestApiHandler>(builder =>
-                {
-                    builder.UseSource("http://localhost", "Persons");
-                })
-                .WithMockResponse(MockPersonDto.John)
-                .HasRequestUri("http://localhost/api/Persons")
-                .HasRequestContent("{\"Age\":18,\"Name\":\"John Smith\",\"BirthDate\":\"2000-05-15T05:35:20\"}");
+            {
+                builder.UseSource("http://localhost", "Persons");
+            }).WithMockResponses(r =>
+            {
+                r.AddMockResponse(MockPersonDto.John)
+                    .RespondsToRequestsWith("http://localhost/api/Persons")
+                    .RespondsToRequestsWith(MockPersonDto.John);
+            });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -559,15 +600,16 @@ namespace SereneApi.Tests
             using ApiHandlerFactory factory = new ApiHandlerFactory();
 
             factory.RegisterHandlerOptions<TestApiHandler>(builder =>
-                {
-                    builder.UseSource("http://localhost", "Persons");
-                })
-                .WithMockResponse(r =>
-                {
-                    r.StatusCode = HttpStatusCode.OK;
-                })
-                .HasRequestUri("http://localhost/api/Persons/100/Details")
-                .HasRequestContent("{\"Age\":18,\"Name\":\"John Smith\",\"BirthDate\":\"2000-05-15T05:35:20\"}");
+            {
+                builder.UseSource("http://localhost", "Persons");
+            })
+            .WithMockResponses(r =>
+            {
+                r.AddMockResponse(Status.Ok)
+                    .RespondsToRequestsWith(Method.Post)
+                    .RespondsToRequestsWith("http://localhost/api/Persons/100/Details")
+                    .RespondsToRequestsWith(MockPersonDto.John);
+            });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
@@ -584,12 +626,15 @@ namespace SereneApi.Tests
             using ApiHandlerFactory factory = new ApiHandlerFactory();
 
             factory.RegisterHandlerOptions<TestApiHandler>(builder =>
-                {
-                    builder.UseSource("http://localhost", "Persons");
-                })
-                .WithMockResponse(MockPersonDto.John)
-                .HasRequestUri("http://localhost/api/Persons/100/Details")
-                .HasRequestContent("{\"Age\":18,\"Name\":\"John Smith\",\"BirthDate\":\"2000-05-15T05:35:20\"}");
+            {
+                builder.UseSource("http://localhost", "Persons");
+            })
+            .WithMockResponses(r =>
+            {
+                r.AddMockResponse(MockPersonDto.John)
+                    .RespondsToRequestsWith("http://localhost/api/Persons/100/Details")
+                    .RespondsToRequestsWith(MockPersonDto.John);
+            });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 

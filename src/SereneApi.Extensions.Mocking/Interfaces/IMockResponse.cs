@@ -1,4 +1,6 @@
-﻿using SereneApi.Interfaces;
+﻿using SereneApi.Abstraction.Enums;
+using SereneApi.Interfaces;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SereneApi.Extensions.Mocking.Interfaces
@@ -7,6 +9,10 @@ namespace SereneApi.Extensions.Mocking.Interfaces
     {
         ISerializer Serializer { get; }
 
-        Task<IApiRequestContent> GetResponseAsync();
+        Status Status { get; }
+
+        string Message { get; }
+
+        Task<IApiRequestContent> GetResponseAsync(CancellationToken cancellationToken = default);
     }
 }

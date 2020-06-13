@@ -10,11 +10,11 @@ namespace SereneApi.Extensions.Mocking
 {
     public static class IRegisterApiHandlerExtensionsExtensions
     {
-        public static void WithMockResponses(this IRegisterApiHandlerExtensions registrationExtensions, Action<IMockResponseBuilder> mockResponseBuilder)
+        public static void WithMockResponses(this IRegisterApiHandlerExtensions registrationExtensions, Action<IMockResponsesBuilder> mockResponseBuilder)
         {
             CoreOptions coreOptions = GetCoreOptions(registrationExtensions);
 
-            MockResponseBuilder builder = new MockResponseBuilder();
+            MockResponsesBuilder builder = new MockResponsesBuilder();
 
             mockResponseBuilder.Invoke(builder);
 

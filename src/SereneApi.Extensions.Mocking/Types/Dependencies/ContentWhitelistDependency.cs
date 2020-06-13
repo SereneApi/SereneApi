@@ -24,7 +24,7 @@ namespace SereneApi.Extensions.Mocking.Types.Dependencies
 
             if (value is IApiRequestContent content)
             {
-                validated =  _whitelistedContent.Contains(content);
+                validated = _whitelistedContent.Contains(content);
             }
 
             return validated;

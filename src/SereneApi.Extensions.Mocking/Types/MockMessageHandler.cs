@@ -1,4 +1,5 @@
-﻿using SereneApi.Extensions.Mocking.Interfaces;
+﻿using SereneApi.Abstraction.Enums;
+using SereneApi.Extensions.Mocking.Interfaces;
 using SereneApi.Interfaces;
 using SereneApi.Types.Content;
 using System.Collections.Generic;
@@ -55,16 +56,22 @@ namespace SereneApi.Extensions.Mocking.Types
                     continue;
                 }
 
-                IApiRequestContent response = await mockResponse.GetResponseAsync();
+                IApiRequestContent response = await mockResponse.GetResponseAsync(cancellationToken);
 
                 if (response is JsonContent jsonContent)
                 {
                     return new HttpResponseMessage
                     {
-                        StatusCode = HttpStatusCode.OK,
+                        StatusCode = mockResponse.Status.ToHttpStatusCode(),
                         Content = jsonContent.ToStringContent()
                     };
                 }
+
+                return new HttpResponseMessage
+                {
+                    StatusCode = mockResponse.Status.ToHttpStatusCode(),
+                    ReasonPhrase = mockResponse.Message
+                };
             }
 
             return new HttpResponseMessage(HttpStatusCode.OK);
