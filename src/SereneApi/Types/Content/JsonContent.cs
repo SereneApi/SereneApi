@@ -32,10 +32,7 @@ namespace SereneApi.Types.Content
                 return false;
             }
 
-            bool equals = content.Content == Content;
-
-            equals = content.MediaType == MediaType;
-            equals = content.Encoding == Encoding;
+            bool equals = content.Content == Content && content.MediaType == MediaType && content.Encoding == Encoding;
 
             return equals;
         }
