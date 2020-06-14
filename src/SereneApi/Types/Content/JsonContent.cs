@@ -1,4 +1,5 @@
-﻿using SereneApi.Interfaces;
+﻿using System;
+using SereneApi.Interfaces;
 using System.Text;
 
 namespace SereneApi.Types.Content
@@ -32,9 +33,17 @@ namespace SereneApi.Types.Content
                 return false;
             }
 
-            bool equals = content.Content == Content && content.MediaType == MediaType && content.Encoding == Encoding;
+            return Equals(content);
+        }
 
-            return equals;
+        protected bool Equals(JsonContent other)
+        {
+            return Equals(Encoding, other.Encoding) && MediaType.Equals(other.MediaType) && Content == other.Content;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Encoding, MediaType, Content);
         }
     }
 }
