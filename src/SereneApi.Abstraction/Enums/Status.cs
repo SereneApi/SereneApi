@@ -1,12 +1,12 @@
 ﻿namespace SereneApi.Abstraction.Enums
 {
     // https://restfulapi.net/http-status-codes/
-    public enum Status
+    public enum Status : int
     {
         #region Supporting
 
         None = 0,
-        Unknown,
+        Unknown = 1,
 
         #endregion
         #region 2XX - Success

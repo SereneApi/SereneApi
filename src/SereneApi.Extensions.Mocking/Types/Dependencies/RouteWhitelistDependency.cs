@@ -1,4 +1,5 @@
-﻿using SereneApi.Extensions.Mocking.Interfaces;
+﻿using SereneApi.Extensions.Mocking.Enums;
+using SereneApi.Extensions.Mocking.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,16 +15,19 @@ namespace SereneApi.Extensions.Mocking.Types.Dependencies
             WhitelistedRoutes = routeWhitelist;
         }
 
-        public bool Validate(object value)
+        public Validity Validate(object value)
         {
-            bool validated = true;
-
-            if (value is Uri route)
+            if (!(value is Uri route))
             {
-                validated = WhitelistedRoutes.Contains(route);
+                return Validity.NotApplicable;
             }
 
-            return validated;
+            if (WhitelistedRoutes.Contains(route))
+            {
+                return Validity.Valid;
+            }
+
+            return Validity.Invalid;
         }
     }
 }

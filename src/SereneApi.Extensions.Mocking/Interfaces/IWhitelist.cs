@@ -1,7 +1,9 @@
-﻿namespace SereneApi.Extensions.Mocking.Interfaces
+﻿using SereneApi.Extensions.Mocking.Enums;
+
+namespace SereneApi.Extensions.Mocking.Interfaces
 {
     public interface IWhitelist
     {
-        bool Validate(object value);
+        Validity Validate(object value);
     }
 }

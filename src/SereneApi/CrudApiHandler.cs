@@ -27,9 +27,9 @@ namespace SereneApi
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.GetAllAsync"/>
-        public Task<IApiResponse<IList<TResource>>> GetAllAsync()
+        public Task<IApiResponse<List<TResource>>> GetAllAsync()
         {
-            return PerformRequestAsync<IList<TResource>>(Method.Get);
+            return PerformRequestAsync<List<TResource>>(Method.Get);
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.CreateAsync"/>

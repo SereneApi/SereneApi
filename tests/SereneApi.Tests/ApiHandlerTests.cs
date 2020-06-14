@@ -61,7 +61,7 @@ namespace SereneApi.Tests
 
             Should.Throw<ArgumentException>(async () =>
             {
-                await apiHandler.InBodyRequestAsync(Method.Get, MockPersonDto.John);
+                await apiHandler.InBodyRequestAsync(Method.Get, MockPersonDto.JohnSmith);
             });
         }
 
@@ -79,7 +79,7 @@ namespace SereneApi.Tests
 
             Should.Throw<ArgumentException>(async () =>
             {
-                await apiHandler.InBodyRequestAsync<MockPersonDto, MockPersonDto>(Method.Get, MockPersonDto.John);
+                await apiHandler.InBodyRequestAsync<MockPersonDto, MockPersonDto>(Method.Get, MockPersonDto.JohnSmith);
             });
         }
 
@@ -97,7 +97,7 @@ namespace SereneApi.Tests
 
             Should.Throw<ArgumentException>(async () =>
             {
-                await apiHandler.InBodyRequestAsync(Method.Delete, MockPersonDto.John);
+                await apiHandler.InBodyRequestAsync(Method.Delete, MockPersonDto.JohnSmith);
             });
         }
 
@@ -115,7 +115,7 @@ namespace SereneApi.Tests
 
             Should.Throw<ArgumentException>(async () =>
             {
-                await apiHandler.InBodyRequestAsync<MockPersonDto, MockPersonDto>(Method.Delete, MockPersonDto.John);
+                await apiHandler.InBodyRequestAsync<MockPersonDto, MockPersonDto>(Method.Delete, MockPersonDto.JohnSmith);
             });
         }
 
@@ -137,7 +137,7 @@ namespace SereneApi.Tests
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
-            factory.Dispose();
+            apiHandler.Dispose();
 
             Should.Throw<ObjectDisposedException>(async () =>
             {
@@ -156,14 +156,14 @@ namespace SereneApi.Tests
             })
             .WithMockResponses(r =>
             {
-                r.AddMockResponse(MockPersonDto.John)
+                r.AddMockResponse(MockPersonDto.JohnSmith)
                     .RespondsToRequestsWith(Method.Get)
                     .RespondsToRequestsWith("http://localhost/api/Persons");
             });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
-            factory.Dispose();
+            apiHandler.Dispose();
 
             Should.Throw<ObjectDisposedException>(async () =>
             {
@@ -208,14 +208,17 @@ namespace SereneApi.Tests
             })
             .WithMockResponses(r =>
             {
-                r.AddMockResponse(MockPersonDto.John)
+                r.AddMockResponse(MockPersonDto.JohnSmith)
                     .RespondsToRequestsWith(Method.Get)
-                    .RespondsToRequestsWith("http://localhost/api/Persons");
+                    .RespondsToRequestsWith("http://localhost/api/Persons/0");
+                r.AddMockResponse(MockPersonDto.BenJerry)
+                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith("http://localhost/api/Persons/1");
             });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
-            IApiResponse<MockPersonDto> response = await apiHandler.InPathRequestAsync<MockPersonDto>(Method.Get);
+            IApiResponse<MockPersonDto> response = await apiHandler.InPathRequestAsync<MockPersonDto>(Method.Get, 0);
 
             response.WasSuccessful.ShouldBe(true);
             response.Message.ShouldBeNull();
@@ -223,9 +226,21 @@ namespace SereneApi.Tests
 
             MockPersonDto personResult = response.Result;
 
-            personResult.BirthDate.ShouldBe(MockPersonDto.John.BirthDate);
-            personResult.Name.ShouldBe(MockPersonDto.John.Name);
-            personResult.Age.ShouldBe(MockPersonDto.John.Age);
+            personResult.BirthDate.ShouldBe(MockPersonDto.JohnSmith.BirthDate);
+            personResult.Name.ShouldBe(MockPersonDto.JohnSmith.Name);
+            personResult.Age.ShouldBe(MockPersonDto.JohnSmith.Age);
+
+            response = await apiHandler.InPathRequestAsync<MockPersonDto>(Method.Get, 1);
+
+            response.WasSuccessful.ShouldBe(true);
+            response.Message.ShouldBeNull();
+            response.Exception.ShouldBeNull();
+
+            personResult = response.Result;
+
+            personResult.BirthDate.ShouldBe(MockPersonDto.BenJerry.BirthDate);
+            personResult.Name.ShouldBe(MockPersonDto.BenJerry.Name);
+            personResult.Age.ShouldBe(MockPersonDto.BenJerry.Age);
         }
 
         [Fact]
@@ -264,7 +279,7 @@ namespace SereneApi.Tests
             })
             .WithMockResponses(r =>
             {
-                r.AddMockResponse(MockPersonDto.John)
+                r.AddMockResponse(MockPersonDto.JohnSmith)
                     .RespondsToRequestsWith(Method.Get)
                     .RespondsToRequestsWith("http://localhost/api/Persons/100/Details");
             });
@@ -279,9 +294,9 @@ namespace SereneApi.Tests
 
             MockPersonDto personResult = response.Result;
 
-            personResult.BirthDate.ShouldBe(MockPersonDto.John.BirthDate);
-            personResult.Name.ShouldBe(MockPersonDto.John.Name);
-            personResult.Age.ShouldBe(MockPersonDto.John.Age);
+            personResult.BirthDate.ShouldBe(MockPersonDto.JohnSmith.BirthDate);
+            personResult.Name.ShouldBe(MockPersonDto.JohnSmith.Name);
+            personResult.Age.ShouldBe(MockPersonDto.JohnSmith.Age);
         }
 
         [Fact]
@@ -295,14 +310,14 @@ namespace SereneApi.Tests
             })
             .WithMockResponses(r =>
             {
-                r.AddMockResponse(MockPersonDto.John)
+                r.AddMockResponse(MockPersonDto.JohnSmith)
                     .RespondsToRequestsWith(Method.Get)
                     .RespondsToRequestsWith("http://localhost/api/Persons?Age=18&Name=John Smith");
             });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
-            IApiResponse<MockPersonDto> response = await apiHandler.InPathRequestWithQueryAsync<MockPersonDto, MockPersonDto>(Method.Get, MockPersonDto.John, dto => new { dto.Age, dto.Name });
+            IApiResponse<MockPersonDto> response = await apiHandler.InPathRequestWithQueryAsync<MockPersonDto, MockPersonDto>(Method.Get, MockPersonDto.JohnSmith, dto => new { dto.Age, dto.Name });
 
             response.WasSuccessful.ShouldBe(true);
             response.Message.ShouldBeNull();
@@ -310,9 +325,9 @@ namespace SereneApi.Tests
 
             MockPersonDto personResult = response.Result;
 
-            personResult.BirthDate.ShouldBe(MockPersonDto.John.BirthDate);
-            personResult.Name.ShouldBe(MockPersonDto.John.Name);
-            personResult.Age.ShouldBe(MockPersonDto.John.Age);
+            personResult.BirthDate.ShouldBe(MockPersonDto.JohnSmith.BirthDate);
+            personResult.Name.ShouldBe(MockPersonDto.JohnSmith.Name);
+            personResult.Age.ShouldBe(MockPersonDto.JohnSmith.Age);
         }
 
         [Fact]
@@ -326,14 +341,14 @@ namespace SereneApi.Tests
             })
             .WithMockResponses(r =>
             {
-                r.AddMockResponse(MockPersonDto.John)
+                r.AddMockResponse(MockPersonDto.JohnSmith)
                     .RespondsToRequestsWith(Method.Get)
-                    .RespondsToRequestsWith("http://localhost/api/Persons?Name=John Smith");
+                    .RespondsToRequestsWith("http://localhost/api/Persons/1/Friends?Name=John Smith");
             });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
-            IApiResponse<MockPersonDto> response = await apiHandler.InPathRequestWithQueryAsync<MockPersonDto, MockPersonDto>(Method.Get, MockPersonDto.John, dto => new { dto.Name }, "{0}/Friends", 1);
+            IApiResponse<MockPersonDto> response = await apiHandler.InPathRequestWithQueryAsync<MockPersonDto, MockPersonDto>(Method.Get, MockPersonDto.JohnSmith, dto => new { dto.Name }, "{0}/Friends", 1);
 
             response.WasSuccessful.ShouldBe(true);
             response.Message.ShouldBeNull();
@@ -341,9 +356,9 @@ namespace SereneApi.Tests
 
             MockPersonDto personResult = response.Result;
 
-            personResult.BirthDate.ShouldBe(MockPersonDto.John.BirthDate);
-            personResult.Name.ShouldBe(MockPersonDto.John.Name);
-            personResult.Age.ShouldBe(MockPersonDto.John.Age);
+            personResult.BirthDate.ShouldBe(MockPersonDto.JohnSmith.BirthDate);
+            personResult.Name.ShouldBe(MockPersonDto.JohnSmith.Name);
+            personResult.Age.ShouldBe(MockPersonDto.JohnSmith.Age);
         }
 
         [Fact]
@@ -413,7 +428,7 @@ namespace SereneApi.Tests
             })
             .WithMockResponses(r =>
             {
-                r.AddMockResponse(MockPersonDto.John)
+                r.AddMockResponse(MockPersonDto.JohnSmith)
                     .ResponseIsDelayed(10)
                     .RespondsToRequestsWith(Method.Get);
             });
@@ -441,7 +456,7 @@ namespace SereneApi.Tests
             })
             .WithMockResponses(r =>
             {
-                r.AddMockResponse(MockPersonDto.John)
+                r.AddMockResponse(MockPersonDto.JohnSmith)
                     .ResponseIsDelayed(10)
                     .RespondsToRequestsWith(Method.Get);
             });
@@ -502,7 +517,7 @@ namespace SereneApi.Tests
             })
             .WithMockResponses(r =>
             {
-                r.AddMockResponse(MockPersonDto.John)
+                r.AddMockResponse(MockPersonDto.JohnSmith)
                     .ResponseIsDelayed(10, 2)
                     .RespondsToRequestsWith(Method.Get)
                     .RespondsToRequestsWith("http://localhost/api/Persons");
@@ -518,9 +533,9 @@ namespace SereneApi.Tests
 
             MockPersonDto personResult = response.Result;
 
-            personResult.BirthDate.ShouldBe(MockPersonDto.John.BirthDate);
-            personResult.Name.ShouldBe(MockPersonDto.John.Name);
-            personResult.Age.ShouldBe(MockPersonDto.John.Age);
+            personResult.BirthDate.ShouldBe(MockPersonDto.JohnSmith.BirthDate);
+            personResult.Name.ShouldBe(MockPersonDto.JohnSmith.Name);
+            personResult.Age.ShouldBe(MockPersonDto.JohnSmith.Age);
 
             apiHandler.RetryCount.ShouldBe(3);
         }
@@ -605,12 +620,12 @@ namespace SereneApi.Tests
                 r.AddMockResponse(Status.Ok)
                     .RespondsToRequestsWith(Method.Post)
                     .RespondsToRequestsWith("http://localhost/api/Persons")
-                    .RespondsToRequestsWith(MockPersonDto.John);
+                    .RespondsToRequestsWith(MockPersonDto.JohnSmith);
             });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
-            IApiResponse response = await apiHandler.InBodyRequestAsync(Method.Post, MockPersonDto.John);
+            IApiResponse response = await apiHandler.InBodyRequestAsync(Method.Post, MockPersonDto.JohnSmith);
 
             response.WasSuccessful.ShouldBe(true);
             response.Message.ShouldBeNull();
@@ -627,14 +642,14 @@ namespace SereneApi.Tests
                 builder.UseSource("http://localhost", "Persons");
             }).WithMockResponses(r =>
             {
-                r.AddMockResponse(MockPersonDto.John)
+                r.AddMockResponse(MockPersonDto.JohnSmith)
                     .RespondsToRequestsWith("http://localhost/api/Persons")
-                    .RespondsToRequestsWith(MockPersonDto.John);
+                    .RespondsToRequestsWith(MockPersonDto.JohnSmith);
             });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
-            IApiResponse<MockPersonDto> response = await apiHandler.InBodyRequestAsync<MockPersonDto, MockPersonDto>(Method.Post, MockPersonDto.John);
+            IApiResponse<MockPersonDto> response = await apiHandler.InBodyRequestAsync<MockPersonDto, MockPersonDto>(Method.Post, MockPersonDto.JohnSmith);
 
             response.WasSuccessful.ShouldBe(true);
             response.Message.ShouldBeNull();
@@ -642,9 +657,9 @@ namespace SereneApi.Tests
 
             MockPersonDto personResult = response.Result;
 
-            personResult.BirthDate.ShouldBe(MockPersonDto.John.BirthDate);
-            personResult.Name.ShouldBe(MockPersonDto.John.Name);
-            personResult.Age.ShouldBe(MockPersonDto.John.Age);
+            personResult.BirthDate.ShouldBe(MockPersonDto.JohnSmith.BirthDate);
+            personResult.Name.ShouldBe(MockPersonDto.JohnSmith.Name);
+            personResult.Age.ShouldBe(MockPersonDto.JohnSmith.Age);
         }
 
         [Fact]
@@ -661,12 +676,12 @@ namespace SereneApi.Tests
                 r.AddMockResponse(Status.Ok)
                     .RespondsToRequestsWith(Method.Post)
                     .RespondsToRequestsWith("http://localhost/api/Persons/100/Details")
-                    .RespondsToRequestsWith(MockPersonDto.John);
+                    .RespondsToRequestsWith(MockPersonDto.JohnSmith);
             });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
-            IApiResponse response = await apiHandler.InBodyRequestAsync(Method.Post, MockPersonDto.John, "{0}/Details", 100);
+            IApiResponse response = await apiHandler.InBodyRequestAsync(Method.Post, MockPersonDto.JohnSmith, "{0}/Details", 100);
 
             response.WasSuccessful.ShouldBe(true);
             response.Message.ShouldBeNull();
@@ -684,14 +699,14 @@ namespace SereneApi.Tests
             })
             .WithMockResponses(r =>
             {
-                r.AddMockResponse(MockPersonDto.John)
+                r.AddMockResponse(MockPersonDto.JohnSmith)
                     .RespondsToRequestsWith("http://localhost/api/Persons/100/Details")
-                    .RespondsToRequestsWith(MockPersonDto.John);
+                    .RespondsToRequestsWith(MockPersonDto.JohnSmith);
             });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
 
-            IApiResponse<MockPersonDto> response = await apiHandler.InBodyRequestAsync<MockPersonDto, MockPersonDto>(Method.Post, MockPersonDto.John, "{0}/Details", 100);
+            IApiResponse<MockPersonDto> response = await apiHandler.InBodyRequestAsync<MockPersonDto, MockPersonDto>(Method.Post, MockPersonDto.JohnSmith, "{0}/Details", 100);
 
             response.WasSuccessful.ShouldBe(true);
             response.Message.ShouldBeNull();
@@ -699,9 +714,9 @@ namespace SereneApi.Tests
 
             MockPersonDto personResult = response.Result;
 
-            personResult.BirthDate.ShouldBe(MockPersonDto.John.BirthDate);
-            personResult.Name.ShouldBe(MockPersonDto.John.Name);
-            personResult.Age.ShouldBe(MockPersonDto.John.Age);
+            personResult.BirthDate.ShouldBe(MockPersonDto.JohnSmith.BirthDate);
+            personResult.Name.ShouldBe(MockPersonDto.JohnSmith.Name);
+            personResult.Age.ShouldBe(MockPersonDto.JohnSmith.Age);
         }
     }
 

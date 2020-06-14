@@ -1,9 +1,11 @@
 ﻿using SereneApi.Abstraction.Enums;
+using SereneApi.Extensions.Mocking.Enums;
 using SereneApi.Extensions.Mocking.Interfaces;
 using SereneApi.Interfaces;
 using SereneApi.Types.Content;
+using System;
 using System.Collections.Generic;
-using System.Net;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,60 +23,113 @@ namespace SereneApi.Extensions.Mocking.Types
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
+            Dictionary<int, IMockResponse> weightedResponses = new Dictionary<int, IMockResponse>();
+
             foreach (IMockResponse mockResponse in _mockResponses)
             {
-                bool validatedResponse = true;
+                int responseWeight = await GetResponseWeightAsync(mockResponse, request);
 
-                if (mockResponse is IWhitelist whitelist)
+                // If two responses have the same weight the older response will be ignored.
+                if (responseWeight >= 0 && !weightedResponses.ContainsKey(responseWeight))
                 {
-                    if (validatedResponse)
-                    {
-                        validatedResponse = whitelist.Validate(request.RequestUri);
-                    }
-
-                    if (validatedResponse)
-                    {
-                        validatedResponse = whitelist.Validate(request.Method);
-                    }
-
-                    if (request.Content != null)
-                    {
-                        string content = await request.Content.ReadAsStringAsync();
-
-                        IApiRequestContent requestContent = new JsonContent(content);
-
-                        if (validatedResponse)
-                        {
-                            whitelist.Validate(requestContent);
-                        }
-
-                    }
+                    weightedResponses.Add(responseWeight, mockResponse);
                 }
+            }
 
-                if (!validatedResponse)
-                {
-                    continue;
-                }
+            if (weightedResponses.Count <= 0)
+            {
+                throw new ArgumentException("No response was found.");
+            }
 
-                IApiRequestContent response = await mockResponse.GetResponseAsync(cancellationToken);
+            int maxWeight = weightedResponses.Keys.Max();
 
-                if (response is JsonContent jsonContent)
-                {
-                    return new HttpResponseMessage
-                    {
-                        StatusCode = mockResponse.Status.ToHttpStatusCode(),
-                        Content = jsonContent.ToStringContent()
-                    };
-                }
+            IMockResponse response = weightedResponses[maxWeight];
 
+            return await GetResponseMessageAsync(response, cancellationToken);
+        }
+
+        /// <summary>
+        /// Override this method if you have added more <see cref="IWhitelist"/> dependencies for Responses.
+        /// </summary>
+        protected async Task<int> GetResponseWeightAsync(IMockResponse mockResponse, HttpRequestMessage request)
+        {
+            int responseWeight = 0;
+
+            Validity validity = mockResponse.Validate(request.RequestUri);
+
+            switch (validity)
+            {
+                case Validity.NotApplicable:
+                    break;
+                case Validity.Valid:
+                    responseWeight++;
+                    break;
+                case Validity.Invalid:
+                    return -1;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            validity = mockResponse.Validate(request.Method.ToMethod());
+
+            switch (validity)
+            {
+                case Validity.NotApplicable:
+                    break;
+                case Validity.Valid:
+                    responseWeight++;
+                    break;
+                case Validity.Invalid:
+                    return -1;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            if (request.Content == null)
+            {
+                return responseWeight;
+            }
+
+            string content = await request.Content.ReadAsStringAsync();
+
+            IApiRequestContent requestContent = new JsonContent(content);
+
+            validity = mockResponse.Validate(requestContent);
+
+            switch (validity)
+            {
+                case Validity.NotApplicable:
+                    break;
+                case Validity.Valid:
+                    responseWeight++;
+                    break;
+                case Validity.Invalid:
+                    return -1;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return responseWeight;
+        }
+
+        protected async Task<HttpResponseMessage> GetResponseMessageAsync(IMockResponse mockResponse, CancellationToken cancellationToken)
+        {
+            IApiRequestContent requestContent = await mockResponse.GetResponseAsync(cancellationToken);
+
+            if (requestContent is JsonContent jsonContent)
+            {
                 return new HttpResponseMessage
                 {
                     StatusCode = mockResponse.Status.ToHttpStatusCode(),
-                    ReasonPhrase = mockResponse.Message
+                    Content = jsonContent.ToStringContent()
                 };
             }
 
-            return new HttpResponseMessage(HttpStatusCode.OK);
+            return new HttpResponseMessage
+            {
+                StatusCode = mockResponse.Status.ToHttpStatusCode(),
+                ReasonPhrase = mockResponse.Message
+            };
         }
     }
 }

@@ -9,7 +9,7 @@ namespace SereneApi.Factories
 {
     public class ApiHandlerFactory : IApiHandlerFactory, IDisposable
     {
-        private readonly Dictionary<Type, Action<IApiHandlerOptionsBuilder>> _handlers = new Dictionary<Type, Action<IApiHandlerOptionsBuilder>>();
+        private readonly Dictionary<Type, Action<IApiHandlerOptionsBuilder>> _handlerOptions = new Dictionary<Type, Action<IApiHandlerOptionsBuilder>>();
 
         private readonly Dictionary<Type, IRegisterApiHandlerExtensions> _handlerExtensions = new Dictionary<Type, IRegisterApiHandlerExtensions>();
 
@@ -24,7 +24,7 @@ namespace SereneApi.Factories
         {
             Type handlerType = typeof(TApiHandler);
 
-            if (!_handlers.TryGetValue(handlerType, out Action<IApiHandlerOptionsBuilder> optionsBuilderAction))
+            if (!_handlerOptions.TryGetValue(handlerType, out Action<IApiHandlerOptionsBuilder> optionsBuilderAction))
             {
                 throw new ArgumentException($"{nameof(TApiHandler)} has not been registered.");
             }
@@ -64,12 +64,12 @@ namespace SereneApi.Factories
         {
             Type handlerType = typeof(TApiHandler);
 
-            if (_handlers.ContainsKey(handlerType))
+            if (_handlerOptions.ContainsKey(handlerType))
             {
                 throw new ArgumentException($"Cannot Register Multiple Instances of {nameof(TApiHandler)}");
             }
 
-            _handlers.Add(handlerType, optionsAction);
+            _handlerOptions.Add(handlerType, optionsAction);
 
             ApiHandlerOptionsBuilder builder = new ApiHandlerOptionsBuilder();
 
@@ -107,7 +107,6 @@ namespace SereneApi.Factories
 
             if (disposing)
             {
-                // Now dispose the clients.
                 foreach (HttpClient client in _clients.Values)
                 {
                     client.Dispose();

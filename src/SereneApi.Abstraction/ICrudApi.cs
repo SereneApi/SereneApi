@@ -13,13 +13,13 @@ namespace SereneApi.Abstraction
         /// <summary>
         /// Performs a GET request using the <see cref="TIdentifier"/> as the Resource Identity
         /// </summary>
-        /// <param name="identity">The Identity of the Resource</param>
+        /// <param name="identifier">The Identity of the Resource</param>
         Task<IApiResponse<TResource>> GetAsync(TIdentifier identifier);
 
         /// <summary>
         /// Performs a GET request returning all <see cref="TResource"/>s
         /// </summary>
-        Task<IApiResponse<IList<TResource>>> GetAllAsync();
+        Task<IApiResponse<List<TResource>>> GetAllAsync();
 
         /// <summary>
         /// Performs a POST request creating a <see cref="TResource"/>
