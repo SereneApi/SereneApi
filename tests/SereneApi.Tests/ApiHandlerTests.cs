@@ -120,7 +120,7 @@ namespace SereneApi.Tests
         }
 
         [Fact]
-        public async Task ExceptionDisposedAsync()
+        public void ExceptionDisposedAsync()
         {
             using ApiHandlerFactory factory = new ApiHandlerFactory();
 
@@ -146,7 +146,7 @@ namespace SereneApi.Tests
         }
 
         [Fact]
-        public async Task ExceptionDisposedGenericAsync()
+        public void ExceptionDisposedGenericAsync()
         {
             using ApiHandlerFactory factory = new ApiHandlerFactory();
 
@@ -162,7 +162,7 @@ namespace SereneApi.Tests
             });
 
             using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
-            
+
             factory.Dispose();
 
             Should.Throw<ObjectDisposedException>(async () =>
