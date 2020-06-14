@@ -148,6 +148,8 @@ namespace SereneApi
 
         private void CheckIfDisposed(IApiHandlerOptions options)
         {
+            CheckIfDisposed();
+
             if (options is ApiHandlerOptions apiHandlerOptions && apiHandlerOptions.IsDisposed())
             {
                 throw new ObjectDisposedException(nameof(apiHandlerOptions.GetType));

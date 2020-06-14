@@ -120,6 +120,59 @@ namespace SereneApi.Tests
         }
 
         [Fact]
+        public async Task ExceptionDisposedAsync()
+        {
+            using ApiHandlerFactory factory = new ApiHandlerFactory();
+
+            factory.RegisterHandlerOptions<TestApiHandler>(builder =>
+            {
+                builder.UseSource("http://localhost", "Persons");
+            })
+            .WithMockResponses(r =>
+            {
+                r.AddMockResponse(Status.Ok)
+                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith("http://localhost/api/Persons");
+            });
+
+            using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
+
+            factory.Dispose();
+
+            Should.Throw<ObjectDisposedException>(async () =>
+            {
+                await apiHandler.InPathRequestAsync(Method.Get);
+            });
+        }
+
+        [Fact]
+        public async Task ExceptionDisposedGenericAsync()
+        {
+            using ApiHandlerFactory factory = new ApiHandlerFactory();
+
+            factory.RegisterHandlerOptions<TestApiHandler>(builder =>
+            {
+                builder.UseSource("http://localhost", "Persons");
+            })
+            .WithMockResponses(r =>
+            {
+                r.AddMockResponse(MockPersonDto.John)
+                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith("http://localhost/api/Persons");
+            });
+
+            using TestApiHandler apiHandler = factory.Build<TestApiHandler>();
+            
+            factory.Dispose();
+
+            Should.Throw<ObjectDisposedException>(async () =>
+            {
+                await apiHandler.InPathRequestAsync<MockPersonDto>(Method.Get);
+            });
+
+        }
+
+        [Fact]
         public async Task SuccessfulGetRequestAsync()
         {
             using ApiHandlerFactory factory = new ApiHandlerFactory();

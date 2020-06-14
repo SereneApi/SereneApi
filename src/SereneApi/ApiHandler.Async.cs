@@ -17,6 +17,8 @@ namespace SereneApi
 
         public Task<IApiResponse> PerformRequestAsync(Action<IApiRequestBuilder> requestAction)
         {
+            CheckIfDisposed();
+
             ApiRequestBuilder requestBuilder = new ApiRequestBuilder(_routeFactory, _queryFactory, _serializer);
 
             requestAction.Invoke(requestBuilder);
@@ -28,6 +30,8 @@ namespace SereneApi
 
         public Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(Action<IApiRequestBuilder> requestAction)
         {
+            CheckIfDisposed();
+
             ApiRequestBuilder requestBuilder = new ApiRequestBuilder(_routeFactory, _queryFactory, _serializer);
 
             requestAction.Invoke(requestBuilder);
@@ -44,8 +48,6 @@ namespace SereneApi
         /// <param name="endpoint">The <see cref="endpoint"/> to be appended to the Url</param>
         protected virtual Task<IApiResponse> InPathRequestAsync(Method method, object endpoint = null)
         {
-            CheckIfDisposed();
-
             return PerformRequestAsync(builder =>
             {
                 builder.UsingMethod(method);
@@ -61,8 +63,6 @@ namespace SereneApi
         /// <param name="endpointParameters">The <see cref="endpointParameters"/> to be appended to the Url</param>
         protected virtual Task<IApiResponse> InPathRequestAsync(Method method, string endpointTemplate, params object[] endpointParameters)
         {
-            CheckIfDisposed();
-
             return PerformRequestAsync(builder =>
             {
                 builder.UsingMethod(method);
@@ -78,8 +78,6 @@ namespace SereneApi
         /// <param name="endpoint">The <see cref="endpoint"/> to be appended to the Url</param>
         protected virtual Task<IApiResponse<TResponse>> InPathRequestAsync<TResponse>(Method method, object endpoint = null)
         {
-            CheckIfDisposed();
-
             return PerformRequestAsync<TResponse>(builder =>
             {
                 builder.UsingMethod(method);
@@ -95,8 +93,6 @@ namespace SereneApi
         /// <param name="endpointParameters">The <see cref="endpointParameters"/> to be appended to the Url</param>
         protected virtual Task<IApiResponse<TResponse>> InPathRequestAsync<TResponse>(Method method, string endpointTemplate, params object[] endpointParameters)
         {
-            CheckIfDisposed();
-
             return PerformRequestAsync<TResponse>(builder =>
             {
                 builder.UsingMethod(method);
@@ -115,8 +111,6 @@ namespace SereneApi
         /// <param name="query">Selects parts of the <see cref="queryContent"/> to be converted into a query</param>
         protected virtual Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQuery>(Method method, TQuery queryContent, Expression<Func<TQuery, object>> query, object endpoint = null) where TQuery : class
         {
-            CheckIfDisposed();
-
             return PerformRequestAsync<TResponse>(builder =>
             {
                 builder.UsingMethod(method);
@@ -137,8 +131,6 @@ namespace SereneApi
         /// <param name="endpointParameters">The <see cref="endpointParameters"/> to be appended to the Url</param>
         protected virtual Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQuery>(Method method, TQuery queryContent, Expression<Func<TQuery, object>> query, string endpointTemplate, params object[] endpointParameters) where TQuery : class
         {
-            CheckIfDisposed();
-
             return PerformRequestAsync<TResponse>(builder =>
             {
                 builder.UsingMethod(method);
@@ -156,8 +148,6 @@ namespace SereneApi
         /// <param name="endpoint">The <see cref="endpoint"/> to be appended to the end of the Url</param>
         protected virtual Task<IApiResponse> InBodyRequestAsync<TContent>(Method method, TContent inBodyContent, object endpoint = null)
         {
-            CheckIfDisposed();
-
             return PerformRequestAsync(builder =>
             {
                 builder.UsingMethod(method);
@@ -176,8 +166,6 @@ namespace SereneApi
         /// <param name="endpointParameters"></param>
         protected virtual Task<IApiResponse> InBodyRequestAsync<TContent>(Method method, TContent inBodyContent, string endpointTemplate, params object[] endpointParameters)
         {
-            CheckIfDisposed();
-
             return PerformRequestAsync(builder =>
             {
                 builder.UsingMethod(method);
@@ -196,8 +184,6 @@ namespace SereneApi
         /// <param name="endpoint"></param>
         protected virtual Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(Method method, TContent inBodyContent, object endpoint = null)
         {
-            CheckIfDisposed();
-
             return PerformRequestAsync<TResponse>(builder =>
             {
                 builder.UsingMethod(method);
@@ -217,8 +203,6 @@ namespace SereneApi
         /// <param name="endpointParameters"></param>
         protected virtual Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(Method method, TContent inBodyContent, string endpointTemplate, params object[] endpointParameters)
         {
-            CheckIfDisposed();
-
             return PerformRequestAsync<TResponse>(builder =>
             {
                 builder.UsingMethod(method);
@@ -232,8 +216,6 @@ namespace SereneApi
 
         public async Task<IApiResponse> PerformRequestBaseAsync(IApiRequest request)
         {
-            CheckIfDisposed();
-
             HttpResponseMessage responseMessage;
 
             Uri endPoint = request.EndPoint;
@@ -303,8 +285,6 @@ namespace SereneApi
 
         public async Task<IApiResponse<TResponse>> PerformRequestBaseAsync<TResponse>(IApiRequest request)
         {
-            CheckIfDisposed();
-
             HttpResponseMessage responseMessage;
 
             Uri endPoint = request.EndPoint;
