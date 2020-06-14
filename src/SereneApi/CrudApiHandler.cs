@@ -20,39 +20,44 @@ namespace SereneApi
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.GetAsync"/>
-        public Task<IApiResponse<TResource>> GetAsync(TIdentifier identity)
+        public Task<IApiResponse<TResource>> GetAsync(TIdentifier identifier)
         {
-            return InPathRequestAsync<TResource>(Method.Get, identity);
+            return PerformRequestAsync<TResource>(Method.Get, request => request
+                .WithEndPoint(identifier));
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.GetAllAsync"/>
         public Task<IApiResponse<IList<TResource>>> GetAllAsync()
         {
-            return InPathRequestAsync<IList<TResource>>(Method.Get);
+            return PerformRequestAsync<IList<TResource>>(Method.Get);
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.CreateAsync"/>
         public Task<IApiResponse<TResource>> CreateAsync(TResource resource)
         {
-            return InBodyRequestAsync<TResource, TResource>(Method.Post, resource);
+            return PerformRequestAsync<TResource>(Method.Post, request => request
+                .AddInBodyContent(resource));
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.DeleteAsync"/>
         public Task<IApiResponse> DeleteAsync(TIdentifier identifier)
         {
-            return InPathRequestAsync(Method.Delete, identifier);
+            return PerformRequestAsync(Method.Delete, request => request
+                .WithEndPoint(identifier));
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.ReplaceAsync"/>
         public Task<IApiResponse<TResource>> ReplaceAsync(TResource resource)
         {
-            return InBodyRequestAsync<TResource, TResource>(Method.Put, resource);
+            return PerformRequestAsync<TResource>(Method.Put, request => request
+                .AddInBodyContent(resource));
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.UpdateAsync"/>
         public Task<IApiResponse<TResource>> UpdateAsync(TResource resource)
         {
-            return InBodyRequestAsync<TResource, TResource>(Method.Patch, resource);
+            return PerformRequestAsync<TResource>(Method.Patch, request => request
+                .AddInBodyContent(resource));
         }
     }
 }

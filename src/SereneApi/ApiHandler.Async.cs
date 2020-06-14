@@ -15,9 +15,7 @@ namespace SereneApi
     {
         #region Action Methods
 
-
-
-        public Task<IApiResponse> PerformRequestAsync(Method method, Expression<Func<IRequest, IRequestCreated>> request)
+        protected Task<IApiResponse> PerformRequestAsync(Method method, Expression<Func<IRequest, IRequestCreated>> request = null)
         {
             CheckIfDisposed();
 
@@ -25,12 +23,12 @@ namespace SereneApi
 
             requestBuilder.UsingMethod(method);
 
-            request.Compile().Invoke(requestBuilder);
+            request?.Compile().Invoke(requestBuilder);
 
             return PerformRequestBaseAsync(requestBuilder.GetRequest());
         }
 
-        public Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(Method method, Expression<Func<IRequest, IRequestCreated>> request)
+        protected Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(Method method, Expression<Func<IRequest, IRequestCreated>> request = null)
         {
             CheckIfDisposed();
 
@@ -38,7 +36,7 @@ namespace SereneApi
 
             requestBuilder.UsingMethod(method);
 
-            request.Compile().Invoke(requestBuilder);
+            request?.Compile().Invoke(requestBuilder);
 
             return PerformRequestBaseAsync<TResponse>(requestBuilder.GetRequest());
         }
@@ -186,7 +184,7 @@ namespace SereneApi
         #endregion
         #region Base Action Methods
 
-        public async Task<IApiResponse> PerformRequestBaseAsync(IApiRequest request)
+        protected async Task<IApiResponse> PerformRequestBaseAsync(IApiRequest request)
         {
             HttpResponseMessage responseMessage;
 
@@ -255,7 +253,7 @@ namespace SereneApi
             return ProcessResponse(responseMessage);
         }
 
-        public async Task<IApiResponse<TResponse>> PerformRequestBaseAsync<TResponse>(IApiRequest request)
+        protected async Task<IApiResponse<TResponse>> PerformRequestBaseAsync<TResponse>(IApiRequest request)
         {
             HttpResponseMessage responseMessage;
 
