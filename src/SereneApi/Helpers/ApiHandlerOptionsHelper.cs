@@ -15,7 +15,7 @@
             // If an empty string is supplied, the default value is disabled.
             if (resourcePath == string.Empty)
             {
-                return string.Empty;
+                return resourcePath;
             }
 
             // Null or whitespace strings will enabled the default.

@@ -67,17 +67,9 @@ namespace SereneApi.Types
         #endregion
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseSource"/>
-        public void UseSource(string source, string resource, string resourcePath = null)
+        public void UseSource(string source, string resource = null, string resourcePath = null)
         {
-            if (string.IsNullOrWhiteSpace(source))
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-
-            if (string.IsNullOrWhiteSpace(resource))
-            {
-                throw new ArgumentException(nameof(resource));
-            }
+            ExceptionHelper.EnsureParameterIsNotNull(source, nameof(source));
 
             if (ClientOverride != null)
             {
@@ -89,12 +81,11 @@ namespace SereneApi.Types
                 throw new MethodAccessException("This method cannot be called twice");
             }
 
-            // The Resource Precursors default value will be used if a null or whitespace value is provided.
             Source = new Uri(SourceHelpers.EnsureSourceSlashTermination(source));
             Resource = SourceHelpers.EnsureSourceNoSlashTermination(resource);
             ResourcePath = ApiHandlerOptionsHelper.UseOrGetDefaultResourcePath(resourcePath);
 
-            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory(Resource, ResourcePath));
+            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory(ResourcePath));
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseClientOverride"/>
@@ -132,7 +123,7 @@ namespace SereneApi.Types
 
             DisposeClientOverride = disposeClient;
 
-            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory(string.Empty, string.Empty));
+            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory());
         }
 
         /// <inheritdoc>

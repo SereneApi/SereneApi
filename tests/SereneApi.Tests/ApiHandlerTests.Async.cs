@@ -9,7 +9,7 @@ using Xunit;
 
 namespace SereneApi.Tests
 {
-    public class ApiHandlerTests
+    public class ApiHandlerTestsAsync
     {
         [Fact]
         public void GetRequestWithInvalidTemplateA()

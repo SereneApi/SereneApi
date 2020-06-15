@@ -45,6 +45,8 @@ namespace SereneApi.Extensions.DependencyInjection.Types
             Resource = SourceHelpers.EnsureSourceNoSlashTermination(resource);
             ResourcePath = ApiHandlerOptionsHelper.UseOrGetDefaultResourcePath(resourcePath);
 
+            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory(ResourcePath));
+
             #region Timeout
 
             TimeSpan timeout = configuration.Get<TimeSpan>(ConfigurationConstants.TimeoutKey, ConfigurationConstants.TimeoutIsRequired);
@@ -73,7 +75,6 @@ namespace SereneApi.Extensions.DependencyInjection.Types
                 DependencyCollection.AddDependency(retryDependency);
             }
 
-            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory(Resource, ResourcePath));
 
             #endregion
         }

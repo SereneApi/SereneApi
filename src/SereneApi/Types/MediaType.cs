@@ -10,7 +10,7 @@
         {
             TypeString = typeString;
         }
-        
+
         public static bool operator ==(MediaType typeA, MediaType typeB)
         {
             return typeA.TypeString == typeB.TypeString;

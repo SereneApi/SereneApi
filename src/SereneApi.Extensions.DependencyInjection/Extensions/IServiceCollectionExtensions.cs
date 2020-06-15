@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection.Extensions;
-using System;
 using SereneApi;
 using SereneApi.Extensions.DependencyInjection.Interfaces;
 using SereneApi.Extensions.DependencyInjection.Types;
 using SereneApi.Interfaces;
 using SereneApi.Types;
+using System;
 
 // Do not change namespace
 // ReSharper disable once CheckNamespace
@@ -12,6 +12,10 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class IServiceCollectionExtensions
     {
+        /// <summary>
+        /// Allows a registered <see cref="ApiHandler"/> to be extended upon.
+        /// </summary>
+        /// <typeparam name="TApiDefinition">The <see cref="ApiHandler"/> Definition.</typeparam>
         public static IApiHandlerExtensions ExtendApiHandler<TApiDefinition>(this IServiceCollection services) where TApiDefinition : class
         {
             using ServiceProvider serviceProvider = services.BuildServiceProvider();
@@ -26,6 +30,10 @@ namespace Microsoft.Extensions.DependencyInjection
             return extensions;
         }
 
+        /// <summary>
+        /// Allows a registered <see cref="ApiHandler"/> to be extended upon.
+        /// </summary>
+        /// <typeparam name="TApiDefinition">The <see cref="ApiHandler"/> Definition.</typeparam>
         public static void ExtendApiHandler<TApiDefinition>(this IServiceCollection services, Action<IApiHandlerExtensions> extensionsAction) where TApiDefinition : class
         {
             using ServiceProvider serviceProvider = services.BuildServiceProvider();
@@ -105,7 +113,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static IApiHandlerOptions<TApiImplementation> CreateApiHandlerOptions<TApiDefinition, TApiImplementation>(Action<IApiHandlerOptionsBuilder<TApiImplementation>, IServiceProvider> optionsAction, IServiceProvider serviceProvider, IServiceCollection services) where TApiDefinition : class where TApiImplementation : ApiHandler, TApiDefinition
         {
-            var extensions = serviceProvider.GetRequiredService<IApiHandlerExtensions<TApiDefinition>>();
+            IApiHandlerExtensions<TApiDefinition> extensions = serviceProvider.GetRequiredService<IApiHandlerExtensions<TApiDefinition>>();
 
             CoreOptions options = GetCoreOptions(extensions);
 

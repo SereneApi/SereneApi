@@ -13,13 +13,13 @@ namespace SereneApi
     // Async Implementation
     public abstract partial class ApiHandler
     {
-        #region Action Methods
+        #region Perform Methods
 
         protected Task<IApiResponse> PerformRequestAsync(Method method, Expression<Func<IRequest, IRequestCreated>> request = null)
         {
             CheckIfDisposed();
 
-            RequestBuilder requestBuilder = new RequestBuilder(_routeFactory, _queryFactory, _serializer);
+            RequestBuilder requestBuilder = new RequestBuilder(_routeFactory, _queryFactory, _serializer, Resource);
 
             requestBuilder.UsingMethod(method);
 
@@ -32,7 +32,7 @@ namespace SereneApi
         {
             CheckIfDisposed();
 
-            RequestBuilder requestBuilder = new RequestBuilder(_routeFactory, _queryFactory, _serializer);
+            RequestBuilder requestBuilder = new RequestBuilder(_routeFactory, _queryFactory, _serializer, Resource);
 
             requestBuilder.UsingMethod(method);
 
@@ -40,6 +40,9 @@ namespace SereneApi
 
             return PerformRequestBaseAsync<TResponse>(requestBuilder.GetRequest());
         }
+
+        #endregion
+        #region Action Methods
 
         /// <summary>
         /// Performs an in Path Request. The <see cref="endpoint"/> will be appended to the Url
@@ -101,7 +104,7 @@ namespace SereneApi
         {
             return PerformRequestAsync<TResponse>(method, request => request
                 .WithEndPoint(endpoint)
-                .AddQuery(queryContent, query));
+                .WithQuery(queryContent, query));
         }
 
         /// <summary>
@@ -118,7 +121,7 @@ namespace SereneApi
         {
             return PerformRequestAsync<TResponse>(method, request => request
                 .WithEndPoint(endpointTemplate, endpointParameters)
-                .AddQuery(queryContent, query));
+                .WithQuery(queryContent, query));
         }
 
         /// <summary>
@@ -132,7 +135,7 @@ namespace SereneApi
         {
             return PerformRequestAsync(method, request => request
                 .WithEndPoint(endpoint)
-                .AddInBodyContent(inBodyContent));
+                .WithInBodyContent(inBodyContent));
         }
 
         /// <summary>
@@ -147,7 +150,7 @@ namespace SereneApi
         {
             return PerformRequestAsync(method, request => request
                 .WithEndPoint(endpointTemplate, endpointParameters)
-                .AddInBodyContent(inBodyContent));
+                .WithInBodyContent(inBodyContent));
         }
 
         /// <summary>
@@ -162,7 +165,7 @@ namespace SereneApi
         {
             return PerformRequestAsync<TResponse>(method, request => request
                 .WithEndPoint(endpoint)
-                .AddInBodyContent(inBodyContent));
+                .WithInBodyContent(inBodyContent));
         }
 
         /// <summary>
@@ -178,13 +181,13 @@ namespace SereneApi
         {
             return PerformRequestAsync<TResponse>(method, request => request
                 .WithEndPoint(endpointTemplate, endpointParameters)
-                .AddInBodyContent(inBodyContent));
+                .WithInBodyContent(inBodyContent));
         }
 
         #endregion
         #region Base Action Methods
 
-        protected async Task<IApiResponse> PerformRequestBaseAsync(IApiRequest request)
+        protected virtual async Task<IApiResponse> PerformRequestBaseAsync(IApiRequest request)
         {
             HttpResponseMessage responseMessage;
 
@@ -253,7 +256,7 @@ namespace SereneApi
             return ProcessResponse(responseMessage);
         }
 
-        protected async Task<IApiResponse<TResponse>> PerformRequestBaseAsync<TResponse>(IApiRequest request)
+        protected virtual async Task<IApiResponse<TResponse>> PerformRequestBaseAsync<TResponse>(IApiRequest request)
         {
             HttpResponseMessage responseMessage;
 
@@ -328,7 +331,7 @@ namespace SereneApi
         /// <param name="requestAction">The request to be performed.</param>
         /// <param name="route">The route to be inserted into the log.</param>
         /// <returns></returns>
-        protected async Task<HttpResponseMessage> RetryRequestAsync(Func<Task<HttpResponseMessage>> requestAction, Uri route)
+        protected virtual async Task<HttpResponseMessage> RetryRequestAsync(Func<Task<HttpResponseMessage>> requestAction, Uri route)
         {
             bool retryingRequest;
             int requestsAttempted = 0;

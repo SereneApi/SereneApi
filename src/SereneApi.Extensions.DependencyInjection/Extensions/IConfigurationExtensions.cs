@@ -7,26 +7,6 @@ namespace Microsoft.Extensions.Configuration
 {
     public static class IConfigurationExtensions
     {
-        internal static TValue Get<TValue>(this IConfiguration configuration, string key, bool required = true)
-        {
-            if (configuration.GetSection(key).Exists())
-            {
-                return configuration.GetSection(key).Get<TValue>();
-            }
-
-            if (required)
-            {
-                throw new KeyNotFoundException($"Could not find {key} inside the Configuration");
-            }
-
-            return default;
-        }
-
-        internal static bool ContainsKey(this IConfiguration configuration, string key)
-        {
-            return configuration.GetSection(key).Exists();
-        }
-
         /// <summary>
         /// Returns the <see cref="IConfiguration"/> from within ApiConfig that matches the specified <see cref="apiKey"/>
         /// </summary>
@@ -47,6 +27,26 @@ namespace Microsoft.Extensions.Configuration
             }
 
             return apiConfiguration.GetSection(apiKey);
+        }
+
+        internal static TValue Get<TValue>(this IConfiguration configuration, string key, bool required = true)
+        {
+            if (configuration.GetSection(key).Exists())
+            {
+                return configuration.GetSection(key).Get<TValue>();
+            }
+
+            if (required)
+            {
+                throw new KeyNotFoundException($"Could not find {key} inside the Configuration");
+            }
+
+            return default;
+        }
+
+        internal static bool ContainsKey(this IConfiguration configuration, string key)
+        {
+            return configuration.GetSection(key).Exists();
         }
     }
 }

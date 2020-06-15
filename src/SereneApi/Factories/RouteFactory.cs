@@ -15,23 +15,34 @@ namespace SereneApi.Factories
 
         private string _endpoint;
 
+        private string _resource;
+
         #endregion
         #region Properties
-
-        public string Resource { get; }
 
         public string ResourcePath { get; }
 
         #endregion
         #region Constructors
 
-        public RouteFactory(string resource, string resourcePath)
+        public RouteFactory()
         {
-            Resource = resource;
+            ResourcePath = string.Empty;
+        }
+
+        public RouteFactory(string resourcePath)
+        {
             ResourcePath = resourcePath;
         }
 
         #endregion
+
+        public void WithResource(string resource)
+        {
+            ExceptionHelper.EnsureParameterIsNotNull(resource, nameof(resource));
+
+            _resource = resource;
+        }
 
         public void AddQuery(string queryString)
         {
@@ -65,7 +76,7 @@ namespace SereneApi.Factories
 
         public Uri BuildRoute()
         {
-            string route = $"{ResourcePath}{Resource}";
+            string route = $"{ResourcePath}{_resource}";
 
             if (_parameters != null)
             {
@@ -105,6 +116,7 @@ namespace SereneApi.Factories
             _endpoint = null;
             _parameters = null;
             _query = null;
+            _resource = null;
         }
 
         private static string FormatEndpointTemplate(string endpointTemplate, params object[] templateParameters)

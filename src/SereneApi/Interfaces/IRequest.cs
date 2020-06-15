@@ -1,9 +1,7 @@
 ﻿namespace SereneApi.Interfaces
 {
-    public interface IRequest : IRequestContent
+    public interface IRequest : IRequestEndpoint
     {
-        IRequestContent WithEndPoint(object parameter = null);
-        IRequestContent WithEndPoint(string endPoint);
-        IRequestContent WithEndPoint(string endPointTemplate, params object[] templateParameters);
+        IRequestEndpoint AgainstResource(string resource);
     }
 }

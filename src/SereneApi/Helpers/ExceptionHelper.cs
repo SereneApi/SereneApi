@@ -9,7 +9,7 @@ namespace SereneApi.Helpers
             throw new MethodAccessException("This method cannot be called twice.");
         }
 
-        public static void CheckParameterIsNull(object parameter, string paramName)
+        public static void EnsureParameterIsNotNull(object parameter, string paramName)
         {
             if (parameter == null)
             {
@@ -17,7 +17,7 @@ namespace SereneApi.Helpers
             }
         }
 
-        public static void CheckArrayIsEmpty(object[] array, string paramName)
+        public static void EnsureArrayIsNotEmpty(object[] array, string paramName)
         {
             if (array.Length == 0)
             {

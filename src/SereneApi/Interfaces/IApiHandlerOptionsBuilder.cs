@@ -14,7 +14,7 @@ namespace SereneApi.Interfaces
         /// <param name="source">The source of the Server, EG: http://someservice.com:8080</param>
         /// <param name="resource">The API resource that the <see cref="ApiHandler"/> will interact with.</param>
         /// <param name="resourcePath">The Path preceding the Resource. By default this is set to "api/".</param>
-        void UseSource(string source, string resource, string resourcePath = null);
+        void UseSource(string source, string resource = null, string resourcePath = null);
 
         /// <summary>
         /// Overrides the Client with the supplied <see cref="HttpClient"/> this will disable the supplied Source, Timeout and <see cref="HttpRequestHeaders"/>.

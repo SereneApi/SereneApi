@@ -36,7 +36,7 @@ namespace SereneApi
         public Task<IApiResponse<TResource>> CreateAsync(TResource resource)
         {
             return PerformRequestAsync<TResource>(Method.Post, request => request
-                .AddInBodyContent(resource));
+                .WithInBodyContent(resource));
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.DeleteAsync"/>
@@ -50,14 +50,14 @@ namespace SereneApi
         public Task<IApiResponse<TResource>> ReplaceAsync(TResource resource)
         {
             return PerformRequestAsync<TResource>(Method.Put, request => request
-                .AddInBodyContent(resource));
+                .WithInBodyContent(resource));
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.UpdateAsync"/>
         public Task<IApiResponse<TResource>> UpdateAsync(TResource resource)
         {
             return PerformRequestAsync<TResource>(Method.Patch, request => request
-                .AddInBodyContent(resource));
+                .WithInBodyContent(resource));
         }
     }
 }

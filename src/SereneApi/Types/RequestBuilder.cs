@@ -15,6 +15,8 @@ namespace SereneApi.Types
 
         private readonly ISerializer _serializer;
 
+        private readonly string _resource;
+
         #endregion
 
         private Method _method;
@@ -27,11 +29,15 @@ namespace SereneApi.Types
 
         private string _query;
 
-        public RequestBuilder(IRouteFactory routeFactory, IQueryFactory queryFactory, ISerializer serializer)
+        private string _suppliedResource;
+
+
+        public RequestBuilder(IRouteFactory routeFactory, IQueryFactory queryFactory, ISerializer serializer, string resource = null)
         {
             _routeFactory = routeFactory;
             _queryFactory = queryFactory;
             _serializer = serializer;
+            _resource = resource;
         }
 
         public void UsingMethod(Method method)
@@ -44,28 +50,40 @@ namespace SereneApi.Types
             _method = method;
         }
 
-        public IRequestCreated AddInBodyContent<TContent>(TContent content)
+        public IRequestEndpoint AgainstResource(string resource)
         {
-            ExceptionHelper.CheckParameterIsNull(content, nameof(content));
+            if (_resource != null)
+            {
+                throw new MethodAccessException("This method can only be called if a Resource was not provided.");
+            }
+
+            _suppliedResource = resource;
+
+            return this;
+        }
+
+        public IRequestCreated WithInBodyContent<TContent>(TContent content)
+        {
+            ExceptionHelper.EnsureParameterIsNotNull(content, nameof(content));
 
             _requestContent = _serializer.Serialize(content);
 
             return this;
         }
 
-        public IRequestCreated AddQuery<TQueryable>(TQueryable queryable)
+        public IRequestCreated WithQuery<TQueryable>(TQueryable queryable)
         {
-            ExceptionHelper.CheckParameterIsNull(queryable, nameof(queryable));
+            ExceptionHelper.EnsureParameterIsNotNull(queryable, nameof(queryable));
 
             _query = _queryFactory.Build(queryable);
 
             return this;
         }
 
-        public IRequestCreated AddQuery<TQueryable>(TQueryable queryable, Expression<Func<TQueryable, object>> queryExpression)
+        public IRequestCreated WithQuery<TQueryable>(TQueryable queryable, Expression<Func<TQueryable, object>> queryExpression)
         {
-            ExceptionHelper.CheckParameterIsNull(queryable, nameof(queryable));
-            ExceptionHelper.CheckParameterIsNull(queryExpression, nameof(queryExpression));
+            ExceptionHelper.EnsureParameterIsNotNull(queryable, nameof(queryable));
+            ExceptionHelper.EnsureParameterIsNotNull(queryExpression, nameof(queryExpression));
 
             _query = _queryFactory.Build(queryable, queryExpression);
 
@@ -81,7 +99,7 @@ namespace SereneApi.Types
 
         public IRequestContent WithEndPoint(string endPoint)
         {
-            ExceptionHelper.CheckParameterIsNull(endPoint, nameof(endPoint));
+            ExceptionHelper.EnsureParameterIsNotNull(endPoint, nameof(endPoint));
 
             _endPoint = endPoint;
 
@@ -90,8 +108,8 @@ namespace SereneApi.Types
 
         public IRequestContent WithEndPoint(string endPointTemplate, params object[] templateParameters)
         {
-            ExceptionHelper.CheckParameterIsNull(endPointTemplate, nameof(endPointTemplate));
-            ExceptionHelper.CheckArrayIsEmpty(templateParameters, nameof(templateParameters));
+            ExceptionHelper.EnsureParameterIsNotNull(endPointTemplate, nameof(endPointTemplate));
+            ExceptionHelper.EnsureArrayIsNotEmpty(templateParameters, nameof(templateParameters));
 
             _endPoint = endPointTemplate;
             _endPointParameters = templateParameters;
@@ -101,6 +119,15 @@ namespace SereneApi.Types
 
         public IApiRequest GetRequest()
         {
+            if (_resource != null)
+            {
+                _routeFactory.WithResource(_resource);
+            }
+            else if (_suppliedResource != null)
+            {
+                _routeFactory.WithResource(_suppliedResource);
+            }
+
             _routeFactory.AddQuery(_query);
             _routeFactory.AddEndpoint(_endPoint);
             _routeFactory.AddParameters(_endPointParameters);
