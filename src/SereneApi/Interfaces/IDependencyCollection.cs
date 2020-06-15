@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SereneApi.Interfaces
 {
-    public interface IDependencyCollection
+    public interface IDependencyCollection : ICloneable
     {
         /// <summary>
         /// Returns the <see cref="TDependency"/> if it is not found an Exception will be thrown.

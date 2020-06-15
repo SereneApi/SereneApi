@@ -11,7 +11,7 @@ namespace SereneApi.Factories
     {
         private readonly Dictionary<Type, Action<IApiHandlerOptionsBuilder>> _handlerOptions = new Dictionary<Type, Action<IApiHandlerOptionsBuilder>>();
 
-        private readonly Dictionary<Type, IRegisterApiHandlerExtensions> _handlerExtensions = new Dictionary<Type, IRegisterApiHandlerExtensions>();
+        private readonly Dictionary<Type, IApiHandlerExtensions> _handlerExtensions = new Dictionary<Type, IApiHandlerExtensions>();
 
         private readonly Dictionary<Type, HttpClient> _clients = new Dictionary<Type, HttpClient>();
 
@@ -31,7 +31,7 @@ namespace SereneApi.Factories
 
             if (!_clients.TryGetValue(handlerType, out HttpClient client))
             {
-                RegisterApiHandlerExtensions extensions = (RegisterApiHandlerExtensions)_handlerExtensions[handlerType];
+                ApiHandlerExtensions extensions = (ApiHandlerExtensions)_handlerExtensions[handlerType];
 
                 if (extensions.DependencyCollection.TryGetDependency(out HttpMessageHandler messageHandler))
                 {
@@ -60,7 +60,7 @@ namespace SereneApi.Factories
         /// </summary>
         /// <typeparam name="TApiHandler"></typeparam>
         /// <param name="optionsAction"></param>
-        public IRegisterApiHandlerExtensions RegisterHandlerOptions<TApiHandler>(Action<IApiHandlerOptionsBuilder> optionsAction) where TApiHandler : ApiHandler
+        public IApiHandlerExtensions RegisterHandlerOptions<TApiHandler>(Action<IApiHandlerOptionsBuilder> optionsAction) where TApiHandler : ApiHandler
         {
             Type handlerType = typeof(TApiHandler);
 
@@ -73,7 +73,7 @@ namespace SereneApi.Factories
 
             ApiHandlerOptionsBuilder builder = new ApiHandlerOptionsBuilder();
 
-            RegisterApiHandlerExtensions extensions = new RegisterApiHandlerExtensions(builder.DependencyCollection);
+            ApiHandlerExtensions extensions = new ApiHandlerExtensions(builder.DependencyCollection);
 
             optionsAction.Invoke(builder);
 

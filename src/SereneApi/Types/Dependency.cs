@@ -27,6 +27,11 @@ namespace SereneApi.Types
             Binding = binding;
         }
 
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
+
         #region IDisposable
 
         private volatile bool _disposed;

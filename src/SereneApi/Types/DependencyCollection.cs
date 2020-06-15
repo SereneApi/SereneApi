@@ -13,7 +13,17 @@ namespace SereneApi.Types
     [DebuggerDisplay("Dependencies:{_dependencyTypeMap.Count}")]
     public class DependencyCollection : IDependencyCollection, IDisposable
     {
-        private readonly Dictionary<Type, IDependency> _dependencyTypeMap = new Dictionary<Type, IDependency>();
+        private readonly Dictionary<Type, IDependency> _dependencyTypeMap;
+
+        public DependencyCollection()
+        {
+            _dependencyTypeMap = new Dictionary<Type, IDependency>();
+        }
+
+        public DependencyCollection(Dictionary<Type, IDependency> dependencyTypeMap)
+        {
+            _dependencyTypeMap = dependencyTypeMap;
+        }
 
         /// <summary>
         /// Adds a new <see cref="Dependency{TDependency}"/> or overrides an existing <see cref="Dependency{TDependency}"/>
@@ -74,6 +84,18 @@ namespace SereneApi.Types
             return _dependencyTypeMap.ContainsKey(typeof(TDependency));
         }
 
+        public object Clone()
+        {
+            Dictionary<Type, IDependency> newDependencyTypeMap = new Dictionary<Type, IDependency>(_dependencyTypeMap.Count, _dependencyTypeMap.Comparer);
+
+            foreach (KeyValuePair<Type, IDependency> dependencyTypeMap in _dependencyTypeMap)
+            {
+                newDependencyTypeMap.Add(dependencyTypeMap.Key, (IDependency)dependencyTypeMap.Value.Clone());
+            }
+
+            return new DependencyCollection(newDependencyTypeMap);
+        }
+
         #region IDisposable
 
         private volatile bool _disposed;
@@ -97,7 +119,7 @@ namespace SereneApi.Types
 
             if (disposing)
             {
-                foreach (IDependency dependency in _dependencyTypeMap.Values)
+                foreach (IDependency dependency in _dependencyTypeMap.Values.ToList())
                 {
                     if (dependency is IDisposable disposableDependency)
                     {

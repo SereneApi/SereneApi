@@ -38,7 +38,7 @@ namespace SereneApi.Extensions.Mocking.Types
 
             if (weightedResponses.Count <= 0)
             {
-                throw new ArgumentException("No response was found.");
+                throw new ArgumentException($"No response was found for the {request.Method.ToMethod()} request to {request.RequestUri}");
             }
 
             int maxWeight = weightedResponses.Keys.Max();

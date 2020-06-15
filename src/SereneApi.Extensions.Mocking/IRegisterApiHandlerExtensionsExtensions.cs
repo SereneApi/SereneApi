@@ -10,7 +10,7 @@ namespace SereneApi.Extensions.Mocking
 {
     public static class IRegisterApiHandlerExtensionsExtensions
     {
-        public static void WithMockResponses(this IRegisterApiHandlerExtensions registrationExtensions, Action<IMockResponsesBuilder> mockResponseBuilder)
+        public static void WithMockResponses(this IApiHandlerExtensions registrationExtensions, Action<IMockResponsesBuilder> mockResponseBuilder)
         {
             CoreOptions coreOptions = GetCoreOptions(registrationExtensions);
 
@@ -25,7 +25,7 @@ namespace SereneApi.Extensions.Mocking
             coreOptions.DependencyCollection.AddDependency(mockHandler);
         }
 
-        private static CoreOptions GetCoreOptions(IRegisterApiHandlerExtensions extensions)
+        private static CoreOptions GetCoreOptions(IApiHandlerExtensions extensions)
         {
             if (extensions is CoreOptions coreOptions)
             {
