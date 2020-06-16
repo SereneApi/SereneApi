@@ -12,6 +12,7 @@ namespace Microsoft.Extensions.Configuration
         /// </summary>
         /// <param name="configuration">The ROOT <see cref="IConfiguration"/> to be searched in</param>
         /// <param name="apiKey">The <see cref="IConfiguration"/> name containing the API Configuration</param>
+        /// <exception cref="KeyNotFoundException">Thrown if the specified api key was not found.</exception>
         public static IConfiguration GetApiConfig(this IConfiguration configuration, string apiKey)
         {
             if(!configuration.GetSection(ConfigurationConstants.ApiConfigKey).Exists())

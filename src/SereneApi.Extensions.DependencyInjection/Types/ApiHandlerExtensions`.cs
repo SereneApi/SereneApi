@@ -3,9 +3,7 @@ using SereneApi.Types;
 
 namespace SereneApi.Extensions.DependencyInjection.Types
 {
-    /// <summary>
-    /// Used internally so Dependency Injection can find the correct <see cref="ApiHandlerExtensions"/> for the specified <see cref="TApiDefinition"/>.
-    /// </summary>
+    /// <inheritdoc cref="IApiHandlerExtensions{TApiDefinition}"/>
     internal class ApiHandlerExtensions<TApiDefinition>: ApiHandlerExtensions, IApiHandlerExtensions<TApiDefinition> where TApiDefinition : class
     {
     }

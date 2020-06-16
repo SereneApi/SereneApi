@@ -1,17 +1,9 @@
 ﻿using System;
 
-namespace SereneApi.Helpers
+namespace SereneApi.Extensions.DependencyInjection.Helpers
 {
     internal static class ExceptionHelper
     {
-        /// <summary>
-        /// Throws a <see cref="TimeoutException"/>.
-        /// </summary>
-        public static void RequestTimedOut(Uri route, int requestsAttempted)
-        {
-            throw new TimeoutException($"The Request to \"{route}\" has Timed Out; Retry limit reached. Retired {requestsAttempted}");
-        }
-
         public static void MethodCannotBeCalledTwice()
         {
             throw new MethodAccessException("This method cannot be called twice.");

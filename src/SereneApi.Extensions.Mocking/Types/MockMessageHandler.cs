@@ -9,18 +9,28 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using SereneApi.Interfaces.Requests;
 
 namespace SereneApi.Extensions.Mocking.Types
 {
+    /// <summary>
+    /// The <see cref="HttpMessageHandler"/> used by the <see cref="ApiHandler"/> when running in Mock Mode.
+    /// </summary>
+    /// <remarks>Override this class if you wish to extend or change its behaviour.</remarks>
     public class MockMessageHandler: HttpMessageHandler
     {
         private readonly IReadOnlyList<IMockResponse> _mockResponses;
 
+        /// <summary>
+        /// Created a new instance of the <see cref="MockMessageHandler"/>.
+        /// </summary>
+        /// <param name="mockResponses">The <see cref="IMockResponse"/>s this <see cref="MockMessageHandler"/> will respond with.</param>
         public MockMessageHandler(IReadOnlyList<IMockResponse> mockResponses)
         {
             _mockResponses = mockResponses;
         }
 
+        /// <exception cref="ArgumentException">Thrown if there is no <see cref="IMockResponse"/> for the request.</exception>
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             Dictionary<int, IMockResponse> weightedResponses = new Dictionary<int, IMockResponse>();
@@ -51,7 +61,7 @@ namespace SereneApi.Extensions.Mocking.Types
         /// <summary>
         /// Override this method if you have added more <see cref="IWhitelist"/> dependencies for Responses.
         /// </summary>
-        protected async Task<int> GetResponseWeightAsync(IMockResponse mockResponse, HttpRequestMessage request)
+        protected virtual async Task<int> GetResponseWeightAsync(IMockResponse mockResponse, HttpRequestMessage request)
         {
             int responseWeight = 0;
 
@@ -112,9 +122,9 @@ namespace SereneApi.Extensions.Mocking.Types
             return responseWeight;
         }
 
-        protected async Task<HttpResponseMessage> GetResponseMessageAsync(IMockResponse mockResponse, CancellationToken cancellationToken)
+        protected virtual async Task<HttpResponseMessage> GetResponseMessageAsync(IMockResponse mockResponse, CancellationToken cancellationToken)
         {
-            IApiRequestContent requestContent = await mockResponse.GetResponseAsync(cancellationToken);
+            IApiRequestContent requestContent = await mockResponse.GetResponseContentAsync(cancellationToken);
 
             if(requestContent is JsonContent jsonContent)
             {

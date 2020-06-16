@@ -10,12 +10,11 @@ using SereneApi.Types;
 using SereneApi.Types.Dependencies;
 using System;
 using System.Net.Http;
+using SereneApi.Extensions.DependencyInjection.Helpers;
 
 namespace SereneApi.Extensions.DependencyInjection.Types
 {
-    /// <summary>
-    /// The <see cref="ApiHandlerOptionsBuilder{TApiHandler}"/> is used to build new instances of the <see cref="ApiHandlerOptions{TApiHandler}"/> class
-    /// </summary>
+    /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiHandler}"/>
     public class ApiHandlerOptionsBuilder<TApiHandler>: ApiHandlerOptionsBuilder, IApiHandlerOptionsBuilder<TApiHandler> where TApiHandler : ApiHandler
     {
         private IServiceCollection _serviceCollection;
@@ -82,11 +81,17 @@ namespace SereneApi.Extensions.DependencyInjection.Types
         /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiHandler}.AddLoggerFactory"/>
         public void AddLoggerFactory(ILoggerFactory loggerFactory)
         {
+            ExceptionHelper.EnsureParameterIsNotNull(loggerFactory, nameof(loggerFactory));
+
             ILogger logger = loggerFactory.CreateLogger<TApiHandler>();
 
             DependencyCollection.AddDependency(logger);
         }
 
+        /// <summary>
+        /// Adds a <see cref="IServiceCollection"/> to the <see cref="ApiHandler"/>.
+        /// </summary>
+        /// <param name="serviceCollection">The <see cref="IServiceCollection"/> to be added.</param>
         public void AddServicesCollection(IServiceCollection serviceCollection)
         {
             _serviceCollection = serviceCollection;
@@ -95,6 +100,9 @@ namespace SereneApi.Extensions.DependencyInjection.Types
             DependencyCollection.AddDependency(_serviceCollection, Binding.Unbound);
         }
 
+        /// <summary>
+        /// Builds the <see cref="IApiHandlerOptions"/> for the specified <see cref="ApiHandler"/>.
+        /// </summary>
         public new IApiHandlerOptions<TApiHandler> BuildOptions()
         {
             if(DependencyCollection.TryGetDependency(out HttpMessageHandler messageHandler))

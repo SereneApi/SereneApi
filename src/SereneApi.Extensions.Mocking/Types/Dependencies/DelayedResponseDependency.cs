@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Extensions.Mocking.Types.Dependencies
 {
-    public class DelayResponseDependency
+    public class DelayedResponseDependency
     {
         private int _delayCount;
 
@@ -12,7 +12,7 @@ namespace SereneApi.Extensions.Mocking.Types.Dependencies
 
         public int DelayCount { get; }
 
-        public DelayResponseDependency(int seconds, int delayCount = 0)
+        public DelayedResponseDependency(int seconds, int delayCount = 0)
         {
             DelayTime = new TimeSpan(0, 0, seconds);
             DelayCount = delayCount;

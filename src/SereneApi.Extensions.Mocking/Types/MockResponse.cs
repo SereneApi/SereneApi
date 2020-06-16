@@ -7,22 +7,27 @@ using SereneApi.Types;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using SereneApi.Interfaces.Requests;
 
 namespace SereneApi.Extensions.Mocking.Types
 {
+    /// <inheritdoc cref="IMockResponse"/>
     public class MockResponse: CoreOptions, IMockResponse
     {
-        private readonly IApiRequestContent _response;
+        private readonly IApiRequestContent _responseContent;
 
+        /// <inheritdoc cref="IMockResponse.Status"/>
         public Status Status { get; }
 
+        /// <inheritdoc cref="IMockResponse.Message"/>
         public string Message { get; }
 
+        /// <inheritdoc cref="IMockResponse.Serializer"/>
         public ISerializer Serializer { get; }
 
-        public MockResponse(Status status, string message, IApiRequestContent response, ISerializer serializer)
+        public MockResponse(Status status, string message, IApiRequestContent responseContent, ISerializer serializer)
         {
-            _response = response;
+            _responseContent = responseContent;
 
             Message = message;
             Status = status;
@@ -31,6 +36,7 @@ namespace SereneApi.Extensions.Mocking.Types
             DependencyCollection.AddDependency(serializer);
         }
 
+        /// <inheritdoc cref="IWhitelist.Validate"/>
         public Validity Validate(object value)
         {
             List<IWhitelist> whitelistDependencies = DependencyCollection.GetDependencies<IWhitelist>();
@@ -52,16 +58,21 @@ namespace SereneApi.Extensions.Mocking.Types
             return Validity.NotApplicable;
         }
 
-        public async Task<IApiRequestContent> GetResponseAsync(CancellationToken cancellationToken = default)
+        /// <inheritdoc cref="IMockResponse"/>
+        public async Task<IApiRequestContent> GetResponseContentAsync(CancellationToken cancellationToken = default)
         {
-            if(DependencyCollection.TryGetDependency(out DelayResponseDependency delay))
+            if(DependencyCollection.TryGetDependency(out DelayedResponseDependency delay))
             {
                 await delay.DelayAsync(cancellationToken);
             }
 
-            return _response;
+            return _responseContent;
         }
 
+        /// <summary>
+        /// Returns the <see cref="IMockResponseExtensions"/> for this <see cref="IMockResponse"/>.
+        /// </summary>
+        /// <remarks>The <see cref="IMockResponseExtensions"/> are used to add functionality to the <see cref="IMockResponse"/>.</remarks>
         public IMockResponseExtensions GetExtensions()
         {
             return new MockResponseExtensions(DependencyCollection);

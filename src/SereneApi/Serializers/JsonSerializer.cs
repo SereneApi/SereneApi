@@ -4,6 +4,7 @@ using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using SereneApi.Interfaces.Requests;
 
 namespace SereneApi.Serializers
 {

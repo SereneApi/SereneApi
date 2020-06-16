@@ -16,6 +16,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Allows a registered <see cref="ApiHandler"/> to be extended upon.
         /// </summary>
         /// <typeparam name="TApiDefinition">The <see cref="ApiHandler"/> Definition.</typeparam>
+        /// <exception cref="ArgumentException">Thrown if the specified <see cref="ApiHandler"/> has not been registered.</exception>
         public static IApiHandlerExtensions ExtendApiHandler<TApiDefinition>(this IServiceCollection services) where TApiDefinition : class
         {
             using ServiceProvider serviceProvider = services.BuildServiceProvider();
@@ -34,6 +35,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Allows a registered <see cref="ApiHandler"/> to be extended upon.
         /// </summary>
         /// <typeparam name="TApiDefinition">The <see cref="ApiHandler"/> Definition.</typeparam>
+        /// /// <exception cref="ArgumentException">Thrown if the specified <see cref="ApiHandler"/> has not been registered.</exception>
         public static void ExtendApiHandler<TApiDefinition>(this IServiceCollection services, Action<IApiHandlerExtensions> extensionsAction) where TApiDefinition : class
         {
             using ServiceProvider serviceProvider = services.BuildServiceProvider();
