@@ -1,8 +1,7 @@
-﻿using SereneApi.Interfaces;
+﻿using SereneApi.Interfaces.Requests;
 using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using SereneApi.Interfaces.Requests;
 
 namespace SereneApi.Tests.Mock
 {

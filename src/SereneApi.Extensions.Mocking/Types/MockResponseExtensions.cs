@@ -2,11 +2,11 @@
 using SereneApi.Extensions.Mocking.Interfaces;
 using SereneApi.Extensions.Mocking.Types.Dependencies;
 using SereneApi.Interfaces;
+using SereneApi.Interfaces.Requests;
 using SereneApi.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SereneApi.Interfaces.Requests;
 
 namespace SereneApi.Extensions.Mocking.Types
 {

@@ -1,7 +1,6 @@
-﻿using SereneApi.Interfaces;
+﻿using SereneApi.Interfaces.Requests;
 using System;
 using System.Text;
-using SereneApi.Interfaces.Requests;
 
 namespace SereneApi.Types.Content
 {

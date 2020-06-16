@@ -1,8 +1,7 @@
-﻿using SereneApi.Interfaces;
+﻿using SereneApi.Interfaces.Requests;
 using SereneApi.Types.Content;
 using System;
 using System.Net.Http;
-using SereneApi.Interfaces.Requests;
 
 namespace SereneApi.Extensions
 {

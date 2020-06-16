@@ -1,8 +1,8 @@
 ﻿using SereneApi.Helpers;
 using SereneApi.Interfaces;
+using SereneApi.Interfaces.Requests;
 using System;
 using System.Linq.Expressions;
-using SereneApi.Interfaces.Requests;
 
 namespace SereneApi.Types
 {

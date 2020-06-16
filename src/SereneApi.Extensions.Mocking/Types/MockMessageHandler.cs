@@ -1,7 +1,7 @@
 ﻿using SereneApi.Abstraction.Enums;
 using SereneApi.Extensions.Mocking.Enums;
 using SereneApi.Extensions.Mocking.Interfaces;
-using SereneApi.Interfaces;
+using SereneApi.Interfaces.Requests;
 using SereneApi.Types.Content;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using SereneApi.Interfaces.Requests;
 
 namespace SereneApi.Extensions.Mocking.Types
 {

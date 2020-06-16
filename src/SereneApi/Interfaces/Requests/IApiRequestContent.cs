@@ -1,5 +1,5 @@
-﻿using System.Text;
-using SereneApi.Types;
+﻿using SereneApi.Types;
+using System.Text;
 
 namespace SereneApi.Interfaces.Requests
 {
@@ -12,7 +12,7 @@ namespace SereneApi.Interfaces.Requests
         /// The <see cref="Encoding"/> of the in body content.
         /// </summary>
         Encoding Encoding { get; }
-        
+
         /// <summary>
         /// The <see cref="MediaType"/> of the in body content.
         /// </summary>

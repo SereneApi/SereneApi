@@ -27,7 +27,7 @@ namespace SereneApi.Extensions.DependencyInjection.Helpers
 
         public static void EnsureCorrectMethod(Method method)
         {
-            if (method == Method.None)
+            if(method == Method.None)
             {
                 throw new ArgumentException("An invalid method was provided.");
             }

@@ -2,9 +2,9 @@
 using SereneApi.Extensions.Mocking.Helpers;
 using SereneApi.Extensions.Mocking.Interfaces;
 using SereneApi.Interfaces;
+using SereneApi.Interfaces.Requests;
 using SereneApi.Serializers;
 using System.Collections.Generic;
-using SereneApi.Interfaces.Requests;
 
 namespace SereneApi.Extensions.Mocking.Types
 {

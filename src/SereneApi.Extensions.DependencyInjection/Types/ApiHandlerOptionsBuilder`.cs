@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SereneApi.Enums;
+using SereneApi.Extensions.DependencyInjection.Helpers;
 using SereneApi.Extensions.DependencyInjection.Interfaces;
 using SereneApi.Factories;
 using SereneApi.Helpers;
@@ -10,7 +11,6 @@ using SereneApi.Types;
 using SereneApi.Types.Dependencies;
 using System;
 using System.Net.Http;
-using SereneApi.Extensions.DependencyInjection.Helpers;
 
 namespace SereneApi.Extensions.DependencyInjection.Types
 {

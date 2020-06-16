@@ -3,11 +3,11 @@ using SereneApi.Extensions.Mocking.Enums;
 using SereneApi.Extensions.Mocking.Interfaces;
 using SereneApi.Extensions.Mocking.Types.Dependencies;
 using SereneApi.Interfaces;
+using SereneApi.Interfaces.Requests;
 using SereneApi.Types;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using SereneApi.Interfaces.Requests;
 
 namespace SereneApi.Extensions.Mocking.Types
 {

@@ -1,7 +1,7 @@
-﻿using System;
+﻿using SereneApi.Interfaces.Requests;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using SereneApi.Interfaces.Requests;
 
 namespace SereneApi.Interfaces
 {
