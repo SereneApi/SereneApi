@@ -37,7 +37,7 @@ namespace SereneApi.Extensions.Mocking.Types.Dependencies
 
                 if (canceled)
                 {
-                    throw new TaskCanceledException();
+                    throw new TaskCanceledException("The response was canceled as it breached the timeout time.");
                 }
             }, cancellationToken);
         }

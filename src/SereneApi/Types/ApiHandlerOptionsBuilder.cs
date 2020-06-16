@@ -58,7 +58,7 @@ namespace SereneApi.Types
             DependencyCollection.AddDependency(RetryDependency.Default);
         }
 
-        internal ApiHandlerOptionsBuilder(HttpClient baseClient, bool disposeClient = true) : this()
+        internal ApiHandlerOptionsBuilder(DependencyCollection dependencyCollection, HttpClient baseClient, bool disposeClient = true) : this(dependencyCollection)
         {
             _disposeClient = disposeClient;
             _baseClient = baseClient;

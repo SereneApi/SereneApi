@@ -7,6 +7,7 @@ using System;
 using System.Linq.Expressions;
 using System.Net.Http;
 using System.Threading.Tasks;
+using SereneApi.Helpers;
 
 namespace SereneApi
 {
@@ -55,15 +56,15 @@ namespace SereneApi
             {
                 if (request.Content == null)
                 {
-                    responseMessage = RetryRequest(() =>
+                    responseMessage = RetryRequest(async () =>
                     {
                         return method switch
                         {
-                            Method.Post => Client.PostAsJsonAsync(endPoint).Result,
-                            Method.Get => Client.GetAsync(endPoint).Result,
-                            Method.Put => Client.PutAsJsonAsync(endPoint).Result,
-                            Method.Patch => Client.PatchAsJsonAsync(endPoint).Result,
-                            Method.Delete => Client.DeleteAsync(endPoint).Result,
+                            Method.Post => await Client.PostAsJsonAsync(endPoint),
+                            Method.Get => await Client.GetAsync(endPoint),
+                            Method.Put => await Client.PutAsJsonAsync(endPoint),
+                            Method.Patch => await Client.PatchAsJsonAsync(endPoint),
+                            Method.Delete => await Client.DeleteAsync(endPoint),
                             _ => throw new ArgumentOutOfRangeException(nameof(endPoint), method,
                                 "An incorrect Method Value was supplied.")
                         };
@@ -73,15 +74,15 @@ namespace SereneApi
                 {
                     StringContent content = request.Content.ToStringContent();
 
-                    responseMessage = RetryRequest(() =>
+                    responseMessage = RetryRequest(async () =>
                     {
                         return method switch
                         {
-                            Method.Post => Client.PostAsJsonAsync(endPoint, content).Result,
+                            Method.Post => await Client.PostAsJsonAsync(endPoint, content),
                             Method.Get => throw new ArgumentException(
                                 "Get cannot be used in conjunction with an InBody Request"),
-                            Method.Put => Client.PutAsJsonAsync(endPoint, content).Result,
-                            Method.Patch => Client.PatchAsJsonAsync(endPoint, content).Result,
+                            Method.Put => await Client.PutAsJsonAsync(endPoint, content),
+                            Method.Patch => await Client.PatchAsJsonAsync(endPoint, content),
                             Method.Delete => throw new ArgumentException(
                                 "Delete cannot be used in conjunction with an InBody Request"),
                             _ => throw new ArgumentOutOfRangeException(nameof(method), method,
@@ -124,15 +125,15 @@ namespace SereneApi
             {
                 if (request.Content == null)
                 {
-                    responseMessage = RetryRequest(() =>
+                    responseMessage = RetryRequest(async () =>
                     {
                         return method switch
                         {
-                            Method.Post => Client.PostAsJsonAsync(endPoint).Result,
-                            Method.Get => Client.GetAsync(endPoint).Result,
-                            Method.Put => Client.PutAsJsonAsync(endPoint).Result,
-                            Method.Patch => Client.PatchAsJsonAsync(endPoint).Result,
-                            Method.Delete => Client.DeleteAsync(endPoint).Result,
+                            Method.Post => await Client.PostAsJsonAsync(endPoint),
+                            Method.Get => await Client.GetAsync(endPoint),
+                            Method.Put => await Client.PutAsJsonAsync(endPoint),
+                            Method.Patch => await Client.PatchAsJsonAsync(endPoint),
+                            Method.Delete => await Client.DeleteAsync(endPoint),
                             _ => throw new ArgumentOutOfRangeException(nameof(endPoint), method,
                                 "An incorrect Method Value was supplied.")
                         };
@@ -142,15 +143,15 @@ namespace SereneApi
                 {
                     StringContent content = request.Content.ToStringContent();
 
-                    responseMessage = RetryRequest(() =>
+                    responseMessage = RetryRequest(async () =>
                     {
                         return method switch
                         {
-                            Method.Post => Client.PostAsJsonAsync(endPoint, content).Result,
+                            Method.Post => await Client.PostAsJsonAsync(endPoint, content),
                             Method.Get => throw new ArgumentException(
                                 "Get cannot be used in conjunction with an InBody Request"),
-                            Method.Put => Client.PutAsJsonAsync(endPoint, content).Result,
-                            Method.Patch => Client.PatchAsJsonAsync(endPoint, content).Result,
+                            Method.Put => await Client.PutAsJsonAsync(endPoint, content),
+                            Method.Patch => await Client.PatchAsJsonAsync(endPoint, content),
                             Method.Delete => throw new ArgumentException(
                                 "Delete cannot be used in conjunction with an InBody Request"),
                             _ => throw new ArgumentOutOfRangeException(nameof(method), method,
@@ -187,7 +188,7 @@ namespace SereneApi
         /// <param name="requestAction">The request to be performed.</param>
         /// <param name="route">The route to be inserted into the log.</param>
         /// <returns></returns>
-        protected virtual HttpResponseMessage RetryRequest(Func<HttpResponseMessage> requestAction, Uri route)
+        protected virtual HttpResponseMessage RetryRequest(Func<Task<HttpResponseMessage>> requestAction, Uri route)
         {
             bool retryingRequest;
             int requestsAttempted = 0;
@@ -196,15 +197,19 @@ namespace SereneApi
             {
                 try
                 {
-                    HttpResponseMessage responseMessage = requestAction.Invoke();
+                    // Using Task.Result bubbles the exception up to the caller.
+                    // This means the Try Catch inside of RetryRequest does not catch the TaskCanceledException.
+                    // The Try Catch in this method IS REQUIRED for the retry to functionality to work.
+                    // To get around this, Task.GetAwaiter().GetResult() is necessary.
+                    HttpResponseMessage responseMessage = requestAction.Invoke().GetAwaiter().GetResult();
 
                     return responseMessage;
                 }
-                catch (TaskCanceledException canceledException)
+                catch(TaskCanceledException canceledException)
                 {
                     requestsAttempted++;
 
-                    if (_retry.Count == 0 || requestsAttempted == _retry.Count)
+                    if(_retry.Count == 0 || requestsAttempted == _retry.Count)
                     {
                         _logger?.LogError(canceledException, "The Request to \"{RequestRoute}\" has Timed Out; Retry limit reached. Retired {count}", route, requestsAttempted);
 
@@ -217,12 +222,16 @@ namespace SereneApi
                         retryingRequest = true;
                     }
                 }
-            } while (retryingRequest);
+            } while(retryingRequest);
 
-            throw new TimeoutException($"The Request to \"{route}\" has Timed Out; Retry limit reached. Retired {requestsAttempted}");
+            ExceptionHelper.RequestTimedOut(route, requestsAttempted);
+
+            // This is redundant as ExceptionHelper.TimedOut will throw an exception.
+            return null;
         }
 
         #endregion
+        #region Response Processing
 
         /// <summary>
         /// Processes the returned <see cref="HttpResponseMessage"/> deserializing the contained <see cref="TResponse"/>
@@ -260,5 +269,7 @@ namespace SereneApi
                 return ApiResponse<TResponse>.Failure(status, "Could not deserialize returned value.", exception);
             }
         }
+
+        #endregion
     }
 }

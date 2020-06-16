@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
+using SereneApi.Helpers;
 
 namespace SereneApi.Factories
 {
@@ -29,10 +30,10 @@ namespace SereneApi.Factories
                 throw new ArgumentException($"{nameof(TApiHandler)} has not been registered.");
             }
 
+            ApiHandlerExtensions extensions = (ApiHandlerExtensions)_handlerExtensions[handlerType];
+
             if (!_clients.TryGetValue(handlerType, out HttpClient client))
             {
-                ApiHandlerExtensions extensions = (ApiHandlerExtensions)_handlerExtensions[handlerType];
-
                 if (extensions.DependencyCollection.TryGetDependency(out HttpMessageHandler messageHandler))
                 {
                     client = new HttpClient(messageHandler);
@@ -46,7 +47,7 @@ namespace SereneApi.Factories
             }
 
             // Disable client disposal for this ApiHandler as this factory has ownership of the client.
-            ApiHandlerOptionsBuilder options = new ApiHandlerOptionsBuilder(client, false);
+            ApiHandlerOptionsBuilder options = new ApiHandlerOptionsBuilder((DependencyCollection)extensions.DependencyCollection.Clone(), client, false);
 
             optionsBuilderAction.Invoke(options);
 
@@ -60,7 +61,7 @@ namespace SereneApi.Factories
         /// </summary>
         /// <typeparam name="TApiHandler"></typeparam>
         /// <param name="optionsAction"></param>
-        public IApiHandlerExtensions RegisterHandlerOptions<TApiHandler>(Action<IApiHandlerOptionsBuilder> optionsAction) where TApiHandler : ApiHandler
+        public IApiHandlerExtensions RegisterApiHandler<TApiHandler>(Action<IApiHandlerOptionsBuilder> optionsAction) where TApiHandler : ApiHandler
         {
             Type handlerType = typeof(TApiHandler);
 
@@ -73,9 +74,9 @@ namespace SereneApi.Factories
 
             ApiHandlerOptionsBuilder builder = new ApiHandlerOptionsBuilder();
 
-            ApiHandlerExtensions extensions = new ApiHandlerExtensions(builder.DependencyCollection);
-
             optionsAction.Invoke(builder);
+            
+            ApiHandlerExtensions extensions = new ApiHandlerExtensions();
 
             if (builder.DependencyCollection.TryGetDependency(out JsonSerializerOptions serializerOptions))
             {
@@ -85,6 +86,28 @@ namespace SereneApi.Factories
             _handlerExtensions.Add(handlerType, extensions);
 
             return extensions;
+        }
+
+        public IApiHandlerExtensions ExtendApiHandler<TApiHandler>() where TApiHandler : ApiHandler
+        {
+            if(!_handlerExtensions.TryGetValue(typeof(TApiHandler), out IApiHandlerExtensions extensions))
+            {
+                throw new ArgumentException($"Could not find any registered extensions to {typeof(TApiHandler)}");
+            }
+
+            return extensions;
+        }
+
+        public void ExtendApiHandler<TApiHandler>(Action<IApiHandlerExtensions> extensionsAction) where TApiHandler : ApiHandler
+        {
+            ExceptionHelper.EnsureParameterIsNotNull(extensionsAction, nameof(extensionsAction));
+
+            if(!_handlerExtensions.TryGetValue(typeof(TApiHandler), out IApiHandlerExtensions extensions))
+            {
+                throw new ArgumentException($"Could not find any registered extensions to {typeof(TApiHandler)}");
+            }
+
+            extensionsAction.Invoke(extensions);
         }
 
         #region IDisposable

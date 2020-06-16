@@ -9,7 +9,7 @@ namespace SereneApi.Helpers
     /// <summary>
     /// Contains the default values to be used by the <see cref="ApiHandler"/>
     /// </summary>
-    internal static class ApiHandlerOptionDefaults
+    public static class ApiHandlerOptionDefaults
     {
         /// <summary>
         /// The default <see cref="IQueryFactory"/> that will ne used by the <see cref="ApiHandler"/>

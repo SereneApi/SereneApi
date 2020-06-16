@@ -56,7 +56,19 @@ namespace SereneApi
         public Uri Source { get; }
 
         /// <inheritdoc cref="IApiHandlerOptions.Resource"/>
-        public string Resource => _options.Resource;
+        public string Resource
+        {
+            get
+            {
+                // If the resource is empty, a null value is returned.
+                if (string.IsNullOrWhiteSpace(_options.Resource))
+                {
+                    return null;
+                }
+
+                return _options.Resource;
+            }
+        } 
 
         /// <inheritdoc cref="IApiHandlerOptions.ResourcePath"/>
         public string ResourcePath => _options.ResourcePath;
@@ -84,6 +96,7 @@ namespace SereneApi
 
             _options = options;
 
+            // Set the source this ApiHandler will use, this is the base for all requests.
             Source = new Uri($"{options.Source}{options.ResourcePath}{options.Resource}");
 
             #region Configure Dependencies
@@ -146,6 +159,9 @@ namespace SereneApi
 
         private bool _disposed;
 
+        /// <summary>
+        /// Throws an Object Disposed Exception if the <see cref="ApiHandler"/> has been disposed.
+        /// </summary>
         private void CheckIfDisposed(IApiHandlerOptions options)
         {
             CheckIfDisposed();
@@ -161,6 +177,7 @@ namespace SereneApi
         /// </summary>
         protected void CheckIfDisposed()
         {
+            // TODO: Throw an exception if the HttpClient has been disposed of, at present there is no way to do this.
             if (_disposed)
             {
                 throw new ObjectDisposedException(nameof(GetType));
@@ -179,6 +196,9 @@ namespace SereneApi
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Override this method to implement <see cref="ApiHandler"/> disposal.
+        /// </summary>
         protected virtual void Dispose(bool disposing)
         {
             if (_disposed)
