@@ -13,7 +13,7 @@ namespace SereneApi.Factories
 
         private object[] _parameters;
 
-        private string _endpoint;
+        private string _endPoint;
 
         private string _resource;
 
@@ -64,14 +64,14 @@ namespace SereneApi.Factories
             _parameters = parameters;
         }
 
-        public void AddEndpoint(string endpoint)
+        public void AddEndPoint(string endPoint)
         {
-            if(!string.IsNullOrWhiteSpace(_endpoint))
+            if(!string.IsNullOrWhiteSpace(_endPoint))
             {
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
-            _endpoint = endpoint;
+            _endPoint = endPoint;
         }
 
         public Uri BuildRoute()
@@ -80,25 +80,25 @@ namespace SereneApi.Factories
 
             if(_parameters != null)
             {
-                if(string.IsNullOrWhiteSpace(_endpoint))
+                if(string.IsNullOrWhiteSpace(_endPoint))
                 {
                     if(_parameters.Length > 1)
                     {
-                        throw new ArgumentException("An endpoint template must be supplied to use multiple parameters.");
+                        throw new ArgumentException("An endPoint template must be supplied to use multiple parameters.");
                     }
 
                     route += _parameters.First();
                 }
                 else
                 {
-                    string template = FormatEndpointTemplate(_endpoint, _parameters);
+                    string template = FormatEndPointTemplate(_endPoint, _parameters);
 
                     route += $"/{template}";
                 }
             }
-            else if(!string.IsNullOrWhiteSpace(_endpoint))
+            else if(!string.IsNullOrWhiteSpace(_endPoint))
             {
-                route += $"/{_endpoint}";
+                route += $"/{_endPoint}";
             }
 
             if(!string.IsNullOrWhiteSpace(_query))
@@ -113,18 +113,18 @@ namespace SereneApi.Factories
 
         public void Clear()
         {
-            _endpoint = null;
+            _endPoint = null;
             _parameters = null;
             _query = null;
             _resource = null;
         }
 
-        private static string FormatEndpointTemplate(string endpointTemplate, params object[] templateParameters)
+        private static string FormatEndPointTemplate(string endPointTemplate, params object[] templateParameters)
         {
             #region Format Check Logic
 
             // This should not need to be done, but if it is not done a format that only support 1 parameter but is supplied more than 1 parameter will not fail.
-            int expectedFormatLength = endpointTemplate.Length - templateParameters.Length * 3;
+            int expectedFormatLength = endPointTemplate.Length - templateParameters.Length * 3;
 
             for(int i = 0; i < templateParameters.Length; i++)
             {
@@ -133,24 +133,24 @@ namespace SereneApi.Factories
 
             #endregion
 
-            string endpoint = string.Format(endpointTemplate, templateParameters);
+            string endPoint = string.Format(endPointTemplate, templateParameters);
 
-            // If the length is different the endpoint has been formatted correctly.
-            if(endpoint != endpointTemplate && expectedFormatLength == endpoint.Length)
+            // If the length is different the endPoint has been formatted correctly.
+            if(endPoint != endPointTemplate && expectedFormatLength == endPoint.Length)
             {
-                return $"{endpoint}";
+                return $"{endPoint}";
             }
 
             // If we have more than 1 parameter here it means the formatting was unsuccessful.
             if(templateParameters.Length > 1)
             {
-                throw new FormatException("Multiple Parameters must be used with a format-table endpoint template.");
+                throw new FormatException("Multiple Parameters must be used with a format-table endPoint template.");
             }
 
-            endpoint = endpointTemplate;
+            endPoint = endPointTemplate;
 
-            // Return an endpoint without formatting the template and appending the only parameter to the end.
-            return $"{endpoint}/{templateParameters[0]}";
+            // Return an endPoint without formatting the template and appending the only parameter to the end.
+            return $"{endPoint}/{templateParameters[0]}";
         }
     }
 }

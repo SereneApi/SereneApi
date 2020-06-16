@@ -5,6 +5,7 @@ using SereneApi.Helpers;
 using SereneApi.Tests.Mock;
 using Shouldly;
 using System;
+using System.Text.Json;
 using Xunit;
 
 namespace SereneApi.Tests
@@ -16,10 +17,56 @@ namespace SereneApi.Tests
         [Theory]
         [InlineData("http://test.source.com", "resource")]
         [InlineData("http://test.source.com:8080", "path/path/resource")]
+        public void ExceptionSerializerResponseGetRequest(string source, string resource)
+        {
+            #region Arrange
+
+            string fullSource = $"{source}/api/{resource}";
+
+            using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
+
+            handlerFactory.RegisterApiHandler<ApiHandlerWrapper>(
+                o => o.UseSource(source, resource))
+            .WithMockResponses(r =>
+            {
+                r.AddMockResponse(MockPersonDto.All)
+                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith(fullSource);
+            });
+
+            #endregion
+            #region Act
+
+            using ApiHandlerWrapper apiHandler = Should.NotThrow(() => handlerFactory.Build<ApiHandlerWrapper>());
+
+            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandler.PerformRequest<MockPersonDto>(Method.Get));
+
+            #endregion
+            #region Assert
+
+            apiHandler.Resource.ShouldBe(resource);
+            apiHandler.Source.ShouldBe(new Uri(fullSource));
+            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+
+            response.WasSuccessful.ShouldBe(false);
+            response.HasException.ShouldBe(true);
+            response.Message.ShouldBe("Could not deserialize returned value.");
+            response.Exception.ShouldBeOfType<JsonException>();
+            response.Status.ShouldBe(Status.Ok);
+
+            #endregion
+        }
+
+        [Theory]
+        [InlineData("http://test.source.com", "resource")]
+        [InlineData("http://test.source.com:8080", "path/path/resource")]
         public void ExceptionGetRequestAgainstResourceWhenResourceAssigned(string source, string resource)
         {
             #region Arrange
 
+            string fullSource = $"{source}/api/{resource}";
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
@@ -39,6 +86,12 @@ namespace SereneApi.Tests
                 apiHandler.PerformRequest(Method.Get, r => r.AgainstResource(resource));
             });
 
+            apiHandler.Resource.ShouldBe(resource);
+            apiHandler.Source.ShouldBe(new Uri(fullSource));
+            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+
             #endregion
         }
 
@@ -49,6 +102,8 @@ namespace SereneApi.Tests
         {
             #region Arrange
 
+            string fullSource = $"{source}/api/{resource}";
+
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
             handlerFactory.RegisterApiHandler<ApiHandlerWrapper>(
@@ -58,7 +113,7 @@ namespace SereneApi.Tests
             #region Act
 
             using ApiHandlerWrapper apiHandler = Should.NotThrow(() => handlerFactory.Build<ApiHandlerWrapper>());
-            
+
             #endregion
             #region Assert
 
@@ -66,6 +121,12 @@ namespace SereneApi.Tests
             {
                 apiHandler.PerformRequest<MockPersonDto>(Method.Get, r => r.AgainstResource(resource));
             });
+
+            apiHandler.Resource.ShouldBe(resource);
+            apiHandler.Source.ShouldBe(new Uri(fullSource));
+            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
 
             #endregion
         }
@@ -77,6 +138,7 @@ namespace SereneApi.Tests
         {
             #region Arrange
 
+            string fullSource = $"{source}/api/{resource}";
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
@@ -96,6 +158,12 @@ namespace SereneApi.Tests
                 apiHandler.PerformRequest(Method.Delete, r => r.AgainstResource(resource));
             });
 
+            apiHandler.Resource.ShouldBe(resource);
+            apiHandler.Source.ShouldBe(new Uri(fullSource));
+            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+
             #endregion
         }
 
@@ -105,6 +173,8 @@ namespace SereneApi.Tests
         public void ExceptionDeleteRequestAgainstResourceWhenResourceAssignedGeneric(string source, string resource)
         {
             #region Arrange
+
+            string fullSource = $"{source}/api/{resource}";
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
@@ -124,6 +194,12 @@ namespace SereneApi.Tests
                 apiHandler.PerformRequest<MockPersonDto>(Method.Delete, r => r.AgainstResource(resource));
             });
 
+            apiHandler.Resource.ShouldBe(resource);
+            apiHandler.Source.ShouldBe(new Uri(fullSource));
+            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+
             #endregion
         }
 
@@ -134,6 +210,7 @@ namespace SereneApi.Tests
         {
             #region Arrange
 
+            string fullSource = $"{source}/api/{resource}";
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
@@ -153,6 +230,12 @@ namespace SereneApi.Tests
                 apiHandler.PerformRequest(Method.Post, r => r.AgainstResource(resource));
             });
 
+            apiHandler.Resource.ShouldBe(resource);
+            apiHandler.Source.ShouldBe(new Uri(fullSource));
+            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+
             #endregion
         }
 
@@ -162,6 +245,8 @@ namespace SereneApi.Tests
         public void ExceptionPostRequestAgainstResourceWhenResourceAssignedGeneric(string source, string resource)
         {
             #region Arrange
+
+            string fullSource = $"{source}/api/{resource}";
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
@@ -181,6 +266,12 @@ namespace SereneApi.Tests
                 apiHandler.PerformRequest<MockPersonDto>(Method.Post, r => r.AgainstResource(resource));
             });
 
+            apiHandler.Resource.ShouldBe(resource);
+            apiHandler.Source.ShouldBe(new Uri(fullSource));
+            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+
             #endregion
         }
 
@@ -192,6 +283,7 @@ namespace SereneApi.Tests
         {
             #region Arrange
 
+            string fullSource = $"{source}/api/{resource}";
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
@@ -211,6 +303,12 @@ namespace SereneApi.Tests
                 apiHandler.PerformRequest(Method.Put, r => r.AgainstResource(resource));
             });
 
+            apiHandler.Resource.ShouldBe(resource);
+            apiHandler.Source.ShouldBe(new Uri(fullSource));
+            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+
             #endregion
         }
 
@@ -220,6 +318,8 @@ namespace SereneApi.Tests
         public void ExceptionPutRequestAgainstResourceWhenResourceAssignedGeneric(string source, string resource)
         {
             #region Arrange
+
+            string fullSource = $"{source}/api/{resource}";
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
@@ -239,6 +339,12 @@ namespace SereneApi.Tests
                 apiHandler.PerformRequest<MockPersonDto>(Method.Put, r => r.AgainstResource(resource));
             });
 
+            apiHandler.Resource.ShouldBe(resource);
+            apiHandler.Source.ShouldBe(new Uri(fullSource));
+            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+
             #endregion
         }
 
@@ -249,6 +355,7 @@ namespace SereneApi.Tests
         {
             #region Arrange
 
+            string fullSource = $"{source}/api/{resource}";
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
@@ -268,6 +375,12 @@ namespace SereneApi.Tests
                 apiHandler.PerformRequest(Method.Patch, r => r.AgainstResource(resource));
             });
 
+            apiHandler.Resource.ShouldBe(resource);
+            apiHandler.Source.ShouldBe(new Uri(fullSource));
+            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+
             #endregion
         }
 
@@ -277,6 +390,8 @@ namespace SereneApi.Tests
         public void ExceptionPatchRequestAgainstResourceWhenResourceAssignedGeneric(string source, string resource)
         {
             #region Arrange
+
+            string fullSource = $"{source}/api/{resource}";
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
@@ -296,12 +411,16 @@ namespace SereneApi.Tests
                 apiHandler.PerformRequest<MockPersonDto>(Method.Patch, r => r.AgainstResource(resource));
             });
 
+            apiHandler.Resource.ShouldBe(resource);
+            apiHandler.Source.ShouldBe(new Uri(fullSource));
+            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+
             #endregion
         }
 
         #endregion
-
-
         #region Basic Get Tests
 
         [Theory]
@@ -938,6 +1057,117 @@ namespace SereneApi.Tests
             #region Assert
 
             apiHandler.Resource.ShouldBeNull();
+            apiHandler.Source.ShouldBe(new Uri(finalSource));
+            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+
+            response.WasSuccessful.ShouldBe(true);
+            response.HasException.ShouldBe(false);
+            response.Message.ShouldBeNull();
+            response.Exception.ShouldBeNull();
+            response.Status.ShouldBe(Status.Ok);
+
+            MockPersonDto person = response.Result;
+
+            person.Age.ShouldBe(MockPersonDto.JohnSmith.Age);
+            person.BirthDate.ShouldBe(MockPersonDto.JohnSmith.BirthDate);
+            person.Name.ShouldBe(MockPersonDto.JohnSmith.Name);
+
+            #endregion
+        }
+
+        #endregion
+        #region Get With EndPoint Tests
+
+        [Theory]
+        [InlineData("http://test.source.com", "resource", "endpoint")]
+        [InlineData("http://test.source.com", "path/resource", "endpoint/endpoint")]
+        [InlineData("http://test.source.com", "path/path/resource", "endpoint/endpoint/endpoint")]
+        [InlineData("http://test.source.com:80", "test/resource", "endpoint")]
+        [InlineData("http://test.source.com:443", "path/resource", "endpoint/endpoint")]
+        [InlineData("http://test.source.com:8080", "path/path/resource", "endpoint/endpoint/endpoint")]
+        public void SuccessfulGetRequestWithEndPoint(string source, string resource, string endPoint)
+        {
+            #region Arrange
+
+            string fullSource = $"{source}/api/{resource}/{endPoint}";
+            string finalSource = $"{source}/api/{resource}";
+
+            using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
+
+            handlerFactory.RegisterApiHandler<ApiHandlerWrapper>(
+                o => o.UseSource(source, resource));
+
+            handlerFactory.ExtendApiHandler<ApiHandlerWrapper>().WithMockResponses(r =>
+            {
+                r.AddMockResponse(Status.Ok)
+                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith(fullSource);
+            });
+
+            #endregion
+            #region Act
+
+            using ApiHandlerWrapper apiHandler = Should.NotThrow(() => handlerFactory.Build<ApiHandlerWrapper>());
+
+            IApiResponse response = Should.NotThrow(() => apiHandler.PerformRequest(Method.Get, r => r.WithEndPoint(endPoint)));
+
+            #endregion
+            #region Assert
+
+            apiHandler.Resource.ShouldBe(resource);
+            apiHandler.Source.ShouldBe(new Uri(finalSource));
+            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+
+            response.WasSuccessful.ShouldBe(true);
+            response.HasException.ShouldBe(false);
+            response.Message.ShouldBeNull();
+            response.Exception.ShouldBeNull();
+            response.Status.ShouldBe(Status.Ok);
+
+            #endregion
+        }
+
+        [Theory]
+        [InlineData("http://test.source.com", "resource", "endpoint")]
+        [InlineData("http://test.source.com", "path/resource", "endpoint/endpoint")]
+        [InlineData("http://test.source.com", "path/path/resource", "endpoint/endpoint/endpoint")]
+        [InlineData("http://test.source.com:80", "test/resource", "endpoint")]
+        [InlineData("http://test.source.com:443", "path/resource", "endpoint/endpoint")]
+        [InlineData("http://test.source.com:8080", "path/path/resource", "endpoint/endpoint/endpoint")]
+        public void SuccessfulGetRequestWithEndPointGeneric(string source, string resource, string endPoint)
+        {
+            #region Arrange
+
+            string fullSource = $"{source}/api/{resource}/{endPoint}";
+            string finalSource = $"{source}/api/{resource}";
+
+            using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
+
+            handlerFactory.RegisterApiHandler<ApiHandlerWrapper>(
+                o => o.UseSource(source, resource));
+
+            handlerFactory.ExtendApiHandler<ApiHandlerWrapper>().WithMockResponses(r =>
+            {
+                r.AddMockResponse(MockPersonDto.JohnSmith)
+                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith(fullSource);
+            });
+
+            #endregion
+            #region Act
+
+            using ApiHandlerWrapper apiHandler = Should.NotThrow(() => handlerFactory.Build<ApiHandlerWrapper>());
+
+            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandler.PerformRequest<MockPersonDto>(Method.Get, r => r.WithEndPoint(endPoint)));
+
+            #endregion
+            #region Assert
+
+            apiHandler.Resource.ShouldBe(resource);
             apiHandler.Source.ShouldBe(new Uri(finalSource));
             apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
             apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);

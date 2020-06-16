@@ -12,7 +12,7 @@ namespace SereneApi.Interfaces
 
         void AddParameters(params object[] parameters);
 
-        void AddEndpoint(string endpoint);
+        void AddEndPoint(string endPoint);
 
         /// <summary>
         /// Builds the route, if the resource has not been supplied a resource can be supplied here.

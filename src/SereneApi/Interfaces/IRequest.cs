@@ -1,7 +1,7 @@
 ﻿namespace SereneApi.Interfaces
 {
-    public interface IRequest: IRequestEndpoint
+    public interface IRequest: IRequestEndPoint
     {
-        IRequestEndpoint AgainstResource(string resource);
+        IRequestEndPoint AgainstResource(string resource);
     }
 }

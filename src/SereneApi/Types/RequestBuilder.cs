@@ -50,7 +50,7 @@ namespace SereneApi.Types
             _method = method;
         }
 
-        public IRequestEndpoint AgainstResource(string resource)
+        public IRequestEndPoint AgainstResource(string resource)
         {
             if(_resource != null)
             {
@@ -106,13 +106,13 @@ namespace SereneApi.Types
             return this;
         }
 
-        public IRequestContent WithEndPoint(string endPointTemplate, params object[] templateParameters)
+        public IRequestContent WithEndPointTemplate(string template, params object[] parameters)
         {
-            ExceptionHelper.EnsureParameterIsNotNull(endPointTemplate, nameof(endPointTemplate));
-            ExceptionHelper.EnsureArrayIsNotEmpty(templateParameters, nameof(templateParameters));
+            ExceptionHelper.EnsureParameterIsNotNull(template, nameof(template));
+            ExceptionHelper.EnsureArrayIsNotEmpty(parameters, nameof(parameters));
 
-            _endPoint = endPointTemplate;
-            _endPointParameters = templateParameters;
+            _endPoint = template;
+            _endPointParameters = parameters;
 
             return this;
         }
@@ -129,7 +129,7 @@ namespace SereneApi.Types
             }
 
             _routeFactory.AddQuery(_query);
-            _routeFactory.AddEndpoint(_endPoint);
+            _routeFactory.AddEndPoint(_endPoint);
             _routeFactory.AddParameters(_endPointParameters);
 
             Uri endPoint = _routeFactory.BuildRoute();

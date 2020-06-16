@@ -7,6 +7,7 @@ using SereneApi.Types;
 using System;
 using System.Linq.Expressions;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SereneApi
@@ -256,24 +257,30 @@ namespace SereneApi
                 return ApiResponse<TResponse>.Failure(status, responseMessage.ReasonPhrase);
             }
 
+            if(responseMessage.Content == null)
+            {
+                _logger.LogWarning("No content was received in the response.");
+
+                return ApiResponse<TResponse>.Failure(status, "No content was received in the response.");
+            }
+
             try
             {
-                if(responseMessage.Content == null)
-                {
-                    _logger.LogWarning("No content was received in the response.");
-
-                    return ApiResponse<TResponse>.Failure(status, "No content was received in the response.");
-                }
-
                 TResponse response = await _serializer.DeserializeAsync<TResponse>(responseMessage.Content);
 
                 return ApiResponse<TResponse>.Success(status, response);
             }
+            catch(JsonException jsonException)
+            {
+                _logger?.LogError(jsonException, "Could not deserialize the returned value");
+
+                return ApiResponse<TResponse>.Failure(status, "Could not deserialize returned value.", jsonException);
+            }
             catch(Exception exception)
             {
-                _logger?.LogError(exception, "Could not deserialize the returned value");
+                _logger?.LogError(exception, "An Exception occured whilst processing the response.");
 
-                return ApiResponse<TResponse>.Failure(status, "Could not deserialize returned value.", exception);
+                return ApiResponse<TResponse>.Failure(status, "An Exception occured whilst processing the response.", exception);
             }
         }
 

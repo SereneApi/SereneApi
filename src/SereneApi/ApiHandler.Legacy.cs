@@ -11,54 +11,54 @@ namespace SereneApi
     public abstract partial class ApiHandler
     {
         /// <summary>
-        /// Performs an in Path Request. The <see cref="endpoint"/> will be appended to the Url
+        /// Performs an in Path Request. The <see cref="endPoint"/> will be appended to the Url
         /// </summary>
         /// <param name="method">The RESTful API <see cref="Method"/> to be used</param>
-        /// <param name="endpoint">The <see cref="endpoint"/> to be appended to the Url</param>
+        /// <param name="endPoint">The <see cref="endPoint"/> to be appended to the Url</param>
         [Obsolete("This method has been superseded by PerformRequestAsync")]
-        protected virtual Task<IApiResponse> InPathRequestAsync(Method method, object endpoint = null)
+        protected virtual Task<IApiResponse> InPathRequestAsync(Method method, object endPoint = null)
         {
             return PerformRequestAsync(method, request => request
-                .WithEndPoint(endpoint));
+                .WithEndPoint(endPoint));
         }
 
         /// <summary>
-        /// Performs an in Path Request. The <see cref="endpointParameters"/> will be appended to the Url
+        /// Performs an in Path Request. The <see cref="endPointParameters"/> will be appended to the Url
         /// </summary>
         /// <param name="method">The RESTful API <see cref="Method"/> to be used</param>
-        /// <param name="endpointTemplate">The endpoint to be performed, supports templates for string formatting with <see cref="endpointParameters"/></param>
-        /// <param name="endpointParameters">The <see cref="endpointParameters"/> to be appended to the Url</param>
+        /// <param name="endPointTemplate">The endPoint to be performed, supports templates for string formatting with <see cref="endPointParameters"/></param>
+        /// <param name="endPointParameters">The <see cref="endPointParameters"/> to be appended to the Url</param>
         [Obsolete("This method has been superseded by PerformRequestAsync")]
-        protected virtual Task<IApiResponse> InPathRequestAsync(Method method, string endpointTemplate, params object[] endpointParameters)
+        protected virtual Task<IApiResponse> InPathRequestAsync(Method method, string endPointTemplate, params object[] endPointParameters)
         {
             return PerformRequestAsync(method, request => request
-                .WithEndPoint(endpointTemplate, endpointParameters));
+                .WithEndPointTemplate(endPointTemplate, endPointParameters));
         }
 
         /// <summary>
-        /// Performs an in Path Request returning a <see cref="TResponse"/>. The <see cref="endpoint"/> will be appended to the Url
+        /// Performs an in Path Request returning a <see cref="TResponse"/>. The <see cref="endPoint"/> will be appended to the Url
         /// </summary>
         /// <typeparam name="TResponse">The type to be deserialized by the <see cref="ApiHandler"/> from the response</typeparam>
         /// <param name="method">The RESTful API <see cref="Method"/> to be used</param>
-        /// <param name="endpoint">The <see cref="endpoint"/> to be appended to the Url</param>
+        /// <param name="endPoint">The <see cref="endPoint"/> to be appended to the Url</param>
         [Obsolete("This method has been superseded by PerformRequestAsync<TResponse>")]
-        protected virtual Task<IApiResponse<TResponse>> InPathRequestAsync<TResponse>(Method method, object endpoint = null)
+        protected virtual Task<IApiResponse<TResponse>> InPathRequestAsync<TResponse>(Method method, object endPoint = null)
         {
             return PerformRequestAsync<TResponse>(method, request => request
-                .WithEndPoint(endpoint));
+                .WithEndPoint(endPoint));
         }
 
         /// <summary>
-        /// Performs an in Path Request returning a <see cref="TResponse"/>. The <see cref="endpointParameters"/> will be appended to the Url
+        /// Performs an in Path Request returning a <see cref="TResponse"/>. The <see cref="endPointParameters"/> will be appended to the Url
         /// </summary>
         /// <param name="method">The RESTful API <see cref="Method"/> to be used</param>
-        /// <param name="endpointTemplate">The endpoint to be performed, supports templates for string formatting with <see cref="endpointParameters"/></param>
-        /// <param name="endpointParameters">The <see cref="endpointParameters"/> to be appended to the Url</param>
+        /// <param name="endPointTemplate">The endPoint to be performed, supports templates for string formatting with <see cref="endPointParameters"/></param>
+        /// <param name="endPointParameters">The <see cref="endPointParameters"/> to be appended to the Url</param>
         [Obsolete("This method has been superseded by PerformRequestAsync<TResponse>")]
-        protected virtual Task<IApiResponse<TResponse>> InPathRequestAsync<TResponse>(Method method, string endpointTemplate, params object[] endpointParameters)
+        protected virtual Task<IApiResponse<TResponse>> InPathRequestAsync<TResponse>(Method method, string endPointTemplate, params object[] endPointParameters)
         {
             return PerformRequestAsync<TResponse>(method, request => request
-                .WithEndPoint(endpointTemplate, endpointParameters));
+                .WithEndPointTemplate(endPointTemplate, endPointParameters));
         }
 
         /// <summary>
@@ -67,32 +67,32 @@ namespace SereneApi
         /// <typeparam name="TResponse">The type to be deserialized by the <see cref="ApiHandler"/> from the response</typeparam>
         /// <typeparam name="TQuery">The type to be sent in the query</typeparam>
         /// <param name="method">The RESTful API <see cref="Method"/> to be used</param>
-        /// <param name="endpoint">The <see cref="endpoint"/> to be performed</param>
+        /// <param name="endPoint">The <see cref="endPoint"/> to be performed</param>
         /// <param name="queryContent"> <see cref="queryContent"/> to be used when generating the <see cref="query"/></param>
         /// <param name="query">Selects parts of the <see cref="queryContent"/> to be converted into a query</param>
         [Obsolete("This method has been superseded by PerformRequestAsync<TResponse>")]
-        protected virtual Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQuery>(Method method, TQuery queryContent, Expression<Func<TQuery, object>> query, object endpoint = null) where TQuery : class
+        protected virtual Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQuery>(Method method, TQuery queryContent, Expression<Func<TQuery, object>> query, object endPoint = null) where TQuery : class
         {
             return PerformRequestAsync<TResponse>(method, request => request
-                .WithEndPoint(endpoint)
+                .WithEndPoint(endPoint)
                 .WithQuery(queryContent, query));
         }
 
         /// <summary>
-        /// Performs an in Path Request with query support returning a <see cref="TResponse"/>. The <see cref="endpointParameters"/> will be appended to the Url
+        /// Performs an in Path Request with query support returning a <see cref="TResponse"/>. The <see cref="endPointParameters"/> will be appended to the Url
         /// </summary>
         /// <typeparam name="TResponse">The type to be deserialized by the <see cref="ApiHandler"/> from the response</typeparam>
         /// <typeparam name="TQuery">The type to be sent in the query</typeparam>
         /// <param name="method">The RESTful API <see cref="Method"/> to be used</param>
-        /// <param name="endpointTemplate">The endpoint to be performed, supports templates for string formatting with <see cref="endpointParameters"/></param>
+        /// <param name="endPointTemplate">The endPoint to be performed, supports templates for string formatting with <see cref="endPointParameters"/></param>
         /// <param name="queryContent">The <see cref="queryContent"/> to be used when generating the <see cref="query"/></param>
         /// <param name="query">Selects parts of the <see cref="queryContent"/> to be converted into a query</param>
-        /// <param name="endpointParameters">The <see cref="endpointParameters"/> to be appended to the Url</param>
+        /// <param name="endPointParameters">The <see cref="endPointParameters"/> to be appended to the Url</param>
         [Obsolete("This method has been superseded by PerformRequestAsync<TResponse>")]
-        protected virtual Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQuery>(Method method, TQuery queryContent, Expression<Func<TQuery, object>> query, string endpointTemplate, params object[] endpointParameters) where TQuery : class
+        protected virtual Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQuery>(Method method, TQuery queryContent, Expression<Func<TQuery, object>> query, string endPointTemplate, params object[] endPointParameters) where TQuery : class
         {
             return PerformRequestAsync<TResponse>(method, request => request
-                .WithEndPoint(endpointTemplate, endpointParameters)
+                .WithEndPointTemplate(endPointTemplate, endPointParameters)
                 .WithQuery(queryContent, query));
         }
 
@@ -102,12 +102,12 @@ namespace SereneApi
         /// <typeparam name="TContent">The type to be serialized and sent in the body of the request</typeparam>
         /// <param name="method">The RESTful <see cref="Method"/> to be used</param>
         /// <param name="inBodyContent">The object serialized and sent in the body of the request</param>
-        /// <param name="endpoint">The <see cref="endpoint"/> to be appended to the end of the Url</param>
+        /// <param name="endPoint">The <see cref="endPoint"/> to be appended to the end of the Url</param>
         [Obsolete("This method has been superseded by PerformRequestAsync")]
-        protected virtual Task<IApiResponse> InBodyRequestAsync<TContent>(Method method, TContent inBodyContent, object endpoint = null)
+        protected virtual Task<IApiResponse> InBodyRequestAsync<TContent>(Method method, TContent inBodyContent, object endPoint = null)
         {
             return PerformRequestAsync(method, request => request
-                .WithEndPoint(endpoint)
+                .WithEndPoint(endPoint)
                 .WithInBodyContent(inBodyContent));
         }
 
@@ -117,13 +117,13 @@ namespace SereneApi
         /// <typeparam name="TContent"></typeparam>
         /// <param name="method"></param>
         /// <param name="inBodyContent"></param>
-        /// <param name="endpointTemplate"></param>
-        /// <param name="endpointParameters"></param>
+        /// <param name="endPointTemplate"></param>
+        /// <param name="endPointParameters"></param>
         [Obsolete("This method has been superseded by PerformRequestAsync")]
-        protected virtual Task<IApiResponse> InBodyRequestAsync<TContent>(Method method, TContent inBodyContent, string endpointTemplate, params object[] endpointParameters)
+        protected virtual Task<IApiResponse> InBodyRequestAsync<TContent>(Method method, TContent inBodyContent, string endPointTemplate, params object[] endPointParameters)
         {
             return PerformRequestAsync(method, request => request
-                .WithEndPoint(endpointTemplate, endpointParameters)
+                .WithEndPointTemplate(endPointTemplate, endPointParameters)
                 .WithInBodyContent(inBodyContent));
         }
 
@@ -134,12 +134,12 @@ namespace SereneApi
         /// <typeparam name="TResponse"></typeparam>
         /// <param name="method"></param>
         /// <param name="inBodyContent"></param>
-        /// <param name="endpoint"></param>
+        /// <param name="endPoint"></param>
         [Obsolete("This method has been superseded by PerformRequestAsync<TResponse>")]
-        protected virtual Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(Method method, TContent inBodyContent, object endpoint = null)
+        protected virtual Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(Method method, TContent inBodyContent, object endPoint = null)
         {
             return PerformRequestAsync<TResponse>(method, request => request
-                .WithEndPoint(endpoint)
+                .WithEndPoint(endPoint)
                 .WithInBodyContent(inBodyContent));
         }
 
@@ -150,13 +150,13 @@ namespace SereneApi
         /// <typeparam name="TResponse"></typeparam>
         /// <param name="method"></param>
         /// <param name="inBodyContent"></param>
-        /// <param name="endpointTemplate"></param>
-        /// <param name="endpointParameters"></param>
+        /// <param name="endPointTemplate"></param>
+        /// <param name="endPointParameters"></param>
         [Obsolete("This method has been superseded by PerformRequestAsync<TResponse>")]
-        protected virtual Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(Method method, TContent inBodyContent, string endpointTemplate, params object[] endpointParameters)
+        protected virtual Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(Method method, TContent inBodyContent, string endPointTemplate, params object[] endPointParameters)
         {
             return PerformRequestAsync<TResponse>(method, request => request
-                .WithEndPoint(endpointTemplate, endpointParameters)
+                .WithEndPointTemplate(endPointTemplate, endPointParameters)
                 .WithInBodyContent(inBodyContent));
         }
     }
