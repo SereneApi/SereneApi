@@ -7,7 +7,7 @@ using Xunit;
 
 namespace SereneApi.Tests.Factories
 {
-    public class ApiHandlerFactoryTests
+    public class ApiHandlerFactoryShould
     {
         [Theory]
         [InlineData("http://localhost:8080", "TestSource1/", "http://localhost:8080/api/TestSource1", "TestSource1")]

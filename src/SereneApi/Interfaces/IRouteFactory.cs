@@ -16,7 +16,7 @@ namespace SereneApi.Interfaces
         /// Supplies the Resource to be used in the route.
         /// </summary>
         /// <param name="resource"></param>
-        void WithResource(string resource);
+        void AddResource(string resource);
 
         /// <summary>
         /// Supplies the Query to be appended to the end of the route.

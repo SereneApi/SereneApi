@@ -7,7 +7,7 @@ using Xunit;
 
 namespace SereneApi.Tests.Factories
 {
-    public class QueryFactoryTests
+    public class QueryFactoryShould
     {
         [Fact]
         public void BuildQuery()

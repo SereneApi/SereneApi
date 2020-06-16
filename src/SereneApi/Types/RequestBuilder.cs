@@ -121,24 +121,24 @@ namespace SereneApi.Types
         {
             if(_resource != null)
             {
-                _routeFactory.WithResource(_resource);
+                _routeFactory.AddResource(_resource);
             }
             else if(_suppliedResource != null)
             {
-                _routeFactory.WithResource(_suppliedResource);
+                _routeFactory.AddResource(_suppliedResource);
             }
 
-            if (!string.IsNullOrWhiteSpace(_query))
+            if(!string.IsNullOrWhiteSpace(_query))
             {
                 _routeFactory.AddQuery(_query);
             }
 
-            if (!string.IsNullOrWhiteSpace(_endPoint))
+            if(!string.IsNullOrWhiteSpace(_endPoint))
             {
                 _routeFactory.AddEndPoint(_endPoint);
             }
 
-            if (_endPointParameters != null)
+            if(_endPointParameters != null)
             {
                 _routeFactory.AddParameters(_endPointParameters);
             }

@@ -46,8 +46,8 @@ namespace SereneApi.Factories
 
         #endregion
 
-        /// <inheritdoc cref="IRouteFactory.WithResource"/>
-        public void WithResource(string resource)
+        /// <inheritdoc cref="IRouteFactory.AddResource"/>
+        public void AddResource(string resource)
         {
             ExceptionHelper.EnsureParameterIsNotNull(resource, nameof(resource));
 
@@ -108,7 +108,7 @@ namespace SereneApi.Factories
                         throw new ArgumentException("An endPoint template must be supplied to use multiple parameters.");
                     }
 
-                    route += _parameters.First();
+                    route += "/" + _parameters.First();
                 }
                 else
                 {
@@ -182,7 +182,7 @@ namespace SereneApi.Factories
             endPoint = endPointTemplate;
 
             // Return an endPoint without formatting the template and appending the only parameter to the end.
-            return $"{endPoint}/{templateParameters[0]}";
+            return $"{endPoint}/{templateParameters.First()}";
         }
     }
 }
