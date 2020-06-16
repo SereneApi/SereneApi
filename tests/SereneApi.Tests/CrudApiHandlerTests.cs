@@ -18,7 +18,7 @@ namespace SereneApi.Tests
         {
             ApiHandlerFactory factory = new ApiHandlerFactory();
 
-            factory.RegisterHandlerOptions<TestCrudApiHandler>(builder =>
+            factory.RegisterApiHandler<TestCrudApiHandler>(builder =>
             {
                 builder.UseSource("http://localhost:8080", "Person");
             }).WithMockResponses(builder =>

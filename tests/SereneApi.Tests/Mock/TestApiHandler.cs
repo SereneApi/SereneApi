@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using SereneApi.Interfaces;
 
 namespace SereneApi.Tests.Mock
 {
@@ -9,6 +10,34 @@ namespace SereneApi.Tests.Mock
         public TestApiHandler(IApiHandlerOptions options) : base(options)
         {
         }
+
+        #region Sync Methods
+
+        public new IApiResponse PerformRequest(Method method, Expression<Func<IRequest, IRequestCreated>> request = null)
+        {
+            return base.PerformRequest(method, request);
+        }
+
+        public new IApiResponse<TResponse> PerformRequest<TResponse>(Method method, Expression<Func<IRequest, IRequestCreated>> request = null)
+        {
+            return base.PerformRequest<TResponse>(method, request);
+        }
+
+        #endregion
+        #region Async Methods
+
+        public new Task<IApiResponse> PerformRequestAsync(Method method, Expression<Func<IRequest, IRequestCreated>> request = null)
+        {
+            return base.PerformRequestAsync(method, request);
+        }
+
+        public new Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(Method method, Expression<Func<IRequest, IRequestCreated>> request = null)
+        {
+            return base.PerformRequestAsync<TResponse>(method, request);
+        }
+        
+        #endregion
+        #region Legacy
 
         public new Task<IApiResponse> InPathRequestAsync(Method method, object endpoint = null)
         {
@@ -59,5 +88,7 @@ namespace SereneApi.Tests.Mock
         {
             return base.InBodyRequestAsync<TContent, TResponse>(method, inBodyContent, endpointTemplate, endpointParameters);
         }
+        
+        #endregion
     }
 }
