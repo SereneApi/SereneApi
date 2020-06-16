@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Serializers
 {
-    public class JsonSerializer : ISerializer
+    public class JsonSerializer: ISerializer
     {
         private readonly JsonSerializerOptions _deserializerOptions;
 

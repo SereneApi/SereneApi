@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Extensions.Mocking.Types
 {
-    public class MockResponse : CoreOptions, IMockResponse
+    public class MockResponse: CoreOptions, IMockResponse
     {
         private readonly IApiRequestContent _response;
 
@@ -37,11 +37,11 @@ namespace SereneApi.Extensions.Mocking.Types
 
             // If 0 or any whitelist items return true. True is returned.
 
-            foreach (IWhitelist whitelistDependency in whitelistDependencies)
+            foreach(IWhitelist whitelistDependency in whitelistDependencies)
             {
                 Validity validity = whitelistDependency.Validate(value);
 
-                if (validity == Validity.NotApplicable)
+                if(validity == Validity.NotApplicable)
                 {
                     continue;
                 }
@@ -54,7 +54,7 @@ namespace SereneApi.Extensions.Mocking.Types
 
         public async Task<IApiRequestContent> GetResponseAsync(CancellationToken cancellationToken = default)
         {
-            if (DependencyCollection.TryGetDependency(out DelayResponseDependency delay))
+            if(DependencyCollection.TryGetDependency(out DelayResponseDependency delay))
             {
                 await delay.DelayAsync(cancellationToken);
             }

@@ -4,7 +4,7 @@ using SereneApi.Interfaces;
 
 namespace SereneApi.Extensions.DependencyInjection.Interfaces
 {
-    public interface IApiHandlerOptionsBuilder<TApiHandler> : IApiHandlerOptionsBuilder where TApiHandler : ApiHandler
+    public interface IApiHandlerOptionsBuilder<TApiHandler>: IApiHandlerOptionsBuilder where TApiHandler : ApiHandler
     {
         /// <summary>
         /// Gets the Source, Resource, ResourcePrecursor and Timeout period from the <see cref="IConfiguration"/>.

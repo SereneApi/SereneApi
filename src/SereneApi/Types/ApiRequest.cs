@@ -3,7 +3,7 @@ using System;
 
 namespace SereneApi.Types
 {
-    public class ApiRequest : IApiRequest
+    public class ApiRequest: IApiRequest
     {
         public Uri EndPoint { get; }
 

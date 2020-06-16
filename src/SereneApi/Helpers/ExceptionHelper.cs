@@ -19,7 +19,7 @@ namespace SereneApi.Helpers
 
         public static void EnsureParameterIsNotNull(object parameter, string paramName)
         {
-            if (parameter == null)
+            if(parameter == null)
             {
                 throw new ArgumentNullException(paramName);
             }
@@ -27,7 +27,7 @@ namespace SereneApi.Helpers
 
         public static void EnsureArrayIsNotEmpty(object[] array, string paramName)
         {
-            if (array.Length == 0)
+            if(array.Length == 0)
             {
                 throw new ArgumentException($"{paramName} must not be Empty.");
             }

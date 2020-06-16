@@ -9,7 +9,7 @@ namespace SereneApi.Extensions
     {
         public static StringContent ToStringContent(this IApiRequestContent content)
         {
-            if (content is JsonContent jsonContent)
+            if(content is JsonContent jsonContent)
             {
                 return new StringContent(jsonContent.Content, jsonContent.Encoding, jsonContent.MediaType.TypeString);
             }

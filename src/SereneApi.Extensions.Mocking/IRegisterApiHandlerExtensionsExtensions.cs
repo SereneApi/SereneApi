@@ -27,7 +27,7 @@ namespace SereneApi.Extensions.Mocking
 
         private static CoreOptions GetCoreOptions(IApiHandlerExtensions extensions)
         {
-            if (extensions is CoreOptions coreOptions)
+            if(extensions is CoreOptions coreOptions)
             {
                 return coreOptions;
             }

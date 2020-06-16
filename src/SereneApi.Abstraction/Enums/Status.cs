@@ -1,7 +1,7 @@
 ﻿namespace SereneApi.Abstraction.Enums
 {
     // https://restfulapi.net/http-status-codes/
-    public enum Status : int
+    public enum Status: int
     {
         #region Supporting
 

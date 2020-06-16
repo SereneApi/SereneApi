@@ -1,13 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
 using SereneApi.Abstraction.Enums;
 using SereneApi.Extensions;
+using SereneApi.Helpers;
 using SereneApi.Interfaces;
 using SereneApi.Types;
 using System;
 using System.Linq.Expressions;
 using System.Net.Http;
 using System.Threading.Tasks;
-using SereneApi.Helpers;
 
 namespace SereneApi
 {
@@ -54,7 +54,7 @@ namespace SereneApi
 
             try
             {
-                if (request.Content == null)
+                if(request.Content == null)
                 {
                     responseMessage = RetryRequest(async () =>
                     {
@@ -91,16 +91,16 @@ namespace SereneApi
                     }, endPoint);
                 }
             }
-            catch (ArgumentException)
+            catch(ArgumentException)
             {
                 // An incorrect Method value was supplied. So we want this exception to bubble up to the caller.
                 throw;
             }
-            catch (TimeoutException timeoutException)
+            catch(TimeoutException timeoutException)
             {
                 return ApiResponse.Failure(Status.None, "The Request Timed Out; Retry limit reached", timeoutException);
             }
-            catch (Exception exception)
+            catch(Exception exception)
             {
                 _logger?.LogError(exception,
                     "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
@@ -123,7 +123,7 @@ namespace SereneApi
 
             try
             {
-                if (request.Content == null)
+                if(request.Content == null)
                 {
                     responseMessage = RetryRequest(async () =>
                     {
@@ -160,16 +160,16 @@ namespace SereneApi
                     }, endPoint);
                 }
             }
-            catch (ArgumentException)
+            catch(ArgumentException)
             {
                 // An incorrect Method value was supplied. So we want this exception to bubble up to the caller.
                 throw;
             }
-            catch (TimeoutException timeoutException)
+            catch(TimeoutException timeoutException)
             {
                 return ApiResponse<TResponse>.Failure(Status.None, "The Request Timed Out; Retry limit reached", timeoutException);
             }
-            catch (Exception exception)
+            catch(Exception exception)
             {
                 _logger?.LogError(exception,
                     "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
@@ -240,7 +240,7 @@ namespace SereneApi
         /// <param name="responseMessage">The <see cref="HttpResponseMessage"/> to process</param>
         protected virtual IApiResponse<TResponse> ProcessResponse<TResponse>(HttpResponseMessage responseMessage)
         {
-            if (responseMessage == null)
+            if(responseMessage == null)
             {
                 _logger?.LogWarning("Received an Empty Http Response");
 
@@ -249,7 +249,7 @@ namespace SereneApi
 
             Status status = responseMessage.StatusCode.ToStatus();
 
-            if (!responseMessage.IsSuccessStatusCode)
+            if(!responseMessage.IsSuccessStatusCode)
             {
                 _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}", responseMessage.StatusCode, responseMessage.ReasonPhrase);
 
@@ -262,7 +262,7 @@ namespace SereneApi
 
                 return ApiResponse<TResponse>.Success(status, response);
             }
-            catch (Exception exception)
+            catch(Exception exception)
             {
                 _logger?.LogError(exception, "Could not deserialize the returned value");
 

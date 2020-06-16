@@ -14,14 +14,14 @@ namespace SereneApi.Helpers
         {
             const char termination = '/';
 
-            if (string.IsNullOrWhiteSpace(value))
+            if(string.IsNullOrWhiteSpace(value))
             {
                 return value;
             }
 
             int lastCharIndex = value.Length - 1;
 
-            if (value[lastCharIndex] != termination)
+            if(value[lastCharIndex] != termination)
             {
                 value += termination;
             }
@@ -44,14 +44,14 @@ namespace SereneApi.Helpers
         /// </summary>
         public static string EnsureSourceNoSlashTermination(string value)
         {
-            if (string.IsNullOrWhiteSpace(value))
+            if(string.IsNullOrWhiteSpace(value))
             {
                 return value;
             }
 
             int index = value.Length - 1;
 
-            while (index >= 1 && value[index] == '/')
+            while(index >= 1 && value[index] == '/')
             {
                 value = value.Substring(0, index);
 
@@ -78,7 +78,7 @@ namespace SereneApi.Helpers
         {
             int lastCharIndex = source.Length - 1;
 
-            if (source[lastCharIndex] != '/')
+            if(source[lastCharIndex] != '/')
             {
                 throw new ArgumentException("The HttpClient BaseAddress must end with a /");
             }

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace SereneApi.Extensions.Mocking.Types
 {
-    public class MockResponsesBuilder : IMockResponsesBuilder
+    public class MockResponsesBuilder: IMockResponsesBuilder
     {
         private ISerializer _serializer = new JsonSerializer();
 
@@ -15,7 +15,7 @@ namespace SereneApi.Extensions.Mocking.Types
 
         public void UseSerializer(ISerializer serializer)
         {
-            if (_serializer != null)
+            if(_serializer != null)
             {
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }

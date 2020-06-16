@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Tests.Mock
 {
-    public class FakeHttpMessageHandler : HttpMessageHandler
+    public class FakeHttpMessageHandler: HttpMessageHandler
     {
         public virtual HttpResponseMessage Send(HttpRequestMessage request)
         {

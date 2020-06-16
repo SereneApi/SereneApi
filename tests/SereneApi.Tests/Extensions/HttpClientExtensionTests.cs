@@ -21,9 +21,9 @@ namespace SereneApi.Tests.Extensions
                 BaseAddress = source
             };
 
-            using TestApiHandler testApi = client.CreateApiHandler<TestApiHandler>();
+            using ApiHandlerWrapper api = client.CreateApiHandler<ApiHandlerWrapper>();
 
-            testApi.Source.ShouldBe(source);
+            api.Source.ShouldBe(source);
         }
 
         [Theory]
@@ -41,7 +41,7 @@ namespace SereneApi.Tests.Extensions
 
             Should.Throw<ArgumentException>(() =>
             {
-                client.CreateApiHandler<TestApiHandler>();
+                client.CreateApiHandler<ApiHandlerWrapper>();
             });
         }
     }

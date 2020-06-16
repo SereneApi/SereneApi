@@ -10,7 +10,7 @@ namespace SereneApi.Types
     /// </summary>
     /// <typeparam name="TDependency"></typeparam>
     [DebuggerDisplay("Type:{Type}; Binding:{Binding}")]
-    public class Dependency<TDependency> : Dependency, IDependency<TDependency>
+    public class Dependency<TDependency>: Dependency, IDependency<TDependency>
     {
         /// <inheritdoc cref="IDependency{TDependency}.Instance"/>
         public new TDependency Instance => (TDependency)base.Instance;

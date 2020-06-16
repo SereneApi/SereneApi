@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Extensions.Mocking.Types
 {
-    public class MockMessageHandler : HttpMessageHandler
+    public class MockMessageHandler: HttpMessageHandler
     {
         private readonly IReadOnlyList<IMockResponse> _mockResponses;
 
@@ -25,18 +25,18 @@ namespace SereneApi.Extensions.Mocking.Types
         {
             Dictionary<int, IMockResponse> weightedResponses = new Dictionary<int, IMockResponse>();
 
-            foreach (IMockResponse mockResponse in _mockResponses)
+            foreach(IMockResponse mockResponse in _mockResponses)
             {
                 int responseWeight = await GetResponseWeightAsync(mockResponse, request);
 
                 // If two responses have the same weight the older response will be ignored.
-                if (responseWeight >= 0 && !weightedResponses.ContainsKey(responseWeight))
+                if(responseWeight >= 0 && !weightedResponses.ContainsKey(responseWeight))
                 {
                     weightedResponses.Add(responseWeight, mockResponse);
                 }
             }
 
-            if (weightedResponses.Count <= 0)
+            if(weightedResponses.Count <= 0)
             {
                 throw new ArgumentException($"No response was found for the {request.Method.ToMethod()} request to {request.RequestUri}");
             }
@@ -57,35 +57,35 @@ namespace SereneApi.Extensions.Mocking.Types
 
             Validity validity = mockResponse.Validate(request.RequestUri);
 
-            switch (validity)
+            switch(validity)
             {
                 case Validity.NotApplicable:
-                    break;
+                break;
                 case Validity.Valid:
-                    responseWeight++;
-                    break;
+                responseWeight++;
+                break;
                 case Validity.Invalid:
-                    return -1;
+                return -1;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException();
             }
 
             validity = mockResponse.Validate(request.Method.ToMethod());
 
-            switch (validity)
+            switch(validity)
             {
                 case Validity.NotApplicable:
-                    break;
+                break;
                 case Validity.Valid:
-                    responseWeight++;
-                    break;
+                responseWeight++;
+                break;
                 case Validity.Invalid:
-                    return -1;
+                return -1;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException();
             }
 
-            if (request.Content == null)
+            if(request.Content == null)
             {
                 return responseWeight;
             }
@@ -96,17 +96,17 @@ namespace SereneApi.Extensions.Mocking.Types
 
             validity = mockResponse.Validate(requestContent);
 
-            switch (validity)
+            switch(validity)
             {
                 case Validity.NotApplicable:
-                    break;
+                break;
                 case Validity.Valid:
-                    responseWeight++;
-                    break;
+                responseWeight++;
+                break;
                 case Validity.Invalid:
-                    return -1;
+                return -1;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException();
             }
 
             return responseWeight;
@@ -116,7 +116,7 @@ namespace SereneApi.Extensions.Mocking.Types
         {
             IApiRequestContent requestContent = await mockResponse.GetResponseAsync(cancellationToken);
 
-            if (requestContent is JsonContent jsonContent)
+            if(requestContent is JsonContent jsonContent)
             {
                 return new HttpResponseMessage
                 {

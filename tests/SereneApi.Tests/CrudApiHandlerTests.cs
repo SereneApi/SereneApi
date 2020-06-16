@@ -18,7 +18,7 @@ namespace SereneApi.Tests
         {
             ApiHandlerFactory factory = new ApiHandlerFactory();
 
-            factory.RegisterApiHandler<TestCrudApiHandler>(builder =>
+            factory.RegisterApiHandler<CrudApiHandlerWrapper>(builder =>
             {
                 builder.UseSource("http://localhost:8080", "Person");
             }).WithMockResponses(builder =>
@@ -79,7 +79,7 @@ namespace SereneApi.Tests
                     .RespondsToRequestsWith(MockPersonDto.JohnSmith);
             });
 
-            _crudApiHandler = factory.Build<TestCrudApiHandler>();
+            _crudApiHandler = factory.Build<CrudApiHandlerWrapper>();
         }
 
         [Fact]
@@ -125,7 +125,7 @@ namespace SereneApi.Tests
 
             List<MockPersonDto> results = response.Result;
 
-            for (int i = 0; i < results.Count; i++)
+            for(int i = 0; i < results.Count; i++)
             {
                 results[i].Name.ShouldBe(MockPersonDto.All[i].Name);
                 results[i].Age.ShouldBe(MockPersonDto.All[i].Age);

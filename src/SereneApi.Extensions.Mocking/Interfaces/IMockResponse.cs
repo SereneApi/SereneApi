@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Extensions.Mocking.Interfaces
 {
-    public interface IMockResponse : IWhitelist
+    public interface IMockResponse: IWhitelist
     {
         ISerializer Serializer { get; }
 

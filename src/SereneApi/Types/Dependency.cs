@@ -4,7 +4,7 @@ using System;
 
 namespace SereneApi.Types
 {
-    public class Dependency : IDependency, IDisposable
+    public class Dependency: IDependency, IDisposable
     {
         /// <inheritdoc cref="IDependency.Binding"/>
         public Binding Binding { get; }
@@ -48,12 +48,12 @@ namespace SereneApi.Types
 
         protected virtual void Dispose(bool disposing)
         {
-            if (_disposed)
+            if(_disposed)
             {
                 return;
             }
 
-            if (disposing && Binding == Binding.Bound && Instance is IDisposable disposableImplementation)
+            if(disposing && Binding == Binding.Bound && Instance is IDisposable disposableImplementation)
             {
                 disposableImplementation.Dispose();
             }

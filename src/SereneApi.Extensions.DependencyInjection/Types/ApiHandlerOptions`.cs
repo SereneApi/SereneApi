@@ -8,7 +8,7 @@ namespace SereneApi.Extensions.DependencyInjection.Types
     /// <summary>
     /// The <see cref="ApiHandlerOptions{TApiHandler}"/> to be used by the <see cref="ApiHandler"/> when making API requests
     /// </summary>
-    public class ApiHandlerOptions<TApiHandler> : ApiHandlerOptions, IApiHandlerOptions<TApiHandler> where TApiHandler : ApiHandler
+    public class ApiHandlerOptions<TApiHandler>: ApiHandlerOptions, IApiHandlerOptions<TApiHandler> where TApiHandler : ApiHandler
     {
         #region Public Properties
 

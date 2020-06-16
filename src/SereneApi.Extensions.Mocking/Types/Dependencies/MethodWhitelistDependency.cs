@@ -3,7 +3,7 @@ using SereneApi.Extensions.Mocking.Interfaces;
 
 namespace SereneApi.Extensions.Mocking.Types.Dependencies
 {
-    public class MethodWhitelistDependency : IWhitelist
+    public class MethodWhitelistDependency: IWhitelist
     {
         private readonly Method _method;
 
@@ -14,12 +14,12 @@ namespace SereneApi.Extensions.Mocking.Types.Dependencies
 
         public Validity Validate(object value)
         {
-            if (!(value is Method method))
+            if(!(value is Method method))
             {
                 return Validity.NotApplicable;
             }
 
-            if (method == _method)
+            if(method == _method)
             {
                 return Validity.Valid;
             }

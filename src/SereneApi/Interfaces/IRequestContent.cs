@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace SereneApi.Interfaces
 {
-    public interface IRequestContent : IRequestCreated
+    public interface IRequestContent: IRequestCreated
     {
         IRequestCreated WithInBodyContent<TContent>(TContent content);
 

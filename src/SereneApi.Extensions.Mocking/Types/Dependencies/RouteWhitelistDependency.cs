@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace SereneApi.Extensions.Mocking.Types.Dependencies
 {
-    public class RouteWhitelistDependency : IWhitelist
+    public class RouteWhitelistDependency: IWhitelist
     {
         public IReadOnlyList<Uri> WhitelistedRoutes { get; }
 
@@ -17,12 +17,12 @@ namespace SereneApi.Extensions.Mocking.Types.Dependencies
 
         public Validity Validate(object value)
         {
-            if (!(value is Uri route))
+            if(!(value is Uri route))
             {
                 return Validity.NotApplicable;
             }
 
-            if (WhitelistedRoutes.Contains(route))
+            if(WhitelistedRoutes.Contains(route))
             {
                 return Validity.Valid;
             }

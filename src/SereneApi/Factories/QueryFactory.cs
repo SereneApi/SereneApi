@@ -9,7 +9,7 @@ using System.Text;
 
 namespace SereneApi.Factories
 {
-    public sealed class QueryFactory : IQueryFactory
+    public sealed class QueryFactory: IQueryFactory
     {
         private readonly ObjectToStringFormatter _formatter;
 
@@ -32,13 +32,13 @@ namespace SereneApi.Factories
 
             PropertyInfo[] properties = typeof(TQueryable).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-            foreach (PropertyInfo property in properties)
+            foreach(PropertyInfo property in properties)
             {
                 object value = property.GetValue(query);
 
                 string valueString = _formatter(value);
 
-                if (!string.IsNullOrEmpty(valueString))
+                if(!string.IsNullOrEmpty(valueString))
                 {
                     querySections.Add(BuildQuerySection(property.Name, valueString));
                 }
@@ -56,14 +56,14 @@ namespace SereneApi.Factories
         {
             List<string> querySections = new List<string>();
 
-            if (!(selector.Body is NewExpression body))
+            if(!(selector.Body is NewExpression body))
             {
                 return string.Empty;
             }
 
-            foreach (Expression expression in body.Arguments)
+            foreach(Expression expression in body.Arguments)
             {
-                if (!(expression is MemberExpression member))
+                if(!(expression is MemberExpression member))
                 {
                     continue;
                 }
@@ -74,7 +74,7 @@ namespace SereneApi.Factories
 
                 string valueString = _formatter(value);
 
-                if (!string.IsNullOrEmpty(valueString))
+                if(!string.IsNullOrEmpty(valueString))
                 {
                     querySections.Add(BuildQuerySection(property.Name, valueString));
                 }
@@ -86,13 +86,13 @@ namespace SereneApi.Factories
         private static string BuildQuery(IReadOnlyList<string> querySections)
         {
             // No sections return empty string.
-            if (querySections.Count == 0)
+            if(querySections.Count == 0)
             {
                 throw new ArgumentException("Invalid Query, a query must have at least one value.");
             }
 
             // Their is only one Section so we return the first section.
-            if (querySections.Count == 1)
+            if(querySections.Count == 1)
             {
                 return $"?{querySections[0]}";
             }
@@ -103,7 +103,7 @@ namespace SereneApi.Factories
             queryBuilder.Append("?");
 
             // Enumerate all indexes except for the last index.
-            for (int i = 0; i < querySections.Count - 1; i++)
+            for(int i = 0; i < querySections.Count - 1; i++)
             {
                 // Attach the query section and append an ampersand as we are adding more sections.
                 queryBuilder.Append($"{querySections[i]}&");
@@ -126,10 +126,10 @@ namespace SereneApi.Factories
         private static string DefaultQueryFormatter(object queryObject)
         {
             // If object is of a DateTime Value we will convert it to once.
-            if (queryObject is DateTime dateTimeQuery)
+            if(queryObject is DateTime dateTimeQuery)
             {
                 // The DateTime contains a TimeSpan so we'll include that in the query
-                if (dateTimeQuery.TimeOfDay != TimeSpan.Zero)
+                if(dateTimeQuery.TimeOfDay != TimeSpan.Zero)
                 {
                     return dateTimeQuery.ToString("yyyy-MM-dd HH:mm:ss");
                 }

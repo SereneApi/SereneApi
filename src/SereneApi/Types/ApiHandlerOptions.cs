@@ -5,7 +5,7 @@ using System.Diagnostics;
 namespace SereneApi.Types
 {
     [DebuggerDisplay("Source: {Source.ToString()}")]
-    public class ApiHandlerOptions : IApiHandlerOptions, IDisposable
+    public class ApiHandlerOptions: IApiHandlerOptions, IDisposable
     {
         #region Properties
 
@@ -51,14 +51,14 @@ namespace SereneApi.Types
 
         protected virtual void Dispose(bool disposing)
         {
-            if (_disposed)
+            if(_disposed)
             {
                 return;
             }
 
-            if (disposing)
+            if(disposing)
             {
-                if (Dependencies is IDisposable disposableDependencyCollection)
+                if(Dependencies is IDisposable disposableDependencyCollection)
                 {
                     disposableDependencyCollection.Dispose();
                 }

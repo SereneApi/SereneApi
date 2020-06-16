@@ -22,7 +22,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             IApiHandlerExtensions<TApiDefinition> extensions = serviceProvider.GetService<IApiHandlerExtensions<TApiDefinition>>();
 
-            if (extensions == null)
+            if(extensions == null)
             {
                 throw new ArgumentException($"Could not find any registered extensions to {typeof(TApiDefinition)}");
             }
@@ -40,7 +40,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             IApiHandlerExtensions<TApiDefinition> extensions = serviceProvider.GetService<IApiHandlerExtensions<TApiDefinition>>();
 
-            if (extensions == null)
+            if(extensions == null)
             {
                 throw new ArgumentException($"Could not find any registered extensions to {typeof(TApiDefinition)}");
             }
@@ -128,7 +128,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static CoreOptions GetCoreOptions(IApiHandlerExtensions extensions)
         {
-            if (extensions is CoreOptions coreOptions)
+            if(extensions is CoreOptions coreOptions)
             {
                 return coreOptions;
             }

@@ -3,7 +3,7 @@ using System;
 
 namespace SereneApi.Types
 {
-    public readonly struct ApiResponse : IApiResponse
+    public readonly struct ApiResponse: IApiResponse
     {
         public Status Status { get; }
 

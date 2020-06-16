@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace SereneApi.Extensions.Mocking.Types
 {
-    public class MockResponseExtensions : CoreOptions, IMockResponseExtensions
+    public class MockResponseExtensions: CoreOptions, IMockResponseExtensions
     {
         private readonly ISerializer _serializer;
 
@@ -20,12 +20,12 @@ namespace SereneApi.Extensions.Mocking.Types
 
         public IMockResponseExtensions RespondsToRequestsWith(params string[] uris)
         {
-            if (uris == null || uris.Length <= 0)
+            if(uris == null || uris.Length <= 0)
             {
                 throw new ArgumentNullException(nameof(uris));
             }
 
-            if (DependencyCollection.HasDependency<RouteWhitelistDependency>())
+            if(DependencyCollection.HasDependency<RouteWhitelistDependency>())
             {
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
@@ -39,14 +39,14 @@ namespace SereneApi.Extensions.Mocking.Types
 
         public IMockResponseExtensions RespondsToRequestsWith<TContent>(TContent inBodyContent)
         {
-            if (inBodyContent == null)
+            if(inBodyContent == null)
             {
                 throw new ArgumentNullException(nameof(inBodyContent));
             }
 
             IApiRequestContent content = _serializer.Serialize(inBodyContent);
 
-            if (DependencyCollection.TryGetDependency(out ContentWhitelistDependency contentWhitelist))
+            if(DependencyCollection.TryGetDependency(out ContentWhitelistDependency contentWhitelist))
             {
                 contentWhitelist.ExtendWhitelist(content);
             }
@@ -60,12 +60,12 @@ namespace SereneApi.Extensions.Mocking.Types
 
         public IMockResponseExtensions RespondsToRequestsWith(Method method)
         {
-            if (method == Method.None)
+            if(method == Method.None)
             {
                 throw new ArgumentException("Invalid Method provided", nameof(method));
             }
 
-            if (DependencyCollection.HasDependency<MethodWhitelistDependency>())
+            if(DependencyCollection.HasDependency<MethodWhitelistDependency>())
             {
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
@@ -77,7 +77,7 @@ namespace SereneApi.Extensions.Mocking.Types
 
         public IMockResponseExtensions ResponseIsDelayed(int seconds, int delayCount = 0)
         {
-            if (DependencyCollection.HasDependency<DelayResponseDependency>())
+            if(DependencyCollection.HasDependency<DelayResponseDependency>())
             {
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }

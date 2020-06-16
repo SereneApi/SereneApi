@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace SereneApi.Types
 {
-    public class RequestBuilder : IRequest
+    public class RequestBuilder: IRequest
     {
         #region Readonly Variables
 
@@ -42,7 +42,7 @@ namespace SereneApi.Types
 
         public void UsingMethod(Method method)
         {
-            if (method == Method.None)
+            if(method == Method.None)
             {
                 throw new ArgumentException("Must use a valid Method.", nameof(method));
             }
@@ -52,7 +52,7 @@ namespace SereneApi.Types
 
         public IRequestEndpoint AgainstResource(string resource)
         {
-            if (_resource != null)
+            if(_resource != null)
             {
                 throw new MethodAccessException("This method can only be called if a Resource was not provided.");
             }
@@ -119,11 +119,11 @@ namespace SereneApi.Types
 
         public IApiRequest GetRequest()
         {
-            if (_resource != null)
+            if(_resource != null)
             {
                 _routeFactory.WithResource(_resource);
             }
-            else if (_suppliedResource != null)
+            else if(_suppliedResource != null)
             {
                 _routeFactory.WithResource(_suppliedResource);
             }

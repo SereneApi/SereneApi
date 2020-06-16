@@ -114,7 +114,7 @@ namespace SereneApi.Tests.Factories
 
         private static string CustomQueryFormatter(object queryObject)
         {
-            if (queryObject is DateTime dateTimeQuery)
+            if(queryObject is DateTime dateTimeQuery)
             {
                 return dateTimeQuery.ToString("dd-MM-yyyy");
             }

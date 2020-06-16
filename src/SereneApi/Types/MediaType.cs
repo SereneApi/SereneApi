@@ -23,7 +23,7 @@
 
         public override bool Equals(object obj)
         {
-            if (!(obj is MediaType content))
+            if(!(obj is MediaType content))
             {
                 return false;
             }

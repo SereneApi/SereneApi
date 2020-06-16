@@ -16,7 +16,7 @@ namespace SereneApi.Extensions.DependencyInjection.Types
     /// <summary>
     /// The <see cref="ApiHandlerOptionsBuilder{TApiHandler}"/> is used to build new instances of the <see cref="ApiHandlerOptions{TApiHandler}"/> class
     /// </summary>
-    public class ApiHandlerOptionsBuilder<TApiHandler> : ApiHandlerOptionsBuilder, IApiHandlerOptionsBuilder<TApiHandler> where TApiHandler : ApiHandler
+    public class ApiHandlerOptionsBuilder<TApiHandler>: ApiHandlerOptionsBuilder, IApiHandlerOptionsBuilder<TApiHandler> where TApiHandler : ApiHandler
     {
         private IServiceCollection _serviceCollection;
 
@@ -27,12 +27,12 @@ namespace SereneApi.Extensions.DependencyInjection.Types
         /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiHandler}.UseConfiguration"/>
         public void UseConfiguration(IConfiguration configuration)
         {
-            if (ClientOverride != null)
+            if(ClientOverride != null)
             {
                 throw new MethodAccessException("This method cannot be called alongside UseClientOverride");
             }
 
-            if (Source != null)
+            if(Source != null)
             {
                 throw new MethodAccessException("This method cannot be called twice");
             }
@@ -51,12 +51,12 @@ namespace SereneApi.Extensions.DependencyInjection.Types
 
             TimeSpan timeout = configuration.Get<TimeSpan>(ConfigurationConstants.TimeoutKey, ConfigurationConstants.TimeoutIsRequired);
 
-            if (timeout < TimeSpan.Zero)
+            if(timeout < TimeSpan.Zero)
             {
                 throw new ArgumentException("The Timeout value must be equal to or greater than 0");
             }
 
-            if (timeout != TimeSpan.Zero)
+            if(timeout != TimeSpan.Zero)
             {
                 Timeout = timeout;
             }
@@ -64,7 +64,7 @@ namespace SereneApi.Extensions.DependencyInjection.Types
             #endregion
             #region Retry Count
 
-            if (configuration.ContainsKey(ConfigurationConstants.RetryCountKey))
+            if(configuration.ContainsKey(ConfigurationConstants.RetryCountKey))
             {
                 int retryCount = configuration.Get<int>(ConfigurationConstants.RetryCountKey, ConfigurationConstants.RetryIsRequired);
 
@@ -97,7 +97,7 @@ namespace SereneApi.Extensions.DependencyInjection.Types
 
         public new IApiHandlerOptions<TApiHandler> BuildOptions()
         {
-            if (DependencyCollection.TryGetDependency(out HttpMessageHandler messageHandler))
+            if(DependencyCollection.TryGetDependency(out HttpMessageHandler messageHandler))
             {
                 _serviceCollection.AddHttpClient(typeof(TApiHandler).ToString(), client =>
                 {

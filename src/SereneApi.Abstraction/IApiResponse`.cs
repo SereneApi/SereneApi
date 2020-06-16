@@ -2,7 +2,7 @@
 // ReSharper disable once CheckNamespace
 namespace SereneApi
 {
-    public interface IApiResponse<out TEntity> : IApiResponse
+    public interface IApiResponse<out TEntity>: IApiResponse
     {
         TEntity Result { get; }
     }

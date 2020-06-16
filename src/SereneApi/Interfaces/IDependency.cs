@@ -3,7 +3,7 @@ using System;
 
 namespace SereneApi.Interfaces
 {
-    public interface IDependency : ICloneable
+    public interface IDependency: ICloneable
     {
         /// <summary>
         /// The <see cref="Binding"/> of the <see cref="IDependency"/>.
