@@ -9,23 +9,30 @@ using System.Text;
 
 namespace SereneApi.Factories
 {
+    /// <inheritdoc cref="IQueryFactory"/>
     public sealed class QueryFactory: IQueryFactory
     {
         private readonly ObjectToStringFormatter _formatter;
 
+        /// <summary>
+        /// Instantiates a new instance of the <see cref="QueryFactory"/> using the default built in <see cref="ObjectToStringFormatter"/>.
+        /// </summary>
         public QueryFactory()
         {
             _formatter = DefaultQueryFormatter;
         }
 
+        /// <summary>
+        /// Instantiates a new instance of the <see cref="QueryFactory"/> using the supplied <see cref="ObjectToStringFormatter"/>.
+        /// </summary>
         public QueryFactory(ObjectToStringFormatter formatter)
         {
             _formatter = formatter;
         }
 
-        /// <summary>
-        /// All public properties will be used to build the query.
-        /// </summary>
+        /// <inheritdoc>
+        ///     <cref>IQueryFactory.Build</cref>
+        /// </inheritdoc>
         public string Build<TQueryable>(TQueryable query)
         {
             List<string> querySections = new List<string>();
@@ -44,14 +51,12 @@ namespace SereneApi.Factories
                 }
             }
 
-            return BuildQuery(querySections);
+            return BuildQueryString(querySections);
         }
 
-        /// <summary>
-        /// Select what properties will be used in the query.
-        /// </summary>
-        /// <param name="selector"></param>
-        /// <returns></returns>
+        /// <inheritdoc>
+        ///     <cref>IQueryFactory.Build</cref>
+        /// </inheritdoc>
         public string Build<TQueryable>(TQueryable query, Expression<Func<TQueryable, object>> selector)
         {
             List<string> querySections = new List<string>();
@@ -80,10 +85,14 @@ namespace SereneApi.Factories
                 }
             }
 
-            return BuildQuery(querySections);
+            return BuildQueryString(querySections);
         }
 
-        private static string BuildQuery(IReadOnlyList<string> querySections)
+        /// <summary>
+        /// Builds the query string using the supplied array of strings.
+        /// </summary>
+        /// <param name="querySections">Each string index represents an element in the query.</param>
+        private static string BuildQueryString(IReadOnlyList<string> querySections)
         {
             // No sections return empty string.
             if(querySections.Count == 0)
@@ -91,7 +100,7 @@ namespace SereneApi.Factories
                 throw new ArgumentException("Invalid Query, a query must have at least one value.");
             }
 
-            // Their is only one Section so we return the first section.
+            // There is only one Section so we return the first section.
             if(querySections.Count == 1)
             {
                 return $"?{querySections[0]}";
@@ -115,13 +124,18 @@ namespace SereneApi.Factories
             return queryBuilder.ToString();
         }
 
+        /// <summary>
+        /// Builds the query section using the supplied name and value string.
+        /// </summary>
+        /// <param name="name">The key to be used in the query section.</param>
+        /// <param name="value">The value to be used in the query section.</param>
         private static string BuildQuerySection(string name, string value)
         {
             return $"{name}={value}";
         }
 
         /// <summary>
-        /// The default formatter that is used for queries.
+        /// The default formatter that is used to convert objects into strings.
         /// </summary>
         private static string DefaultQueryFormatter(object queryObject)
         {

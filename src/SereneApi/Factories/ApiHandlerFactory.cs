@@ -8,6 +8,7 @@ using System.Text.Json;
 
 namespace SereneApi.Factories
 {
+    /// <inheritdoc cref="IApiHandlerFactory"/>
     public class ApiHandlerFactory: IApiHandlerFactory, IDisposable
     {
         private readonly Dictionary<Type, Action<IApiHandlerOptionsBuilder>> _handlerOptions = new Dictionary<Type, Action<IApiHandlerOptionsBuilder>>();
@@ -16,11 +17,9 @@ namespace SereneApi.Factories
 
         private readonly Dictionary<Type, HttpClient> _clients = new Dictionary<Type, HttpClient>();
 
-        /// <summary>
-        /// Builds an Instance of the <see cref="ApiHandler"/>
-        /// </summary>
-        /// <typeparam name="TApiHandler"></typeparam>
-        /// <returns></returns>
+        /// <inheritdoc>
+        ///     <cref>IApiHandlerFactory.Build</cref>
+        /// </inheritdoc>
         public TApiHandler Build<TApiHandler>() where TApiHandler : ApiHandler
         {
             Type handlerType = typeof(TApiHandler);
@@ -57,10 +56,11 @@ namespace SereneApi.Factories
         }
 
         /// <summary>
-        /// Registers an <see cref="IApiHandlerOptionsBuilder"/> against the <see cref="ApiHandler"/> which will be used when built.
+        /// Registers an <see cref="ApiHandler"/> implementation to the <see cref="ApiHandlerFactory"/>.
+        /// The supplied <see cref="IApiHandlerOptionsBuilder"/> will be used to build the <see cref="ApiHandler"/>.
         /// </summary>
-        /// <typeparam name="TApiHandler"></typeparam>
-        /// <param name="optionsAction"></param>
+        /// <typeparam name="TApiHandler">The <see cref="ApiHandler"/> to be registered.</typeparam>
+        /// <param name="optionsAction">The <see cref="IApiHandlerOptionsBuilder"/> that will be used to build the <see cref="ApiHandler"/>.</param>
         public IApiHandlerExtensions RegisterApiHandler<TApiHandler>(Action<IApiHandlerOptionsBuilder> optionsAction) where TApiHandler : ApiHandler
         {
             Type handlerType = typeof(TApiHandler);

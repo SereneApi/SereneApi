@@ -128,9 +128,20 @@ namespace SereneApi.Types
                 _routeFactory.WithResource(_suppliedResource);
             }
 
-            _routeFactory.AddQuery(_query);
-            _routeFactory.AddEndPoint(_endPoint);
-            _routeFactory.AddParameters(_endPointParameters);
+            if (!string.IsNullOrWhiteSpace(_query))
+            {
+                _routeFactory.AddQuery(_query);
+            }
+
+            if (!string.IsNullOrWhiteSpace(_endPoint))
+            {
+                _routeFactory.AddEndPoint(_endPoint);
+            }
+
+            if (_endPointParameters != null)
+            {
+                _routeFactory.AddParameters(_endPointParameters);
+            }
 
             Uri endPoint = _routeFactory.BuildRoute();
 

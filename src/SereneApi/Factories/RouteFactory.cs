@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace SereneApi.Factories
 {
+    /// <inheritdoc cref="IRouteFactory"/>
     public sealed class RouteFactory: IRouteFactory
     {
         #region Variables
@@ -20,30 +21,40 @@ namespace SereneApi.Factories
         #endregion
         #region Properties
 
+        /// <inheritdoc cref="IRouteFactory.ResourcePath"/>
         public string ResourcePath { get; }
 
         #endregion
         #region Constructors
 
+        /// <summary>
+        /// Instantiates a new instance of <see cref="RouteFactory"/> with an empty Resource Path.
+        /// </summary>
         public RouteFactory()
         {
-            ResourcePath = string.Empty;
+            ResourcePath = null;
         }
 
+        /// <summary>
+        /// Instantiates a new instance of <see cref="RouteFactory"/>.
+        /// </summary>
+        /// <param name="resourcePath">The Resource Path to be appended to the Route.</param>
         public RouteFactory(string resourcePath)
         {
-            ResourcePath = resourcePath;
+            ResourcePath = SourceHelpers.EnsureSourceSlashTermination(resourcePath);
         }
 
         #endregion
 
+        /// <inheritdoc cref="IRouteFactory.WithResource"/>
         public void WithResource(string resource)
         {
             ExceptionHelper.EnsureParameterIsNotNull(resource, nameof(resource));
 
-            _resource = resource;
+            _resource = SourceHelpers.EnsureSourceNoSlashTermination(resource);
         }
 
+        /// <inheritdoc cref="IRouteFactory.AddQuery"/>
         public void AddQuery(string queryString)
         {
             if(!string.IsNullOrWhiteSpace(_query))
@@ -51,9 +62,12 @@ namespace SereneApi.Factories
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
+            ExceptionHelper.EnsureParameterIsNotNull(queryString, nameof(queryString));
+
             _query = queryString;
         }
 
+        /// <inheritdoc cref="IRouteFactory.AddParameters"/>
         public void AddParameters(params object[] parameters)
         {
             if(_parameters != null)
@@ -64,6 +78,7 @@ namespace SereneApi.Factories
             _parameters = parameters;
         }
 
+        /// <inheritdoc cref="IRouteFactory.AddEndPoint"/>
         public void AddEndPoint(string endPoint)
         {
             if(!string.IsNullOrWhiteSpace(_endPoint))
@@ -71,17 +86,23 @@ namespace SereneApi.Factories
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
-            _endPoint = endPoint;
+            ExceptionHelper.EnsureParameterIsNotNull(endPoint, nameof(endPoint));
+
+            _endPoint = SourceHelpers.EnsureSourceNoSlashTermination(endPoint);
         }
 
+        /// <inheritdoc cref="IRouteFactory.BuildRoute"/>
         public Uri BuildRoute()
         {
             string route = $"{ResourcePath}{_resource}";
 
             if(_parameters != null)
             {
+                // If parameters are not empty, the route will need to have them added.
                 if(string.IsNullOrWhiteSpace(_endPoint))
                 {
+                    // No Endpoint was supplied, if one parameter was provided it will be appended.
+                    // Else an exception will be thrown as a template is needed if more than one parameter is provided.
                     if(_parameters.Length > 1)
                     {
                         throw new ArgumentException("An endPoint template must be supplied to use multiple parameters.");
@@ -91,6 +112,7 @@ namespace SereneApi.Factories
                 }
                 else
                 {
+                    // An Endpoint was provided so it will be formatted.
                     string template = FormatEndPointTemplate(_endPoint, _parameters);
 
                     route += $"/{template}";
@@ -98,19 +120,23 @@ namespace SereneApi.Factories
             }
             else if(!string.IsNullOrWhiteSpace(_endPoint))
             {
+                // No parameter was provided so only the endpoint is appended.
                 route += $"/{_endPoint}";
             }
 
             if(!string.IsNullOrWhiteSpace(_query))
             {
+                // If a query is provided it will be appended.
                 route += _query;
             }
 
+            // Clear the values as the route has been built.
             Clear();
 
             return new Uri(route, UriKind.Relative);
         }
 
+        /// <inheritdoc cref="IRouteFactory.Clear"/>
         public void Clear()
         {
             _endPoint = null;
@@ -119,6 +145,12 @@ namespace SereneApi.Factories
             _resource = null;
         }
 
+        /// <summary>
+        /// Formats the End Point Template.
+        /// </summary>
+        /// <param name="endPointTemplate">The End Point Template to be formmatted.</param>
+        /// <param name="templateParameters">The Parameters to be appended to the template.</param>
+        /// <returns></returns>
         private static string FormatEndPointTemplate(string endPointTemplate, params object[] templateParameters)
         {
             #region Format Check Logic
