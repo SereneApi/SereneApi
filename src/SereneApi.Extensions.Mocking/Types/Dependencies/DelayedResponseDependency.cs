@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Extensions.Mocking.Types.Dependencies
 {
-    public class DelayResponseDependency
+    public class DelayedResponseDependency
     {
         private int _delayCount;
 
@@ -12,7 +12,7 @@ namespace SereneApi.Extensions.Mocking.Types.Dependencies
 
         public int DelayCount { get; }
 
-        public DelayResponseDependency(int seconds, int delayCount = 0)
+        public DelayedResponseDependency(int seconds, int delayCount = 0)
         {
             DelayTime = new TimeSpan(0, 0, seconds);
             DelayCount = delayCount;
@@ -23,9 +23,9 @@ namespace SereneApi.Extensions.Mocking.Types.Dependencies
         {
             return Task.Factory.StartNew(() =>
             {
-                if (DelayCount > 0)
+                if(DelayCount > 0)
                 {
-                    if (_delayCount <= 0)
+                    if(_delayCount <= 0)
                     {
                         return;
                     }
@@ -35,7 +35,7 @@ namespace SereneApi.Extensions.Mocking.Types.Dependencies
 
                 bool canceled = cancellationToken.WaitHandle.WaitOne(DelayTime);
 
-                if (canceled)
+                if(canceled)
                 {
                     throw new TaskCanceledException("The response was canceled as it breached the timeout time.");
                 }

@@ -1,13 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
 using SereneApi.Abstraction.Enums;
 using SereneApi.Extensions;
-using SereneApi.Interfaces;
+using SereneApi.Helpers;
+using SereneApi.Interfaces.Requests;
 using SereneApi.Types;
 using System;
 using System.Linq.Expressions;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
-using SereneApi.Helpers;
 
 namespace SereneApi
 {
@@ -15,6 +16,11 @@ namespace SereneApi
     {
         #region Perform Methods
 
+        /// <summary>
+        /// Performs an API Request Synchronously.
+        /// </summary>
+        /// <param name="method">The <see cref="Method"/> that will be used for the request.</param>
+        /// <param name="request">The <see cref="IRequest"/> that will be performed.</param>
         protected IApiResponse PerformRequest(Method method, Expression<Func<IRequest, IRequestCreated>> request = null)
         {
             CheckIfDisposed();
@@ -28,6 +34,12 @@ namespace SereneApi
             return PerformRequestBase(requestBuilder.GetRequest());
         }
 
+        /// <summary>
+        /// Performs an API Request Synchronously.
+        /// </summary>
+        /// <param name="method">The <see cref="Method"/> that will be used for the request.</param>
+        /// <param name="request">The <see cref="IRequest"/> that will be performed.</param>
+        /// <typeparam name="TResponse">The <see cref="Type"/> to be deserialized from the body of the response.</typeparam>
         protected IApiResponse<TResponse> PerformRequest<TResponse>(Method method, Expression<Func<IRequest, IRequestCreated>> request = null)
         {
             CheckIfDisposed();
@@ -54,7 +66,7 @@ namespace SereneApi
 
             try
             {
-                if (request.Content == null)
+                if(request.Content == null)
                 {
                     responseMessage = RetryRequest(async () =>
                     {
@@ -91,16 +103,16 @@ namespace SereneApi
                     }, endPoint);
                 }
             }
-            catch (ArgumentException)
+            catch(ArgumentException)
             {
                 // An incorrect Method value was supplied. So we want this exception to bubble up to the caller.
                 throw;
             }
-            catch (TimeoutException timeoutException)
+            catch(TimeoutException timeoutException)
             {
                 return ApiResponse.Failure(Status.None, "The Request Timed Out; Retry limit reached", timeoutException);
             }
-            catch (Exception exception)
+            catch(Exception exception)
             {
                 _logger?.LogError(exception,
                     "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
@@ -123,7 +135,7 @@ namespace SereneApi
 
             try
             {
-                if (request.Content == null)
+                if(request.Content == null)
                 {
                     responseMessage = RetryRequest(async () =>
                     {
@@ -160,16 +172,16 @@ namespace SereneApi
                     }, endPoint);
                 }
             }
-            catch (ArgumentException)
+            catch(ArgumentException)
             {
                 // An incorrect Method value was supplied. So we want this exception to bubble up to the caller.
                 throw;
             }
-            catch (TimeoutException timeoutException)
+            catch(TimeoutException timeoutException)
             {
                 return ApiResponse<TResponse>.Failure(Status.None, "The Request Timed Out; Retry limit reached", timeoutException);
             }
-            catch (Exception exception)
+            catch(Exception exception)
             {
                 _logger?.LogError(exception,
                     "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
@@ -240,7 +252,7 @@ namespace SereneApi
         /// <param name="responseMessage">The <see cref="HttpResponseMessage"/> to process</param>
         protected virtual IApiResponse<TResponse> ProcessResponse<TResponse>(HttpResponseMessage responseMessage)
         {
-            if (responseMessage == null)
+            if(responseMessage == null)
             {
                 _logger?.LogWarning("Received an Empty Http Response");
 
@@ -249,11 +261,18 @@ namespace SereneApi
 
             Status status = responseMessage.StatusCode.ToStatus();
 
-            if (!responseMessage.IsSuccessStatusCode)
+            if(!responseMessage.IsSuccessStatusCode)
             {
                 _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}", responseMessage.StatusCode, responseMessage.ReasonPhrase);
 
                 return ApiResponse<TResponse>.Failure(status, responseMessage.ReasonPhrase);
+            }
+
+            if(responseMessage.Content == null)
+            {
+                _logger.LogWarning("No content was received in the response.");
+
+                return ApiResponse<TResponse>.Failure(status, "No content was received in the response.");
             }
 
             try
@@ -262,11 +281,17 @@ namespace SereneApi
 
                 return ApiResponse<TResponse>.Success(status, response);
             }
-            catch (Exception exception)
+            catch(JsonException jsonException)
             {
-                _logger?.LogError(exception, "Could not deserialize the returned value");
+                _logger?.LogError(jsonException, "Could not deserialize the returned value");
 
-                return ApiResponse<TResponse>.Failure(status, "Could not deserialize returned value.", exception);
+                return ApiResponse<TResponse>.Failure(status, "Could not deserialize returned value.", jsonException);
+            }
+            catch(Exception exception)
+            {
+                _logger?.LogError(exception, "An Exception occured whilst processing the response.");
+
+                return ApiResponse<TResponse>.Failure(status, "An Exception occured whilst processing the response.", exception);
             }
         }
 

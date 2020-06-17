@@ -4,7 +4,7 @@ using System;
 
 namespace SereneApi.Types
 {
-    public class Dependency : IDependency, IDisposable
+    public class Dependency: IDependency, IDisposable
     {
         /// <inheritdoc cref="IDependency.Binding"/>
         public Binding Binding { get; }
@@ -29,12 +29,23 @@ namespace SereneApi.Types
 
         public object Clone()
         {
-            return MemberwiseClone();
+            CheckIfDisposed();
+
+            return new Dependency(Instance, Binding.Unbound);
         }
 
         #region IDisposable
 
         private volatile bool _disposed;
+
+        protected void CheckIfDisposed()
+        {
+            // TODO: Throw an exception if the HttpClient has been disposed of, at present there is no way to do this.
+            if(_disposed)
+            {
+                throw new ObjectDisposedException(nameof(GetType));
+            }
+        }
 
         /// <summary>
         /// Disposes the current instance of the <see cref="Dependency{TDependency}"/>.
@@ -48,12 +59,12 @@ namespace SereneApi.Types
 
         protected virtual void Dispose(bool disposing)
         {
-            if (_disposed)
+            if(_disposed)
             {
                 return;
             }
 
-            if (disposing && Binding == Binding.Bound && Instance is IDisposable disposableImplementation)
+            if(disposing && Binding == Binding.Bound && Instance is IDisposable disposableImplementation)
             {
                 disposableImplementation.Dispose();
             }

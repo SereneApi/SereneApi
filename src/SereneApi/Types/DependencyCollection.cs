@@ -11,7 +11,7 @@ namespace SereneApi.Types
     /// A Collection of <see cref="IDependency"/>s.
     /// </summary>
     [DebuggerDisplay("Dependencies:{_dependencyTypeMap.Count}")]
-    public class DependencyCollection : IDependencyCollection, IDisposable
+    public class DependencyCollection: IDependencyCollection, IDisposable
     {
         private readonly Dictionary<Type, IDependency> _dependencyTypeMap;
 
@@ -35,7 +35,7 @@ namespace SereneApi.Types
         {
             Dependency<TDependency> dependency = new Dependency<TDependency>(dependencyInstance, binding);
 
-            if (_dependencyTypeMap.ContainsKey(dependency.Type))
+            if(_dependencyTypeMap.ContainsKey(dependency.Type))
             {
                 _dependencyTypeMap[dependency.Type] = dependency;
             }
@@ -48,7 +48,7 @@ namespace SereneApi.Types
         /// <inheritdoc cref="IDependencyCollection.GetDependency{TDependency}"/>
         public TDependency GetDependency<TDependency>()
         {
-            if (!_dependencyTypeMap.TryGetValue(typeof(TDependency), out IDependency dependency))
+            if(!_dependencyTypeMap.TryGetValue(typeof(TDependency), out IDependency dependency))
             {
                 throw new KeyNotFoundException($"Could not find the specified dependency {typeof(TDependency)}");
             }
@@ -66,7 +66,7 @@ namespace SereneApi.Types
         /// <inheritdoc cref="IDependencyCollection.TryGetDependency{TDependency}"/>
         public bool TryGetDependency<TDependency>(out TDependency dependencyInstance)
         {
-            if (_dependencyTypeMap.TryGetValue(typeof(TDependency), out IDependency dependency))
+            if(_dependencyTypeMap.TryGetValue(typeof(TDependency), out IDependency dependency))
             {
                 dependencyInstance = dependency.GetInstance<TDependency>();
 
@@ -88,7 +88,7 @@ namespace SereneApi.Types
         {
             Dictionary<Type, IDependency> newDependencyTypeMap = new Dictionary<Type, IDependency>(_dependencyTypeMap.Count, _dependencyTypeMap.Comparer);
 
-            foreach (KeyValuePair<Type, IDependency> dependencyTypeMap in _dependencyTypeMap)
+            foreach(KeyValuePair<Type, IDependency> dependencyTypeMap in _dependencyTypeMap)
             {
                 newDependencyTypeMap.Add(dependencyTypeMap.Key, (IDependency)dependencyTypeMap.Value.Clone());
             }
@@ -112,16 +112,16 @@ namespace SereneApi.Types
 
         protected virtual void Dispose(bool disposing)
         {
-            if (_disposed)
+            if(_disposed)
             {
                 return;
             }
 
-            if (disposing)
+            if(disposing)
             {
-                foreach (IDependency dependency in _dependencyTypeMap.Values.ToList())
+                foreach(IDependency dependency in _dependencyTypeMap.Values.ToList())
                 {
-                    if (dependency is IDisposable disposableDependency)
+                    if(dependency is IDisposable disposableDependency)
                     {
                         disposableDependency.Dispose();
                     }

@@ -1,7 +1,7 @@
 ﻿using SereneApi.Abstraction.Enums;
 using SereneApi.Extensions.Mocking.Enums;
 using SereneApi.Extensions.Mocking.Interfaces;
-using SereneApi.Interfaces;
+using SereneApi.Interfaces.Requests;
 using SereneApi.Types.Content;
 using System;
 using System.Collections.Generic;
@@ -12,33 +12,67 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Extensions.Mocking.Types
 {
-    public class MockMessageHandler : HttpMessageHandler
+    /// <summary>
+    /// The <see cref="HttpMessageHandler"/> used by the <see cref="ApiHandler"/> when running in Mock Mode.
+    /// </summary>
+    /// <remarks>Override this class if you wish to extend or change its behaviour.</remarks>
+    public class MockMessageHandler: DelegatingHandler
     {
+        private readonly HttpClient _internalClient;
+
         private readonly IReadOnlyList<IMockResponse> _mockResponses;
 
-        public MockMessageHandler(IReadOnlyList<IMockResponse> mockResponses)
+        /// <summary>
+        /// Created a new instance of the <see cref="MockMessageHandler"/>.
+        /// </summary>
+        /// <param name="mockResponsesBuilder">The builder which will be used to build the <see cref="IMockResponse"/>s.</param>
+        /// <exception cref="ArgumentException">Thrown if a response is not found for the correct request.</exception>
+        public MockMessageHandler(IMockResponsesBuilder mockResponsesBuilder)
         {
-            _mockResponses = mockResponses;
+            if(mockResponsesBuilder is MockResponsesBuilder builder)
+            {
+                _mockResponses = builder.Build();
+            }
         }
 
+        /// <summary>
+        /// Created a new instance of the <see cref="MockMessageHandler"/>.
+        /// </summary>
+        /// <param name="clientHandler">Will process outgoing requests if no <see cref="IMockResponse"/> is available.</param>
+        /// <param name="mockResponsesBuilder">The builder which will be used to build the <see cref="IMockResponse"/>s.</param>
+        public MockMessageHandler(HttpClientHandler clientHandler, IMockResponsesBuilder mockResponsesBuilder) : this(mockResponsesBuilder)
+        {
+            InnerHandler = clientHandler;
+        }
+
+        /// <exception cref="ArgumentException">Thrown if there is no <see cref="IMockResponse"/> for the request.</exception>
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             Dictionary<int, IMockResponse> weightedResponses = new Dictionary<int, IMockResponse>();
 
-            foreach (IMockResponse mockResponse in _mockResponses)
+            foreach(IMockResponse mockResponse in _mockResponses)
             {
                 int responseWeight = await GetResponseWeightAsync(mockResponse, request);
 
                 // If two responses have the same weight the older response will be ignored.
-                if (responseWeight >= 0 && !weightedResponses.ContainsKey(responseWeight))
+                if(responseWeight >= 0 && !weightedResponses.ContainsKey(responseWeight))
                 {
                     weightedResponses.Add(responseWeight, mockResponse);
                 }
             }
 
-            if (weightedResponses.Count <= 0)
+            if(weightedResponses.Count <= 0)
             {
-                throw new ArgumentException($"No response was found for the {request.Method.ToMethod()} request to {request.RequestUri}");
+                if(InnerHandler == null)
+                {
+                    // No client was provided, so an error is thrown as no response was found.
+                    throw new ArgumentException($"No response was found for the {request.Method.ToMethod().ToString().ToUpper()} request to {request.RequestUri}");
+                }
+
+                return await base.SendAsync(request, cancellationToken);
+
+                // Since a client was provided, it will perform a normal request.
+                //return await _internalClient.SendAsync(request, cancellationToken);
             }
 
             int maxWeight = weightedResponses.Keys.Max();
@@ -51,41 +85,41 @@ namespace SereneApi.Extensions.Mocking.Types
         /// <summary>
         /// Override this method if you have added more <see cref="IWhitelist"/> dependencies for Responses.
         /// </summary>
-        protected async Task<int> GetResponseWeightAsync(IMockResponse mockResponse, HttpRequestMessage request)
+        protected virtual async Task<int> GetResponseWeightAsync(IMockResponse mockResponse, HttpRequestMessage request)
         {
             int responseWeight = 0;
 
             Validity validity = mockResponse.Validate(request.RequestUri);
 
-            switch (validity)
+            switch(validity)
             {
                 case Validity.NotApplicable:
-                    break;
+                break;
                 case Validity.Valid:
-                    responseWeight++;
-                    break;
+                responseWeight++;
+                break;
                 case Validity.Invalid:
-                    return -1;
+                return -1;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException();
             }
 
             validity = mockResponse.Validate(request.Method.ToMethod());
 
-            switch (validity)
+            switch(validity)
             {
                 case Validity.NotApplicable:
-                    break;
+                break;
                 case Validity.Valid:
-                    responseWeight++;
-                    break;
+                responseWeight++;
+                break;
                 case Validity.Invalid:
-                    return -1;
+                return -1;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException();
             }
 
-            if (request.Content == null)
+            if(request.Content == null)
             {
                 return responseWeight;
             }
@@ -96,27 +130,27 @@ namespace SereneApi.Extensions.Mocking.Types
 
             validity = mockResponse.Validate(requestContent);
 
-            switch (validity)
+            switch(validity)
             {
                 case Validity.NotApplicable:
-                    break;
+                break;
                 case Validity.Valid:
-                    responseWeight++;
-                    break;
+                responseWeight++;
+                break;
                 case Validity.Invalid:
-                    return -1;
+                return -1;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException();
             }
 
             return responseWeight;
         }
 
-        protected async Task<HttpResponseMessage> GetResponseMessageAsync(IMockResponse mockResponse, CancellationToken cancellationToken)
+        protected virtual async Task<HttpResponseMessage> GetResponseMessageAsync(IMockResponse mockResponse, CancellationToken cancellationToken)
         {
-            IApiRequestContent requestContent = await mockResponse.GetResponseAsync(cancellationToken);
+            IApiRequestContent requestContent = await mockResponse.GetResponseContentAsync(cancellationToken);
 
-            if (requestContent is JsonContent jsonContent)
+            if(requestContent is JsonContent jsonContent)
             {
                 return new HttpResponseMessage
                 {
@@ -130,6 +164,33 @@ namespace SereneApi.Extensions.Mocking.Types
                 StatusCode = mockResponse.Status.ToHttpStatusCode(),
                 ReasonPhrase = mockResponse.Message
             };
+        }
+
+        private volatile bool _disposed = false;
+
+        protected override void Dispose(bool disposing)
+        {
+            if(_disposed)
+            {
+                return;
+            }
+
+            base.Dispose(disposing);
+
+            if(disposing)
+            {
+                _internalClient?.Dispose();
+
+                foreach(IMockResponse mockResponse in _mockResponses)
+                {
+                    if(mockResponse is IDisposable disposableResponse)
+                    {
+                        disposableResponse.Dispose();
+                    }
+                }
+            }
+
+            _disposed = true;
         }
     }
 }

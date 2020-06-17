@@ -7,7 +7,7 @@ using Xunit;
 
 namespace SereneApi.Tests.Factories
 {
-    public class QueryFactoryTests
+    public class QueryFactoryShould
     {
         [Fact]
         public void BuildQuery()
@@ -114,7 +114,7 @@ namespace SereneApi.Tests.Factories
 
         private static string CustomQueryFormatter(object queryObject)
         {
-            if (queryObject is DateTime dateTimeQuery)
+            if(queryObject is DateTime dateTimeQuery)
             {
                 return dateTimeQuery.ToString("dd-MM-yyyy");
             }

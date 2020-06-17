@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace SereneApi
 {
     /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}"/>
-    public abstract class CrudApiHandler<TResource, TIdentifier> : ApiHandler, ICrudApi<TResource, TIdentifier> where TResource : class where TIdentifier : struct
+    public abstract class CrudApiHandler<TResource, TIdentifier>: ApiHandler, ICrudApi<TResource, TIdentifier> where TResource : class where TIdentifier : struct
     {
         private readonly ILogger _logger;
 

@@ -9,7 +9,7 @@ namespace SereneApi.Extras.Types.DataTable
 
         public void AddSortStringOverride(string sortString, string sortOverride)
         {
-            if (_sortStringOverrideMap.ContainsKey(sortString))
+            if(_sortStringOverrideMap.ContainsKey(sortString))
             {
                 throw new ArgumentException("Duplicate Override", sortOverride);
             }
@@ -19,7 +19,7 @@ namespace SereneApi.Extras.Types.DataTable
 
         internal string GetSortString(string sortString)
         {
-            if (_sortStringOverrideMap.TryGetValue(sortString, out string sortOverride))
+            if(_sortStringOverrideMap.TryGetValue(sortString, out string sortOverride))
             {
                 return sortOverride;
             }

@@ -10,15 +10,15 @@ using Xunit;
 
 namespace SereneApi.Tests
 {
-    public class CrudApiHandlerTests
+    public class CrudApiHandlerShould
     {
         private readonly ICrudApi<MockPersonDto, long> _crudApiHandler;
 
-        public CrudApiHandlerTests()
+        public CrudApiHandlerShould()
         {
             ApiHandlerFactory factory = new ApiHandlerFactory();
 
-            factory.RegisterApiHandler<TestCrudApiHandler>(builder =>
+            factory.RegisterApiHandler<CrudApiHandlerWrapper>(builder =>
             {
                 builder.UseSource("http://localhost:8080", "Person");
             }).WithMockResponses(builder =>
@@ -79,11 +79,11 @@ namespace SereneApi.Tests
                     .RespondsToRequestsWith(MockPersonDto.JohnSmith);
             });
 
-            _crudApiHandler = factory.Build<TestCrudApiHandler>();
+            _crudApiHandler = factory.Build<CrudApiHandlerWrapper>();
         }
 
         [Fact]
-        public async Task GetTest()
+        public async Task Get()
         {
             IApiResponse<MockPersonDto> response = await _crudApiHandler.GetAsync(0);
 
@@ -113,7 +113,7 @@ namespace SereneApi.Tests
         }
 
         [Fact]
-        public async Task GetAllTest()
+        public async Task GetAll()
         {
             IApiResponse<List<MockPersonDto>> response = await _crudApiHandler.GetAllAsync();
 
@@ -125,7 +125,7 @@ namespace SereneApi.Tests
 
             List<MockPersonDto> results = response.Result;
 
-            for (int i = 0; i < results.Count; i++)
+            for(int i = 0; i < results.Count; i++)
             {
                 results[i].Name.ShouldBe(MockPersonDto.All[i].Name);
                 results[i].Age.ShouldBe(MockPersonDto.All[i].Age);
@@ -134,7 +134,7 @@ namespace SereneApi.Tests
         }
 
         [Fact]
-        public async Task DeleteTest()
+        public async Task Delete()
         {
             IApiResponse response = await _crudApiHandler.DeleteAsync(0);
 
@@ -154,7 +154,7 @@ namespace SereneApi.Tests
         }
 
         [Fact]
-        public async Task CreateTest()
+        public async Task Create()
         {
             IApiResponse<MockPersonDto> response = await _crudApiHandler.CreateAsync(MockPersonDto.BenJerry);
 
@@ -179,7 +179,7 @@ namespace SereneApi.Tests
         }
 
         [Fact]
-        public async Task ReplaceTest()
+        public async Task Replace()
         {
             IApiResponse<MockPersonDto> response = await _crudApiHandler.ReplaceAsync(MockPersonDto.BenJerry);
 
@@ -196,7 +196,7 @@ namespace SereneApi.Tests
         }
 
         [Fact]
-        public async Task UpdateTest()
+        public async Task Update()
         {
             IApiResponse<MockPersonDto> response = await _crudApiHandler.UpdateAsync(MockPersonDto.BenJerry);
 

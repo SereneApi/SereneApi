@@ -1,11 +1,15 @@
 ﻿using SereneApi.Helpers;
 using SereneApi.Interfaces;
+using SereneApi.Interfaces.Requests;
 using System;
 using System.Linq.Expressions;
 
 namespace SereneApi.Types
 {
-    public class RequestBuilder : IRequest
+    /// <summary>
+    ///  Builds an <see cref="IApiRequest"/> based on the supplied values.
+    /// </summary>
+    public class RequestBuilder: IRequest
     {
         #region Readonly Variables
 
@@ -31,7 +35,6 @@ namespace SereneApi.Types
 
         private string _suppliedResource;
 
-
         public RequestBuilder(IRouteFactory routeFactory, IQueryFactory queryFactory, ISerializer serializer, string resource = null)
         {
             _routeFactory = routeFactory;
@@ -42,7 +45,7 @@ namespace SereneApi.Types
 
         public void UsingMethod(Method method)
         {
-            if (method == Method.None)
+            if(method == Method.None)
             {
                 throw new ArgumentException("Must use a valid Method.", nameof(method));
             }
@@ -50,9 +53,10 @@ namespace SereneApi.Types
             _method = method;
         }
 
-        public IRequestEndpoint AgainstResource(string resource)
+        /// <inheritdoc cref="IRequest.AgainstResource"/>
+        public IRequestEndPoint AgainstResource(string resource)
         {
-            if (_resource != null)
+            if(_resource != null)
             {
                 throw new MethodAccessException("This method can only be called if a Resource was not provided.");
             }
@@ -62,6 +66,9 @@ namespace SereneApi.Types
             return this;
         }
 
+        /// <inheritdoc>
+        ///     <cref>IRequestContent.WithInBodyContent</cref>
+        /// </inheritdoc>
         public IRequestCreated WithInBodyContent<TContent>(TContent content)
         {
             ExceptionHelper.EnsureParameterIsNotNull(content, nameof(content));
@@ -71,6 +78,9 @@ namespace SereneApi.Types
             return this;
         }
 
+        /// <inheritdoc>
+        ///     <cref>IRequestContent.WithQuery</cref>
+        /// </inheritdoc>
         public IRequestCreated WithQuery<TQueryable>(TQueryable queryable)
         {
             ExceptionHelper.EnsureParameterIsNotNull(queryable, nameof(queryable));
@@ -80,6 +90,9 @@ namespace SereneApi.Types
             return this;
         }
 
+        /// <inheritdoc>
+        ///     <cref>IRequestContent.WithQuery</cref>
+        /// </inheritdoc>
         public IRequestCreated WithQuery<TQueryable>(TQueryable queryable, Expression<Func<TQueryable, object>> queryExpression)
         {
             ExceptionHelper.EnsureParameterIsNotNull(queryable, nameof(queryable));
@@ -90,13 +103,21 @@ namespace SereneApi.Types
             return this;
         }
 
-        public IRequestContent WithEndPoint(object parameter = null)
+        /// <see>
+        ///     <cref>IRequestEndPoint.WithEndPoint</cref>
+        /// </see>
+        public IRequestContent WithEndPoint(object parameter)
         {
-            _endPoint = parameter?.ToString();
+            ExceptionHelper.EnsureParameterIsNotNull(parameter, nameof(parameter));
+
+            _endPoint = parameter.ToString();
 
             return this;
         }
 
+        /// <see>
+        ///     <cref>IRequestEndPoint.WithEndPoint</cref>
+        /// </see>
         public IRequestContent WithEndPoint(string endPoint)
         {
             ExceptionHelper.EnsureParameterIsNotNull(endPoint, nameof(endPoint));
@@ -106,31 +127,44 @@ namespace SereneApi.Types
             return this;
         }
 
-        public IRequestContent WithEndPoint(string endPointTemplate, params object[] templateParameters)
+        /// <see cref="IRequestEndPoint.WithEndPointTemplate"/>
+        public IRequestContent WithEndPointTemplate(string template, params object[] parameters)
         {
-            ExceptionHelper.EnsureParameterIsNotNull(endPointTemplate, nameof(endPointTemplate));
-            ExceptionHelper.EnsureArrayIsNotEmpty(templateParameters, nameof(templateParameters));
+            ExceptionHelper.EnsureParameterIsNotNull(template, nameof(template));
+            ExceptionHelper.EnsureArrayIsNotEmpty(parameters, nameof(parameters));
 
-            _endPoint = endPointTemplate;
-            _endPointParameters = templateParameters;
+            _endPoint = template;
+            _endPointParameters = parameters;
 
             return this;
         }
 
+        /// <see cref="IRequestCreated.GetRequest"/>
         public IApiRequest GetRequest()
         {
-            if (_resource != null)
+            if(_resource != null)
             {
-                _routeFactory.WithResource(_resource);
+                _routeFactory.AddResource(_resource);
             }
-            else if (_suppliedResource != null)
+            else if(_suppliedResource != null)
             {
-                _routeFactory.WithResource(_suppliedResource);
+                _routeFactory.AddResource(_suppliedResource);
             }
 
-            _routeFactory.AddQuery(_query);
-            _routeFactory.AddEndpoint(_endPoint);
-            _routeFactory.AddParameters(_endPointParameters);
+            if(!string.IsNullOrWhiteSpace(_query))
+            {
+                _routeFactory.AddQuery(_query);
+            }
+
+            if(!string.IsNullOrWhiteSpace(_endPoint))
+            {
+                _routeFactory.AddEndPoint(_endPoint);
+            }
+
+            if(_endPointParameters != null)
+            {
+                _routeFactory.AddParameters(_endPointParameters);
+            }
 
             Uri endPoint = _routeFactory.BuildRoute();
 

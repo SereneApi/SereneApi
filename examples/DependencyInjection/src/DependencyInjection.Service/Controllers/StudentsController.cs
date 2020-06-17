@@ -9,14 +9,14 @@ namespace DependencyInjection.Service.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StudentsController : ControllerBase
+    public class StudentsController: ControllerBase
     {
         [HttpGet("{studentId}")]
         public ActionResult<StudentDto> GetStudent(long studentId)
         {
             StudentDto student = StudentData.Students.FirstOrDefault(s => s.Id == studentId);
 
-            if (student == null)
+            if(student == null)
             {
                 // It is important we return the correct response.
                 // The ApiHandler uses this to confirm if the request was successful.
@@ -30,7 +30,7 @@ namespace DependencyInjection.Service.Controllers
         [HttpGet]
         public ActionResult<List<StudentDto>> GetStudents()
         {
-            if (StudentData.Students.Count <= 0)
+            if(StudentData.Students.Count <= 0)
             {
                 return NoContent();
             }
@@ -45,7 +45,7 @@ namespace DependencyInjection.Service.Controllers
                 .Where(s => s.GivenName == student.GivenName && s.LastName == student.LastName)
                 .ToList();
 
-            if (students.Count <= 0)
+            if(students.Count <= 0)
             {
                 return NotFound("Could not find a student with the supplied Given and Last Name");
             }
@@ -56,7 +56,7 @@ namespace DependencyInjection.Service.Controllers
         [HttpPost]
         public IActionResult Create([FromQuery] StudentDto student)
         {
-            if (student.Id != 0)
+            if(student.Id != 0)
             {
                 return BadRequest("The student cannot have an existing ID");
             }
@@ -67,7 +67,7 @@ namespace DependencyInjection.Service.Controllers
 
                 StudentData.Students.Add(student);
             }
-            catch (Exception exception)
+            catch(Exception exception)
             {
                 return Problem(exception.ToString());
             }

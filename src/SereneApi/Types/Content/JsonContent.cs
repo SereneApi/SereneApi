@@ -1,10 +1,10 @@
-﻿using SereneApi.Interfaces;
+﻿using SereneApi.Interfaces.Requests;
 using System;
 using System.Text;
 
 namespace SereneApi.Types.Content
 {
-    public class JsonContent : IApiRequestContent
+    public class JsonContent: IApiRequestContent
     {
         public Encoding Encoding { get; }
 
@@ -28,7 +28,7 @@ namespace SereneApi.Types.Content
 
         public override bool Equals(object obj)
         {
-            if (!(obj is JsonContent content))
+            if(!(obj is JsonContent content))
             {
                 return false;
             }

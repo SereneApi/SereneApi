@@ -1,4 +1,5 @@
 ﻿using SereneApi.Interfaces;
+using SereneApi.Interfaces.Requests;
 using SereneApi.Types.Content;
 using System.IO;
 using System.Net.Http;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Serializers
 {
-    public class JsonSerializer : ISerializer
+    public class JsonSerializer: ISerializer
     {
         private readonly JsonSerializerOptions _deserializerOptions;
 
