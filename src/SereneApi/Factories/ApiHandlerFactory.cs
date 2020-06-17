@@ -71,13 +71,7 @@ namespace SereneApi.Factories
 
             _handlerOptions.Add(handlerType, optionsAction);
 
-            ApiHandlerOptionsBuilder builder = new ApiHandlerOptionsBuilder();
-
-            optionsAction.Invoke(builder);
-
-            DependencyCollection dependencyCollection = (DependencyCollection)builder.DependencyCollection.Clone();
-
-            ApiHandlerExtensions extensions = new ApiHandlerExtensions(dependencyCollection);
+            ApiHandlerExtensions extensions = new ApiHandlerExtensions();
 
             _handlerExtensions.Add(handlerType, extensions);
 

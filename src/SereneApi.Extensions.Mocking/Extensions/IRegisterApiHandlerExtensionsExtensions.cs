@@ -30,14 +30,7 @@ namespace SereneApi.Extensions.Mocking
 
             if(enableOutgoingRequests)
             {
-                if(coreOptions.DependencyCollection.TryGetDependency(out HttpClientHandler clientHandler))
-                {
-                    mockHandler = new MockMessageHandler(clientHandler, mockResponsesBuilder);
-                }
-                else
-                {
-                    mockHandler = new MockMessageHandler(new HttpClientHandler(), mockResponsesBuilder);
-                }
+                mockHandler = new MockMessageHandler(new HttpClientHandler(), mockResponsesBuilder);
             }
             else
             {
