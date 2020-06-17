@@ -38,12 +38,13 @@ namespace DependencyInjection.Service.Controllers
             return Ok(StudentData.Students);
         }
 
-        [HttpGet("Search/GivenAndLastName")]
+        [HttpGet("SearchBy/GivenAndLastName")]
         public ActionResult<List<StudentDto>> FindByGivenAndLastName([FromQuery] StudentDto student)
         {
             List<StudentDto> students = StudentData.Students
-                .Where(s => s.GivenName == student.GivenName && s.LastName == student.LastName)
-                .ToList();
+                .Where(s => (string.IsNullOrWhiteSpace(student.GivenName) || s.GivenName.Equals(student.GivenName, StringComparison.InvariantCultureIgnoreCase)) && 
+                            (string.IsNullOrWhiteSpace(student.LastName) || s.LastName.Equals(student.LastName, StringComparison.InvariantCultureIgnoreCase)))
+                            .ToList();
 
             if(students.Count <= 0)
             {
@@ -54,7 +55,7 @@ namespace DependencyInjection.Service.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromQuery] StudentDto student)
+        public IActionResult Create([FromBody] StudentDto student)
         {
             if(student.Id != 0)
             {
@@ -78,7 +79,14 @@ namespace DependencyInjection.Service.Controllers
         [HttpGet("{studentId}/Classes")]
         public ActionResult<List<ClassDto>> GetStudentClasses(long studentId)
         {
-            return Ok();
+            StudentDto student = StudentData.Students.FirstOrDefault(s => s.Id == studentId);
+
+            if(student == null)
+            {
+                return NotFound($"Could not find a student with the Id:{studentId}");
+            }
+
+            return Ok(ClassDto.Classes);
         }
     }
 }

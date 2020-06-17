@@ -21,7 +21,7 @@ namespace DependencyInjection.WebUi.Controllers
         [HttpGet("{studentId}")]
         public async Task<ActionResult<IApiResponse<StudentDto>>> GetStudent(long studentId)
         {
-            var response = await _studentApi.GetAsync(studentId);
+            IApiResponse<StudentDto> response = await _studentApi.GetAsync(studentId);
 
             return Ok(response);
         }
@@ -29,24 +29,33 @@ namespace DependencyInjection.WebUi.Controllers
         [HttpGet]
         public async Task<ActionResult<List<StudentDto>>> GetStudents()
         {
-            var response = await _studentApi.GetAllAsync();
+            IApiResponse<List<StudentDto>> response = await _studentApi.GetAllAsync();
 
             return Ok(response);
         }
 
-        //public ActionResult<List<StudentDto>> FindByGivenAndLastName([FromQuery] StudentDto student)
-        //{
+        [HttpGet("GivenAndLastName")]
+        public async Task<ActionResult<List<StudentDto>>> FindByGivenAndLastName([FromQuery] StudentDto student)
+        {
+            IApiResponse<List<StudentDto>> response = await _studentApi.FindByGivenAndLastName(student);
 
-        //}
+            return Ok(response);
+        }
 
-        //public IActionResult Create([FromQuery] StudentDto student)
-        //{
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] StudentDto student)
+        {
+            IApiResponse response = await _studentApi.CreateAsync(student);
 
-        //}
+            return Ok(response);
+        }
 
-        //public ActionResult<List<ClassDto>> GetStudentClasses([FromQuery] StudentDto student)
-        //{
+        [HttpGet("{studentId}/Classes")]
+        public async Task<ActionResult<List<ClassDto>>> GetStudentClasses(int studentId)
+        {
+            IApiResponse<List<ClassDto>> response = await _studentApi.GetStudentClassesAsync(studentId);
 
-        //}
+            return Ok(response);
+        }
     }
 }

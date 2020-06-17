@@ -151,11 +151,6 @@ namespace SereneApi.Types
                 _routeFactory.AddResource(_suppliedResource);
             }
 
-            if(!string.IsNullOrWhiteSpace(_query))
-            {
-                _routeFactory.AddQuery(_query);
-            }
-
             if(!string.IsNullOrWhiteSpace(_endPoint))
             {
                 _routeFactory.AddEndPoint(_endPoint);
@@ -164,6 +159,11 @@ namespace SereneApi.Types
             if(_endPointParameters != null)
             {
                 _routeFactory.AddParameters(_endPointParameters);
+            }
+
+            if(!string.IsNullOrWhiteSpace(_query))
+            {
+                _routeFactory.AddQuery(_query);
             }
 
             Uri endPoint = _routeFactory.BuildRoute();
