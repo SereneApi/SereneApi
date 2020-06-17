@@ -16,7 +16,9 @@ namespace SereneApi.Extensions.Mocking
         /// </summary>
         /// <param name="registrationExtensions">The extensions that the <see cref="IMockResponse"/>s will be appended to.</param>
         /// <param name="mockResponseBuilder">The <see cref="IMockResponse"/>s to be added to the <see cref="ApiHandler"/>.</param>
-        public static void WithMockResponses(this IApiHandlerExtensions registrationExtensions, Action<IMockResponsesBuilder> mockResponseBuilder)
+        /// <param name="enableOutgoingRequests">If set to true, any request that does not have an associated <see cref="IMockResponse"/> will be processed normally.
+        /// If set to false, if a request does not have an associated <see cref="IMockResponse"/> an <see cref="ArgumentException"/> will be thrown.</param>
+        public static void WithMockResponses(this IApiHandlerExtensions registrationExtensions, Action<IMockResponsesBuilder> mockResponseBuilder, bool enableOutgoingRequests = false)
         {
             CoreOptions coreOptions = GetCoreOptions(registrationExtensions);
 
@@ -26,13 +28,20 @@ namespace SereneApi.Extensions.Mocking
 
             HttpMessageHandler mockHandler;
 
-            if(coreOptions.DependencyCollection.TryGetDependency(out HttpClientHandler clientHandler))
+            if(enableOutgoingRequests)
             {
-                mockHandler = new MockMessageHandler(clientHandler, mockResponsesBuilder);
+                if(coreOptions.DependencyCollection.TryGetDependency(out HttpClientHandler clientHandler))
+                {
+                    mockHandler = new MockMessageHandler(clientHandler, mockResponsesBuilder);
+                }
+                else
+                {
+                    mockHandler = new MockMessageHandler(new HttpClientHandler(), mockResponsesBuilder);
+                }
             }
             else
             {
-                mockHandler = new MockMessageHandler(new HttpClientHandler(), mockResponsesBuilder);
+                mockHandler = new MockMessageHandler(mockResponsesBuilder);
             }
 
             coreOptions.DependencyCollection.AddDependency(mockHandler);

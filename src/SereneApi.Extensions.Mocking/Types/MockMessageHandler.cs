@@ -16,7 +16,7 @@ namespace SereneApi.Extensions.Mocking.Types
     /// The <see cref="HttpMessageHandler"/> used by the <see cref="ApiHandler"/> when running in Mock Mode.
     /// </summary>
     /// <remarks>Override this class if you wish to extend or change its behaviour.</remarks>
-    public class MockMessageHandler: HttpMessageHandler
+    public class MockMessageHandler: DelegatingHandler
     {
         private readonly HttpClient _internalClient;
 
@@ -42,7 +42,7 @@ namespace SereneApi.Extensions.Mocking.Types
         /// <param name="mockResponsesBuilder">The builder which will be used to build the <see cref="IMockResponse"/>s.</param>
         public MockMessageHandler(HttpClientHandler clientHandler, IMockResponsesBuilder mockResponsesBuilder) : this(mockResponsesBuilder)
         {
-            _internalClient = new HttpClient(clientHandler);
+            InnerHandler = clientHandler;
         }
 
         /// <exception cref="ArgumentException">Thrown if there is no <see cref="IMockResponse"/> for the request.</exception>
@@ -63,14 +63,16 @@ namespace SereneApi.Extensions.Mocking.Types
 
             if(weightedResponses.Count <= 0)
             {
-                if(_internalClient == null)
+                if(InnerHandler == null)
                 {
                     // No client was provided, so an error is thrown as no response was found.
-                    throw new ArgumentException($"No response was found for the {request.Method.ToMethod()} request to {request.RequestUri}");
+                    throw new ArgumentException($"No response was found for the {request.Method.ToMethod().ToString().ToUpper()} request to {request.RequestUri}");
                 }
 
+                return await base.SendAsync(request, cancellationToken);
+
                 // Since a client was provided, it will perform a normal request.
-                return await _internalClient.SendAsync(request, cancellationToken);
+                //return await _internalClient.SendAsync(request, cancellationToken);
             }
 
             int maxWeight = weightedResponses.Keys.Max();
