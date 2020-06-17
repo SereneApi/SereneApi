@@ -18,15 +18,31 @@ namespace SereneApi.Extensions.Mocking.Types
     /// <remarks>Override this class if you wish to extend or change its behaviour.</remarks>
     public class MockMessageHandler: HttpMessageHandler
     {
+        private readonly HttpClient _internalClient;
+
         private readonly IReadOnlyList<IMockResponse> _mockResponses;
 
         /// <summary>
         /// Created a new instance of the <see cref="MockMessageHandler"/>.
         /// </summary>
-        /// <param name="mockResponses">The <see cref="IMockResponse"/>s this <see cref="MockMessageHandler"/> will respond with.</param>
-        public MockMessageHandler(IReadOnlyList<IMockResponse> mockResponses)
+        /// <param name="mockResponsesBuilder">The builder which will be used to build the <see cref="IMockResponse"/>s.</param>
+        /// <exception cref="ArgumentException">Thrown if a response is not found for the correct request.</exception>
+        public MockMessageHandler(IMockResponsesBuilder mockResponsesBuilder)
         {
-            _mockResponses = mockResponses;
+            if(mockResponsesBuilder is MockResponsesBuilder builder)
+            {
+                _mockResponses = builder.Build();
+            }
+        }
+
+        /// <summary>
+        /// Created a new instance of the <see cref="MockMessageHandler"/>.
+        /// </summary>
+        /// <param name="clientHandler">Will process outgoing requests if no <see cref="IMockResponse"/> is available.</param>
+        /// <param name="mockResponsesBuilder">The builder which will be used to build the <see cref="IMockResponse"/>s.</param>
+        public MockMessageHandler(HttpClientHandler clientHandler, IMockResponsesBuilder mockResponsesBuilder) : this(mockResponsesBuilder)
+        {
+            _internalClient = new HttpClient(clientHandler);
         }
 
         /// <exception cref="ArgumentException">Thrown if there is no <see cref="IMockResponse"/> for the request.</exception>
@@ -47,7 +63,14 @@ namespace SereneApi.Extensions.Mocking.Types
 
             if(weightedResponses.Count <= 0)
             {
-                throw new ArgumentException($"No response was found for the {request.Method.ToMethod()} request to {request.RequestUri}");
+                if(_internalClient == null)
+                {
+                    // No client was provided, so an error is thrown as no response was found.
+                    throw new ArgumentException($"No response was found for the {request.Method.ToMethod()} request to {request.RequestUri}");
+                }
+
+                // Since a client was provided, it will perform a normal request.
+                return await _internalClient.SendAsync(request, cancellationToken);
             }
 
             int maxWeight = weightedResponses.Keys.Max();
@@ -139,6 +162,33 @@ namespace SereneApi.Extensions.Mocking.Types
                 StatusCode = mockResponse.Status.ToHttpStatusCode(),
                 ReasonPhrase = mockResponse.Message
             };
+        }
+
+        private volatile bool _disposed = false;
+
+        protected override void Dispose(bool disposing)
+        {
+            if(_disposed)
+            {
+                return;
+            }
+
+            base.Dispose(disposing);
+
+            if(disposing)
+            {
+                _internalClient?.Dispose();
+
+                foreach(IMockResponse mockResponse in _mockResponses)
+                {
+                    if(mockResponse is IDisposable disposableResponse)
+                    {
+                        disposableResponse.Dispose();
+                    }
+                }
+            }
+
+            _disposed = true;
         }
     }
 }

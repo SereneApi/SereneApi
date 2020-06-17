@@ -15,11 +15,15 @@ using System.Net.Http;
 namespace SereneApi.Extensions.DependencyInjection.Types
 {
     /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiHandler}"/>
-    public class ApiHandlerOptionsBuilder<TApiHandler>: ApiHandlerOptionsBuilder, IApiHandlerOptionsBuilder<TApiHandler> where TApiHandler : ApiHandler
+    internal class ApiHandlerOptionsBuilder<TApiHandler>: ApiHandlerOptionsBuilder, IApiHandlerOptionsBuilder<TApiHandler> where TApiHandler : ApiHandler
     {
         private IServiceCollection _serviceCollection;
 
-        internal ApiHandlerOptionsBuilder(DependencyCollection dependencyCollection) : base(dependencyCollection)
+        public ApiHandlerOptionsBuilder()
+        {
+        }
+
+        public ApiHandlerOptionsBuilder(DependencyCollection dependencyCollection) : base(dependencyCollection)
         {
         }
 

@@ -4,7 +4,6 @@ using SereneApi.Types;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Text.Json;
 
 namespace SereneApi.Factories
 {
@@ -76,12 +75,9 @@ namespace SereneApi.Factories
 
             optionsAction.Invoke(builder);
 
-            ApiHandlerExtensions extensions = new ApiHandlerExtensions();
+            DependencyCollection dependencyCollection = (DependencyCollection)builder.DependencyCollection.Clone();
 
-            if(builder.DependencyCollection.TryGetDependency(out JsonSerializerOptions serializerOptions))
-            {
-                extensions.DependencyCollection.AddDependency(serializerOptions);
-            }
+            ApiHandlerExtensions extensions = new ApiHandlerExtensions(dependencyCollection);
 
             _handlerExtensions.Add(handlerType, extensions);
 

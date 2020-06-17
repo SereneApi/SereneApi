@@ -259,17 +259,14 @@ namespace SereneApi.Types
                 }
                 else
                 {
-                    bool hasHttpClientHandler =
-                        DependencyCollection.TryGetDependency(out HttpClientHandler clientHandler);
-
-                    if(!hasHttpClientHandler)
+                    if(!DependencyCollection.TryGetDependency(out HttpClientHandler clientHandler))
                     {
                         clientHandler = new HttpClientHandler();
-                    }
 
-                    if(!(hasHttpClientHandler && OverrideUseCredentials))
-                    {
-                        clientHandler.Credentials = Credentials;
+                        if(OverrideUseCredentials)
+                        {
+                            clientHandler.Credentials = Credentials;
+                        }
                     }
 
                     httpClient = new HttpClient(clientHandler);

@@ -59,7 +59,13 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="optionsAction">An action to configure the <see cref="ApiHandler"/></param>
         public static IApiHandlerExtensions RegisterApiHandler<TApiDefinition, TApiImplementation>(this IServiceCollection services, Action<IApiHandlerOptionsBuilder<TApiImplementation>> optionsAction) where TApiDefinition : class where TApiImplementation : ApiHandler, TApiDefinition
         {
-            ApiHandlerExtensions<TApiDefinition> extensions = new ApiHandlerExtensions<TApiDefinition>();
+            ApiHandlerOptionsBuilder<TApiImplementation> builder = new ApiHandlerOptionsBuilder<TApiImplementation>();
+
+            optionsAction.Invoke(builder);
+
+            DependencyCollection dependencyCollection = (DependencyCollection)builder.DependencyCollection.Clone();
+
+            ApiHandlerExtensions<TApiDefinition> extensions = new ApiHandlerExtensions<TApiDefinition>(dependencyCollection);
 
             services.TryAddScoped<TApiDefinition, TApiImplementation>();
 

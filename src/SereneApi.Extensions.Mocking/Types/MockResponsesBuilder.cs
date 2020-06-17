@@ -8,6 +8,7 @@ using System.Collections.Generic;
 
 namespace SereneApi.Extensions.Mocking.Types
 {
+    // This type should not be disposed of as it does not own the DependencyCollection.
     /// <inheritdoc cref="IMockResponsesBuilder"/>
     public class MockResponsesBuilder: IMockResponsesBuilder
     {

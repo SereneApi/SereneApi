@@ -5,6 +5,7 @@ using SereneApi.Extensions.Mocking.Types.Dependencies;
 using SereneApi.Interfaces;
 using SereneApi.Interfaces.Requests;
 using SereneApi.Types;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 namespace SereneApi.Extensions.Mocking.Types
 {
     /// <inheritdoc cref="IMockResponse"/>
-    public class MockResponse: CoreOptions, IMockResponse
+    public class MockResponse: CoreOptions, IMockResponse, IDisposable
     {
         private readonly IApiRequestContent _responseContent;
 
@@ -77,5 +78,33 @@ namespace SereneApi.Extensions.Mocking.Types
         {
             return new MockResponseExtensions(DependencyCollection);
         }
+
+        #region IDisposable
+
+        private volatile bool _disposed;
+
+        public void Dispose()
+        {
+            Dispose(true);
+
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if(_disposed)
+            {
+                return;
+            }
+
+            if(disposing)
+            {
+                DependencyCollection.Dispose();
+            }
+
+            _disposed = true;
+        }
+
+        #endregion
     }
 }

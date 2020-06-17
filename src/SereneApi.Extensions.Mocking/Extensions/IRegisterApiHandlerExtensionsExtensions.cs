@@ -3,9 +3,10 @@ using SereneApi.Extensions.Mocking.Types;
 using SereneApi.Interfaces;
 using SereneApi.Types;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 
+// Do not change namespace
+// ReSharper disable once CheckNamespace
 namespace SereneApi.Extensions.Mocking
 {
     public static class IRegisterApiHandlerExtensionsExtensions
@@ -19,13 +20,20 @@ namespace SereneApi.Extensions.Mocking
         {
             CoreOptions coreOptions = GetCoreOptions(registrationExtensions);
 
-            MockResponsesBuilder builder = new MockResponsesBuilder();
+            MockResponsesBuilder mockResponsesBuilder = new MockResponsesBuilder();
 
-            mockResponseBuilder.Invoke(builder);
+            mockResponseBuilder.Invoke(mockResponsesBuilder);
 
-            List<IMockResponse> mockResponses = builder.Build();
+            HttpMessageHandler mockHandler;
 
-            HttpMessageHandler mockHandler = new MockMessageHandler(mockResponses);
+            if(coreOptions.DependencyCollection.TryGetDependency(out HttpClientHandler clientHandler))
+            {
+                mockHandler = new MockMessageHandler(clientHandler, mockResponsesBuilder);
+            }
+            else
+            {
+                mockHandler = new MockMessageHandler(new HttpClientHandler(), mockResponsesBuilder);
+            }
 
             coreOptions.DependencyCollection.AddDependency(mockHandler);
         }
