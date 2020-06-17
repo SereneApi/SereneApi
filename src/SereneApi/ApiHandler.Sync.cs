@@ -16,6 +16,11 @@ namespace SereneApi
     {
         #region Perform Methods
 
+        /// <summary>
+        /// Performs an API Request Synchronously.
+        /// </summary>
+        /// <param name="method">The <see cref="Method"/> that will be used for the request.</param>
+        /// <param name="request">The <see cref="IRequest"/> that will be performed.</param>
         protected IApiResponse PerformRequest(Method method, Expression<Func<IRequest, IRequestCreated>> request = null)
         {
             CheckIfDisposed();
@@ -29,6 +34,12 @@ namespace SereneApi
             return PerformRequestBase(requestBuilder.GetRequest());
         }
 
+        /// <summary>
+        /// Performs an API Request Synchronously.
+        /// </summary>
+        /// <param name="method">The <see cref="Method"/> that will be used for the request.</param>
+        /// <param name="request">The <see cref="IRequest"/> that will be performed.</param>
+        /// <typeparam name="TResponse">The <see cref="Type"/> to be deserialized from the body of the response.</typeparam>
         protected IApiResponse<TResponse> PerformRequest<TResponse>(Method method, Expression<Func<IRequest, IRequestCreated>> request = null)
         {
             CheckIfDisposed();
