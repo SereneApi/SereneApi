@@ -29,12 +29,23 @@ namespace SereneApi.Types
 
         public object Clone()
         {
-            return MemberwiseClone();
+            CheckIfDisposed();
+
+            return new Dependency(Instance, Binding.Unbound);
         }
 
         #region IDisposable
 
         private volatile bool _disposed;
+
+        protected void CheckIfDisposed()
+        {
+            // TODO: Throw an exception if the HttpClient has been disposed of, at present there is no way to do this.
+            if(_disposed)
+            {
+                throw new ObjectDisposedException(nameof(GetType));
+            }
+        }
 
         /// <summary>
         /// Disposes the current instance of the <see cref="Dependency{TDependency}"/>.
