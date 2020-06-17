@@ -8,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using SereneApi;
+using SereneApi.Extensions.Mocking;
 
 namespace DependencyInjection.WebUi
 {
@@ -23,7 +25,7 @@ namespace DependencyInjection.WebUi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
 
 
             // Add an ApiHandler to the services collection, this enables dependency injection.
@@ -33,7 +35,13 @@ namespace DependencyInjection.WebUi
                 // Under appsettings.conf, there is an array called ApiConfig.
                 // Inside that array is another array called "Student" as you can see below we are getting that.
                 builder.UseConfiguration(Configuration.GetApiConfig("Student"));
-            }).WithMockResponse(StudentDto.JohnSmith);
+            })
+            .WithMockResponses(r =>
+            {
+                r.AddMockResponse(StudentDto.JohnSmith)
+                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith("http://localhost:52279/api/Students/0");
+            }, true);
 
             // Here a provider is also being used, this allows you to get services that have been registered with dependency injection
             services.RegisterApiHandler<IClassApi, ClassApiHandler>((builder, provider) =>
@@ -54,7 +62,7 @@ namespace DependencyInjection.WebUi
             app.UseSwagger();
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("../swagger/v1/swagger.json", "WebUi"); });
 
-            if (env.IsDevelopment())
+            if(env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }

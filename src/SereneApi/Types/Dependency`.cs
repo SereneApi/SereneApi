@@ -10,7 +10,7 @@ namespace SereneApi.Types
     /// </summary>
     /// <typeparam name="TDependency"></typeparam>
     [DebuggerDisplay("Type:{Type}; Binding:{Binding}")]
-    public class Dependency<TDependency> : Dependency, IDependency<TDependency>
+    public class Dependency<TDependency>: Dependency, IDependency<TDependency>, ICloneable
     {
         /// <inheritdoc cref="IDependency{TDependency}.Instance"/>
         public new TDependency Instance => (TDependency)base.Instance;
@@ -25,6 +25,13 @@ namespace SereneApi.Types
         /// <param name="binding"></param>
         internal Dependency(TDependency instance, Binding binding = Binding.Bound) : base(instance, binding)
         {
+        }
+
+        public new object Clone()
+        {
+            CheckIfDisposed();
+
+            return new Dependency<TDependency>(Instance, Binding.Unbound);
         }
     }
 }

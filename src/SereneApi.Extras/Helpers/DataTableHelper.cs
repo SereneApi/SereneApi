@@ -16,27 +16,27 @@ namespace SereneApi.Extras.Helpers
 
             IQueryCollection query = request.Query;
 
-            if (!query.TryGetValue("start", out StringValues startValues))
+            if(!query.TryGetValue("start", out StringValues startValues))
             {
                 throw new ArgumentException("Could not Find", "start");
             }
 
-            if (!query.TryGetValue("length", out StringValues lengthValues))
+            if(!query.TryGetValue("length", out StringValues lengthValues))
             {
                 throw new ArgumentException("Could not Find", "length");
             }
 
-            if (!query.TryGetValue("search[value]", out StringValues searchValues))
+            if(!query.TryGetValue("search[value]", out StringValues searchValues))
             {
                 throw new ArgumentException("Could not Find", "search[value]");
             }
 
-            if (!query.TryGetValue("order[0][column]", out StringValues sortIndexValues))
+            if(!query.TryGetValue("order[0][column]", out StringValues sortIndexValues))
             {
                 throw new ArgumentException("Could not Find", "order[0][column]");
             }
 
-            if (!query.TryGetValue("order[0][dir]", out StringValues sortDirectionValues))
+            if(!query.TryGetValue("order[0][dir]", out StringValues sortDirectionValues))
             {
                 throw new ArgumentException("Could not Find", "order[0][dir]");
             }
@@ -48,7 +48,7 @@ namespace SereneApi.Extras.Helpers
             string searchString = searchValues.First().ToLower();
             string sortDirection = sortDirectionValues.First();
 
-            if (!query.TryGetValue($"columns[{sortIndex}][data]", out StringValues sortPropertyNameValues))
+            if(!query.TryGetValue($"columns[{sortIndex}][data]", out StringValues sortPropertyNameValues))
             {
                 throw new ArgumentException("Could not Find", $"columns[{sortIndex}][data]");
             }
@@ -67,7 +67,7 @@ namespace SereneApi.Extras.Helpers
 
         public static int GetDrawCounter(HttpRequest request)
         {
-            if (!request.Query.TryGetValue("draw", out StringValues drawValues))
+            if(!request.Query.TryGetValue("draw", out StringValues drawValues))
             {
                 throw new ArgumentException("Could not Find", "draw");
             }

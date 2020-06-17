@@ -13,13 +13,13 @@
         public static string UseOrGetDefaultResourcePath(string resourcePath)
         {
             // If an empty string is supplied, the default value is disabled.
-            if (resourcePath == string.Empty)
+            if(resourcePath == string.Empty)
             {
-                return string.Empty;
+                return resourcePath;
             }
 
             // Null or whitespace strings will enabled the default.
-            if (string.IsNullOrWhiteSpace(resourcePath))
+            if(string.IsNullOrWhiteSpace(resourcePath))
             {
                 resourcePath = ApiHandlerOptionDefaults.ResourcePath;
             }

@@ -1,9 +1,10 @@
-﻿using SereneApi.Interfaces;
+﻿using SereneApi.Interfaces.Requests;
+using System;
 using System.Text;
 
 namespace SereneApi.Types.Content
 {
-    public class JsonContent : IApiRequestContent
+    public class JsonContent: IApiRequestContent
     {
         public Encoding Encoding { get; }
 
@@ -27,17 +28,22 @@ namespace SereneApi.Types.Content
 
         public override bool Equals(object obj)
         {
-            if (!(obj is JsonContent content))
+            if(!(obj is JsonContent content))
             {
                 return false;
             }
 
-            bool equals = content.Content == Content;
+            return Equals(content);
+        }
 
-            equals = content.MediaType == MediaType;
-            equals = content.Encoding == Encoding;
+        protected bool Equals(JsonContent other)
+        {
+            return Equals(Encoding, other.Encoding) && MediaType.Equals(other.MediaType) && Content == other.Content;
+        }
 
-            return equals;
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Encoding, MediaType, Content);
         }
     }
 }

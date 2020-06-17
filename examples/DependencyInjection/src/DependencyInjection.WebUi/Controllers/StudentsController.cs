@@ -9,7 +9,7 @@ namespace DependencyInjection.WebUi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StudentsController : ControllerBase
+    public class StudentsController: ControllerBase
     {
         private readonly IStudentApi _studentApi;
 

@@ -1,80 +1,196 @@
 ﻿using SereneApi.Abstraction.Enums;
+using SereneApi.Extensions.Mocking.Enums;
 using SereneApi.Extensions.Mocking.Interfaces;
-using SereneApi.Interfaces;
+using SereneApi.Interfaces.Requests;
 using SereneApi.Types.Content;
+using System;
 using System.Collections.Generic;
-using System.Net;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SereneApi.Extensions.Mocking.Types
 {
-    public class MockMessageHandler : HttpMessageHandler
+    /// <summary>
+    /// The <see cref="HttpMessageHandler"/> used by the <see cref="ApiHandler"/> when running in Mock Mode.
+    /// </summary>
+    /// <remarks>Override this class if you wish to extend or change its behaviour.</remarks>
+    public class MockMessageHandler: DelegatingHandler
     {
+        private readonly HttpClient _internalClient;
+
         private readonly IReadOnlyList<IMockResponse> _mockResponses;
 
-        public MockMessageHandler(IReadOnlyList<IMockResponse> mockResponses)
+        /// <summary>
+        /// Created a new instance of the <see cref="MockMessageHandler"/>.
+        /// </summary>
+        /// <param name="mockResponsesBuilder">The builder which will be used to build the <see cref="IMockResponse"/>s.</param>
+        /// <exception cref="ArgumentException">Thrown if a response is not found for the correct request.</exception>
+        public MockMessageHandler(IMockResponsesBuilder mockResponsesBuilder)
         {
-            _mockResponses = mockResponses;
+            if(mockResponsesBuilder is MockResponsesBuilder builder)
+            {
+                _mockResponses = builder.Build();
+            }
         }
 
+        /// <summary>
+        /// Created a new instance of the <see cref="MockMessageHandler"/>.
+        /// </summary>
+        /// <param name="clientHandler">Will process outgoing requests if no <see cref="IMockResponse"/> is available.</param>
+        /// <param name="mockResponsesBuilder">The builder which will be used to build the <see cref="IMockResponse"/>s.</param>
+        public MockMessageHandler(HttpClientHandler clientHandler, IMockResponsesBuilder mockResponsesBuilder) : this(mockResponsesBuilder)
+        {
+            InnerHandler = clientHandler;
+        }
+
+        /// <exception cref="ArgumentException">Thrown if there is no <see cref="IMockResponse"/> for the request.</exception>
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            foreach (IMockResponse mockResponse in _mockResponses)
+            Dictionary<int, IMockResponse> weightedResponses = new Dictionary<int, IMockResponse>();
+
+            foreach(IMockResponse mockResponse in _mockResponses)
             {
-                bool validatedResponse = true;
+                int responseWeight = await GetResponseWeightAsync(mockResponse, request);
 
-                if (mockResponse is IWhitelist whitelist)
+                // If two responses have the same weight the older response will be ignored.
+                if(responseWeight >= 0 && !weightedResponses.ContainsKey(responseWeight))
                 {
-                    if (validatedResponse)
-                    {
-                        validatedResponse = whitelist.Validate(request.RequestUri);
-                    }
+                    weightedResponses.Add(responseWeight, mockResponse);
+                }
+            }
 
-                    if (validatedResponse)
-                    {
-                        validatedResponse = whitelist.Validate(request.Method);
-                    }
-
-                    if (request.Content != null)
-                    {
-                        string content = await request.Content.ReadAsStringAsync();
-
-                        IApiRequestContent requestContent = new JsonContent(content);
-
-                        if (validatedResponse)
-                        {
-                            whitelist.Validate(requestContent);
-                        }
-
-                    }
+            if(weightedResponses.Count <= 0)
+            {
+                if(InnerHandler == null)
+                {
+                    // No client was provided, so an error is thrown as no response was found.
+                    throw new ArgumentException($"No response was found for the {request.Method.ToMethod().ToString().ToUpper()} request to {request.RequestUri}");
                 }
 
-                if (!validatedResponse)
-                {
-                    continue;
-                }
+                return await base.SendAsync(request, cancellationToken);
 
-                IApiRequestContent response = await mockResponse.GetResponseAsync(cancellationToken);
+                // Since a client was provided, it will perform a normal request.
+                //return await _internalClient.SendAsync(request, cancellationToken);
+            }
 
-                if (response is JsonContent jsonContent)
-                {
-                    return new HttpResponseMessage
-                    {
-                        StatusCode = mockResponse.Status.ToHttpStatusCode(),
-                        Content = jsonContent.ToStringContent()
-                    };
-                }
+            int maxWeight = weightedResponses.Keys.Max();
 
+            IMockResponse response = weightedResponses[maxWeight];
+
+            return await GetResponseMessageAsync(response, cancellationToken);
+        }
+
+        /// <summary>
+        /// Override this method if you have added more <see cref="IWhitelist"/> dependencies for Responses.
+        /// </summary>
+        protected virtual async Task<int> GetResponseWeightAsync(IMockResponse mockResponse, HttpRequestMessage request)
+        {
+            int responseWeight = 0;
+
+            Validity validity = mockResponse.Validate(request.RequestUri);
+
+            switch(validity)
+            {
+                case Validity.NotApplicable:
+                break;
+                case Validity.Valid:
+                responseWeight++;
+                break;
+                case Validity.Invalid:
+                return -1;
+                default:
+                throw new ArgumentOutOfRangeException();
+            }
+
+            validity = mockResponse.Validate(request.Method.ToMethod());
+
+            switch(validity)
+            {
+                case Validity.NotApplicable:
+                break;
+                case Validity.Valid:
+                responseWeight++;
+                break;
+                case Validity.Invalid:
+                return -1;
+                default:
+                throw new ArgumentOutOfRangeException();
+            }
+
+            if(request.Content == null)
+            {
+                return responseWeight;
+            }
+
+            string content = await request.Content.ReadAsStringAsync();
+
+            IApiRequestContent requestContent = new JsonContent(content);
+
+            validity = mockResponse.Validate(requestContent);
+
+            switch(validity)
+            {
+                case Validity.NotApplicable:
+                break;
+                case Validity.Valid:
+                responseWeight++;
+                break;
+                case Validity.Invalid:
+                return -1;
+                default:
+                throw new ArgumentOutOfRangeException();
+            }
+
+            return responseWeight;
+        }
+
+        protected virtual async Task<HttpResponseMessage> GetResponseMessageAsync(IMockResponse mockResponse, CancellationToken cancellationToken)
+        {
+            IApiRequestContent requestContent = await mockResponse.GetResponseContentAsync(cancellationToken);
+
+            if(requestContent is JsonContent jsonContent)
+            {
                 return new HttpResponseMessage
                 {
                     StatusCode = mockResponse.Status.ToHttpStatusCode(),
-                    ReasonPhrase = mockResponse.Message
+                    Content = jsonContent.ToStringContent()
                 };
             }
 
-            return new HttpResponseMessage(HttpStatusCode.OK);
+            return new HttpResponseMessage
+            {
+                StatusCode = mockResponse.Status.ToHttpStatusCode(),
+                ReasonPhrase = mockResponse.Message
+            };
+        }
+
+        private volatile bool _disposed = false;
+
+        protected override void Dispose(bool disposing)
+        {
+            if(_disposed)
+            {
+                return;
+            }
+
+            base.Dispose(disposing);
+
+            if(disposing)
+            {
+                _internalClient?.Dispose();
+
+                foreach(IMockResponse mockResponse in _mockResponses)
+                {
+                    if(mockResponse is IDisposable disposableResponse)
+                    {
+                        disposableResponse.Dispose();
+                    }
+                }
+            }
+
+            _disposed = true;
         }
     }
 }

@@ -14,7 +14,7 @@ namespace SereneApi
     /// When Inherited; Provides the methods required for implementing a RESTful Api consumer.
     /// </summary>
     [DebuggerDisplay("Source:{Source}; Timeout:{Timeout}")]
-    public abstract partial class ApiHandler : IDisposable
+    public abstract partial class ApiHandler: IDisposable
     {
         #region Variables
 
@@ -56,7 +56,19 @@ namespace SereneApi
         public Uri Source { get; }
 
         /// <inheritdoc cref="IApiHandlerOptions.Resource"/>
-        public string Resource => _options.Resource;
+        public string Resource
+        {
+            get
+            {
+                // If the resource is empty, a null value is returned.
+                if(string.IsNullOrWhiteSpace(_options.Resource))
+                {
+                    return null;
+                }
+
+                return _options.Resource;
+            }
+        }
 
         /// <inheritdoc cref="IApiHandlerOptions.ResourcePath"/>
         public string ResourcePath => _options.ResourcePath;
@@ -84,11 +96,12 @@ namespace SereneApi
 
             _options = options;
 
+            // Set the source this ApiHandler will use, this is the base for all requests.
             Source = new Uri($"{options.Source}{options.ResourcePath}{options.Resource}");
 
             #region Configure Dependencies
 
-            if (!_options.Dependencies.TryGetDependency(out _httpClient))
+            if(!_options.Dependencies.TryGetDependency(out _httpClient))
             {
                 throw new ArgumentException("No HttpClient was provided");
             }
@@ -122,7 +135,7 @@ namespace SereneApi
         /// <param name="responseMessage">The <see cref="HttpResponseMessage"/> to process</param>
         protected virtual IApiResponse ProcessResponse(HttpResponseMessage responseMessage)
         {
-            if (responseMessage == null)
+            if(responseMessage == null)
             {
                 _logger?.LogWarning("Received an Empty Http Response");
 
@@ -131,7 +144,7 @@ namespace SereneApi
 
             Status status = responseMessage.StatusCode.ToStatus();
 
-            if (status.IsSuccessCode())
+            if(status.IsSuccessCode())
             {
                 return ApiResponse.Success(status);
             }
@@ -146,9 +159,14 @@ namespace SereneApi
 
         private bool _disposed;
 
+        /// <summary>
+        /// Throws an Object Disposed Exception if the <see cref="ApiHandler"/> has been disposed.
+        /// </summary>
         private void CheckIfDisposed(IApiHandlerOptions options)
         {
-            if (options is ApiHandlerOptions apiHandlerOptions && apiHandlerOptions.IsDisposed())
+            CheckIfDisposed();
+
+            if(options is ApiHandlerOptions apiHandlerOptions && apiHandlerOptions.IsDisposed())
             {
                 throw new ObjectDisposedException(nameof(apiHandlerOptions.GetType));
             }
@@ -159,7 +177,8 @@ namespace SereneApi
         /// </summary>
         protected void CheckIfDisposed()
         {
-            if (_disposed)
+            // TODO: Throw an exception if the HttpClient has been disposed of, at present there is no way to do this.
+            if(_disposed)
             {
                 throw new ObjectDisposedException(nameof(GetType));
             }
@@ -177,16 +196,19 @@ namespace SereneApi
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Override this method to implement <see cref="ApiHandler"/> disposal.
+        /// </summary>
         protected virtual void Dispose(bool disposing)
         {
-            if (_disposed)
+            if(_disposed)
             {
                 return;
             }
 
-            if (disposing)
+            if(disposing)
             {
-                if (_options is IDisposable disposableOptions)
+                if(_options is IDisposable disposableOptions)
                 {
                     disposableOptions.Dispose();
                 }

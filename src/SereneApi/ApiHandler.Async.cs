@@ -1,11 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
 using SereneApi.Abstraction.Enums;
 using SereneApi.Extensions;
-using SereneApi.Interfaces;
+using SereneApi.Helpers;
+using SereneApi.Interfaces.Requests;
 using SereneApi.Types;
 using System;
 using System.Linq.Expressions;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SereneApi
@@ -13,227 +15,52 @@ namespace SereneApi
     // Async Implementation
     public abstract partial class ApiHandler
     {
-        #region Action Methods
-
-        public Task<IApiResponse> PerformRequestAsync(Action<IApiRequestBuilder> requestAction)
-        {
-            ApiRequestBuilder requestBuilder = new ApiRequestBuilder(_routeFactory, _queryFactory, _serializer);
-
-            requestAction.Invoke(requestBuilder);
-
-            IApiRequest request = requestBuilder.BuildRequest();
-
-            return PerformRequestBaseAsync(request);
-        }
-
-        public Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(Action<IApiRequestBuilder> requestAction)
-        {
-            ApiRequestBuilder requestBuilder = new ApiRequestBuilder(_routeFactory, _queryFactory, _serializer);
-
-            requestAction.Invoke(requestBuilder);
-
-            IApiRequest request = requestBuilder.BuildRequest();
-
-            return PerformRequestBaseAsync<TResponse>(request);
-        }
+        #region Perform Methods
 
         /// <summary>
-        /// Performs an in Path Request. The <see cref="endpoint"/> will be appended to the Url
+        /// Performs an API Request Asynchronously.
         /// </summary>
-        /// <param name="method">The RESTful API <see cref="Method"/> to be used</param>
-        /// <param name="endpoint">The <see cref="endpoint"/> to be appended to the Url</param>
-        protected virtual Task<IApiResponse> InPathRequestAsync(Method method, object endpoint = null)
+        /// <param name="method">The <see cref="Method"/> that will be used for the request.</param>
+        /// <param name="request">The <see cref="IRequest"/> that will be performed.</param>
+        protected Task<IApiResponse> PerformRequestAsync(Method method, Expression<Func<IRequest, IRequestCreated>> request = null)
         {
             CheckIfDisposed();
 
-            return PerformRequestAsync(builder =>
-            {
-                builder.UsingMethod(method);
-                builder.WithEndPoint(endpoint);
-            });
+            RequestBuilder requestBuilder = new RequestBuilder(_routeFactory, _queryFactory, _serializer, Resource);
+
+            requestBuilder.UsingMethod(method);
+
+            // The request is optional, so a null check is applied.
+            request?.Compile().Invoke(requestBuilder);
+
+            return PerformRequestBaseAsync(requestBuilder.GetRequest());
         }
 
         /// <summary>
-        /// Performs an in Path Request. The <see cref="endpointParameters"/> will be appended to the Url
+        /// Performs an API Request Asynchronously.
         /// </summary>
-        /// <param name="method">The RESTful API <see cref="Method"/> to be used</param>
-        /// <param name="endpointTemplate">The endpoint to be performed, supports templates for string formatting with <see cref="endpointParameters"/></param>
-        /// <param name="endpointParameters">The <see cref="endpointParameters"/> to be appended to the Url</param>
-        protected virtual Task<IApiResponse> InPathRequestAsync(Method method, string endpointTemplate, params object[] endpointParameters)
+        /// <param name="method">The <see cref="Method"/> that will be used for the request.</param>
+        /// <param name="request">The <see cref="IRequest"/> that will be performed.</param>
+        /// <typeparam name="TResponse">The <see cref="Type"/> to be deserialized from the body of the response.</typeparam>
+        protected Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(Method method, Expression<Func<IRequest, IRequestCreated>> request = null)
         {
             CheckIfDisposed();
 
-            return PerformRequestAsync(builder =>
-            {
-                builder.UsingMethod(method);
-                builder.WithEndPoint(endpointTemplate, endpointParameters);
-            });
-        }
+            RequestBuilder requestBuilder = new RequestBuilder(_routeFactory, _queryFactory, _serializer, Resource);
 
-        /// <summary>
-        /// Performs an in Path Request returning a <see cref="TResponse"/>. The <see cref="endpoint"/> will be appended to the Url
-        /// </summary>
-        /// <typeparam name="TResponse">The type to be deserialized by the <see cref="ApiHandler"/> from the response</typeparam>
-        /// <param name="method">The RESTful API <see cref="Method"/> to be used</param>
-        /// <param name="endpoint">The <see cref="endpoint"/> to be appended to the Url</param>
-        protected virtual Task<IApiResponse<TResponse>> InPathRequestAsync<TResponse>(Method method, object endpoint = null)
-        {
-            CheckIfDisposed();
+            requestBuilder.UsingMethod(method);
 
-            return PerformRequestAsync<TResponse>(builder =>
-            {
-                builder.UsingMethod(method);
-                builder.WithEndPoint(endpoint);
-            });
-        }
+            // The request is optional, so a null check is applied.
+            request?.Compile().Invoke(requestBuilder);
 
-        /// <summary>
-        /// Performs an in Path Request returning a <see cref="TResponse"/>. The <see cref="endpointParameters"/> will be appended to the Url
-        /// </summary>
-        /// <param name="method">The RESTful API <see cref="Method"/> to be used</param>
-        /// <param name="endpointTemplate">The endpoint to be performed, supports templates for string formatting with <see cref="endpointParameters"/></param>
-        /// <param name="endpointParameters">The <see cref="endpointParameters"/> to be appended to the Url</param>
-        protected virtual Task<IApiResponse<TResponse>> InPathRequestAsync<TResponse>(Method method, string endpointTemplate, params object[] endpointParameters)
-        {
-            CheckIfDisposed();
-
-            return PerformRequestAsync<TResponse>(builder =>
-            {
-                builder.UsingMethod(method);
-                builder.WithEndPoint(endpointTemplate, endpointParameters);
-            });
-        }
-
-        /// <summary>
-        /// Performs an in Path Request with query support returning a <see cref="TResponse"/>
-        /// </summary>
-        /// <typeparam name="TResponse">The type to be deserialized by the <see cref="ApiHandler"/> from the response</typeparam>
-        /// <typeparam name="TQuery">The type to be sent in the query</typeparam>
-        /// <param name="method">The RESTful API <see cref="Method"/> to be used</param>
-        /// <param name="endpoint">The <see cref="endpoint"/> to be performed</param>
-        /// <param name="queryContent"> <see cref="queryContent"/> to be used when generating the <see cref="query"/></param>
-        /// <param name="query">Selects parts of the <see cref="queryContent"/> to be converted into a query</param>
-        protected virtual Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQuery>(Method method, TQuery queryContent, Expression<Func<TQuery, object>> query, object endpoint = null) where TQuery : class
-        {
-            CheckIfDisposed();
-
-            return PerformRequestAsync<TResponse>(builder =>
-            {
-                builder.UsingMethod(method);
-                builder.WithEndPoint(endpoint);
-                builder.AddQuery(queryContent, query);
-            });
-        }
-
-        /// <summary>
-        /// Performs an in Path Request with query support returning a <see cref="TResponse"/>. The <see cref="endpointParameters"/> will be appended to the Url
-        /// </summary>
-        /// <typeparam name="TResponse">The type to be deserialized by the <see cref="ApiHandler"/> from the response</typeparam>
-        /// <typeparam name="TQuery">The type to be sent in the query</typeparam>
-        /// <param name="method">The RESTful API <see cref="Method"/> to be used</param>
-        /// <param name="endpointTemplate">The endpoint to be performed, supports templates for string formatting with <see cref="endpointParameters"/></param>
-        /// <param name="queryContent">The <see cref="queryContent"/> to be used when generating the <see cref="query"/></param>
-        /// <param name="query">Selects parts of the <see cref="queryContent"/> to be converted into a query</param>
-        /// <param name="endpointParameters">The <see cref="endpointParameters"/> to be appended to the Url</param>
-        protected virtual Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQuery>(Method method, TQuery queryContent, Expression<Func<TQuery, object>> query, string endpointTemplate, params object[] endpointParameters) where TQuery : class
-        {
-            CheckIfDisposed();
-
-            return PerformRequestAsync<TResponse>(builder =>
-            {
-                builder.UsingMethod(method);
-                builder.WithEndPoint(endpointTemplate, endpointParameters);
-                builder.AddQuery(queryContent, query);
-            });
-        }
-
-        /// <summary>
-        /// Serializes the supplied <typeparam name="TContent"/> sending it in the Body of the Request
-        /// </summary>
-        /// <typeparam name="TContent">The type to be serialized and sent in the body of the request</typeparam>
-        /// <param name="method">The RESTful <see cref="Method"/> to be used</param>
-        /// <param name="inBodyContent">The object serialized and sent in the body of the request</param>
-        /// <param name="endpoint">The <see cref="endpoint"/> to be appended to the end of the Url</param>
-        protected virtual Task<IApiResponse> InBodyRequestAsync<TContent>(Method method, TContent inBodyContent, object endpoint = null)
-        {
-            CheckIfDisposed();
-
-            return PerformRequestAsync(builder =>
-            {
-                builder.UsingMethod(method);
-                builder.WithEndPoint(endpoint);
-                builder.AddInBodyContent(inBodyContent);
-            });
-        }
-
-        /// <summary>
-        /// Serializes the supplied <typeparam name="TContent"/> sending it in the Body of the Request
-        /// </summary>
-        /// <typeparam name="TContent"></typeparam>
-        /// <param name="method"></param>
-        /// <param name="inBodyContent"></param>
-        /// <param name="endpointTemplate"></param>
-        /// <param name="endpointParameters"></param>
-        protected virtual Task<IApiResponse> InBodyRequestAsync<TContent>(Method method, TContent inBodyContent, string endpointTemplate, params object[] endpointParameters)
-        {
-            CheckIfDisposed();
-
-            return PerformRequestAsync(builder =>
-            {
-                builder.UsingMethod(method);
-                builder.WithEndPoint(endpointTemplate, endpointParameters);
-                builder.AddInBodyContent(inBodyContent);
-            });
-        }
-
-        /// <summary>
-        /// Serializes the supplied <typeparam name="TContent"/> sending it in the Body of the Request
-        /// </summary>
-        /// <typeparam name="TContent"></typeparam>
-        /// <typeparam name="TResponse"></typeparam>
-        /// <param name="method"></param>
-        /// <param name="inBodyContent"></param>
-        /// <param name="endpoint"></param>
-        protected virtual Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(Method method, TContent inBodyContent, object endpoint = null)
-        {
-            CheckIfDisposed();
-
-            return PerformRequestAsync<TResponse>(builder =>
-            {
-                builder.UsingMethod(method);
-                builder.WithEndPoint(endpoint);
-                builder.AddInBodyContent(inBodyContent);
-            });
-        }
-
-        /// <summary>
-        /// Serializes the supplied <typeparam name="TContent"/> sending it in the Body of the Request
-        /// </summary>
-        /// <typeparam name="TContent"></typeparam>
-        /// <typeparam name="TResponse"></typeparam>
-        /// <param name="method"></param>
-        /// <param name="inBodyContent"></param>
-        /// <param name="endpointTemplate"></param>
-        /// <param name="endpointParameters"></param>
-        protected virtual Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(Method method, TContent inBodyContent, string endpointTemplate, params object[] endpointParameters)
-        {
-            CheckIfDisposed();
-
-            return PerformRequestAsync<TResponse>(builder =>
-            {
-                builder.UsingMethod(method);
-                builder.WithEndPoint(endpointTemplate, endpointParameters);
-                builder.AddInBodyContent(inBodyContent);
-            });
+            return PerformRequestBaseAsync<TResponse>(requestBuilder.GetRequest());
         }
 
         #endregion
         #region Base Action Methods
 
-        public async Task<IApiResponse> PerformRequestBaseAsync(IApiRequest request)
+        protected virtual async Task<IApiResponse> PerformRequestBaseAsync(IApiRequest request)
         {
-            CheckIfDisposed();
-
             HttpResponseMessage responseMessage;
 
             Uri endPoint = request.EndPoint;
@@ -242,7 +69,7 @@ namespace SereneApi
 
             try
             {
-                if (request.Content == null)
+                if(request.Content == null)
                 {
                     responseMessage = await RetryRequestAsync(async () =>
                     {
@@ -279,16 +106,16 @@ namespace SereneApi
                     }, endPoint);
                 }
             }
-            catch (ArgumentException)
+            catch(ArgumentException)
             {
                 // An incorrect Method value was supplied. So we want this exception to bubble up to the caller.
                 throw;
             }
-            catch (TimeoutException timeoutException)
+            catch(TimeoutException timeoutException)
             {
                 return ApiResponse.Failure(Status.None, "The Request Timed Out; Retry limit reached", timeoutException);
             }
-            catch (Exception exception)
+            catch(Exception exception)
             {
                 _logger?.LogError(exception,
                     "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
@@ -301,10 +128,8 @@ namespace SereneApi
             return ProcessResponse(responseMessage);
         }
 
-        public async Task<IApiResponse<TResponse>> PerformRequestBaseAsync<TResponse>(IApiRequest request)
+        protected virtual async Task<IApiResponse<TResponse>> PerformRequestBaseAsync<TResponse>(IApiRequest request)
         {
-            CheckIfDisposed();
-
             HttpResponseMessage responseMessage;
 
             Uri endPoint = request.EndPoint;
@@ -313,7 +138,7 @@ namespace SereneApi
 
             try
             {
-                if (request.Content == null)
+                if(request.Content == null)
                 {
                     responseMessage = await RetryRequestAsync(async () =>
                     {
@@ -350,16 +175,16 @@ namespace SereneApi
                     }, endPoint);
                 }
             }
-            catch (ArgumentException)
+            catch(ArgumentException)
             {
                 // An incorrect Method value was supplied. So we want this exception to bubble up to the caller.
                 throw;
             }
-            catch (TimeoutException timeoutException)
+            catch(TimeoutException timeoutException)
             {
                 return ApiResponse<TResponse>.Failure(Status.None, "The Request Timed Out; Retry limit reached", timeoutException);
             }
-            catch (Exception exception)
+            catch(Exception exception)
             {
                 _logger?.LogError(exception,
                     "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
@@ -378,7 +203,7 @@ namespace SereneApi
         /// <param name="requestAction">The request to be performed.</param>
         /// <param name="route">The route to be inserted into the log.</param>
         /// <returns></returns>
-        protected async Task<HttpResponseMessage> RetryRequestAsync(Func<Task<HttpResponseMessage>> requestAction, Uri route)
+        protected virtual async Task<HttpResponseMessage> RetryRequestAsync(Func<Task<HttpResponseMessage>> requestAction, Uri route)
         {
             bool retryingRequest;
             int requestsAttempted = 0;
@@ -392,11 +217,11 @@ namespace SereneApi
 
                     return responseMessage;
                 }
-                catch (TaskCanceledException canceledException)
+                catch(TaskCanceledException canceledException)
                 {
                     requestsAttempted++;
 
-                    if (_retry.Count == 0 || requestsAttempted == _retry.Count)
+                    if(_retry.Count == 0 || requestsAttempted == _retry.Count)
                     {
                         _logger?.LogError(canceledException, "The Request to \"{RequestRoute}\" has Timed Out; Retry limit reached. Retired {count}", route, requestsAttempted);
 
@@ -409,12 +234,16 @@ namespace SereneApi
                         retryingRequest = true;
                     }
                 }
-            } while (retryingRequest);
+            } while(retryingRequest);
 
-            throw new TimeoutException($"The Request to \"{route}\" has Timed Out; Retry limit reached. Retired {requestsAttempted}");
+            ExceptionHelper.RequestTimedOut(route, requestsAttempted);
+
+            // This is redundant as ExceptionHelper.TimedOut will throw an exception.
+            return null;
         }
 
         #endregion
+        #region Response Processing
 
         /// <summary>
         /// Processes the returned <see cref="HttpResponseMessage"/> deserializing the contained <see cref="TResponse"/>
@@ -423,7 +252,7 @@ namespace SereneApi
         /// <param name="responseMessage">The <see cref="HttpResponseMessage"/> to process</param>
         protected virtual async Task<IApiResponse<TResponse>> ProcessResponseAsync<TResponse>(HttpResponseMessage responseMessage)
         {
-            if (responseMessage == null)
+            if(responseMessage == null)
             {
                 _logger?.LogWarning("Received an Empty Http Response");
 
@@ -432,32 +261,40 @@ namespace SereneApi
 
             Status status = responseMessage.StatusCode.ToStatus();
 
-            if (!status.IsSuccessCode())
+            if(!status.IsSuccessCode())
             {
                 _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}", responseMessage.StatusCode, responseMessage.ReasonPhrase);
 
                 return ApiResponse<TResponse>.Failure(status, responseMessage.ReasonPhrase);
             }
 
+            if(responseMessage.Content == null)
+            {
+                _logger.LogWarning("No content was received in the response.");
+
+                return ApiResponse<TResponse>.Failure(status, "No content was received in the response.");
+            }
+
             try
             {
-                if (responseMessage.Content == null)
-                {
-                    _logger.LogWarning("No content was received in the response.");
-
-                    return ApiResponse<TResponse>.Failure(status, "No content was received in the response.");
-                }
-
                 TResponse response = await _serializer.DeserializeAsync<TResponse>(responseMessage.Content);
 
                 return ApiResponse<TResponse>.Success(status, response);
             }
-            catch (Exception exception)
+            catch(JsonException jsonException)
             {
-                _logger?.LogError(exception, "Could not deserialize the returned value");
+                _logger?.LogError(jsonException, "Could not deserialize the returned value");
 
-                return ApiResponse<TResponse>.Failure(status, "Could not deserialize returned value.", exception);
+                return ApiResponse<TResponse>.Failure(status, "Could not deserialize returned value.", jsonException);
+            }
+            catch(Exception exception)
+            {
+                _logger?.LogError(exception, "An Exception occured whilst processing the response.");
+
+                return ApiResponse<TResponse>.Failure(status, "An Exception occured whilst processing the response.", exception);
             }
         }
+
+        #endregion
     }
 }
