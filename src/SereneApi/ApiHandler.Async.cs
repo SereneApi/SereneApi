@@ -250,7 +250,7 @@ namespace SereneApi
         /// </summary>
         /// <typeparam name="TResponse">The type to be deserialized from the response</typeparam>
         /// <param name="responseMessage">The <see cref="HttpResponseMessage"/> to process</param>
-        protected virtual async Task<IApiResponse<TResponse>> ProcessResponseAsync<TResponse>(HttpResponseMessage responseMessage)
+        private async Task<IApiResponse<TResponse>> ProcessResponseAsync<TResponse>(HttpResponseMessage responseMessage)
         {
             if(responseMessage == null)
             {
