@@ -1,7 +1,6 @@
 ﻿using DependencyInjection.API;
 using SereneApi;
 using SereneApi.Extensions.DependencyInjection.Interfaces;
-using System;
 using System.Threading.Tasks;
 
 namespace DependencyInjection.WebUi.Handlers

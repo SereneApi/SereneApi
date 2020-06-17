@@ -42,7 +42,7 @@ namespace DependencyInjection.Service.Controllers
         public ActionResult<List<StudentDto>> FindByGivenAndLastName([FromQuery] StudentDto student)
         {
             List<StudentDto> students = StudentData.Students
-                .Where(s => (string.IsNullOrWhiteSpace(student.GivenName) || s.GivenName.Equals(student.GivenName, StringComparison.InvariantCultureIgnoreCase)) && 
+                .Where(s => (string.IsNullOrWhiteSpace(student.GivenName) || s.GivenName.Equals(student.GivenName, StringComparison.InvariantCultureIgnoreCase)) &&
                             (string.IsNullOrWhiteSpace(student.LastName) || s.LastName.Equals(student.LastName, StringComparison.InvariantCultureIgnoreCase)))
                             .ToList();
 

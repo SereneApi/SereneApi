@@ -77,7 +77,7 @@ namespace SereneApi.Factories
 
                 object value = property.GetValue(query);
 
-                if (value == null)
+                if(value == null)
                 {
                     // The property was not set, so it is skipped.
                     continue;

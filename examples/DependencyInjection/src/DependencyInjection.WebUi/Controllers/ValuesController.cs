@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DependencyInjection.API;
-using Microsoft.AspNetCore.Http;
+﻿using DependencyInjection.API;
 using Microsoft.AspNetCore.Mvc;
 using SereneApi;
-using SereneApi.Interfaces.Requests;
+using System.Threading.Tasks;
 
 namespace DependencyInjection.WebUi.Controllers
 {
