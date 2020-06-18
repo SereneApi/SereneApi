@@ -18,7 +18,7 @@ namespace SereneApi.Types
 
         private readonly HttpClient _baseClient;
 
-        private readonly bool _disposeClient = true;
+        private readonly bool _disposeClient;
 
         #endregion
         #region Properties
@@ -30,8 +30,6 @@ namespace SereneApi.Types
         protected string Resource { get; set; }
 
         protected string ResourcePath { get; set; }
-
-        protected HttpClient ClientOverride { get; set; }
 
         protected bool DisposeClientOverride { get; set; }
 
@@ -58,6 +56,12 @@ namespace SereneApi.Types
             DependencyCollection.AddDependency(RetryDependency.Default);
         }
 
+        internal ApiHandlerOptionsBuilder(HttpClient baseClient, bool disposeClient = true) : this()
+        {
+            _disposeClient = disposeClient;
+            _baseClient = baseClient;
+        }
+
         internal ApiHandlerOptionsBuilder(DependencyCollection dependencyCollection, HttpClient baseClient, bool disposeClient = true) : this(dependencyCollection)
         {
             _disposeClient = disposeClient;
@@ -71,11 +75,6 @@ namespace SereneApi.Types
         {
             ExceptionHelper.EnsureParameterIsNotNull(source, nameof(source));
 
-            if(ClientOverride != null)
-            {
-                throw new MethodAccessException("This method cannot be called after UseClientOverride");
-            }
-
             if(Source != null)
             {
                 throw new MethodAccessException("This method cannot be called twice");
@@ -86,44 +85,6 @@ namespace SereneApi.Types
             ResourcePath = ApiHandlerOptionsHelper.UseOrGetDefaultResourcePath(resourcePath);
 
             DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory(ResourcePath));
-        }
-
-        /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseClientOverride"/>
-        public void UseClientOverride(HttpClient clientOverride, bool disposeClient = true)
-        {
-            if(_baseClient != null)
-            {
-                throw new MethodAccessException("This method cannot be called when creating a ApiHandler from an HttpClient");
-            }
-
-            if(ClientOverride != null)
-            {
-                ExceptionHelper.MethodCannotBeCalledTwice();
-            }
-
-            if(Source != null)
-            {
-                throw new MethodAccessException("This method cannot be called after UseSource");
-            }
-
-            if(DependencyCollection.HasDependency<HttpClientHandler>())
-            {
-                throw new MethodAccessException("This method cannot be called after UseHttpClientHandler");
-            }
-
-            if(DependencyCollection.HasDependency<HttpMessageHandler>())
-            {
-                throw new MethodAccessException("This method cannot be called after UseHttpMessageHandler");
-            }
-
-            ClientOverride = clientOverride;
-
-            Source = clientOverride.BaseAddress;
-            Resource = null;
-
-            DisposeClientOverride = disposeClient;
-
-            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory());
         }
 
         /// <inheritdoc>
@@ -159,11 +120,6 @@ namespace SereneApi.Types
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseHttpRequestHeaders"/>
         public void UseHttpRequestHeaders(Action<HttpRequestHeaders> requestHeaderBuilder)
         {
-            if(ClientOverride != null)
-            {
-                throw new MethodAccessException("This method cannot be called after UseClientOverride");
-            }
-
             RequestHeaderBuilder = requestHeaderBuilder;
         }
 
@@ -176,11 +132,6 @@ namespace SereneApi.Types
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseCredentials"/>
         public void UseCredentials(ICredentials credentials)
         {
-            if(ClientOverride != null)
-            {
-                throw new MethodAccessException("This method cannot be called after UseClientOverride");
-            }
-
             Credentials = credentials;
         }
 
@@ -190,11 +141,6 @@ namespace SereneApi.Types
             if(_baseClient != null)
             {
                 throw new MethodAccessException("This method cannot be called when creating a ApiHandler from an HttpClient");
-            }
-
-            if(ClientOverride != null)
-            {
-                throw new MethodAccessException("This method cannot be called after UseClientOverride");
             }
 
             if(DependencyCollection.HasDependency<HttpClientHandler>())
@@ -213,11 +159,6 @@ namespace SereneApi.Types
             if(_baseClient != null)
             {
                 throw new MethodAccessException("This method cannot be called when creating a ApiHandler from an HttpClient");
-            }
-
-            if(ClientOverride != null)
-            {
-                throw new MethodAccessException("This method cannot be called after UseClientOverride");
             }
 
             if(DependencyCollection.HasDependency<HttpMessageHandler>())
@@ -245,40 +186,34 @@ namespace SereneApi.Types
 
         public IApiHandlerOptions BuildOptions()
         {
-            if(ClientOverride != null)
+            HttpClient httpClient;
+
+            if(_baseClient != null)
             {
-                DependencyCollection.AddDependency(ClientOverride, DisposeClientOverride ? Binding.Bound : Binding.Unbound);
+                httpClient = _baseClient;
             }
             else
             {
-                HttpClient httpClient;
+                if(!DependencyCollection.TryGetDependency(out HttpClientHandler clientHandler))
+                {
+                    clientHandler = new HttpClientHandler();
 
-                if(_baseClient != null)
-                {
-                    httpClient = _baseClient;
-                }
-                else
-                {
-                    if(!DependencyCollection.TryGetDependency(out HttpClientHandler clientHandler))
+                    if(OverrideUseCredentials)
                     {
-                        clientHandler = new HttpClientHandler();
-
-                        if(OverrideUseCredentials)
-                        {
-                            clientHandler.Credentials = Credentials;
-                        }
+                        clientHandler.Credentials = Credentials;
                     }
-
-                    httpClient = new HttpClient(clientHandler);
                 }
 
-                httpClient.BaseAddress = Source;
-                httpClient.Timeout = Timeout;
-
-                RequestHeaderBuilder.Invoke(httpClient.DefaultRequestHeaders);
-
-                DependencyCollection.AddDependency(httpClient, _disposeClient ? Binding.Bound : Binding.Unbound);
+                httpClient = new HttpClient(clientHandler);
             }
+
+            httpClient.BaseAddress = Source;
+            httpClient.Timeout = Timeout;
+
+            RequestHeaderBuilder.Invoke(httpClient.DefaultRequestHeaders);
+
+            DependencyCollection.AddDependency(httpClient, _disposeClient ? Binding.Bound : Binding.Unbound);
+
 
             IApiHandlerOptions options = new ApiHandlerOptions(DependencyCollection, Source, Resource, ResourcePath);
 

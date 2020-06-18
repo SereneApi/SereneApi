@@ -30,11 +30,6 @@ namespace SereneApi.Extensions.DependencyInjection.Types
         /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiHandler}.UseConfiguration"/>
         public void UseConfiguration(IConfiguration configuration)
         {
-            if(ClientOverride != null)
-            {
-                throw new MethodAccessException("This method cannot be called alongside UseClientOverride");
-            }
-
             if(Source != null)
             {
                 throw new MethodAccessException("This method cannot be called twice");

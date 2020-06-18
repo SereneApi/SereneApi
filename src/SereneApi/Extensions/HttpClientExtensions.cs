@@ -21,9 +21,7 @@ namespace System.Net.Http
             // The base address of the HttpClient should not be change, so instead an exception will be thrown.
             SourceHelpers.CheckIfValid(client.BaseAddress.ToString());
 
-            ApiHandlerOptionsBuilder builder = new ApiHandlerOptionsBuilder();
-
-            builder.UseClientOverride(client, true);
+            ApiHandlerOptionsBuilder builder = new ApiHandlerOptionsBuilder(client, true);
 
             optionsAction?.Invoke(builder);
 

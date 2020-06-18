@@ -17,12 +17,6 @@ namespace SereneApi.Interfaces
         void UseSource(string source, string resource = null, string resourcePath = null);
 
         /// <summary>
-        /// Overrides the Client with the supplied <see cref="HttpClient"/> this will disable the supplied Source, Timeout and <see cref="HttpRequestHeaders"/>.
-        /// </summary>
-        /// <param name="clientOverride">The <see cref="HttpClient"/> to be used when making API requests.</param>
-        void UseClientOverride(HttpClient clientOverride, bool disposeClient = true);
-
-        /// <summary>
         /// Sets the timeout to be used by the <see cref="ApiHandler"/> when making API requests. By default this value is set to 30 seconds.
         /// </summary>
         /// <param name="seconds">the time in seconds before the request will be timed out.</param>
