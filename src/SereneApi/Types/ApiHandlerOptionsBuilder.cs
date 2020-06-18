@@ -47,6 +47,7 @@ namespace SereneApi.Types
             DependencyCollection.AddDependency(ApiHandlerOptionDefaults.QueryFactory);
             DependencyCollection.AddDependency(JsonSerializer.Default);
             DependencyCollection.AddDependency(RetryDependency.Default);
+            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory());
         }
 
         protected ApiHandlerOptionsBuilder(DependencyCollection dependencyCollection) : base(dependencyCollection)
@@ -54,18 +55,23 @@ namespace SereneApi.Types
             DependencyCollection.AddDependency(ApiHandlerOptionDefaults.QueryFactory);
             DependencyCollection.AddDependency(JsonSerializer.Default);
             DependencyCollection.AddDependency(RetryDependency.Default);
+            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory());
         }
 
         internal ApiHandlerOptionsBuilder(HttpClient baseClient, bool disposeClient = true) : this()
         {
             _disposeClient = disposeClient;
             _baseClient = baseClient;
+
+            Source = baseClient.BaseAddress;
         }
 
         internal ApiHandlerOptionsBuilder(DependencyCollection dependencyCollection, HttpClient baseClient, bool disposeClient = true) : this(dependencyCollection)
         {
             _disposeClient = disposeClient;
             _baseClient = baseClient;
+
+            Source = baseClient.BaseAddress;
         }
 
         #endregion

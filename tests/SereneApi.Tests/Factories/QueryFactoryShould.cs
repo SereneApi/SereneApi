@@ -55,10 +55,9 @@ namespace SereneApi.Tests.Factories
                 BirthDate = new DateTime(2000, 05, 15, 05, 35, 20)
             };
 
-            Should.Throw<ArgumentException>(() =>
-            {
-                queryFactory.Build(personDto, o => new { });
-            });
+            string query = queryFactory.Build(personDto, o => new { });
+
+            query.ShouldBeNull();
         }
 
         [Fact]
