@@ -155,6 +155,17 @@ namespace SereneApi.Types
             DependencyCollection.AddDependency<IAuthentication>(new BasicAuthentication(username, password));
         }
 
+        /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddBearerAuthentication"/>
+        public void AddBearerAuthentication(string token)
+        {
+            if(DependencyCollection.HasDependency<IAuthentication>())
+            {
+                ExceptionHelper.MethodCannotBeCalledTwice();
+            }
+
+            DependencyCollection.AddDependency<IAuthentication>(new BearerAuthentication(token));
+        }
+
         public void AcceptContentType(ContentType content)
         {
             DependencyCollection.AddDependency(content);

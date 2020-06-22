@@ -54,6 +54,8 @@ namespace SereneApi.Interfaces
 
         void AddBasicAuthentication(string username, string password);
 
+        void AddBearerAuthentication(string token);
+
         void AcceptContentType(ContentType content);
     }
 }
