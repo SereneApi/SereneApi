@@ -35,7 +35,8 @@ namespace SereneApi.Types
 
         private string _suppliedResource;
 
-        public RequestBuilder(IRouteFactory routeFactory, IQueryFactory queryFactory, ISerializer serializer, string resource = null)
+        public RequestBuilder(IRouteFactory routeFactory, IQueryFactory queryFactory, ISerializer serializer,
+            string resource = null)
         {
             _routeFactory = routeFactory;
             _queryFactory = queryFactory;
@@ -93,7 +94,8 @@ namespace SereneApi.Types
         /// <inheritdoc>
         ///     <cref>IRequestContent.WithQuery</cref>
         /// </inheritdoc>
-        public IRequestCreated WithQuery<TQueryable>(TQueryable queryable, Expression<Func<TQueryable, object>> queryExpression)
+        public IRequestCreated WithQuery<TQueryable>(TQueryable queryable,
+            Expression<Func<TQueryable, object>> queryExpression)
         {
             ExceptionHelper.EnsureParameterIsNotNull(queryable, nameof(queryable));
             ExceptionHelper.EnsureParameterIsNotNull(queryExpression, nameof(queryExpression));

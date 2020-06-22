@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
-using System.Net.Http.Headers;
 
 namespace SereneApi.Interfaces
 {
@@ -40,19 +39,18 @@ namespace SereneApi.Interfaces
         void SetRetryOnTimeout(int retryCount);
 
         /// <summary>
-        /// Overrides the default <see cref="HttpResponseHeaders"/> with the supplied <see cref="HttpResponseHeaders"/>.
-        /// </summary>
-        void UseHttpRequestHeaders(Action<HttpRequestHeaders> requestHeaderBuilder);
-
-        /// <summary>
         /// Overrides the default <see cref="IQueryFactory"/> with the supplied <see cref="IQueryFactory"/>.
         /// </summary>
         void UseQueryFactory(IQueryFactory queryFactory);
+
+        void AddAuthentication(IAuthentication authentication);
 
         /// <summary>
         /// Overrides the default <see cref="ICredentials"/> used by the <see cref="ApiHandler"/>.
         /// </summary>
         /// <param name="credentials">The <see cref="ICredentials"/> to be used when making requests.</param>
         void UseCredentials(ICredentials credentials);
+
+        void AddBasicAuthentication(string username, string password);
     }
 }
