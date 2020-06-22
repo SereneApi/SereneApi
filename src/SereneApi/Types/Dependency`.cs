@@ -27,6 +27,11 @@ namespace SereneApi.Types
         {
         }
 
+        /// <summary>
+        /// Clones the <see cref="Dependency{TDependecny}"/> the cloned <see cref="Dependency{TDependecny}"/> will be UNBOUND.
+        /// </summary>
+        /// <remarks>The cloned <see cref="Dependency{TDependecny}"/> will be disposed of if the source <see cref="Dependency{TDependecny}"/> is disposed.</remarks>
+        /// <exception cref="ObjectDisposedException">Thrown if the <see cref="Dependency{TDependecny}"/> has been disposed of.</exception>
         public new object Clone()
         {
             CheckIfDisposed();

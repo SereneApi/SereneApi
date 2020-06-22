@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
 
 namespace SereneApi.Interfaces
@@ -55,19 +54,5 @@ namespace SereneApi.Interfaces
         /// </summary>
         /// <param name="credentials">The <see cref="ICredentials"/> to be used when making requests.</param>
         void UseCredentials(ICredentials credentials);
-
-        void UseHttpMessageHandler(HttpMessageHandler httpMessageHandler);
-
-        /// <summary>
-        /// Overrides the default <see cref="HttpClientHandler"/> used by the <see cref="ApiHandler"/>.
-        /// </summary>
-        /// <param name="overrideUseCredentials">If False the Credentials supplied by the UseCredentials method will be used.</param>
-        void UseHttpClientHandler(HttpClientHandler httpClientHandler, bool overrideUseCredentials = false);
-
-        /// <summary>
-        /// Overrides the default <see cref="HttpClientHandler"/> used by the <see cref="ApiHandler"/>.
-        /// </summary>
-        /// <param name="overrideUseCredentials">If False the Credentials supplied by the UseCredentials method will be used.</param>
-        void UseHttpClientHandler(Action<HttpClientHandler> builder, bool overrideUseCredentials = false);
     }
 }

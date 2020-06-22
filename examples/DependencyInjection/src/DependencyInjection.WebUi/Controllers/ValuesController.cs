@@ -19,7 +19,15 @@ namespace DependencyInjection.WebUi.Controllers
         [HttpGet("int/{value}")]
         public async Task<ActionResult<IApiResponse<int>>> GetIntAsync(int value)
         {
-            IApiResponse<int> response = await _valuesApi.GetIntAsync(value);
+            IApiResponse<int> response = await _valuesApi.GetAsync(value);
+
+            return Ok(response);
+        }
+
+        [HttpGet("string/{value}")]
+        public ActionResult<IApiResponse<string>> GetStringAsync(string value)
+        {
+            IApiResponse<string> response = _valuesApi.GetAsync(value);
 
             return Ok(response);
         }

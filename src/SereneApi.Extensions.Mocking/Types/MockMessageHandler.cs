@@ -190,7 +190,7 @@ namespace SereneApi.Extensions.Mocking.Types
 
             _disposed = true;
         }
-        
+
         #endregion
     }
 }

@@ -27,6 +27,11 @@ namespace SereneApi.Types
             Binding = binding;
         }
 
+        /// <summary>
+        /// Clones the <see cref="Dependency"/> the cloned <see cref="Dependency"/> will be UNBOUND.
+        /// </summary>
+        /// <remarks>The cloned <see cref="Dependency"/> will be disposed of if the source <see cref="Dependency"/> is disposed.</remarks>
+        /// <exception cref="ObjectDisposedException">Thrown if the <see cref="Dependency"/> has been disposed of.</exception>
         public object Clone()
         {
             CheckIfDisposed();
@@ -40,7 +45,6 @@ namespace SereneApi.Types
 
         protected void CheckIfDisposed()
         {
-            // TODO: Throw an exception if the HttpClient has been disposed of, at present there is no way to do this.
             if(_disposed)
             {
                 throw new ObjectDisposedException(nameof(GetType));

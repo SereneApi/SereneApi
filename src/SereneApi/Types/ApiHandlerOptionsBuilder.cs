@@ -23,15 +23,11 @@ namespace SereneApi.Types
         #endregion
         #region Properties
 
-        protected bool OverrideUseCredentials { get; private set; }
-
         protected Uri Source { get; set; }
 
         protected string Resource { get; set; }
 
         protected string ResourcePath { get; set; }
-
-        protected bool DisposeClientOverride { get; set; }
 
         protected Action<HttpRequestHeaders> RequestHeaderBuilder = ApiHandlerOptionDefaults.RequestHeadersBuilder;
 
@@ -98,7 +94,7 @@ namespace SereneApi.Types
         /// </inheritdoc>
         public void SetTimeoutPeriod(int seconds)
         {
-            Timeout = new TimeSpan(0, 0, seconds);
+            SetTimeoutPeriod(TimeSpan.FromSeconds(seconds));
         }
 
         /// <inheritdoc>
@@ -141,55 +137,6 @@ namespace SereneApi.Types
             Credentials = credentials;
         }
 
-        /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseHttpMessageHandler"/>
-        public void UseHttpMessageHandler(HttpMessageHandler httpMessageHandler)
-        {
-            if(_baseClient != null)
-            {
-                throw new MethodAccessException("This method cannot be called when creating a ApiHandler from an HttpClient");
-            }
-
-            if(DependencyCollection.HasDependency<HttpClientHandler>())
-            {
-                throw new MethodAccessException("This method cannot be called after UseHttpClientHandler");
-            }
-
-            DependencyCollection.AddDependency(httpMessageHandler, Binding.Unbound);
-        }
-
-        /// <inheritdoc>
-        ///     <cref>IApiHandlerOptionsBuilder.UseHttpClientHandler</cref>
-        /// </inheritdoc>
-        public void UseHttpClientHandler(HttpClientHandler httpClientHandler, bool overrideUseCredentials = false)
-        {
-            if(_baseClient != null)
-            {
-                throw new MethodAccessException("This method cannot be called when creating a ApiHandler from an HttpClient");
-            }
-
-            if(DependencyCollection.HasDependency<HttpMessageHandler>())
-            {
-                throw new MethodAccessException("This method cannot be called after UseHttpMessageHandler");
-            }
-
-            // Unbound as the HttpClient controls its lifetime.
-            DependencyCollection.AddDependency(httpClientHandler, Binding.Unbound);
-
-            OverrideUseCredentials = overrideUseCredentials;
-        }
-
-        /// <inheritdoc>
-        ///     <cref>IApiHandlerOptionsBuilder.UseHttpClientHandler</cref>
-        /// </inheritdoc>
-        public void UseHttpClientHandler(Action<HttpClientHandler> builder, bool overrideUseCredentials = false)
-        {
-            HttpClientHandler handler = new HttpClientHandler();
-
-            builder.Invoke(handler);
-
-            UseHttpClientHandler(handler, overrideUseCredentials);
-        }
-
         public IApiHandlerOptions BuildOptions()
         {
             HttpClient httpClient;
@@ -203,11 +150,6 @@ namespace SereneApi.Types
                 if(!DependencyCollection.TryGetDependency(out HttpClientHandler clientHandler))
                 {
                     clientHandler = new HttpClientHandler();
-
-                    if(OverrideUseCredentials)
-                    {
-                        clientHandler.Credentials = Credentials;
-                    }
                 }
 
                 httpClient = new HttpClient(clientHandler);
@@ -219,7 +161,6 @@ namespace SereneApi.Types
             RequestHeaderBuilder.Invoke(httpClient.DefaultRequestHeaders);
 
             DependencyCollection.AddDependency(httpClient, _disposeClient ? Binding.Bound : Binding.Unbound);
-
 
             IApiHandlerOptions options = new ApiHandlerOptions(DependencyCollection, Source, Resource, ResourcePath);
 
