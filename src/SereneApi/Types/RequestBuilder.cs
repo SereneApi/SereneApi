@@ -79,6 +79,15 @@ namespace SereneApi.Types
             return this;
         }
 
+        public IRequestCreated WithInBodyContent(IApiRequestContent content)
+        {
+            ExceptionHelper.EnsureParameterIsNotNull(content, nameof(content));
+
+            _requestContent = content;
+
+            return this;
+        }
+
         /// <inheritdoc>
         ///     <cref>IRequestContent.WithQuery</cref>
         /// </inheritdoc>

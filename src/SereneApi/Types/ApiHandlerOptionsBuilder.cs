@@ -155,6 +155,11 @@ namespace SereneApi.Types
             DependencyCollection.AddDependency<IAuthentication>(new BasicAuthentication(username, password));
         }
 
+        public void AcceptContentType(ContentType content)
+        {
+            DependencyCollection.AddDependency(content);
+        }
+
         public IApiHandlerOptions BuildOptions()
         {
             HttpClient client;

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
+using SereneApi.Types.Headers.Accept;
 
 namespace SereneApi.Interfaces
 {
@@ -52,5 +53,7 @@ namespace SereneApi.Interfaces
         void UseCredentials(ICredentials credentials);
 
         void AddBasicAuthentication(string username, string password);
+
+        void AcceptContentType(ContentType content);
     }
 }

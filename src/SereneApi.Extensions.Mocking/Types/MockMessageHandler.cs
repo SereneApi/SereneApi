@@ -148,12 +148,12 @@ namespace SereneApi.Extensions.Mocking.Types
         {
             IApiRequestContent requestContent = await mockResponse.GetResponseContentAsync(cancellationToken);
 
-            if(requestContent is JsonContent jsonContent)
+            if (requestContent != null)
             {
                 return new HttpResponseMessage
                 {
                     StatusCode = mockResponse.Status.ToHttpStatusCode(),
-                    Content = jsonContent.ToStringContent()
+                    Content = (HttpContent)requestContent.GetContent()
                 };
             }
 

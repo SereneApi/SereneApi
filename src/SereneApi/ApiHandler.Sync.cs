@@ -31,7 +31,7 @@ namespace SereneApi
 
             request?.Compile().Invoke(requestBuilder);
 
-            return PerformRequestBase(requestBuilder.GetRequest());
+            return BasePerformRequest(requestBuilder.GetRequest());
         }
 
         /// <summary>
@@ -50,13 +50,13 @@ namespace SereneApi
 
             request?.Compile().Invoke(requestBuilder);
 
-            return PerformRequestBase<TResponse>(requestBuilder.GetRequest());
+            return BasePerformRequest<TResponse>(requestBuilder.GetRequest());
         }
 
         #endregion
         #region Base Action Methods
 
-        protected virtual IApiResponse PerformRequestBase(IApiRequest request)
+        protected virtual IApiResponse BasePerformRequest(IApiRequest request)
         {
             HttpResponseMessage responseMessage;
 
@@ -72,10 +72,10 @@ namespace SereneApi
                     {
                         return method switch
                         {
-                            Method.Post => await Client.PostAsJsonAsync(endPoint),
+                            Method.Post => await Client.PostAsync(endPoint, null),
                             Method.Get => await Client.GetAsync(endPoint),
-                            Method.Put => await Client.PutAsJsonAsync(endPoint),
-                            Method.Patch => await Client.PatchAsJsonAsync(endPoint),
+                            Method.Put => await Client.PutAsync(endPoint, null),
+                            Method.Patch => await Client.PatchAsync(endPoint, null),
                             Method.Delete => await Client.DeleteAsync(endPoint),
                             _ => throw new ArgumentOutOfRangeException(nameof(endPoint), method,
                                 "An incorrect Method Value was supplied.")
@@ -84,17 +84,17 @@ namespace SereneApi
                 }
                 else
                 {
-                    StringContent content = request.Content.ToStringContent();
+                    HttpContent content = (HttpContent)request.Content.GetContent();
 
                     responseMessage = RetryRequest(async () =>
                     {
                         return method switch
                         {
-                            Method.Post => await Client.PostAsJsonAsync(endPoint, content),
+                            Method.Post => await Client.PostAsync(endPoint, content),
                             Method.Get => throw new ArgumentException(
                                 "Get cannot be used in conjunction with an InBody Request"),
-                            Method.Put => await Client.PutAsJsonAsync(endPoint, content),
-                            Method.Patch => await Client.PatchAsJsonAsync(endPoint, content),
+                            Method.Put => await Client.PutAsync(endPoint, content),
+                            Method.Patch => await Client.PatchAsync(endPoint, content),
                             Method.Delete => throw new ArgumentException(
                                 "Delete cannot be used in conjunction with an InBody Request"),
                             _ => throw new ArgumentOutOfRangeException(nameof(method), method,
@@ -125,7 +125,7 @@ namespace SereneApi
             return ProcessResponse(responseMessage);
         }
 
-        protected virtual IApiResponse<TResponse> PerformRequestBase<TResponse>(IApiRequest request)
+        protected virtual IApiResponse<TResponse> BasePerformRequest<TResponse>(IApiRequest request)
         {
             HttpResponseMessage responseMessage;
 
@@ -141,10 +141,10 @@ namespace SereneApi
                     {
                         return method switch
                         {
-                            Method.Post => await Client.PostAsJsonAsync(endPoint),
+                            Method.Post => await Client.PostAsync(endPoint, null),
                             Method.Get => await Client.GetAsync(endPoint),
-                            Method.Put => await Client.PutAsJsonAsync(endPoint),
-                            Method.Patch => await Client.PatchAsJsonAsync(endPoint),
+                            Method.Put => await Client.PutAsync(endPoint, null),
+                            Method.Patch => await Client.PatchAsync(endPoint, null),
                             Method.Delete => await Client.DeleteAsync(endPoint),
                             _ => throw new ArgumentOutOfRangeException(nameof(endPoint), method,
                                 "An incorrect Method Value was supplied.")
@@ -153,17 +153,17 @@ namespace SereneApi
                 }
                 else
                 {
-                    StringContent content = request.Content.ToStringContent();
+                    HttpContent content = (HttpContent)request.Content.GetContent();
 
                     responseMessage = RetryRequest(async () =>
                     {
                         return method switch
                         {
-                            Method.Post => await Client.PostAsJsonAsync(endPoint, content),
+                            Method.Post => await Client.PostAsync(endPoint, content),
                             Method.Get => throw new ArgumentException(
                                 "Get cannot be used in conjunction with an InBody Request"),
-                            Method.Put => await Client.PutAsJsonAsync(endPoint, content),
-                            Method.Patch => await Client.PatchAsJsonAsync(endPoint, content),
+                            Method.Put => await Client.PutAsync(endPoint, content),
+                            Method.Patch => await Client.PatchAsync(endPoint, content),
                             Method.Delete => throw new ArgumentException(
                                 "Delete cannot be used in conjunction with an InBody Request"),
                             _ => throw new ArgumentOutOfRangeException(nameof(method), method,
@@ -200,7 +200,7 @@ namespace SereneApi
         /// <param name="requestAction">The request to be performed.</param>
         /// <param name="route">The route to be inserted into the log.</param>
         /// <returns></returns>
-        protected virtual HttpResponseMessage RetryRequest(Func<Task<HttpResponseMessage>> requestAction, Uri route)
+        private HttpResponseMessage RetryRequest(Func<Task<HttpResponseMessage>> requestAction, Uri route)
         {
             bool retryingRequest;
             int requestsAttempted = 0;
