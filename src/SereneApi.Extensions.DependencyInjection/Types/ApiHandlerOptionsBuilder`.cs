@@ -9,8 +9,11 @@ using SereneApi.Helpers;
 using SereneApi.Interfaces;
 using SereneApi.Types;
 using SereneApi.Types.Dependencies;
+using SereneApi.Types.Headers.Accept;
 using System;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace SereneApi.Extensions.DependencyInjection.Types
 {
@@ -30,11 +33,6 @@ namespace SereneApi.Extensions.DependencyInjection.Types
         /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiHandler}.UseConfiguration"/>
         public void UseConfiguration(IConfiguration configuration)
         {
-            if(ClientOverride != null)
-            {
-                throw new MethodAccessException("This method cannot be called alongside UseClientOverride");
-            }
-
             if(Source != null)
             {
                 throw new MethodAccessException("This method cannot be called twice");
@@ -109,29 +107,33 @@ namespace SereneApi.Extensions.DependencyInjection.Types
         /// </summary>
         public new IApiHandlerOptions<TApiHandler> BuildOptions()
         {
-            if(DependencyCollection.TryGetDependency(out HttpMessageHandler messageHandler))
+            if(!DependencyCollection.TryGetDependency(out HttpMessageHandler messageHandler))
             {
-                _serviceCollection.AddHttpClient(typeof(TApiHandler).ToString(), client =>
-                {
-                    client.BaseAddress = Source;
-                    client.Timeout = Timeout;
+                ICredentials credentials = DependencyCollection.GetDependency<ICredentials>();
 
-                    RequestHeaderBuilder.Invoke(client.DefaultRequestHeaders);
-                }).ConfigurePrimaryHttpMessageHandler(() => messageHandler);
+                messageHandler = new HttpClientHandler
+                {
+                    Credentials = credentials
+                };
             }
-            else
+
+            _serviceCollection.AddHttpClient(typeof(TApiHandler).ToString(), client =>
             {
-                _serviceCollection.AddHttpClient(typeof(TApiHandler).ToString(), client =>
-                {
-                    client.BaseAddress = Source;
-                    client.Timeout = Timeout;
+                client.BaseAddress = Source;
+                client.Timeout = Timeout;
+                client.DefaultRequestHeaders.Accept.Clear();
 
-                    RequestHeaderBuilder.Invoke(client.DefaultRequestHeaders);
-                }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+                if(DependencyCollection.TryGetDependency(out IAuthentication authentication))
                 {
-                    Credentials = Credentials
-                });
-            }
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);
+                }
+
+                if(DependencyCollection.TryGetDependency(out ContentType contentType))
+                {
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType.Value));
+                }
+            })
+            .ConfigurePrimaryHttpMessageHandler(() => messageHandler);
 
             ServiceProvider serviceProvider = _serviceCollection.BuildServiceProvider();
 

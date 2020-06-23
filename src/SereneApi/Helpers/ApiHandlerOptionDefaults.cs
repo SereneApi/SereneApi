@@ -2,7 +2,6 @@
 using SereneApi.Interfaces;
 using System;
 using System.Net;
-using System.Net.Http.Headers;
 
 namespace SereneApi.Helpers
 {
@@ -25,15 +24,6 @@ namespace SereneApi.Helpers
         /// The default Resource Precursor that is used by the <see cref="ApiHandler"/>
         /// </summary>
         public const string ResourcePath = "api/";
-
-        /// <summary>
-        /// The default <see cref="HttpContentHeaders"/> that is used by the <see cref="ApiHandler"/>
-        /// </summary>
-        public static Action<HttpRequestHeaders> RequestHeadersBuilder { get; } = headers =>
-        {
-            headers.Accept.Clear();
-            headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        };
 
         public static ICredentials Credentials { get; } = CredentialCache.DefaultCredentials;
 

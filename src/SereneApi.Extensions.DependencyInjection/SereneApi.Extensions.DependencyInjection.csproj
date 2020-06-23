@@ -1,46 +1,48 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-	    <TargetFramework>netcoreapp3.1</TargetFramework>
-	    <AssemblyName>DeltaWare.SereneApi.Extensions.DependencyInjection</AssemblyName>
-	    <RootNamespace>SereneApi.Extensions.DependencyInjection</RootNamespace>
-		<RepositoryUrl>https://github.com/armorall171/SereneApi</RepositoryUrl>
-		<RepositoryType>GIT</RepositoryType>
-		<PackageTags>API; REST; RESTful; DI; DependencyInjection; AspNet; Extensions</PackageTags>
-		<Description>Serene API is a small library intended to provide a straightforward way of consuming RESTful APIs requiring as little code &amp; setup as possible whilst providing a powerful set of tools.
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Version>1.0.4.3-beta</Version>
+    <Authors>Bradley Clarke</Authors>
+    <Company>DeltaWare</Company>
+    <Product>SereneApi</Product>
+    <Description>Serene API is a small library intended to provide a straightforward way of consuming RESTful APIs requiring as little code &amp; setup as possible whilst providing a powerful set of tools.
 
 SereneApi.Extensions.DependencyInjection adds support for AspNet DI and Configuration.</Description>
-		<Authors>Bradley Clarke</Authors>
-		<Company>DeltaWare</Company>
-		<Product>SereneApi</Product>
-		<PackageProjectUrl>https://github.com/armorall171/SereneApi#what-is-serene-api</PackageProjectUrl>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>1.0.4.2-beta</Version>
-		<NeutralLanguage>en-AU</NeutralLanguage>
-		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-		<Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
-		<PackageIcon>nuget_logo.png</PackageIcon>
-		<PackageId>SereneApi.Extensions.DependencyInjection</PackageId>
-		<PackageReleaseNotes></PackageReleaseNotes>
-	</PropertyGroup>
+    <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/armorall171/SereneApi#what-is-serene-api</PackageProjectUrl>
+    <PackageIcon>nuget_logo.png</PackageIcon>
+    <RepositoryUrl>https://github.com/armorall171/SereneApi</RepositoryUrl>
+    <RepositoryType>GIT</RepositoryType>
+    <PackageTags>API; REST; RESTful; DI; DependencyInjection; AspNet; Extensions</PackageTags>
+    <NeutralLanguage>en-AU</NeutralLanguage>
+    <PackageReleaseNotes>* Project has moved from .Net Core 3.1 to .Net Standard 2.1</PackageReleaseNotes>
+  </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SereneApi\SereneApi.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.4" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\nuget_logo.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
     <None Include="..\..\LICENSE.md">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+    <None Include="..\..\nuget_logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.4" />
+    <ProjectReference Include="..\SereneApi.Abstraction\SereneApi.Abstraction.csproj" />
+    <ProjectReference Include="..\SereneApi\SereneApi.csproj" />
   </ItemGroup>
 
 </Project>

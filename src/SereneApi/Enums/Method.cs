@@ -8,7 +8,7 @@ namespace SereneApi
     public enum Method
     {
         /// <summary>
-        /// No <see cref="Method"/> selected
+        /// No <see cref="Method"/> selected.
         /// </summary>
         None,
         /// <summary>
@@ -30,6 +30,9 @@ namespace SereneApi
         /// <summary>
         /// DELETE
         /// </summary>
-        Delete
+        Delete,
+        Head,
+        Connect,
+        Options
     }
 }

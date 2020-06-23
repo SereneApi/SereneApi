@@ -1,5 +1,4 @@
 using DependencyInjection.API;
-using DependencyInjection.API.DTOs;
 using DependencyInjection.WebUi.Handlers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,8 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using SereneApi;
-using SereneApi.Extensions.Mocking;
 
 namespace DependencyInjection.WebUi
 {
@@ -27,7 +24,6 @@ namespace DependencyInjection.WebUi
         {
             services.AddControllers().AddNewtonsoftJson();
 
-
             // Add an ApiHandler to the services collection, this enables dependency injection.
             // You are required to supply an interface for the definition and a class inheriting form ApiHandler and the interface as the definition.
             services.RegisterApiHandler<IStudentApi, StudentApiHandler>(builder =>
@@ -35,13 +31,7 @@ namespace DependencyInjection.WebUi
                 // Under appsettings.conf, there is an array called ApiConfig.
                 // Inside that array is another array called "Student" as you can see below we are getting that.
                 builder.UseConfiguration(Configuration.GetApiConfig("Student"));
-            })
-            .WithMockResponses(r =>
-            {
-                r.AddMockResponse(StudentDto.JohnSmith)
-                    .RespondsToRequestsWith(Method.Get)
-                    .RespondsToRequestsWith("http://localhost:52279/api/Students/0");
-            }, true);
+            });
 
             // Here a provider is also being used, this allows you to get services that have been registered with dependency injection
             services.RegisterApiHandler<IClassApi, ClassApiHandler>((builder, provider) =>
@@ -51,6 +41,11 @@ namespace DependencyInjection.WebUi
 
                 // Using the provider you can inject a logger factory.
                 builder.AddLoggerFactory(provider.GetRequiredService<ILoggerFactory>());
+            });
+
+            services.RegisterApiHandler<IValuesApi, ValuesApiHandler>(builder =>
+            {
+                builder.UseSource("http://localhost:52279", "Values");
             });
 
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebUi", Version = "v1" }));

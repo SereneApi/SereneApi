@@ -133,7 +133,7 @@ namespace SereneApi
         /// Processes the returned <see cref="HttpResponseMessage"/>
         /// </summary>
         /// <param name="responseMessage">The <see cref="HttpResponseMessage"/> to process</param>
-        protected virtual IApiResponse ProcessResponse(HttpResponseMessage responseMessage)
+        private IApiResponse ProcessResponse(HttpResponseMessage responseMessage)
         {
             if(responseMessage == null)
             {

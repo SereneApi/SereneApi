@@ -36,6 +36,7 @@ namespace DependencyInjection.WebUi.Handlers
             // In this example, only the Given and Last name values will used for the query.
             // http://localhost:8080/api/Students?GivenName=value&LastName=value
             return PerformRequestAsync<List<StudentDto>>(Method.Get, r => r
+                .WithEndPoint("SearchBy/GivenAndLastName")
                 .WithQuery(student, s => new { s.GivenName, s.LastName }));
         }
 
@@ -47,7 +48,7 @@ namespace DependencyInjection.WebUi.Handlers
                 .WithInBodyContent(student));
         }
 
-        public Task<IApiResponse<List<ClassDto>>> GetStudentClasses(long studentId)
+        public Task<IApiResponse<List<ClassDto>>> GetStudentClassesAsync(long studentId)
         {
             // Here we are using an Endpoint Template, allowing more complex APIs.
             // http://localhost:8080/api/Students/{studentId}/Classes
