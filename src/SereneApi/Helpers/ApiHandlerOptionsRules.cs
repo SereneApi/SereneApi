@@ -12,7 +12,7 @@ namespace SereneApi.Helpers
         /// <summary>
         /// Throws an <see cref="ArgumentException"/> if the Retry Count is invalid.
         /// </summary>
-        public static void ValidateRetryCount(int retryCount)
+        public static void ValidateRetryAttempts(int retryCount)
         {
             if(retryCount < MinimumRetryCount)
             {

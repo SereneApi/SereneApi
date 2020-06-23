@@ -18,7 +18,7 @@ namespace SereneApi.Extensions.Mocking
         /// <param name="mockResponseBuilder">The <see cref="IMockResponse"/>s to be added to the <see cref="ApiHandler"/>.</param>
         /// <param name="enableOutgoingRequests">If set to true, any request that does not have an associated <see cref="IMockResponse"/> will be processed normally.
         /// If set to false, if a request does not have an associated <see cref="IMockResponse"/> an <see cref="ArgumentException"/> will be thrown.</param>
-        public static void WithMockResponses(this IApiHandlerExtensions registrationExtensions, Action<IMockResponsesBuilder> mockResponseBuilder, bool enableOutgoingRequests = false)
+        public static IApiHandlerExtensions WithMockResponses(this IApiHandlerExtensions registrationExtensions, Action<IMockResponsesBuilder> mockResponseBuilder, bool enableOutgoingRequests = false)
         {
             CoreOptions coreOptions = GetCoreOptions(registrationExtensions);
 
@@ -38,6 +38,8 @@ namespace SereneApi.Extensions.Mocking
             }
 
             coreOptions.DependencyCollection.AddDependency(mockHandler);
+
+            return registrationExtensions;
         }
 
         private static CoreOptions GetCoreOptions(IApiHandlerExtensions extensions)

@@ -1,4 +1,5 @@
 ﻿using SereneApi;
+using SereneApi.Factories;
 using SereneApi.Helpers;
 using SereneApi.Interfaces;
 using SereneApi.Types;
@@ -18,7 +19,13 @@ namespace System.Net.Http
             // The base address of the HttpClient should not be change, so instead an exception will be thrown.
             SourceHelpers.CheckIfValid(client.BaseAddress.ToString());
 
-            ApiHandlerOptionsBuilder builder = new ApiHandlerOptionsBuilder(client, true);
+            IClientFactory clientFactory = new OverrideClientFactory(client, true);
+
+            DependencyCollection dependencyCollection = new DependencyCollection();
+
+            dependencyCollection.AddDependency(clientFactory);
+
+            ApiHandlerOptionsBuilder builder = new ApiHandlerOptionsBuilder(dependencyCollection);
 
             optionsAction?.Invoke(builder);
 

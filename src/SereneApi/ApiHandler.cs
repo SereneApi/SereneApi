@@ -3,7 +3,6 @@ using SereneApi.Abstraction.Enums;
 using SereneApi.Extensions;
 using SereneApi.Interfaces;
 using SereneApi.Types;
-using SereneApi.Types.Dependencies;
 using System;
 using System.Diagnostics;
 using System.Net.Http;
@@ -18,10 +17,7 @@ namespace SereneApi
     {
         #region Variables
 
-        /// <summary>
-        /// The <see cref="HttpClient"/> to be used for requests by this <see cref="ApiHandler"/>.
-        /// </summary>
-        private readonly HttpClient _httpClient;
+        private readonly IClientFactory _clientFactory;
 
         /// <summary>
         /// The <see cref="IApiHandlerOptions"/> this <see cref="ApiHandler"/> will use.
@@ -40,48 +36,12 @@ namespace SereneApi
 
         private readonly IRouteFactory _routeFactory;
 
-        private readonly RetryDependency _retry;
-
         private readonly ISerializer _serializer;
 
         #endregion
         #region Properties
 
-        /// <summary>
-        /// The <see cref="HttpClient"/> used by the <see cref="ApiHandler"/> for all requests
-        /// </summary>
-        protected virtual HttpClient Client => _httpClient;
-
-        /// <inheritdoc cref="IApiHandlerOptions.Source"/>
-        public Uri Source { get; }
-
-        /// <inheritdoc cref="IApiHandlerOptions.Resource"/>
-        public string Resource
-        {
-            get
-            {
-                // If the resource is empty, a null value is returned.
-                if(string.IsNullOrWhiteSpace(_options.Resource))
-                {
-                    return null;
-                }
-
-                return _options.Resource;
-            }
-        }
-
-        /// <inheritdoc cref="IApiHandlerOptions.ResourcePath"/>
-        public string ResourcePath => _options.ResourcePath;
-
-        /// <summary>
-        /// How long a request will stay alive before expiring
-        /// </summary>
-        public TimeSpan Timeout => Client.Timeout;
-
-        /// <summary>
-        /// How many times the <see cref="ApiHandler"/> will retry a request after it has timed out
-        /// </summary>
-        public int RetryCount => _retry.Count;
+        public IConnectionInfo Connection { get; }
 
         #endregion
         #region Constructors
@@ -96,18 +56,12 @@ namespace SereneApi
 
             _options = options;
 
-            // Set the source this ApiHandler will use, this is the base for all requests.
-            Source = new Uri($"{options.Source}{options.ResourcePath}{options.Resource}");
+            Connection = _options.ConnectionInfo;
 
             #region Configure Dependencies
-
-            if(!_options.Dependencies.TryGetDependency(out _httpClient))
-            {
-                throw new ArgumentException("No HttpClient was provided");
-            }
-
             #region Required
 
+            _clientFactory = _options.Dependencies.GetDependency<IClientFactory>();
             _queryFactory = _options.Dependencies.GetDependency<IQueryFactory>();
             _routeFactory = _options.Dependencies.GetDependency<IRouteFactory>();
 
@@ -117,7 +71,6 @@ namespace SereneApi
             #region Optional
 
             _options.Dependencies.TryGetDependency(out _logger);
-            _options.Dependencies.TryGetDependency(out _retry);
 
             #endregion
 

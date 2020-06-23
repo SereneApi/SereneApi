@@ -5,15 +5,9 @@ using SereneApi.Enums;
 using SereneApi.Extensions.DependencyInjection.Helpers;
 using SereneApi.Extensions.DependencyInjection.Interfaces;
 using SereneApi.Factories;
-using SereneApi.Helpers;
 using SereneApi.Interfaces;
 using SereneApi.Types;
-using SereneApi.Types.Dependencies;
-using SereneApi.Types.Headers.Accept;
 using System;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 
 namespace SereneApi.Extensions.DependencyInjection.Types
 {
@@ -26,14 +20,15 @@ namespace SereneApi.Extensions.DependencyInjection.Types
         {
         }
 
-        public ApiHandlerOptionsBuilder(DependencyCollection dependencyCollection) : base(dependencyCollection)
+        public ApiHandlerOptionsBuilder(DependencyCollection dependencyCollection, IServiceCollection serviceCollection) : base(dependencyCollection)
         {
+            DependencyCollection.AddDependency(serviceCollection);
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiHandler}.UseConfiguration"/>
         public void UseConfiguration(IConfiguration configuration)
         {
-            if(Source != null)
+            if(DependencyCollection.HasDependency<IConnectionInfo>())
             {
                 throw new MethodAccessException("This method cannot be called twice");
             }
@@ -42,24 +37,23 @@ namespace SereneApi.Extensions.DependencyInjection.Types
             string resource = configuration.Get<string>(ConfigurationConstants.ResourceKey, ConfigurationConstants.ResourceIsRequired);
             string resourcePath = configuration.Get<string>(ConfigurationConstants.ResourcePathKey, ConfigurationConstants.ResourcePathIsRequired);
 
-            Source = new Uri(SourceHelpers.EnsureSourceSlashTermination(source));
-            Resource = SourceHelpers.EnsureSourceNoSlashTermination(resource);
-            ResourcePath = ApiHandlerOptionsHelper.UseOrGetDefaultResourcePath(resourcePath);
+            IConnectionInfo connectionInfo = new ConnectionInfo(source, resource, resourcePath);
 
-            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory(ResourcePath));
+            DependencyCollection.AddDependency(connectionInfo);
+            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory(connectionInfo));
 
             #region Timeout
 
-            TimeSpan timeout = configuration.Get<TimeSpan>(ConfigurationConstants.TimeoutKey, ConfigurationConstants.TimeoutIsRequired);
+            int timeout = configuration.Get<int>(ConfigurationConstants.TimeoutKey, ConfigurationConstants.TimeoutIsRequired);
 
-            if(timeout < TimeSpan.Zero)
+            if(timeout < 0)
             {
                 throw new ArgumentException("The Timeout value must be equal to or greater than 0");
             }
 
-            if(timeout != TimeSpan.Zero)
+            if(timeout != default)
             {
-                Timeout = timeout;
+                connectionInfo.SetTimeout(timeout);
             }
 
             #endregion
@@ -69,13 +63,13 @@ namespace SereneApi.Extensions.DependencyInjection.Types
             {
                 int retryCount = configuration.Get<int>(ConfigurationConstants.RetryCountKey, ConfigurationConstants.RetryIsRequired);
 
-                ApiHandlerOptionsRules.ValidateRetryCount(retryCount);
-
-                RetryDependency retryDependency = new RetryDependency(retryCount);
-
-                DependencyCollection.AddDependency(retryDependency);
+                if(retryCount != default)
+                {
+                    connectionInfo.SetRetryAttempts(retryCount);
+                }
             }
 
+            DependencyCollection.AddDependency(connectionInfo);
 
             #endregion
         }
@@ -107,45 +101,9 @@ namespace SereneApi.Extensions.DependencyInjection.Types
         /// </summary>
         public new IApiHandlerOptions<TApiHandler> BuildOptions()
         {
-            if(!DependencyCollection.TryGetDependency(out HttpMessageHandler messageHandler))
-            {
-                ICredentials credentials = DependencyCollection.GetDependency<ICredentials>();
+            IConnectionInfo connection = DependencyCollection.GetDependency<IConnectionInfo>();
 
-                messageHandler = new HttpClientHandler
-                {
-                    Credentials = credentials
-                };
-            }
-
-            _serviceCollection.AddHttpClient(typeof(TApiHandler).ToString(), client =>
-            {
-                client.BaseAddress = Source;
-                client.Timeout = Timeout;
-                client.DefaultRequestHeaders.Accept.Clear();
-
-                if(DependencyCollection.TryGetDependency(out IAuthentication authentication))
-                {
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);
-                }
-
-                if(DependencyCollection.TryGetDependency(out ContentType contentType))
-                {
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType.Value));
-                }
-            })
-            .ConfigurePrimaryHttpMessageHandler(() => messageHandler);
-
-            ServiceProvider serviceProvider = _serviceCollection.BuildServiceProvider();
-
-            DependencyCollection.AddDependency(serviceProvider);
-
-            IHttpClientFactory clientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
-
-            // The ClientFactory is Unbound as the Service Provider is controlling its lifetime.
-            DependencyCollection.AddDependency(clientFactory, Binding.Unbound);
-            DependencyCollection.AddDependency(clientFactory.CreateClient(typeof(TApiHandler).ToString()));
-
-            ApiHandlerOptions<TApiHandler> options = new ApiHandlerOptions<TApiHandler>(DependencyCollection, Source, Resource, ResourcePath);
+            ApiHandlerOptions<TApiHandler> options = new ApiHandlerOptions<TApiHandler>(DependencyCollection, connection);
 
             return options;
         }

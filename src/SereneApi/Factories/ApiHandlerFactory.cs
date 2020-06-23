@@ -30,8 +30,11 @@ namespace SereneApi.Factories
 
             ApiHandlerExtensions extensions = (ApiHandlerExtensions)_handlerExtensions[handlerType];
 
-            if(!_clients.TryGetValue(handlerType, out HttpClient client))
+            // TODO: this should be reworked, as HttpClient creation should be handled inside the IClientFactory. This will allow easier overriding.
+            if(!extensions.DependencyCollection.HasDependency<IClientFactory>())
             {
+                HttpClient client;
+
                 if(extensions.DependencyCollection.TryGetDependency(out HttpMessageHandler messageHandler))
                 {
                     client = new HttpClient(messageHandler);
@@ -41,11 +44,12 @@ namespace SereneApi.Factories
                     client = new HttpClient();
                 }
 
-                _clients.Add(handlerType, client);
+                IClientFactory clientFactory = new OverrideClientFactory(client, false);
+
+                extensions.DependencyCollection.AddDependency(clientFactory);
             }
 
-            // Disable client disposal for this ApiHandler as this factory has ownership of the client.
-            ApiHandlerOptionsBuilder options = new ApiHandlerOptionsBuilder((DependencyCollection)extensions.DependencyCollection.Clone(), client, false);
+            ApiHandlerOptionsBuilder options = new ApiHandlerOptionsBuilder((DependencyCollection)extensions.DependencyCollection.Clone());
 
             optionsBuilderAction.Invoke(options);
 

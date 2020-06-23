@@ -26,7 +26,7 @@ namespace SereneApi
         {
             CheckIfDisposed();
 
-            RequestBuilder requestBuilder = new RequestBuilder(_routeFactory, _queryFactory, _serializer, Resource);
+            RequestBuilder requestBuilder = new RequestBuilder(_routeFactory, _queryFactory, _serializer, Connection.Resource);
 
             requestBuilder.UsingMethod(method);
 
@@ -46,7 +46,7 @@ namespace SereneApi
         {
             CheckIfDisposed();
 
-            RequestBuilder requestBuilder = new RequestBuilder(_routeFactory, _queryFactory, _serializer, Resource);
+            RequestBuilder requestBuilder = new RequestBuilder(_routeFactory, _queryFactory, _serializer, Connection.Resource);
 
             requestBuilder.UsingMethod(method);
 
@@ -71,15 +71,15 @@ namespace SereneApi
             {
                 if(request.Content == null)
                 {
-                    responseMessage = await RetryRequestAsync(async () =>
+                    responseMessage = await RetryRequestAsync(async client =>
                     {
                         return method switch
                         {
-                            Method.POST => await Client.PostAsync(endPoint, null),
-                            Method.GET => await Client.GetAsync(endPoint),
-                            Method.PUT => await Client.PutAsync(endPoint, null),
-                            Method.PATCH => await Client.PatchAsync(endPoint, null),
-                            Method.DELETE => await Client.DeleteAsync(endPoint),
+                            Method.POST => await client.PostAsync(endPoint, null),
+                            Method.GET => await client.GetAsync(endPoint),
+                            Method.PUT => await client.PutAsync(endPoint, null),
+                            Method.PATCH => await client.PatchAsync(endPoint, null),
+                            Method.DELETE => await client.DeleteAsync(endPoint),
                             _ => throw new ArgumentOutOfRangeException(nameof(endPoint), method,
                                 "An incorrect Method Value was supplied.")
                         };
@@ -89,15 +89,15 @@ namespace SereneApi
                 {
                     HttpContent content = (HttpContent)request.Content.GetContent();
 
-                    responseMessage = await RetryRequestAsync(async () =>
+                    responseMessage = await RetryRequestAsync(async client =>
                     {
                         return method switch
                         {
-                            Method.POST => await Client.PostAsync(endPoint, content),
+                            Method.POST => await client.PostAsync(endPoint, content),
                             Method.GET => throw new ArgumentException(
                                 "Get cannot be used in conjunction with an InBody Request"),
-                            Method.PUT => await Client.PutAsync(endPoint, content),
-                            Method.PATCH => await Client.PatchAsync(endPoint, content),
+                            Method.PUT => await client.PutAsync(endPoint, content),
+                            Method.PATCH => await client.PatchAsync(endPoint, content),
                             Method.DELETE => throw new ArgumentException(
                                 "Delete cannot be used in conjunction with an InBody Request"),
                             _ => throw new ArgumentOutOfRangeException(nameof(method), method,
@@ -140,15 +140,15 @@ namespace SereneApi
             {
                 if(request.Content == null)
                 {
-                    responseMessage = await RetryRequestAsync(async () =>
+                    responseMessage = await RetryRequestAsync(async client =>
                     {
                         return method switch
                         {
-                            Method.POST => await Client.PostAsync(endPoint, null),
-                            Method.GET => await Client.GetAsync(endPoint),
-                            Method.PUT => await Client.PutAsync(endPoint, null),
-                            Method.PATCH => await Client.PatchAsync(endPoint, null),
-                            Method.DELETE => await Client.DeleteAsync(endPoint),
+                            Method.POST => await client.PostAsync(endPoint, null),
+                            Method.GET => await client.GetAsync(endPoint),
+                            Method.PUT => await client.PutAsync(endPoint, null),
+                            Method.PATCH => await client.PatchAsync(endPoint, null),
+                            Method.DELETE => await client.DeleteAsync(endPoint),
                             _ => throw new ArgumentOutOfRangeException(nameof(endPoint), method,
                                 "An incorrect Method Value was supplied.")
                         };
@@ -158,15 +158,15 @@ namespace SereneApi
                 {
                     HttpContent content = (HttpContent)request.Content.GetContent();
 
-                    responseMessage = await RetryRequestAsync(async () =>
+                    responseMessage = await RetryRequestAsync(async client =>
                     {
                         return method switch
                         {
-                            Method.POST => await Client.PostAsync(endPoint, content),
+                            Method.POST => await client.PostAsync(endPoint, content),
                             Method.GET => throw new ArgumentException(
                                 "Get cannot be used in conjunction with an InBody Request"),
-                            Method.PUT => await Client.PutAsync(endPoint, content),
-                            Method.PATCH => await Client.PatchAsync(endPoint, content),
+                            Method.PUT => await client.PutAsync(endPoint, content),
+                            Method.PATCH => await client.PatchAsync(endPoint, content),
                             Method.DELETE => throw new ArgumentException(
                                 "Delete cannot be used in conjunction with an InBody Request"),
                             _ => throw new ArgumentOutOfRangeException(nameof(method), method,
@@ -203,7 +203,7 @@ namespace SereneApi
         /// <param name="requestAction">The request to be performed.</param>
         /// <param name="route">The route to be inserted into the log.</param>
         /// <returns></returns>
-        private async Task<HttpResponseMessage> RetryRequestAsync(Func<Task<HttpResponseMessage>> requestAction, Uri route)
+        private async Task<HttpResponseMessage> RetryRequestAsync(Func<HttpClient, Task<HttpResponseMessage>> requestAction, Uri route)
         {
             bool retryingRequest;
             int requestsAttempted = 0;
@@ -213,7 +213,9 @@ namespace SereneApi
 
                 try
                 {
-                    HttpResponseMessage responseMessage = await requestAction.Invoke();
+                    using HttpClient client = _clientFactory.BuildClient();
+
+                    HttpResponseMessage responseMessage = await requestAction.Invoke(client);
 
                     return responseMessage;
                 }
@@ -221,7 +223,7 @@ namespace SereneApi
                 {
                     requestsAttempted++;
 
-                    if(_retry.Count == 0 || requestsAttempted == _retry.Count)
+                    if(Connection.RetryAttempts == 0 || requestsAttempted == Connection.RetryAttempts)
                     {
                         _logger?.LogError(canceledException, "The Request to \"{RequestRoute}\" has Timed Out; Retry limit reached. Retired {count}", route, requestsAttempted);
 
@@ -229,7 +231,7 @@ namespace SereneApi
                     }
                     else
                     {
-                        _logger?.LogWarning("Request to \"{RequestRoute}\" has Timed out, retrying. Attempts Remaining {count}", route, _retry.Count - requestsAttempted);
+                        _logger?.LogWarning("Request to \"{RequestRoute}\" has Timed out, retrying. Attempts Remaining {count}", route, Connection.RetryAttempts - requestsAttempted);
 
                         retryingRequest = true;
                     }

@@ -45,6 +45,20 @@ namespace SereneApi.Types
             }
         }
 
+        public bool TryAddDependency<TDependency>(TDependency dependencyInstance, Binding binding = Binding.Bound)
+        {
+            Dependency<TDependency> dependency = new Dependency<TDependency>(dependencyInstance, binding);
+
+            if(_dependencyTypeMap.ContainsKey(dependency.Type))
+            {
+                return false;
+            }
+
+            _dependencyTypeMap.Add(dependency.Type, dependency);
+
+            return true;
+        }
+
         /// <inheritdoc cref="IDependencyCollection.GetDependency{TDependency}"/>
         public TDependency GetDependency<TDependency>()
         {

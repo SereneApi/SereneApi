@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Net;
 using SereneApi.Types.Headers.Accept;
+using System.Net;
 
 namespace SereneApi.Interfaces
 {
@@ -22,12 +21,6 @@ namespace SereneApi.Interfaces
         void SetTimeoutPeriod(int seconds);
 
         /// <summary>
-        /// Sets the timeout to be used by the <see cref="ApiHandler"/> when making API requests. By default this value is set to 30 seconds.
-        /// </summary>
-        /// <param name="timeoutPeriod">The <see cref="TimeSpan"/> to be used as the timeout period by the <see cref="ApiHandler"/>.</param>
-        void SetTimeoutPeriod(TimeSpan timeoutPeriod);
-
-        /// <summary>
         /// Adds an <see cref="ILogger"/> to the <see cref="ApiHandler"/> allowing built in Logging.
         /// </summary>
         /// <param name="logger">The <see cref="ILogger"/> to be used for Logging.</param>
@@ -37,7 +30,7 @@ namespace SereneApi.Interfaces
         /// When set, upon a timeout the <see cref="ApiHandler"/> will re-attempt the request. By Default this is disabled.
         /// </summary>
         /// <param name="retryCount">How many times the <see cref="ApiHandler"/> will re-attempt the request.</param>
-        void SetRetryOnTimeout(int retryCount);
+        void SetRetryAttempts(int retryCount);
 
         /// <summary>
         /// Overrides the default <see cref="IQueryFactory"/> with the supplied <see cref="IQueryFactory"/>.

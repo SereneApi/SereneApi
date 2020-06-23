@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace SereneApi.Types
 {
-    [DebuggerDisplay("Source: {Source.ToString()}")]
+    [DebuggerDisplay("Source: {ConnectionInfo.Source.ToString()}")]
     public class ApiHandlerOptions: IApiHandlerOptions, IDisposable
     {
         #region Properties
@@ -12,24 +12,16 @@ namespace SereneApi.Types
         /// <inheritdoc cref="IApiHandlerOptions.Dependencies"/>
         public IDependencyCollection Dependencies { get; }
 
-        /// <inheritdoc cref="IApiHandlerOptions.Source"/>
-        public Uri Source { get; }
-
-        /// <inheritdoc cref="IApiHandlerOptions.Resource"/>
-        public string Resource { get; }
-
-        /// <inheritdoc cref="IApiHandlerOptions.ResourcePath"/>
-        public string ResourcePath { get; }
+        /// <inheritdoc cref="IApiHandlerOptions.ConnectionInfo"/>
+        public IConnectionInfo ConnectionInfo { get; set; }
 
         #endregion
         #region Constructors
 
-        public ApiHandlerOptions(IDependencyCollection dependencyCollection, Uri source, string resource, string resourcePath)
+        public ApiHandlerOptions(IDependencyCollection dependencyCollection, IConnectionInfo connectionInfo)
         {
             Dependencies = dependencyCollection;
-            Source = source;
-            Resource = resource;
-            ResourcePath = resourcePath;
+            ConnectionInfo = connectionInfo;
         }
 
         #endregion

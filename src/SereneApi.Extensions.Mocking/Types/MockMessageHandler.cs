@@ -148,7 +148,7 @@ namespace SereneApi.Extensions.Mocking.Types
         {
             IApiRequestContent requestContent = await mockResponse.GetResponseContentAsync(cancellationToken);
 
-            if (requestContent != null)
+            if(requestContent != null)
             {
                 return new HttpResponseMessage
                 {

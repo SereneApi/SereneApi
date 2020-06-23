@@ -13,13 +13,13 @@ namespace DependencyInjection.WebUi.Handlers
 
         public Task<IApiResponse<int>> GetAsync(int value)
         {
-            return PerformRequestAsync<int>(Method.Get, 
+            return PerformRequestAsync<int>(Method.GET,
                 r => r.WithEndPointTemplate("int/{0}", value));
         }
 
         public IApiResponse<string> GetAsync(string value)
         {
-            return PerformRequest<string>(Method.Get, 
+            return PerformRequest<string>(Method.GET,
                 r => r.WithEndPointTemplate("string/{0}", value));
         }
     }
