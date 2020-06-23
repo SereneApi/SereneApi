@@ -19,7 +19,7 @@ SereneApi.Extensions.DependencyInjection adds support for AspNet DI and Configur
     <RepositoryType>GIT</RepositoryType>
     <PackageTags>API; REST; RESTful; DI; DependencyInjection; AspNet; Extensions</PackageTags>
     <NeutralLanguage>en-AU</NeutralLanguage>
-    <PackageReleaseNotes>* Project has moved from .Net Core 3.1 to .Net Standard 2.1</PackageReleaseNotes>
+    <PackageReleaseNotes></PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
