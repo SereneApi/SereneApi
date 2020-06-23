@@ -46,7 +46,7 @@ namespace SereneApi.Types
 
         public void UsingMethod(Method method)
         {
-            if(method == Method.None)
+            if(method == Method.NONE)
             {
                 throw new ArgumentException("Must use a valid Method.", nameof(method));
             }

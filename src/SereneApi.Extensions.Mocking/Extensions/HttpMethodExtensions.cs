@@ -17,12 +17,12 @@ namespace System.Net.Http
 
             return methodString switch
             {
-                "GET" => Method.Get,
-                "POST" => Method.Post,
-                "DELETE" => Method.Delete,
-                "PATCH" => Method.Patch,
-                "PUT" => Method.Put,
-                _ => Method.None
+                "GET" => Method.GET,
+                "POST" => Method.POST,
+                "DELETE" => Method.DELETE,
+                "PATCH" => Method.PATCH,
+                "PUT" => Method.PUT,
+                _ => Method.NONE
             };
         }
     }

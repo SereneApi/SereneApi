@@ -22,41 +22,41 @@ namespace SereneApi
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.GetAsync"/>
         public Task<IApiResponse<TResource>> GetAsync(TIdentifier identifier)
         {
-            return PerformRequestAsync<TResource>(Method.Get, request => request
+            return PerformRequestAsync<TResource>(Method.GET, request => request
                 .WithEndPoint(identifier));
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.GetAllAsync"/>
         public Task<IApiResponse<List<TResource>>> GetAllAsync()
         {
-            return PerformRequestAsync<List<TResource>>(Method.Get);
+            return PerformRequestAsync<List<TResource>>(Method.GET);
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.CreateAsync"/>
         public Task<IApiResponse<TResource>> CreateAsync(TResource resource)
         {
-            return PerformRequestAsync<TResource>(Method.Post, request => request
+            return PerformRequestAsync<TResource>(Method.POST, request => request
                 .WithInBodyContent(resource));
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.DeleteAsync"/>
         public Task<IApiResponse> DeleteAsync(TIdentifier identifier)
         {
-            return PerformRequestAsync(Method.Delete, request => request
+            return PerformRequestAsync(Method.DELETE, request => request
                 .WithEndPoint(identifier));
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.ReplaceAsync"/>
         public Task<IApiResponse<TResource>> ReplaceAsync(TResource resource)
         {
-            return PerformRequestAsync<TResource>(Method.Put, request => request
+            return PerformRequestAsync<TResource>(Method.PUT, request => request
                 .WithInBodyContent(resource));
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.UpdateAsync"/>
         public Task<IApiResponse<TResource>> UpdateAsync(TResource resource)
         {
-            return PerformRequestAsync<TResource>(Method.Patch, request => request
+            return PerformRequestAsync<TResource>(Method.PATCH, request => request
                 .WithInBodyContent(resource));
         }
     }

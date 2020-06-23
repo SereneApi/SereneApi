@@ -72,11 +72,11 @@ namespace SereneApi
                     {
                         return method switch
                         {
-                            Method.Post => await Client.PostAsync(endPoint, null),
-                            Method.Get => await Client.GetAsync(endPoint),
-                            Method.Put => await Client.PutAsync(endPoint, null),
-                            Method.Patch => await Client.PatchAsync(endPoint, null),
-                            Method.Delete => await Client.DeleteAsync(endPoint),
+                            Method.POST => await Client.PostAsync(endPoint, null),
+                            Method.GET => await Client.GetAsync(endPoint),
+                            Method.PUT => await Client.PutAsync(endPoint, null),
+                            Method.PATCH => await Client.PatchAsync(endPoint, null),
+                            Method.DELETE => await Client.DeleteAsync(endPoint),
                             _ => throw new ArgumentOutOfRangeException(nameof(endPoint), method,
                                 "An incorrect Method Value was supplied.")
                         };
@@ -90,12 +90,12 @@ namespace SereneApi
                     {
                         return method switch
                         {
-                            Method.Post => await Client.PostAsync(endPoint, content),
-                            Method.Get => throw new ArgumentException(
+                            Method.POST => await Client.PostAsync(endPoint, content),
+                            Method.GET => throw new ArgumentException(
                                 "Get cannot be used in conjunction with an InBody Request"),
-                            Method.Put => await Client.PutAsync(endPoint, content),
-                            Method.Patch => await Client.PatchAsync(endPoint, content),
-                            Method.Delete => throw new ArgumentException(
+                            Method.PUT => await Client.PutAsync(endPoint, content),
+                            Method.PATCH => await Client.PatchAsync(endPoint, content),
+                            Method.DELETE => throw new ArgumentException(
                                 "Delete cannot be used in conjunction with an InBody Request"),
                             _ => throw new ArgumentOutOfRangeException(nameof(method), method,
                                 "An incorrect Method Value was supplied.")
@@ -141,11 +141,11 @@ namespace SereneApi
                     {
                         return method switch
                         {
-                            Method.Post => await Client.PostAsync(endPoint, null),
-                            Method.Get => await Client.GetAsync(endPoint),
-                            Method.Put => await Client.PutAsync(endPoint, null),
-                            Method.Patch => await Client.PatchAsync(endPoint, null),
-                            Method.Delete => await Client.DeleteAsync(endPoint),
+                            Method.POST => await Client.PostAsync(endPoint, null),
+                            Method.GET => await Client.GetAsync(endPoint),
+                            Method.PUT => await Client.PutAsync(endPoint, null),
+                            Method.PATCH => await Client.PatchAsync(endPoint, null),
+                            Method.DELETE => await Client.DeleteAsync(endPoint),
                             _ => throw new ArgumentOutOfRangeException(nameof(endPoint), method,
                                 "An incorrect Method Value was supplied.")
                         };
@@ -159,12 +159,12 @@ namespace SereneApi
                     {
                         return method switch
                         {
-                            Method.Post => await Client.PostAsync(endPoint, content),
-                            Method.Get => throw new ArgumentException(
+                            Method.POST => await Client.PostAsync(endPoint, content),
+                            Method.GET => throw new ArgumentException(
                                 "Get cannot be used in conjunction with an InBody Request"),
-                            Method.Put => await Client.PutAsync(endPoint, content),
-                            Method.Patch => await Client.PatchAsync(endPoint, content),
-                            Method.Delete => throw new ArgumentException(
+                            Method.PUT => await Client.PutAsync(endPoint, content),
+                            Method.PATCH => await Client.PatchAsync(endPoint, content),
+                            Method.DELETE => throw new ArgumentException(
                                 "Delete cannot be used in conjunction with an InBody Request"),
                             _ => throw new ArgumentOutOfRangeException(nameof(method), method,
                                 "An incorrect Method Value was supplied.")

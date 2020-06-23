@@ -30,7 +30,7 @@ namespace SereneApi.Tests
             .WithMockResponses(r =>
             {
                 r.AddMockResponse(MockPersonDto.All)
-                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith(Method.GET)
                     .RespondsToRequestsWith(fullSource);
             });
 
@@ -39,7 +39,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerWrapper apiHandler = Should.NotThrow(() => handlerFactory.Build<ApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandler.PerformRequest<MockPersonDto>(Method.Get));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandler.PerformRequest<MockPersonDto>(Method.GET));
 
             #endregion
             #region Assert
@@ -83,7 +83,7 @@ namespace SereneApi.Tests
 
             Should.Throw<MemberAccessException>(() =>
             {
-                apiHandler.PerformRequest(Method.Get, r => r.AgainstResource(resource));
+                apiHandler.PerformRequest(Method.GET, r => r.AgainstResource(resource));
             });
 
             apiHandler.Resource.ShouldBe(resource);
@@ -119,7 +119,7 @@ namespace SereneApi.Tests
 
             Should.Throw<MemberAccessException>(() =>
             {
-                apiHandler.PerformRequest<MockPersonDto>(Method.Get, r => r.AgainstResource(resource));
+                apiHandler.PerformRequest<MockPersonDto>(Method.GET, r => r.AgainstResource(resource));
             });
 
             apiHandler.Resource.ShouldBe(resource);
@@ -155,7 +155,7 @@ namespace SereneApi.Tests
 
             Should.Throw<MemberAccessException>(() =>
             {
-                apiHandler.PerformRequest(Method.Delete, r => r.AgainstResource(resource));
+                apiHandler.PerformRequest(Method.DELETE, r => r.AgainstResource(resource));
             });
 
             apiHandler.Resource.ShouldBe(resource);
@@ -191,7 +191,7 @@ namespace SereneApi.Tests
 
             Should.Throw<MemberAccessException>(() =>
             {
-                apiHandler.PerformRequest<MockPersonDto>(Method.Delete, r => r.AgainstResource(resource));
+                apiHandler.PerformRequest<MockPersonDto>(Method.DELETE, r => r.AgainstResource(resource));
             });
 
             apiHandler.Resource.ShouldBe(resource);
@@ -227,7 +227,7 @@ namespace SereneApi.Tests
 
             Should.Throw<MemberAccessException>(() =>
             {
-                apiHandler.PerformRequest(Method.Post, r => r.AgainstResource(resource));
+                apiHandler.PerformRequest(Method.POST, r => r.AgainstResource(resource));
             });
 
             apiHandler.Resource.ShouldBe(resource);
@@ -263,7 +263,7 @@ namespace SereneApi.Tests
 
             Should.Throw<MemberAccessException>(() =>
             {
-                apiHandler.PerformRequest<MockPersonDto>(Method.Post, r => r.AgainstResource(resource));
+                apiHandler.PerformRequest<MockPersonDto>(Method.POST, r => r.AgainstResource(resource));
             });
 
             apiHandler.Resource.ShouldBe(resource);
@@ -300,7 +300,7 @@ namespace SereneApi.Tests
 
             Should.Throw<MemberAccessException>(() =>
             {
-                apiHandler.PerformRequest(Method.Put, r => r.AgainstResource(resource));
+                apiHandler.PerformRequest(Method.PUT, r => r.AgainstResource(resource));
             });
 
             apiHandler.Resource.ShouldBe(resource);
@@ -336,7 +336,7 @@ namespace SereneApi.Tests
 
             Should.Throw<MemberAccessException>(() =>
             {
-                apiHandler.PerformRequest<MockPersonDto>(Method.Put, r => r.AgainstResource(resource));
+                apiHandler.PerformRequest<MockPersonDto>(Method.PUT, r => r.AgainstResource(resource));
             });
 
             apiHandler.Resource.ShouldBe(resource);
@@ -372,7 +372,7 @@ namespace SereneApi.Tests
 
             Should.Throw<MemberAccessException>(() =>
             {
-                apiHandler.PerformRequest(Method.Patch, r => r.AgainstResource(resource));
+                apiHandler.PerformRequest(Method.PATCH, r => r.AgainstResource(resource));
             });
 
             apiHandler.Resource.ShouldBe(resource);
@@ -408,7 +408,7 @@ namespace SereneApi.Tests
 
             Should.Throw<MemberAccessException>(() =>
             {
-                apiHandler.PerformRequest<MockPersonDto>(Method.Patch, r => r.AgainstResource(resource));
+                apiHandler.PerformRequest<MockPersonDto>(Method.PATCH, r => r.AgainstResource(resource));
             });
 
             apiHandler.Resource.ShouldBe(resource);
@@ -444,7 +444,7 @@ namespace SereneApi.Tests
             handlerFactory.ExtendApiHandler<ApiHandlerWrapper>().WithMockResponses(r =>
             {
                 r.AddMockResponse(Status.Ok)
-                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith(Method.GET)
                     .RespondsToRequestsWith(finalSource);
             });
 
@@ -453,7 +453,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerWrapper apiHandler = Should.NotThrow(() => handlerFactory.Build<ApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(() => apiHandler.PerformRequest(Method.Get));
+            IApiResponse response = Should.NotThrow(() => apiHandler.PerformRequest(Method.GET));
 
             #endregion
             #region Assert
@@ -494,7 +494,7 @@ namespace SereneApi.Tests
             handlerFactory.ExtendApiHandler<ApiHandlerWrapper>().WithMockResponses(r =>
             {
                 r.AddMockResponse(MockPersonDto.JohnSmith)
-                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith(Method.GET)
                     .RespondsToRequestsWith(finalSource);
             });
 
@@ -503,7 +503,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerWrapper apiHandler = Should.NotThrow(() => handlerFactory.Build<ApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandler.PerformRequest<MockPersonDto>(Method.Get));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandler.PerformRequest<MockPersonDto>(Method.GET));
 
             #endregion
             #region Assert
@@ -551,7 +551,7 @@ namespace SereneApi.Tests
             {
                 r.AddMockResponse(Status.Ok)
                     .ResponseIsDelayed(timeoutSeconds + 2, retryCount - 1)
-                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith(Method.GET)
                     .RespondsToRequestsWith(finalSource);
             });
 
@@ -560,7 +560,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerWrapper apiHandler = Should.NotThrow(() => handlerFactory.Build<ApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(() => apiHandler.PerformRequest(Method.Get));
+            IApiResponse response = Should.NotThrow(() => apiHandler.PerformRequest(Method.GET));
 
             #endregion
             #region Assert
@@ -602,7 +602,7 @@ namespace SereneApi.Tests
             {
                 r.AddMockResponse(MockPersonDto.JohnSmith)
                     .ResponseIsDelayed(timeoutSeconds + 2, retryCount - 1)
-                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith(Method.GET)
                     .RespondsToRequestsWith(finalSource);
             });
 
@@ -611,7 +611,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerWrapper apiHandler = Should.NotThrow(() => handlerFactory.Build<ApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandler.PerformRequest<MockPersonDto>(Method.Get));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandler.PerformRequest<MockPersonDto>(Method.GET));
 
             #endregion
             #region Assert
@@ -661,7 +661,7 @@ namespace SereneApi.Tests
             handlerFactory.ExtendApiHandler<ApiHandlerWrapper>().WithMockResponses(r =>
             {
                 r.AddMockResponse(status, message)
-                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith(Method.GET)
                     .RespondsToRequestsWith(finalSource);
             });
 
@@ -670,7 +670,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerWrapper apiHandler = Should.NotThrow(() => handlerFactory.Build<ApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(() => apiHandler.PerformRequest(Method.Get));
+            IApiResponse response = Should.NotThrow(() => apiHandler.PerformRequest(Method.GET));
 
             #endregion
             #region Assert
@@ -714,7 +714,7 @@ namespace SereneApi.Tests
             handlerFactory.ExtendApiHandler<ApiHandlerWrapper>().WithMockResponses(r =>
             {
                 r.AddMockResponse(status, message)
-                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith(Method.GET)
                     .RespondsToRequestsWith(finalSource);
             });
 
@@ -723,7 +723,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerWrapper apiHandler = Should.NotThrow(() => handlerFactory.Build<ApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandler.PerformRequest<MockPersonDto>(Method.Get));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandler.PerformRequest<MockPersonDto>(Method.GET));
 
             #endregion
             #region Assert
@@ -769,7 +769,7 @@ namespace SereneApi.Tests
             {
                 r.AddMockResponse(status, message)
                     .ResponseIsDelayed(timeoutSeconds + 2, retryCount - 1)
-                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith(Method.GET)
                     .RespondsToRequestsWith(finalSource);
             });
 
@@ -778,7 +778,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerWrapper apiHandler = Should.NotThrow(() => handlerFactory.Build<ApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(() => apiHandler.PerformRequest(Method.Get));
+            IApiResponse response = Should.NotThrow(() => apiHandler.PerformRequest(Method.GET));
 
             #endregion
             #region Assert
@@ -823,7 +823,7 @@ namespace SereneApi.Tests
             {
                 r.AddMockResponse(status, message)
                     .ResponseIsDelayed(timeoutSeconds + 2, retryCount - 1)
-                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith(Method.GET)
                     .RespondsToRequestsWith(finalSource);
             });
 
@@ -832,7 +832,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerWrapper apiHandler = Should.NotThrow(() => handlerFactory.Build<ApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandler.PerformRequest<MockPersonDto>(Method.Get));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandler.PerformRequest<MockPersonDto>(Method.GET));
 
             #endregion
             #region Assert
@@ -880,7 +880,7 @@ namespace SereneApi.Tests
             {
                 r.AddMockResponse(Status.Ok)
                     .ResponseIsDelayed(timeoutSeconds + 2, retryCount)
-                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith(Method.GET)
                     .RespondsToRequestsWith(finalSource);
             });
 
@@ -889,7 +889,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerWrapper apiHandler = Should.NotThrow(() => handlerFactory.Build<ApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(() => apiHandler.PerformRequest(Method.Get));
+            IApiResponse response = Should.NotThrow(() => apiHandler.PerformRequest(Method.GET));
 
             #endregion
             #region Assert
@@ -935,7 +935,7 @@ namespace SereneApi.Tests
             {
                 r.AddMockResponse(Status.Ok)
                     .ResponseIsDelayed(timeoutSeconds + 2, retryCount)
-                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith(Method.GET)
                     .RespondsToRequestsWith(finalSource);
             });
 
@@ -944,7 +944,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerWrapper apiHandler = Should.NotThrow(() => handlerFactory.Build<ApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandler.PerformRequest<MockPersonDto>(Method.Get));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandler.PerformRequest<MockPersonDto>(Method.GET));
 
             #endregion
             #region Assert
@@ -990,7 +990,7 @@ namespace SereneApi.Tests
             handlerFactory.ExtendApiHandler<ApiHandlerWrapper>().WithMockResponses(r =>
             {
                 r.AddMockResponse(Status.Ok)
-                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith(Method.GET)
                     .RespondsToRequestsWith(fullSource);
             });
 
@@ -999,7 +999,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerWrapper apiHandler = Should.NotThrow(() => handlerFactory.Build<ApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(() => apiHandler.PerformRequest(Method.Get, r => r.AgainstResource(resource)));
+            IApiResponse response = Should.NotThrow(() => apiHandler.PerformRequest(Method.GET, r => r.AgainstResource(resource)));
 
             #endregion
             #region Assert
@@ -1042,7 +1042,7 @@ namespace SereneApi.Tests
             handlerFactory.ExtendApiHandler<ApiHandlerWrapper>().WithMockResponses(r =>
             {
                 r.AddMockResponse(MockPersonDto.JohnSmith)
-                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith(Method.GET)
                     .RespondsToRequestsWith(fullSource);
             });
 
@@ -1051,7 +1051,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerWrapper apiHandler = Should.NotThrow(() => handlerFactory.Build<ApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandler.PerformRequest<MockPersonDto>(Method.Get, r => r.AgainstResource(resource)));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandler.PerformRequest<MockPersonDto>(Method.GET, r => r.AgainstResource(resource)));
 
             #endregion
             #region Assert
@@ -1102,7 +1102,7 @@ namespace SereneApi.Tests
             handlerFactory.ExtendApiHandler<ApiHandlerWrapper>().WithMockResponses(r =>
             {
                 r.AddMockResponse(Status.Ok)
-                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith(Method.GET)
                     .RespondsToRequestsWith(fullSource);
             });
 
@@ -1111,7 +1111,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerWrapper apiHandler = Should.NotThrow(() => handlerFactory.Build<ApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(() => apiHandler.PerformRequest(Method.Get, r => r.WithEndPoint(endPoint)));
+            IApiResponse response = Should.NotThrow(() => apiHandler.PerformRequest(Method.GET, r => r.WithEndPoint(endPoint)));
 
             #endregion
             #region Assert
@@ -1153,7 +1153,7 @@ namespace SereneApi.Tests
             handlerFactory.ExtendApiHandler<ApiHandlerWrapper>().WithMockResponses(r =>
             {
                 r.AddMockResponse(MockPersonDto.JohnSmith)
-                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith(Method.GET)
                     .RespondsToRequestsWith(fullSource);
             });
 
@@ -1162,7 +1162,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerWrapper apiHandler = Should.NotThrow(() => handlerFactory.Build<ApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandler.PerformRequest<MockPersonDto>(Method.Get, r => r.WithEndPoint(endPoint)));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandler.PerformRequest<MockPersonDto>(Method.GET, r => r.WithEndPoint(endPoint)));
 
             #endregion
             #region Assert
