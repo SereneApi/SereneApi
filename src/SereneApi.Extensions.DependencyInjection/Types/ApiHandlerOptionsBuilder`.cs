@@ -107,7 +107,7 @@ namespace SereneApi.Extensions.DependencyInjection.Types
         /// </summary>
         public new IApiHandlerOptions<TApiHandler> BuildOptions()
         {
-            if(DependencyCollection.TryGetDependency(out HttpMessageHandler messageHandler))
+            if(!DependencyCollection.TryGetDependency(out HttpMessageHandler messageHandler))
             {
                 ICredentials credentials = DependencyCollection.GetDependency<ICredentials>();
 
