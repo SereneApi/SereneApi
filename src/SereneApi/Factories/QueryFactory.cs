@@ -77,6 +77,12 @@ namespace SereneApi.Factories
 
                 object value = property.GetValue(query);
 
+                if(value == null)
+                {
+                    // The property was not set, so it is skipped.
+                    continue;
+                }
+
                 string valueString = _formatter(value);
 
                 if(!string.IsNullOrEmpty(valueString))
@@ -97,7 +103,7 @@ namespace SereneApi.Factories
             // No sections return empty string.
             if(querySections.Count == 0)
             {
-                throw new ArgumentException("Invalid Query, a query must have at least one value.");
+                return null;
             }
 
             // There is only one Section so we return the first section.

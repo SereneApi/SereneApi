@@ -15,6 +15,6 @@ namespace DependencyInjection.API
 
         Task<IApiResponse> CreateAsync(StudentDto student);
 
-        Task<IApiResponse<List<ClassDto>>> GetStudentClasses(long studentId);
+        Task<IApiResponse<List<ClassDto>>> GetStudentClassesAsync(long studentId);
     }
 }

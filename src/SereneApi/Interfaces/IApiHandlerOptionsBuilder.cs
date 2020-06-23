@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
+using SereneApi.Types.Headers.Accept;
 
 namespace SereneApi.Interfaces
 {
@@ -15,12 +14,6 @@ namespace SereneApi.Interfaces
         /// <param name="resource">The API resource that the <see cref="ApiHandler"/> will interact with.</param>
         /// <param name="resourcePath">The Path preceding the Resource. By default this is set to "api/".</param>
         void UseSource(string source, string resource = null, string resourcePath = null);
-
-        /// <summary>
-        /// Overrides the Client with the supplied <see cref="HttpClient"/> this will disable the supplied Source, Timeout and <see cref="HttpRequestHeaders"/>.
-        /// </summary>
-        /// <param name="clientOverride">The <see cref="HttpClient"/> to be used when making API requests.</param>
-        void UseClientOverride(HttpClient clientOverride, bool disposeClient = true);
 
         /// <summary>
         /// Sets the timeout to be used by the <see cref="ApiHandler"/> when making API requests. By default this value is set to 30 seconds.
@@ -47,14 +40,11 @@ namespace SereneApi.Interfaces
         void SetRetryOnTimeout(int retryCount);
 
         /// <summary>
-        /// Overrides the default <see cref="HttpResponseHeaders"/> with the supplied <see cref="HttpResponseHeaders"/>.
-        /// </summary>
-        void UseHttpRequestHeaders(Action<HttpRequestHeaders> requestHeaderBuilder);
-
-        /// <summary>
         /// Overrides the default <see cref="IQueryFactory"/> with the supplied <see cref="IQueryFactory"/>.
         /// </summary>
         void UseQueryFactory(IQueryFactory queryFactory);
+
+        void AddAuthentication(IAuthentication authentication);
 
         /// <summary>
         /// Overrides the default <see cref="ICredentials"/> used by the <see cref="ApiHandler"/>.
@@ -62,18 +52,10 @@ namespace SereneApi.Interfaces
         /// <param name="credentials">The <see cref="ICredentials"/> to be used when making requests.</param>
         void UseCredentials(ICredentials credentials);
 
-        void UseHttpMessageHandler(HttpMessageHandler httpMessageHandler);
+        void AddBasicAuthentication(string username, string password);
 
-        /// <summary>
-        /// Overrides the default <see cref="HttpClientHandler"/> used by the <see cref="ApiHandler"/>.
-        /// </summary>
-        /// <param name="overrideUseCredentials">If False the Credentials supplied by the UseCredentials method will be used.</param>
-        void UseHttpClientHandler(HttpClientHandler httpClientHandler, bool overrideUseCredentials = false);
+        void AddBearerAuthentication(string token);
 
-        /// <summary>
-        /// Overrides the default <see cref="HttpClientHandler"/> used by the <see cref="ApiHandler"/>.
-        /// </summary>
-        /// <param name="overrideUseCredentials">If False the Credentials supplied by the UseCredentials method will be used.</param>
-        void UseHttpClientHandler(Action<HttpClientHandler> builder, bool overrideUseCredentials = false);
+        void AcceptContentType(ContentType content);
     }
 }

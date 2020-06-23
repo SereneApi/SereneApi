@@ -25,56 +25,56 @@ namespace SereneApi.Tests
             {
                 builder
                     .AddMockResponse(MockPersonDto.BenJerry)
-                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith(Method.GET)
                     .RespondsToRequestsWith("http://localhost:8080/api/Person/0");
 
                 builder
                     .AddMockResponse(MockPersonDto.JohnSmith)
-                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith(Method.GET)
                     .RespondsToRequestsWith("http://localhost:8080/api/Person/1");
 
                 builder
                     .AddMockResponse(MockPersonDto.All)
-                    .RespondsToRequestsWith(Method.Get)
+                    .RespondsToRequestsWith(Method.GET)
                     .RespondsToRequestsWith("http://localhost:8080/api/Person");
 
                 builder
                     .AddMockResponse(Status.Ok)
-                    .RespondsToRequestsWith(Method.Delete)
+                    .RespondsToRequestsWith(Method.DELETE)
                     .RespondsToRequestsWith("http://localhost:8080/api/Person/0");
 
                 builder
                     .AddMockResponse(Status.NotFound, "Could not find a Person with an Id of 2")
-                    .RespondsToRequestsWith(Method.Delete)
+                    .RespondsToRequestsWith(Method.DELETE)
                     .RespondsToRequestsWith("http://localhost:8080/api/Person/2");
 
                 builder
                     .AddMockResponse(MockPersonDto.BenJerry)
-                    .RespondsToRequestsWith(Method.Post)
+                    .RespondsToRequestsWith(Method.POST)
                     .RespondsToRequestsWith("http://localhost:8080/api/Person")
                     .RespondsToRequestsWith(MockPersonDto.BenJerry);
 
                 builder
                     .AddMockResponse(Status.BadRequest, "This person has already been added.")
-                    .RespondsToRequestsWith(Method.Post)
+                    .RespondsToRequestsWith(Method.POST)
                     .RespondsToRequestsWith("http://localhost:8080/api/Person")
                     .RespondsToRequestsWith(MockPersonDto.JohnSmith);
 
                 builder
                     .AddMockResponse(MockPersonDto.BenJerry)
-                    .RespondsToRequestsWith(Method.Put)
+                    .RespondsToRequestsWith(Method.PUT)
                     .RespondsToRequestsWith("http://localhost:8080/api/Person")
                     .RespondsToRequestsWith(MockPersonDto.BenJerry);
 
                 builder
                     .AddMockResponse(MockPersonDto.BenJerry)
-                    .RespondsToRequestsWith(Method.Patch)
+                    .RespondsToRequestsWith(Method.PATCH)
                     .RespondsToRequestsWith("http://localhost:8080/api/Person")
                     .RespondsToRequestsWith(MockPersonDto.BenJerry);
 
                 builder
                     .AddMockResponse(Status.NotFound, "Could not find the specified user")
-                    .RespondsToRequestsWith(Method.Patch)
+                    .RespondsToRequestsWith(Method.PATCH)
                     .RespondsToRequestsWith("http://localhost:8080/api/Person")
                     .RespondsToRequestsWith(MockPersonDto.JohnSmith);
             });

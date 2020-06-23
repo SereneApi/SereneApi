@@ -1,10 +1,14 @@
-﻿namespace SereneApi.Types
+﻿using System;
+
+namespace SereneApi.Types
 {
     public readonly struct MediaType
     {
         public string TypeString { get; }
 
-        public static MediaType ApplicationJson => new MediaType("application/json");
+        public static MediaType Json => new MediaType("application/json");
+
+        public static MediaType FromUrlEncoded => new MediaType("application/x-www-form-urlencoded");
 
         public MediaType(string typeString)
         {
@@ -33,7 +37,7 @@
 
         public override int GetHashCode()
         {
-            return TypeString.GetHashCode();
+            return HashCode.Combine(TypeString);
         }
     }
 }

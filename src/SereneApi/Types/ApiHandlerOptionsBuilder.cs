@@ -5,6 +5,8 @@ using SereneApi.Helpers;
 using SereneApi.Interfaces;
 using SereneApi.Serializers;
 using SereneApi.Types.Dependencies;
+using SereneApi.Types.Headers.Accept;
+using SereneApi.Types.Headers.Authentication;
 using System;
 using System.Net;
 using System.Net.Http;
@@ -18,12 +20,10 @@ namespace SereneApi.Types
 
         private readonly HttpClient _baseClient;
 
-        private readonly bool _disposeClient = true;
+        private readonly bool _disposeClient;
 
         #endregion
         #region Properties
-
-        protected bool OverrideUseCredentials { get; private set; }
 
         protected Uri Source { get; set; }
 
@@ -31,15 +31,7 @@ namespace SereneApi.Types
 
         protected string ResourcePath { get; set; }
 
-        protected HttpClient ClientOverride { get; set; }
-
-        protected bool DisposeClientOverride { get; set; }
-
-        protected Action<HttpRequestHeaders> RequestHeaderBuilder = ApiHandlerOptionDefaults.RequestHeadersBuilder;
-
         protected TimeSpan Timeout = ApiHandlerOptionDefaults.TimeoutPeriod;
-
-        protected ICredentials Credentials { get; set; } = ApiHandlerOptionDefaults.Credentials;
 
         #endregion
         #region Constructors
@@ -49,6 +41,9 @@ namespace SereneApi.Types
             DependencyCollection.AddDependency(ApiHandlerOptionDefaults.QueryFactory);
             DependencyCollection.AddDependency(JsonSerializer.Default);
             DependencyCollection.AddDependency(RetryDependency.Default);
+            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory());
+            DependencyCollection.AddDependency(ContentType.Json);
+            DependencyCollection.AddDependency(ApiHandlerOptionDefaults.Credentials);
         }
 
         protected ApiHandlerOptionsBuilder(DependencyCollection dependencyCollection) : base(dependencyCollection)
@@ -56,12 +51,25 @@ namespace SereneApi.Types
             DependencyCollection.AddDependency(ApiHandlerOptionDefaults.QueryFactory);
             DependencyCollection.AddDependency(JsonSerializer.Default);
             DependencyCollection.AddDependency(RetryDependency.Default);
+            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory());
+            DependencyCollection.AddDependency(ContentType.Json);
+            DependencyCollection.AddDependency(ApiHandlerOptionDefaults.Credentials);
+        }
+
+        internal ApiHandlerOptionsBuilder(HttpClient baseClient, bool disposeClient = true) : this()
+        {
+            _disposeClient = disposeClient;
+            _baseClient = baseClient;
+
+            Source = baseClient.BaseAddress;
         }
 
         internal ApiHandlerOptionsBuilder(DependencyCollection dependencyCollection, HttpClient baseClient, bool disposeClient = true) : this(dependencyCollection)
         {
             _disposeClient = disposeClient;
             _baseClient = baseClient;
+
+            Source = baseClient.BaseAddress;
         }
 
         #endregion
@@ -70,11 +78,6 @@ namespace SereneApi.Types
         public void UseSource(string source, string resource = null, string resourcePath = null)
         {
             ExceptionHelper.EnsureParameterIsNotNull(source, nameof(source));
-
-            if(ClientOverride != null)
-            {
-                throw new MethodAccessException("This method cannot be called after UseClientOverride");
-            }
 
             if(Source != null)
             {
@@ -88,50 +91,12 @@ namespace SereneApi.Types
             DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory(ResourcePath));
         }
 
-        /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseClientOverride"/>
-        public void UseClientOverride(HttpClient clientOverride, bool disposeClient = true)
-        {
-            if(_baseClient != null)
-            {
-                throw new MethodAccessException("This method cannot be called when creating a ApiHandler from an HttpClient");
-            }
-
-            if(ClientOverride != null)
-            {
-                ExceptionHelper.MethodCannotBeCalledTwice();
-            }
-
-            if(Source != null)
-            {
-                throw new MethodAccessException("This method cannot be called after UseSource");
-            }
-
-            if(DependencyCollection.HasDependency<HttpClientHandler>())
-            {
-                throw new MethodAccessException("This method cannot be called after UseHttpClientHandler");
-            }
-
-            if(DependencyCollection.HasDependency<HttpMessageHandler>())
-            {
-                throw new MethodAccessException("This method cannot be called after UseHttpMessageHandler");
-            }
-
-            ClientOverride = clientOverride;
-
-            Source = clientOverride.BaseAddress;
-            Resource = null;
-
-            DisposeClientOverride = disposeClient;
-
-            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory());
-        }
-
         /// <inheritdoc>
         ///     <cref>IApiHandlerOptionsBuilder.SetTimeoutPeriod</cref>
         /// </inheritdoc>
         public void SetTimeoutPeriod(int seconds)
         {
-            Timeout = new TimeSpan(0, 0, seconds);
+            SetTimeoutPeriod(TimeSpan.FromSeconds(seconds));
         }
 
         /// <inheritdoc>
@@ -156,17 +121,6 @@ namespace SereneApi.Types
             DependencyCollection.AddDependency(new RetryDependency(retryCount));
         }
 
-        /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseHttpRequestHeaders"/>
-        public void UseHttpRequestHeaders(Action<HttpRequestHeaders> requestHeaderBuilder)
-        {
-            if(ClientOverride != null)
-            {
-                throw new MethodAccessException("This method cannot be called after UseClientOverride");
-            }
-
-            RequestHeaderBuilder = requestHeaderBuilder;
-        }
-
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseQueryFactory"/>
         public void UseQueryFactory(IQueryFactory queryFactory)
         {
@@ -176,109 +130,87 @@ namespace SereneApi.Types
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseCredentials"/>
         public void UseCredentials(ICredentials credentials)
         {
-            if(ClientOverride != null)
-            {
-                throw new MethodAccessException("This method cannot be called after UseClientOverride");
-            }
-
-            Credentials = credentials;
+            DependencyCollection.AddDependency(credentials);
         }
 
-        /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseHttpMessageHandler"/>
-        public void UseHttpMessageHandler(HttpMessageHandler httpMessageHandler)
+        /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddAuthentication"/>
+        public void AddAuthentication(IAuthentication authentication)
         {
-            if(_baseClient != null)
+            if(DependencyCollection.HasDependency<IAuthentication>())
             {
-                throw new MethodAccessException("This method cannot be called when creating a ApiHandler from an HttpClient");
+                ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
-            if(ClientOverride != null)
-            {
-                throw new MethodAccessException("This method cannot be called after UseClientOverride");
-            }
-
-            if(DependencyCollection.HasDependency<HttpClientHandler>())
-            {
-                throw new MethodAccessException("This method cannot be called after UseHttpClientHandler");
-            }
-
-            DependencyCollection.AddDependency(httpMessageHandler, Binding.Unbound);
+            DependencyCollection.AddDependency(authentication);
         }
 
-        /// <inheritdoc>
-        ///     <cref>IApiHandlerOptionsBuilder.UseHttpClientHandler</cref>
-        /// </inheritdoc>
-        public void UseHttpClientHandler(HttpClientHandler httpClientHandler, bool overrideUseCredentials = false)
+        /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddBasicAuthentication"/>
+        public void AddBasicAuthentication(string username, string password)
         {
-            if(_baseClient != null)
+            if(DependencyCollection.HasDependency<IAuthentication>())
             {
-                throw new MethodAccessException("This method cannot be called when creating a ApiHandler from an HttpClient");
+                ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
-            if(ClientOverride != null)
-            {
-                throw new MethodAccessException("This method cannot be called after UseClientOverride");
-            }
-
-            if(DependencyCollection.HasDependency<HttpMessageHandler>())
-            {
-                throw new MethodAccessException("This method cannot be called after UseHttpMessageHandler");
-            }
-
-            // Unbound as the HttpClient controls its lifetime.
-            DependencyCollection.AddDependency(httpClientHandler, Binding.Unbound);
-
-            OverrideUseCredentials = overrideUseCredentials;
+            DependencyCollection.AddDependency<IAuthentication>(new BasicAuthentication(username, password));
         }
 
-        /// <inheritdoc>
-        ///     <cref>IApiHandlerOptionsBuilder.UseHttpClientHandler</cref>
-        /// </inheritdoc>
-        public void UseHttpClientHandler(Action<HttpClientHandler> builder, bool overrideUseCredentials = false)
+        /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddBearerAuthentication"/>
+        public void AddBearerAuthentication(string token)
         {
-            HttpClientHandler handler = new HttpClientHandler();
+            if(DependencyCollection.HasDependency<IAuthentication>())
+            {
+                ExceptionHelper.MethodCannotBeCalledTwice();
+            }
 
-            builder.Invoke(handler);
+            DependencyCollection.AddDependency<IAuthentication>(new BearerAuthentication(token));
+        }
 
-            UseHttpClientHandler(handler, overrideUseCredentials);
+        public void AcceptContentType(ContentType content)
+        {
+            DependencyCollection.AddDependency(content);
         }
 
         public IApiHandlerOptions BuildOptions()
         {
-            if(ClientOverride != null)
+            HttpClient client;
+
+            if(_baseClient != null)
             {
-                DependencyCollection.AddDependency(ClientOverride, DisposeClientOverride ? Binding.Bound : Binding.Unbound);
+                client = _baseClient;
             }
             else
             {
-                HttpClient httpClient;
+                if(!DependencyCollection.TryGetDependency(out HttpClientHandler clientHandler))
+                {
+                    ICredentials credentials = DependencyCollection.GetDependency<ICredentials>();
 
-                if(_baseClient != null)
-                {
-                    httpClient = _baseClient;
-                }
-                else
-                {
-                    if(!DependencyCollection.TryGetDependency(out HttpClientHandler clientHandler))
+                    clientHandler = new HttpClientHandler
                     {
-                        clientHandler = new HttpClientHandler();
-
-                        if(OverrideUseCredentials)
-                        {
-                            clientHandler.Credentials = Credentials;
-                        }
-                    }
-
-                    httpClient = new HttpClient(clientHandler);
+                        Credentials = credentials
+                    };
                 }
 
-                httpClient.BaseAddress = Source;
-                httpClient.Timeout = Timeout;
-
-                RequestHeaderBuilder.Invoke(httpClient.DefaultRequestHeaders);
-
-                DependencyCollection.AddDependency(httpClient, _disposeClient ? Binding.Bound : Binding.Unbound);
+                client = new HttpClient(clientHandler);
             }
+
+            client.BaseAddress = Source;
+            client.Timeout = Timeout;
+            client.DefaultRequestHeaders.Accept.Clear();
+
+            if(DependencyCollection.TryGetDependency(out IAuthentication authentication))
+            {
+                AuthenticationHeaderValue authenticationHeader = new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);
+
+                client.DefaultRequestHeaders.Authorization = authenticationHeader;
+            }
+
+            if(DependencyCollection.TryGetDependency(out ContentType contentType))
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType.Value));
+            }
+
+            DependencyCollection.AddDependency(client, _disposeClient ? Binding.Bound : Binding.Unbound);
 
             IApiHandlerOptions options = new ApiHandlerOptions(DependencyCollection, Source, Resource, ResourcePath);
 

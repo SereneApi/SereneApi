@@ -12,6 +12,8 @@ namespace SereneApi.Interfaces.Requests
         /// <param name="content">The content to be added to the body of the request.</param>
         IRequestCreated WithInBodyContent<TContent>(TContent content);
 
+        IRequestCreated WithInBodyContent(IApiRequestContent content);
+
         /// <summary>
         /// Adds a query to the request using all public properties of the supplied value.
         /// </summary>

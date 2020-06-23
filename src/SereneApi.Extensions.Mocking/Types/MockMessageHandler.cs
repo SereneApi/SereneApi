@@ -18,8 +18,6 @@ namespace SereneApi.Extensions.Mocking.Types
     /// <remarks>Override this class if you wish to extend or change its behaviour.</remarks>
     public class MockMessageHandler: DelegatingHandler
     {
-        private readonly HttpClient _internalClient;
-
         private readonly IReadOnlyList<IMockResponse> _mockResponses;
 
         /// <summary>
@@ -150,12 +148,12 @@ namespace SereneApi.Extensions.Mocking.Types
         {
             IApiRequestContent requestContent = await mockResponse.GetResponseContentAsync(cancellationToken);
 
-            if(requestContent is JsonContent jsonContent)
+            if (requestContent != null)
             {
                 return new HttpResponseMessage
                 {
                     StatusCode = mockResponse.Status.ToHttpStatusCode(),
-                    Content = jsonContent.ToStringContent()
+                    Content = (HttpContent)requestContent.GetContent()
                 };
             }
 
@@ -165,6 +163,8 @@ namespace SereneApi.Extensions.Mocking.Types
                 ReasonPhrase = mockResponse.Message
             };
         }
+
+        #region IDisposeble
 
         private volatile bool _disposed = false;
 
@@ -179,8 +179,6 @@ namespace SereneApi.Extensions.Mocking.Types
 
             if(disposing)
             {
-                _internalClient?.Dispose();
-
                 foreach(IMockResponse mockResponse in _mockResponses)
                 {
                     if(mockResponse is IDisposable disposableResponse)
@@ -192,5 +190,7 @@ namespace SereneApi.Extensions.Mocking.Types
 
             _disposed = true;
         }
+
+        #endregion
     }
 }

@@ -8,28 +8,28 @@ namespace SereneApi
     public enum Method
     {
         /// <summary>
-        /// No <see cref="Method"/> selected
+        /// No <see cref="Method"/> selected.
         /// </summary>
-        None,
+        NONE,
         /// <summary>
-        /// CREATE
+        /// The POST method is used to submit an entity to the specified resource, often causing a change in state or side effects on the server.
         /// </summary>
-        Post,
+        POST,
         /// <summary>
-        /// READ
+        /// The GET method requests a representation of the specified resource. Requests using GET should only retrieve data.
         /// </summary>
-        Get,
+        GET,
         /// <summary>
-        /// UPDATE / REPLACE
+        /// The PUT method replaces all current representations of the target resource with the request payload.
         /// </summary>
-        Put,
+        PUT,
         /// <summary>
-        /// PARTIAL UPDATE / MODIFY
+        /// The PATCH method is used to apply partial modifications to a resource.
         /// </summary>
-        Patch,
+        PATCH,
         /// <summary>
-        /// DELETE
+        /// The DELETE method deletes the specified resource.
         /// </summary>
-        Delete
+        DELETE
     }
 }

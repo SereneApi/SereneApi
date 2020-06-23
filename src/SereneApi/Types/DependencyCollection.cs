@@ -84,13 +84,22 @@ namespace SereneApi.Types
             return _dependencyTypeMap.ContainsKey(typeof(TDependency));
         }
 
+        /// <summary>
+        /// Clones the <see cref="DependencyCollection"/>. All <see cref="IDependency"/>s will be set to UNBOUND for the cloned <see cref="DependencyCollection"/>.
+        /// </summary>
+        /// <remarks>The cloned <see cref="DependencyCollection"/> will have it <see cref="IDependency"/>s disposed of when the source <see cref="DependencyCollection"/> is disposed of.</remarks>
+        /// <exception cref="ObjectDisposedException">Thrown if the <see cref="DependencyCollection"/> has been disposed of.</exception>
         public object Clone()
         {
+            CheckIfDisposed();
+
             Dictionary<Type, IDependency> newDependencyTypeMap = new Dictionary<Type, IDependency>(_dependencyTypeMap.Count, _dependencyTypeMap.Comparer);
 
             foreach(KeyValuePair<Type, IDependency> dependencyTypeMap in _dependencyTypeMap)
             {
-                newDependencyTypeMap.Add(dependencyTypeMap.Key, (IDependency)dependencyTypeMap.Value.Clone());
+                IDependency dependency = (IDependency)dependencyTypeMap.Value.Clone();
+
+                newDependencyTypeMap.Add(dependencyTypeMap.Key, dependency);
             }
 
             return new DependencyCollection(newDependencyTypeMap);
@@ -99,6 +108,14 @@ namespace SereneApi.Types
         #region IDisposable
 
         private volatile bool _disposed;
+
+        protected void CheckIfDisposed()
+        {
+            if(_disposed)
+            {
+                throw new ObjectDisposedException(nameof(GetType));
+            }
+        }
 
         /// <summary>
         /// Disposes the current instance of the <see cref="DependencyCollection"/>.
