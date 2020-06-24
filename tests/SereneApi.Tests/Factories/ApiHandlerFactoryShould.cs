@@ -27,8 +27,8 @@ namespace SereneApi.Tests.Factories
 
             ApiHandlerWrapper apiHandlerWrapper = handlerFactory.Build<ApiHandlerWrapper>();
 
-            apiHandlerWrapper.Source.ShouldBe(sourceUri);
-            apiHandlerWrapper.Resource.ShouldBe(expectedResource);
+            apiHandlerWrapper.Connection.Source.ShouldBe(sourceUri);
+            apiHandlerWrapper.Connection.Resource.ShouldBe(expectedResource);
 
             handlerFactory.Dispose();
         }
@@ -58,8 +58,8 @@ namespace SereneApi.Tests.Factories
 
             ApiHandlerWrapper apiHandlerWrapper = handlerFactory.Build<ApiHandlerWrapper>();
 
-            apiHandlerWrapper.Source.ShouldBe(sourceUri);
-            apiHandlerWrapper.Resource.ShouldBe(expectedResource);
+            apiHandlerWrapper.Connection.Source.ShouldBe(sourceUri);
+            apiHandlerWrapper.Connection.Resource.ShouldBe(expectedResource);
 
             handlerFactory.Dispose();
         }

@@ -22,7 +22,7 @@ namespace SereneApi
         /// <summary>
         /// The <see cref="IApiHandlerOptions"/> this <see cref="ApiHandler"/> will use.
         /// </summary>
-        public readonly IApiHandlerOptions _options;
+        private readonly IApiHandlerOptions _options;
 
         /// <summary>
         /// The <see cref="ILogger"/> this <see cref="ApiHandler"/> will use

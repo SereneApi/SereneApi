@@ -23,7 +23,7 @@ namespace SereneApi.Tests.Extensions
 
             using ApiHandlerWrapper api = client.CreateApiHandler<ApiHandlerWrapper>();
 
-            api.Source.ShouldBe(source);
+            api.Connection.Source.ShouldBe(source);
         }
 
         [Theory]

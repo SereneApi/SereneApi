@@ -2,6 +2,7 @@
 using SereneApi.Interfaces;
 using Shouldly;
 using System;
+using SereneApi.Types;
 using Xunit;
 
 namespace SereneApi.Tests.Factories
@@ -105,7 +106,9 @@ namespace SereneApi.Tests.Factories
 
             Uri expectedRoute = new Uri(expected, UriKind.Relative);
 
-            IRouteFactory routeFactory = new RouteFactory(resourcePath);
+            IConnectionInfo connection = new ConnectionInfo("http://noteused/", null, resourcePath);
+
+            IRouteFactory routeFactory = new RouteFactory(connection);
 
             routeFactory.AddResource(resource);
             routeFactory.AddEndPoint(endPoint);
@@ -134,7 +137,9 @@ namespace SereneApi.Tests.Factories
 
             Uri expectedRoute = new Uri($"api/Users/{expected}", UriKind.Relative);
 
-            IRouteFactory routeFactory = new RouteFactory("api/");
+            IConnectionInfo connection = new ConnectionInfo("http://noteused/", null, "api/");
+
+            IRouteFactory routeFactory = new RouteFactory(connection);
 
             routeFactory.AddResource("Users");
             routeFactory.AddEndPoint(endPoint);
@@ -162,7 +167,9 @@ namespace SereneApi.Tests.Factories
 
             Uri expectedRoute = new Uri($"api/Users/{expected}", UriKind.Relative);
 
-            IRouteFactory routeFactory = new RouteFactory("api/");
+            IConnectionInfo connection = new ConnectionInfo("http://noteused/", null, "api/");
+
+            IRouteFactory routeFactory = new RouteFactory(connection);
 
             routeFactory.AddResource("Users");
             routeFactory.AddEndPoint(endPoint);
@@ -190,7 +197,9 @@ namespace SereneApi.Tests.Factories
 
             Uri expectedRoute = new Uri(expected, UriKind.Relative);
 
-            IRouteFactory routeFactory = new RouteFactory("api/");
+            IConnectionInfo connection = new ConnectionInfo("http://noteused/", null, "api/");
+
+            IRouteFactory routeFactory = new RouteFactory(connection);
 
             routeFactory.AddResource("Users");
             routeFactory.AddQuery(query);

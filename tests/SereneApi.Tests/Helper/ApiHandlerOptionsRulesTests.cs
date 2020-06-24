@@ -15,7 +15,7 @@ namespace SereneApi.Tests.Helper
         {
             Should.NotThrow(() =>
             {
-                ApiHandlerOptionsRules.ValidateRetryCount(count);
+                ApiHandlerOptionsRules.ValidateRetryAttempts(count);
             });
         }
 
@@ -26,7 +26,7 @@ namespace SereneApi.Tests.Helper
         {
             Should.Throw<ArgumentException>(() =>
             {
-                ApiHandlerOptionsRules.ValidateRetryCount(count);
+                ApiHandlerOptionsRules.ValidateRetryAttempts(count);
             });
         }
     }

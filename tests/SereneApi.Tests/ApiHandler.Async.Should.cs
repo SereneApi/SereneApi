@@ -44,11 +44,11 @@ namespace SereneApi.Tests
             #endregion
             #region Assert
 
-            apiHandler.Resource.ShouldBe(resource);
-            apiHandler.Source.ShouldBe(new Uri(fullSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
-            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+            apiHandler.Connection.Resource.ShouldBe(resource);
+            apiHandler.Connection.Source.ShouldBe(new Uri(fullSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Connection.Timeout.ShouldBe(ApiHandlerOptionDefaults.Timeout);
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(true);
@@ -86,11 +86,11 @@ namespace SereneApi.Tests
                 await apiHandler.PerformRequestAsync(Method.GET, r => r.AgainstResource(resource));
             });
 
-            apiHandler.Resource.ShouldBe(resource);
-            apiHandler.Source.ShouldBe(new Uri(fullSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
-            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+            apiHandler.Connection.Resource.ShouldBe(resource);
+            apiHandler.Connection.Source.ShouldBe(new Uri(fullSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Connection.Timeout.ShouldBe(ApiHandlerOptionDefaults.Timeout);
 
             #endregion
         }
@@ -122,11 +122,11 @@ namespace SereneApi.Tests
                 await apiHandler.PerformRequestAsync<MockPersonDto>(Method.GET, r => r.AgainstResource(resource));
             });
 
-            apiHandler.Resource.ShouldBe(resource);
-            apiHandler.Source.ShouldBe(new Uri(fullSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
-            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+            apiHandler.Connection.Resource.ShouldBe(resource);
+            apiHandler.Connection.Source.ShouldBe(new Uri(fullSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Connection.Timeout.ShouldBe(ApiHandlerOptionDefaults.Timeout);
 
             #endregion
         }
@@ -158,11 +158,11 @@ namespace SereneApi.Tests
                 await apiHandler.PerformRequestAsync(Method.DELETE, r => r.AgainstResource(resource));
             });
 
-            apiHandler.Resource.ShouldBe(resource);
-            apiHandler.Source.ShouldBe(new Uri(fullSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
-            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+            apiHandler.Connection.Resource.ShouldBe(resource);
+            apiHandler.Connection.Source.ShouldBe(new Uri(fullSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Connection.Timeout.ShouldBe(ApiHandlerOptionDefaults.Timeout);
 
             #endregion
         }
@@ -194,11 +194,11 @@ namespace SereneApi.Tests
                 await apiHandler.PerformRequestAsync<MockPersonDto>(Method.DELETE, r => r.AgainstResource(resource));
             });
 
-            apiHandler.Resource.ShouldBe(resource);
-            apiHandler.Source.ShouldBe(new Uri(fullSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
-            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+            apiHandler.Connection.Resource.ShouldBe(resource);
+            apiHandler.Connection.Source.ShouldBe(new Uri(fullSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Connection.Timeout.ShouldBe(ApiHandlerOptionDefaults.Timeout);
 
             #endregion
         }
@@ -230,11 +230,11 @@ namespace SereneApi.Tests
                 await apiHandler.PerformRequestAsync(Method.POST, r => r.AgainstResource(resource));
             });
 
-            apiHandler.Resource.ShouldBe(resource);
-            apiHandler.Source.ShouldBe(new Uri(fullSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
-            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+            apiHandler.Connection.Resource.ShouldBe(resource);
+            apiHandler.Connection.Source.ShouldBe(new Uri(fullSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Connection.Timeout.ShouldBe(ApiHandlerOptionDefaults.Timeout);
 
             #endregion
         }
@@ -266,11 +266,11 @@ namespace SereneApi.Tests
                 await apiHandler.PerformRequestAsync<MockPersonDto>(Method.POST, r => r.AgainstResource(resource));
             });
 
-            apiHandler.Resource.ShouldBe(resource);
-            apiHandler.Source.ShouldBe(new Uri(fullSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
-            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+            apiHandler.Connection.Resource.ShouldBe(resource);
+            apiHandler.Connection.Source.ShouldBe(new Uri(fullSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Connection.Timeout.ShouldBe(ApiHandlerOptionDefaults.Timeout);
 
             #endregion
         }
@@ -303,11 +303,11 @@ namespace SereneApi.Tests
                 await apiHandler.PerformRequestAsync(Method.PUT, r => r.AgainstResource(resource));
             });
 
-            apiHandler.Resource.ShouldBe(resource);
-            apiHandler.Source.ShouldBe(new Uri(fullSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
-            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+            apiHandler.Connection.Resource.ShouldBe(resource);
+            apiHandler.Connection.Source.ShouldBe(new Uri(fullSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Connection.Timeout.ShouldBe(ApiHandlerOptionDefaults.Timeout);
 
             #endregion
         }
@@ -339,11 +339,11 @@ namespace SereneApi.Tests
                 await apiHandler.PerformRequestAsync<MockPersonDto>(Method.PUT, r => r.AgainstResource(resource));
             });
 
-            apiHandler.Resource.ShouldBe(resource);
-            apiHandler.Source.ShouldBe(new Uri(fullSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
-            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+            apiHandler.Connection.Resource.ShouldBe(resource);
+            apiHandler.Connection.Source.ShouldBe(new Uri(fullSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Connection.Timeout.ShouldBe(ApiHandlerOptionDefaults.Timeout);
 
             #endregion
         }
@@ -377,11 +377,11 @@ namespace SereneApi.Tests
                 await apiHandler.PerformRequestAsync(Method.PATCH, r => r.AgainstResource(resource));
             });
 
-            apiHandler.Resource.ShouldBe(resource);
-            apiHandler.Source.ShouldBe(new Uri(fullSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
-            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+            apiHandler.Connection.Resource.ShouldBe(resource);
+            apiHandler.Connection.Source.ShouldBe(new Uri(fullSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Connection.Timeout.ShouldBe(ApiHandlerOptionDefaults.Timeout);
 
             #endregion
         }
@@ -415,11 +415,11 @@ namespace SereneApi.Tests
                 await apiHandler.PerformRequestAsync<MockPersonDto>(Method.PATCH, r => r.AgainstResource(resource));
             });
 
-            apiHandler.Resource.ShouldBe(resource);
-            apiHandler.Source.ShouldBe(new Uri(fullSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
-            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+            apiHandler.Connection.Resource.ShouldBe(resource);
+            apiHandler.Connection.Source.ShouldBe(new Uri(fullSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Connection.Timeout.ShouldBe(ApiHandlerOptionDefaults.Timeout);
 
             #endregion
         }
@@ -462,11 +462,11 @@ namespace SereneApi.Tests
             #endregion
             #region Assert
 
-            apiHandler.Resource.ShouldBe(resource);
-            apiHandler.Source.ShouldBe(new Uri(finalSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
-            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+            apiHandler.Connection.Resource.ShouldBe(resource);
+            apiHandler.Connection.Source.ShouldBe(new Uri(finalSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Connection.Timeout.ShouldBe(ApiHandlerOptionDefaults.Timeout);
 
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
@@ -512,11 +512,11 @@ namespace SereneApi.Tests
             #endregion
             #region Assert
 
-            apiHandler.Resource.ShouldBe(resource);
-            apiHandler.Source.ShouldBe(new Uri(finalSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
-            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+            apiHandler.Connection.Resource.ShouldBe(resource);
+            apiHandler.Connection.Source.ShouldBe(new Uri(finalSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Connection.Timeout.ShouldBe(ApiHandlerOptionDefaults.Timeout);
 
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
@@ -548,7 +548,7 @@ namespace SereneApi.Tests
             {
                 o.UseSource(source, resource);
                 o.SetTimeoutPeriod(timeoutSeconds);
-                o.SetRetryOnTimeout(retryCount);
+                o.SetRetryAttempts(retryCount);
             });
 
             handlerFactory.ExtendApiHandler<ApiHandlerWrapper>().WithMockResponses(r =>
@@ -569,11 +569,11 @@ namespace SereneApi.Tests
             #endregion
             #region Assert
 
-            apiHandler.Resource.ShouldBe(resource);
-            apiHandler.Source.ShouldBe(new Uri(finalSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(retryCount);
-            apiHandler.Timeout.ShouldBe(TimeSpan.FromSeconds(timeoutSeconds));
+            apiHandler.Connection.Resource.ShouldBe(resource);
+            apiHandler.Connection.Source.ShouldBe(new Uri(finalSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(retryCount);
+            apiHandler.Connection.Timeout.ShouldBe(timeoutSeconds);
 
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
@@ -599,7 +599,7 @@ namespace SereneApi.Tests
             {
                 o.UseSource(source, resource);
                 o.SetTimeoutPeriod(timeoutSeconds);
-                o.SetRetryOnTimeout(retryCount);
+                o.SetRetryAttempts(retryCount);
             });
 
             handlerFactory.ExtendApiHandler<ApiHandlerWrapper>().WithMockResponses(r =>
@@ -620,11 +620,11 @@ namespace SereneApi.Tests
             #endregion
             #region Assert
 
-            apiHandler.Resource.ShouldBe(resource);
-            apiHandler.Source.ShouldBe(new Uri(finalSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(retryCount);
-            apiHandler.Timeout.ShouldBe(TimeSpan.FromSeconds(timeoutSeconds));
+            apiHandler.Connection.Resource.ShouldBe(resource);
+            apiHandler.Connection.Source.ShouldBe(new Uri(finalSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(retryCount);
+            apiHandler.Connection.Timeout.ShouldBe(timeoutSeconds);
 
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
@@ -679,11 +679,11 @@ namespace SereneApi.Tests
             #endregion
             #region Assert
 
-            apiHandler.Resource.ShouldBe(resource);
-            apiHandler.Source.ShouldBe(new Uri(finalSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
-            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+            apiHandler.Connection.Resource.ShouldBe(resource);
+            apiHandler.Connection.Source.ShouldBe(new Uri(finalSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Connection.Timeout.ShouldBe(ApiHandlerOptionDefaults.Timeout);
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(false);
@@ -732,11 +732,11 @@ namespace SereneApi.Tests
             #endregion
             #region Assert
 
-            apiHandler.Resource.ShouldBe(resource);
-            apiHandler.Source.ShouldBe(new Uri(finalSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
-            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+            apiHandler.Connection.Resource.ShouldBe(resource);
+            apiHandler.Connection.Source.ShouldBe(new Uri(finalSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Connection.Timeout.ShouldBe(ApiHandlerOptionDefaults.Timeout);
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(false);
@@ -766,7 +766,7 @@ namespace SereneApi.Tests
             {
                 o.UseSource(source, resource);
                 o.SetTimeoutPeriod(timeoutSeconds);
-                o.SetRetryOnTimeout(retryCount);
+                o.SetRetryAttempts(retryCount);
             });
 
             handlerFactory.ExtendApiHandler<ApiHandlerWrapper>().WithMockResponses(r =>
@@ -787,11 +787,11 @@ namespace SereneApi.Tests
             #endregion
             #region Assert
 
-            apiHandler.Resource.ShouldBe(resource);
-            apiHandler.Source.ShouldBe(new Uri(finalSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(retryCount);
-            apiHandler.Timeout.ShouldBe(TimeSpan.FromSeconds(timeoutSeconds));
+            apiHandler.Connection.Resource.ShouldBe(resource);
+            apiHandler.Connection.Source.ShouldBe(new Uri(finalSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(retryCount);
+            apiHandler.Connection.Timeout.ShouldBe(timeoutSeconds);
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(false);
@@ -820,7 +820,7 @@ namespace SereneApi.Tests
             {
                 o.UseSource(source, resource);
                 o.SetTimeoutPeriod(timeoutSeconds);
-                o.SetRetryOnTimeout(retryCount);
+                o.SetRetryAttempts(retryCount);
             });
 
             handlerFactory.ExtendApiHandler<ApiHandlerWrapper>().WithMockResponses(r =>
@@ -841,11 +841,11 @@ namespace SereneApi.Tests
             #endregion
             #region Assert
 
-            apiHandler.Resource.ShouldBe(resource);
-            apiHandler.Source.ShouldBe(new Uri(finalSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(retryCount);
-            apiHandler.Timeout.ShouldBe(TimeSpan.FromSeconds(timeoutSeconds));
+            apiHandler.Connection.Resource.ShouldBe(resource);
+            apiHandler.Connection.Source.ShouldBe(new Uri(finalSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(retryCount);
+            apiHandler.Connection.Timeout.ShouldBe(timeoutSeconds);
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(false);
@@ -875,7 +875,7 @@ namespace SereneApi.Tests
 
                 if(retryCount > 0)
                 {
-                    o.SetRetryOnTimeout(retryCount);
+                    o.SetRetryAttempts(retryCount);
                 }
             });
 
@@ -897,11 +897,11 @@ namespace SereneApi.Tests
             #endregion
             #region Assert
 
-            apiHandler.Resource.ShouldBe(resource);
-            apiHandler.Source.ShouldBe(new Uri(finalSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(retryCount);
-            apiHandler.Timeout.ShouldBe(TimeSpan.FromSeconds(timeoutSeconds));
+            apiHandler.Connection.Resource.ShouldBe(resource);
+            apiHandler.Connection.Source.ShouldBe(new Uri(finalSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(retryCount);
+            apiHandler.Connection.Timeout.ShouldBe(timeoutSeconds);
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(true);
@@ -930,7 +930,7 @@ namespace SereneApi.Tests
 
                 if(retryCount > 0)
                 {
-                    o.SetRetryOnTimeout(retryCount);
+                    o.SetRetryAttempts(retryCount);
                 }
             });
 
@@ -952,11 +952,11 @@ namespace SereneApi.Tests
             #endregion
             #region Assert
 
-            apiHandler.Resource.ShouldBe(resource);
-            apiHandler.Source.ShouldBe(new Uri(finalSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(retryCount);
-            apiHandler.Timeout.ShouldBe(TimeSpan.FromSeconds(timeoutSeconds));
+            apiHandler.Connection.Resource.ShouldBe(resource);
+            apiHandler.Connection.Source.ShouldBe(new Uri(finalSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(retryCount);
+            apiHandler.Connection.Timeout.ShouldBe(timeoutSeconds);
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(true);
@@ -1007,11 +1007,11 @@ namespace SereneApi.Tests
             #endregion
             #region Assert
 
-            apiHandler.Resource.ShouldBeNull();
-            apiHandler.Source.ShouldBe(new Uri(finalSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
-            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+            apiHandler.Connection.Resource.ShouldBeNull();
+            apiHandler.Connection.Source.ShouldBe(new Uri(finalSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Connection.Timeout.ShouldBe(ApiHandlerOptionDefaults.Timeout);
 
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
@@ -1059,11 +1059,11 @@ namespace SereneApi.Tests
             #endregion
             #region Assert
 
-            apiHandler.Resource.ShouldBeNull();
-            apiHandler.Source.ShouldBe(new Uri(finalSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
-            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+            apiHandler.Connection.Resource.ShouldBeNull();
+            apiHandler.Connection.Source.ShouldBe(new Uri(finalSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Connection.Timeout.ShouldBe(ApiHandlerOptionDefaults.Timeout);
 
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
@@ -1119,11 +1119,11 @@ namespace SereneApi.Tests
             #endregion
             #region Assert
 
-            apiHandler.Resource.ShouldBe(resource);
-            apiHandler.Source.ShouldBe(new Uri(finalSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
-            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+            apiHandler.Connection.Resource.ShouldBe(resource);
+            apiHandler.Connection.Source.ShouldBe(new Uri(finalSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Connection.Timeout.ShouldBe(ApiHandlerOptionDefaults.Timeout);
 
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
@@ -1170,11 +1170,11 @@ namespace SereneApi.Tests
             #endregion
             #region Assert
 
-            apiHandler.Resource.ShouldBe(resource);
-            apiHandler.Source.ShouldBe(new Uri(finalSource));
-            apiHandler.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
-            apiHandler.RetryCount.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
-            apiHandler.Timeout.ShouldBe(ApiHandlerOptionDefaults.TimeoutPeriod);
+            apiHandler.Connection.Resource.ShouldBe(resource);
+            apiHandler.Connection.Source.ShouldBe(new Uri(finalSource));
+            apiHandler.Connection.ResourcePath.ShouldBe(ApiHandlerOptionDefaults.ResourcePath);
+            apiHandler.Connection.RetryAttempts.ShouldBe(ApiHandlerOptionDefaults.RetryCount);
+            apiHandler.Connection.Timeout.ShouldBe(ApiHandlerOptionDefaults.Timeout);
 
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
