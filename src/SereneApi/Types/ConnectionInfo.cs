@@ -6,7 +6,9 @@ namespace SereneApi.Types
 {
     public readonly struct ConnectionInfo: IConnectionInfo
     {
-        public Uri Source { get; }
+        public Uri BaseAddress { get; }
+
+        public string Source { get; }
 
         public string Resource { get; }
 
@@ -16,12 +18,14 @@ namespace SereneApi.Types
 
         public int RetryAttempts { get; }
 
-        private ConnectionInfo(Uri source, string resource, string resourcePath, int timeout = default, int attemptCount = default)
+        public ConnectionInfo(Uri baseAddress, string resource = default, string resourcePath = default, int timeout = default, int attemptCount = default)
         {
-            Source = source;
+            BaseAddress = baseAddress;
 
             Resource = SourceHelpers.EnsureSourceNoSlashTermination(resource);
             ResourcePath = ApiHandlerOptionsHelper.UseOrGetDefaultResourcePath(resourcePath);
+
+            Source = $"{BaseAddress}{ResourcePath}{Resource}";
 
             if(attemptCount != default)
             {
@@ -40,15 +44,17 @@ namespace SereneApi.Types
             RetryAttempts = attemptCount;
         }
 
-        public ConnectionInfo(string source, string resource, string resourcePath, int timeout = default, int attemptCount = default)
+        public ConnectionInfo(string baseAddress, string resource = default, string resourcePath = default, int timeout = default, int attemptCount = default)
         {
-            ExceptionHelper.EnsureParameterIsNotNull(source, nameof(source));
+            ExceptionHelper.EnsureParameterIsNotNull(baseAddress, nameof(baseAddress));
 
-            source = SourceHelpers.EnsureSourceSlashTermination(source);
-            Source = new Uri(source);
+            baseAddress = SourceHelpers.EnsureSourceSlashTermination(baseAddress);
+            BaseAddress = new Uri(baseAddress);
 
             Resource = SourceHelpers.EnsureSourceNoSlashTermination(resource);
             ResourcePath = ApiHandlerOptionsHelper.UseOrGetDefaultResourcePath(resourcePath);
+
+            Source = $"{BaseAddress}{ResourcePath}{Resource}";
 
             if(timeout == default)
             {
@@ -64,12 +70,12 @@ namespace SereneApi.Types
 
         public IConnectionInfo SetTimeout(int timeout)
         {
-            return new ConnectionInfo(Source, Resource, ResourcePath, timeout, RetryAttempts);
+            return new ConnectionInfo(BaseAddress, Resource, ResourcePath, timeout, RetryAttempts);
         }
 
         public IConnectionInfo SetRetryAttempts(int attemptCount)
         {
-            return new ConnectionInfo(Source, Resource, ResourcePath, Timeout, attemptCount);
+            return new ConnectionInfo(BaseAddress, Resource, ResourcePath, Timeout, attemptCount);
         }
     }
 }

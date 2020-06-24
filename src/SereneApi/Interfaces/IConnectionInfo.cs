@@ -7,10 +7,9 @@ namespace SereneApi.Interfaces
     /// </summary>
     public interface IConnectionInfo
     {
-        /// <summary>
-        /// The Source being used by the <see cref="ApiHandler"/>.
-        /// </summary>
-        Uri Source { get; }
+        Uri BaseAddress { get; }
+
+        public string Source { get; }
 
         /// <summary>
         /// The Resource the <see cref="ApiHandler"/> is accessing.

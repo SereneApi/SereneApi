@@ -56,7 +56,7 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
 
             services.AddHttpClient(handlerName, client =>
             {
-                client.BaseAddress = connection.Source;
+                client.BaseAddress = connection.BaseAddress;
                 client.Timeout = TimeSpan.FromSeconds(connection.Timeout);
                 client.DefaultRequestHeaders.Accept.Clear();
 

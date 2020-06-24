@@ -1,4 +1,5 @@
-﻿using SereneApi.Interfaces;
+﻿using SereneApi.Helpers;
+using SereneApi.Interfaces;
 using System;
 using System.Net.Http;
 
@@ -14,6 +15,20 @@ namespace SereneApi.Factories
         {
             _client = client;
             _disposeClient = disposedClient;
+        }
+
+        public static OverrideClientFactory CreateFromDependencies(IDependencyCollection dependencies)
+        {
+            HttpClient client = HttpClientHelper.CreateHttpClientFromDependencies(dependencies);
+
+            return new OverrideClientFactory(client, false);
+        }
+
+        public OverrideClientFactory(IDependencyCollection dependencyCollection)
+        {
+            IConnectionInfo connection = dependencyCollection.GetDependency<IConnectionInfo>();
+
+
         }
 
         public HttpClient BuildClient()

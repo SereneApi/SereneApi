@@ -60,12 +60,7 @@ namespace SereneApi.Types
                 throw new MethodAccessException("Source information must be supplied fired.");
             }
 
-            if(connectionInfo.Timeout != default)
-            {
-                throw new MethodAccessException("A timeout has already been set.");
-            }
-
-            connectionInfo.SetTimeout(seconds);
+            DependencyCollection.AddDependency(connectionInfo.SetTimeout(seconds));
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.SetRetryAttempts"/>
@@ -76,12 +71,7 @@ namespace SereneApi.Types
                 throw new MethodAccessException("Source information must be supplied fired.");
             }
 
-            if(connectionInfo.RetryAttempts != default)
-            {
-                throw new MethodAccessException("The retry attempt count has already been set.");
-            }
-
-            connectionInfo.SetRetryAttempts(attemptCount);
+            DependencyCollection.AddDependency(connectionInfo.SetRetryAttempts(attemptCount));
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddLogger"/>

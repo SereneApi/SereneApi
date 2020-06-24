@@ -1,9 +1,9 @@
-﻿using SereneApi.Helpers;
+﻿using SereneApi.Enums;
+using SereneApi.Helpers;
 using SereneApi.Interfaces;
 using SereneApi.Types;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 
 namespace SereneApi.Factories
 {
@@ -14,7 +14,7 @@ namespace SereneApi.Factories
 
         private readonly Dictionary<Type, IApiHandlerExtensions> _handlerExtensions = new Dictionary<Type, IApiHandlerExtensions>();
 
-        private readonly Dictionary<Type, HttpClient> _clients = new Dictionary<Type, HttpClient>();
+        private readonly Dictionary<Type, IClientFactory> _clientFactories = new Dictionary<Type, IClientFactory>();
 
         /// <inheritdoc>
         ///     <cref>IApiHandlerFactory.Build</cref>
@@ -30,28 +30,20 @@ namespace SereneApi.Factories
 
             ApiHandlerExtensions extensions = (ApiHandlerExtensions)_handlerExtensions[handlerType];
 
-            // TODO: this should be reworked, as HttpClient creation should be handled inside the IClientFactory. This will allow easier overriding.
-            if(!extensions.DependencyCollection.HasDependency<IClientFactory>())
-            {
-                HttpClient client;
-
-                if(extensions.DependencyCollection.TryGetDependency(out HttpMessageHandler messageHandler))
-                {
-                    client = new HttpClient(messageHandler);
-                }
-                else
-                {
-                    client = new HttpClient();
-                }
-
-                IClientFactory clientFactory = new OverrideClientFactory(client, false);
-
-                extensions.DependencyCollection.AddDependency(clientFactory);
-            }
-
             ApiHandlerOptionsBuilder options = new ApiHandlerOptionsBuilder((DependencyCollection)extensions.DependencyCollection.Clone());
 
             optionsBuilderAction.Invoke(options);
+
+            if(_clientFactories.TryGetValue(handlerType, out IClientFactory clientFactory))
+            {
+                options.DependencyCollection.AddDependency(clientFactory, Binding.Unbound);
+            }
+            else
+            {
+                clientFactory = OverrideClientFactory.CreateFromDependencies(options.DependencyCollection);
+
+                _clientFactories.Add(handlerType, clientFactory);
+            }
 
             TApiHandler handler = (TApiHandler)Activator.CreateInstance(typeof(TApiHandler), options.BuildOptions());
 
@@ -124,9 +116,12 @@ namespace SereneApi.Factories
 
             if(disposing)
             {
-                foreach(HttpClient client in _clients.Values)
+                foreach(IClientFactory clientFactory in _clientFactories.Values)
                 {
-                    client.Dispose();
+                    if(clientFactory is IDisposable disposable)
+                    {
+                        disposable.Dispose();
+                    }
                 }
             }
 

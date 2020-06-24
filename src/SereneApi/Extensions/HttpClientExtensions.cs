@@ -24,6 +24,7 @@ namespace System.Net.Http
             DependencyCollection dependencyCollection = new DependencyCollection();
 
             dependencyCollection.AddDependency(clientFactory);
+            dependencyCollection.AddDependency<IConnectionInfo>(new ConnectionInfo(client.BaseAddress));
 
             ApiHandlerOptionsBuilder builder = new ApiHandlerOptionsBuilder(dependencyCollection);
 

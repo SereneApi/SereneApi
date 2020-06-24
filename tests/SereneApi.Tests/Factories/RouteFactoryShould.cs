@@ -1,8 +1,8 @@
 ﻿using SereneApi.Factories;
 using SereneApi.Interfaces;
+using SereneApi.Types;
 using Shouldly;
 using System;
-using SereneApi.Types;
 using Xunit;
 
 namespace SereneApi.Tests.Factories

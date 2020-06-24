@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace SereneApi.Types
 {
-    [DebuggerDisplay("Source: {ConnectionInfo.Source.ToString()}")]
+    [DebuggerDisplay("Source: {ConnectionInfo.BaseAddress.ToString()}")]
     public class ApiHandlerOptions: IApiHandlerOptions, IDisposable
     {
         #region Properties
