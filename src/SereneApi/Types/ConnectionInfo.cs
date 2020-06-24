@@ -48,7 +48,6 @@ namespace SereneApi.Types
         {
             ExceptionHelper.EnsureParameterIsNotNull(baseAddress, nameof(baseAddress));
 
-            baseAddress = SourceHelpers.EnsureSourceSlashTermination(baseAddress);
             BaseAddress = new Uri(baseAddress);
 
             Resource = SourceHelpers.EnsureSourceNoSlashTermination(resource);

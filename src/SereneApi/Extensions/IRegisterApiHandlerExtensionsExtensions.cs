@@ -1,11 +1,10 @@
 ﻿using SereneApi.Extensions.Authentication.Interfaces;
-using SereneApi.Interfaces;
 using SereneApi.Types;
 using System;
 
 // Do not change namespace
 // ReSharper disable once CheckNamespace
-namespace SereneApi.Extensions.Authentication
+namespace SereneApi.Interfaces
 {
     public static class IRegisterApiHandlerExtensionsExtensions
     {
