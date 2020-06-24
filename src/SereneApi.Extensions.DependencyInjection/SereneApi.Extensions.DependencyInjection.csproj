@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Version>1.0.4.3-beta</Version>
     <Authors>Bradley Clarke</Authors>
     <Company>DeltaWare</Company>
@@ -20,7 +20,8 @@ SereneApi.Extensions.DependencyInjection adds support for AspNet DI and Configur
     <PackageTags>API; REST; RESTful; DI; DependencyInjection; AspNet; Extensions</PackageTags>
     <NeutralLanguage>en-AU</NeutralLanguage>
     <PackageReleaseNotes></PackageReleaseNotes>
-    <PackageId>ppppppppppppppppp</PackageId>
+    <PackageId>SereneApi.Extensions.DependencyInjection</PackageId>
+    <AssemblyName>DeltaWare.SereneApi.Extensions.DependencyInjection</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
