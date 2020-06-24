@@ -12,7 +12,7 @@ namespace SereneApi.Types
 {
     public class ApiHandlerOptionsBuilder: CoreOptions, IApiHandlerOptionsBuilder
     {
-        #region Constructors
+        #region Conclassors
 
         public ApiHandlerOptionsBuilder()
         {

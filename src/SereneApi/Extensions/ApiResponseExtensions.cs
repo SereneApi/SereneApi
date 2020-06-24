@@ -2,7 +2,7 @@
 // ReSharper disable once CheckNamespace
 namespace SereneApi
 {
-    public static class IApiResponseExtensions
+    public static class ApiResponseExtensions
     {
         public static bool WasNotSuccessful(this IApiResponse response)
         {

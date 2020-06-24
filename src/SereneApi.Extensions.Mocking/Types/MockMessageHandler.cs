@@ -166,7 +166,7 @@ namespace SereneApi.Extensions.Mocking.Types
 
         #region IDisposeble
 
-        private volatile bool _disposed = false;
+        private volatile bool _disposed;
 
         protected override void Dispose(bool disposing)
         {

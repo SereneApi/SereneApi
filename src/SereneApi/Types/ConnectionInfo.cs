@@ -4,7 +4,7 @@ using System;
 
 namespace SereneApi.Types
 {
-    public readonly struct ConnectionInfo: IConnectionInfo
+    public class ConnectionInfo: IConnectionInfo
     {
         public Uri BaseAddress { get; }
 

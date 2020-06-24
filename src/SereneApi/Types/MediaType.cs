@@ -2,7 +2,7 @@
 
 namespace SereneApi.Types
 {
-    public readonly struct MediaType
+    public readonly class MediaType
     {
         public string TypeString { get; }
 

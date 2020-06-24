@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace SereneApi.Types.Content
 {
-    public readonly struct FormUrlEncodedContent: IApiRequestContent
+    public class FormUrlEncodedContent: IApiRequestContent
     {
         public List<KeyValuePair<string, string>> Content { get; }
 

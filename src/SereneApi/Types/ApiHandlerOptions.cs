@@ -16,7 +16,7 @@ namespace SereneApi.Types
         public IConnectionInfo ConnectionInfo { get; set; }
 
         #endregion
-        #region Constructors
+        #region Conclassors
 
         public ApiHandlerOptions(IDependencyCollection dependencyCollection, IConnectionInfo connectionInfo)
         {

@@ -5,7 +5,7 @@ using System;
 // ReSharper disable once CheckNamespace
 namespace SereneApi.Interfaces
 {
-    public static class IRegisterApiHandlerExtensionsExtensions
+    public static class RegisterApiHandlerExtensionsExtensions
     {
         public static IApiHandlerExtensions AddAuthenticator(this IApiHandlerExtensions registrationExtensions, IAuthenticator authenticator)
         {

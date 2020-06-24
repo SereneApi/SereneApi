@@ -8,7 +8,7 @@ namespace SereneApi.Types
     /// Stores the Dependencies Instance to be used at a later point.
     /// </summary>
     /// <typeparam name="TDependency"></typeparam>
-    public class Dependency<TDependency>: Dependency, IDependency<TDependency>, ICloneable
+    public class Dependency<TDependency>: Dependency, IDependency<TDependency>
     {
         /// <inheritdoc cref="IDependency{TDependency}.Instance"/>
         public new TDependency Instance => (TDependency)base.Instance;

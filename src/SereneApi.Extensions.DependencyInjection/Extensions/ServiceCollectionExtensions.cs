@@ -11,7 +11,7 @@ using System;
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class IServiceCollectionExtensions
+    public static class ServiceCollectionExtensions
     {
         /// <summary>
         /// Allows a registered <see cref="ApiHandler"/> to be extended upon.

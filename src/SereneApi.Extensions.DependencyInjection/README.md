@@ -2,7 +2,7 @@
 There are no changers to the ApiHandler or its implementation, meaning existing code can be moved across with little change.
 
 There are only two major changes regarding setting up a handler.
-1. Your ApiHandler constructor needs to use the generic implementation of IApiHandlerOptions.
+1. Your ApiHandler conclassor needs to use the generic implementation of IApiHandlerOptions.
 ```csharp
 public UserApiHandler(IApiHandlerOptions<UserApiHandler> options) : base(options)
 {

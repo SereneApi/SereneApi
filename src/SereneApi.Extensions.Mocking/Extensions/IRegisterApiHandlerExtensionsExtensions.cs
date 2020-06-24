@@ -9,7 +9,7 @@ using System.Net.Http;
 // ReSharper disable once CheckNamespace
 namespace SereneApi.Extensions.Mocking
 {
-    public static class IRegisterApiHandlerExtensionsExtensions
+    public static class RegisterApiHandlerExtensionsExtensions
     {
         /// <summary>
         /// Adds the specified <see cref="IMockResponse"/>s to the <see cref="ApiHandler"/>.

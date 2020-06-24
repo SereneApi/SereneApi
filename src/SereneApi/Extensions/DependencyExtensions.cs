@@ -5,7 +5,7 @@ using System;
 // ReSharper disable once CheckNamespace
 namespace SereneApi.Types
 {
-    internal static class IDependencyExtensions
+    internal static class DependencyExtensions
     {
         /// <summary>
         /// Gets an Instance of the <see cref="IDependency"/>

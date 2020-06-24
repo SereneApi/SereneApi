@@ -12,7 +12,7 @@ namespace SereneApi
     /// <summary>
     /// When Inherited; Provides the methods required for implementing a RESTful Api consumer.
     /// </summary>
-    [DebuggerDisplay("Source:{Source}; Timeout:{Timeout}")]
+    [DebuggerDisplay("Source:{Connection.Source}; Timeout:{Connection.Timeout}")]
     public abstract partial class ApiHandler: IDisposable
     {
         #region Variables
@@ -44,7 +44,7 @@ namespace SereneApi
         public IConnectionInfo Connection { get; }
 
         #endregion
-        #region Constructors
+        #region Conclassors
 
         /// <summary>
         /// Creates a new instance of the <see cref="ApiHandler"/>.

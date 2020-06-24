@@ -8,7 +8,7 @@ namespace SereneApi.Abstraction
     /// </summary>
     /// <typeparam name="TResource">The resource the CRUD Api will be acting on, both send and receive.</typeparam>
     /// <typeparam name="TIdentifier">The Identifier used by the resource, this could be a Guid, long or int.</typeparam>
-    public interface ICrudApi<TResource, in TIdentifier> where TResource : class where TIdentifier : struct
+    public interface ICrudApi<TResource, in TIdentifier> where TResource : class where TIdentifier : class
     {
         /// <summary>
         /// Performs a GET request using the <see cref="TIdentifier"/> as the Resource Identity
