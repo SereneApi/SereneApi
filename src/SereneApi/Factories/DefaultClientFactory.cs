@@ -1,21 +1,50 @@
 ﻿using SereneApi.Helpers;
 using SereneApi.Interfaces;
+using System;
 using System.Net.Http;
 
 namespace SereneApi.Factories
 {
-    internal sealed class DefaultClientFactory: IClientFactory
+    public class DefaultClientFactory: IClientFactory, IDisposable
     {
-        private readonly IDependencyCollection _dependencyCollection;
+        private readonly HttpClient _client;
 
-        public DefaultClientFactory(IDependencyCollection dependencyCollection)
+        public DefaultClientFactory(IDependencyCollection dependencies)
         {
-            _dependencyCollection = dependencyCollection;
+            _client = HttpClientHelper.BuildHttpClient(dependencies);
         }
 
         public HttpClient BuildClient()
         {
-            return HttpClientHelper.CreateHttpClientFromDependencies(_dependencyCollection);
+            return _client;
         }
+
+        #region IDisposable
+
+        private volatile bool _disposed;
+
+        public void Dispose()
+        {
+            Dispose(true);
+
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if(_disposed)
+            {
+                return;
+            }
+
+            if(disposing)
+            {
+                _client.Dispose();
+            }
+
+            _disposed = true;
+        }
+
+        #endregion
     }
 }

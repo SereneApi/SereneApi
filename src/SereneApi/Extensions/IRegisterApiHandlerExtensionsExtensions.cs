@@ -1,5 +1,4 @@
-﻿using SereneApi.Extensions.Authentication.Interfaces;
-using SereneApi.Types;
+﻿using SereneApi.Types;
 using System;
 
 // Do not change namespace

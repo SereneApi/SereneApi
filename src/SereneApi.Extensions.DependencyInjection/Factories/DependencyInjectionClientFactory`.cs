@@ -1,12 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SereneApi.Helpers;
 using SereneApi.Interfaces;
 using SereneApi.Types;
-using SereneApi.Types.Headers.Accept;
 using System;
 using System.Diagnostics;
-using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 
 namespace SereneApi.Extensions.DependencyInjection.Factories
 {
@@ -44,31 +42,12 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
                 throw new ArgumentException("The timeout value must be greater than 0 seconds.");
             }
 
-            if(!dependencies.TryGetDependency(out HttpMessageHandler messageHandler))
-            {
-                ICredentials credentials = dependencies.GetDependency<ICredentials>();
-
-                messageHandler = new HttpClientHandler
-                {
-                    Credentials = credentials
-                };
-            }
+            HttpMessageHandler messageHandler = HttpClientHelper.BuildMessageHandler(dependencies);
 
             services.AddHttpClient(handlerName, client =>
             {
-                client.BaseAddress = connection.BaseAddress;
-                client.Timeout = TimeSpan.FromSeconds(connection.Timeout);
-                client.DefaultRequestHeaders.Accept.Clear();
-
-                if(dependencies.TryGetDependency(out IAuthentication authentication))
-                {
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);
-                }
-
-                if(dependencies.TryGetDependency(out ContentType contentType))
-                {
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType.Value));
-                }
+                HttpClientHelper.ConfigureHttpClient(client, dependencies);
+                HttpClientHelper.BuildRequestHeaders(client.DefaultRequestHeaders, dependencies);
             })
             .ConfigurePrimaryHttpMessageHandler(() => messageHandler);
         }

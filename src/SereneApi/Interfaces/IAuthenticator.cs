@@ -1,6 +1,4 @@
-﻿using SereneApi.Interfaces;
-
-namespace SereneApi.Extensions.Authentication.Interfaces
+﻿namespace SereneApi.Interfaces
 {
     public interface IAuthenticator
     {

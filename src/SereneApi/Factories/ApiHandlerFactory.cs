@@ -40,7 +40,7 @@ namespace SereneApi.Factories
             }
             else
             {
-                clientFactory = OverrideClientFactory.CreateFromDependencies(options.DependencyCollection);
+                clientFactory = new DefaultClientFactory(options.DependencyCollection);
 
                 _clientFactories.Add(handlerType, clientFactory);
             }
