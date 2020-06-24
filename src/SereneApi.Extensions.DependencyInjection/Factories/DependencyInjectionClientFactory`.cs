@@ -3,26 +3,50 @@ using SereneApi.Interfaces;
 using SereneApi.Types;
 using SereneApi.Types.Headers.Accept;
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
 namespace SereneApi.Extensions.DependencyInjection.Factories
 {
+    [DebuggerDisplay("{HandlerName}")]
     public class DependencyInjectionClientFactory<TApiHandler>: IClientFactory
     {
+        public string HandlerName { get; }
+
         private readonly DependencyCollection _dependencyCollection;
 
         public DependencyInjectionClientFactory(IDependencyCollection dependencyCollection)
         {
             _dependencyCollection = (DependencyCollection)dependencyCollection;
+
+            HandlerName = GenerateHandlerName();
         }
 
-        public void Initiate()
+        public HttpClient BuildClient()
         {
-            if(!_dependencyCollection.TryGetDependency(out HttpMessageHandler messageHandler))
+            IHttpClientFactory clientFactory = _dependencyCollection.GetDependency<IHttpClientFactory>();
+
+            HttpClient client = clientFactory.CreateClient(HandlerName);
+
+            return client;
+        }
+
+        public static void Configure(IDependencyCollection dependencies, IServiceCollection services)
+        {
+            string handlerName = GenerateHandlerName();
+
+            IConnectionInfo connection = dependencies.GetDependency<IConnectionInfo>();
+
+            if(connection.Timeout == default || connection.Timeout < 0)
             {
-                ICredentials credentials = _dependencyCollection.GetDependency<ICredentials>();
+                throw new ArgumentException("The timeout value must be greater than 0 seconds.");
+            }
+
+            if(!dependencies.TryGetDependency(out HttpMessageHandler messageHandler))
+            {
+                ICredentials credentials = dependencies.GetDependency<ICredentials>();
 
                 messageHandler = new HttpClientHandler
                 {
@@ -30,35 +54,28 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
                 };
             }
 
-            if(_dependencyCollection.TryGetDependency(out IServiceCollection serviceCollection))
+            services.AddHttpClient(handlerName, client =>
             {
-                IConnectionInfo connection = _dependencyCollection.GetDependency<IConnectionInfo>();
+                client.BaseAddress = connection.Source;
+                client.Timeout = TimeSpan.FromSeconds(connection.Timeout);
+                client.DefaultRequestHeaders.Accept.Clear();
 
-                serviceCollection.AddHttpClient(typeof(TApiHandler).ToString(), client =>
+                if(dependencies.TryGetDependency(out IAuthentication authentication))
                 {
-                    client.BaseAddress = connection.Source;
-                    client.Timeout = TimeSpan.FromSeconds(connection.Timeout);
-                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);
+                }
 
-                    if(_dependencyCollection.TryGetDependency(out IAuthentication authentication))
-                    {
-                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);
-                    }
-
-                    if(_dependencyCollection.TryGetDependency(out ContentType contentType))
-                    {
-                        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType.Value));
-                    }
-                })
-                .ConfigurePrimaryHttpMessageHandler(() => messageHandler);
-            }
+                if(dependencies.TryGetDependency(out ContentType contentType))
+                {
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType.Value));
+                }
+            })
+            .ConfigurePrimaryHttpMessageHandler(() => messageHandler);
         }
 
-        public HttpClient BuildClient()
+        private static string GenerateHandlerName()
         {
-            IHttpClientFactory clientFactory = _dependencyCollection.GetDependency<IHttpClientFactory>();
-
-            return clientFactory.CreateClient(typeof(TApiHandler).ToString());
+            return $"SereneApi.{typeof(TApiHandler).FullName}";
         }
     }
 }

@@ -6,7 +6,6 @@ using SereneApi.Extensions.DependencyInjection.Types;
 using SereneApi.Interfaces;
 using SereneApi.Types;
 using System;
-using System.Net.Http;
 
 // Do not change namespace
 // ReSharper disable once CheckNamespace
@@ -68,9 +67,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAdd(new ServiceDescriptor(typeof(ApiHandlerExtensions<TApiDefinition>), extensions));
 
             services.TryAdd(new ServiceDescriptor(typeof(ApiHandlerOptionsBuilder<TApiImplementation>),
-                p => CreateApiHandlerOptionsBuilder<TApiDefinition, TApiImplementation>(optionsAction, services, p), ServiceLifetime.Singleton));
+                p => CreateApiHandlerOptionsBuilder<TApiDefinition, TApiImplementation>(optionsAction, ref services, p), ServiceLifetime.Singleton));
 
-            services.TryAdd(new ServiceDescriptor(typeof(IApiHandlerOptions<TApiImplementation>), BuildApiHandlerOptions<TApiImplementation>, ServiceLifetime.Scoped));
+            services.TryAdd(new ServiceDescriptor(typeof(IApiHandlerOptions<TApiImplementation>), p => BuildApiHandlerOptions<TApiImplementation>(p, services), ServiceLifetime.Scoped));
 
             services.Add(new ServiceDescriptor(typeof(IApiHandlerOptions),
                 p => p.GetRequiredService<IApiHandlerOptions<TApiImplementation>>(), ServiceLifetime.Scoped));
@@ -94,9 +93,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAdd(new ServiceDescriptor(typeof(ApiHandlerExtensions<TApiDefinition>), extensions));
 
             services.TryAdd(new ServiceDescriptor(typeof(ApiHandlerOptionsBuilder<TApiImplementation>),
-                p => CreateApiHandlerOptionsBuilder<TApiDefinition, TApiImplementation>(optionsAction, services, p), ServiceLifetime.Singleton));
+                p => CreateApiHandlerOptionsBuilder<TApiDefinition, TApiImplementation>(optionsAction, ref services, p), ServiceLifetime.Singleton));
 
-            services.TryAdd(new ServiceDescriptor(typeof(IApiHandlerOptions<TApiImplementation>), BuildApiHandlerOptions<TApiImplementation>, ServiceLifetime.Scoped));
+            services.TryAdd(new ServiceDescriptor(typeof(IApiHandlerOptions<TApiImplementation>), p => BuildApiHandlerOptions<TApiImplementation>(p, services), ServiceLifetime.Scoped));
 
             services.Add(new ServiceDescriptor(typeof(IApiHandlerOptions),
                 p => p.GetRequiredService<IApiHandlerOptions<TApiImplementation>>(), ServiceLifetime.Scoped));
@@ -104,7 +103,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return extensions;
         }
 
-        private static ApiHandlerOptionsBuilder<TApiImplementation> CreateApiHandlerOptionsBuilder<TApiDefinition, TApiImplementation>(Action<IApiHandlerOptionsBuilder<TApiImplementation>> action, IServiceCollection services, IServiceProvider provider) where TApiDefinition : class where TApiImplementation : ApiHandler, TApiDefinition
+        private static ApiHandlerOptionsBuilder<TApiImplementation> CreateApiHandlerOptionsBuilder<TApiDefinition, TApiImplementation>(Action<IApiHandlerOptionsBuilder<TApiImplementation>> action, ref IServiceCollection services, IServiceProvider provider) where TApiDefinition : class where TApiImplementation : ApiHandler, TApiDefinition
         {
             ApiHandlerExtensions<TApiDefinition> extensions = provider.GetRequiredService<ApiHandlerExtensions<TApiDefinition>>();
 
@@ -112,20 +111,16 @@ namespace Microsoft.Extensions.DependencyInjection
 
             DependencyCollection dependencies = (DependencyCollection)coreOptions.DependencyCollection.Clone();
 
-            ApiHandlerOptionsBuilder<TApiImplementation> builder = new ApiHandlerOptionsBuilder<TApiImplementation>(dependencies, services);
+            ApiHandlerOptionsBuilder<TApiImplementation> builder = new ApiHandlerOptionsBuilder<TApiImplementation>(dependencies);
 
             action.Invoke(builder);
 
-            DependencyInjectionClientFactory<TApiImplementation> factory = new DependencyInjectionClientFactory<TApiImplementation>(builder.DependencyCollection);
-
-            factory.Initiate();
-
-            builder.DependencyCollection.AddDependency<IClientFactory>(factory);
+            DependencyInjectionClientFactory<TApiImplementation>.Configure(dependencies, services);
 
             return builder;
         }
 
-        private static ApiHandlerOptionsBuilder<TApiImplementation> CreateApiHandlerOptionsBuilder<TApiDefinition, TApiImplementation>(Action<IApiHandlerOptionsBuilder<TApiImplementation>, IServiceProvider> action, IServiceCollection services, IServiceProvider provider) where TApiDefinition : class where TApiImplementation : ApiHandler, TApiDefinition
+        private static ApiHandlerOptionsBuilder<TApiImplementation> CreateApiHandlerOptionsBuilder<TApiDefinition, TApiImplementation>(Action<IApiHandlerOptionsBuilder<TApiImplementation>, IServiceProvider> action, ref IServiceCollection services, IServiceProvider provider) where TApiDefinition : class where TApiImplementation : ApiHandler, TApiDefinition
         {
             ApiHandlerExtensions<TApiDefinition> extensions = provider.GetRequiredService<ApiHandlerExtensions<TApiDefinition>>();
 
@@ -133,26 +128,20 @@ namespace Microsoft.Extensions.DependencyInjection
 
             DependencyCollection dependencies = (DependencyCollection)coreOptions.DependencyCollection.Clone();
 
-            ApiHandlerOptionsBuilder<TApiImplementation> builder = new ApiHandlerOptionsBuilder<TApiImplementation>(dependencies, services);
+            ApiHandlerOptionsBuilder<TApiImplementation> builder = new ApiHandlerOptionsBuilder<TApiImplementation>(dependencies);
 
             action.Invoke(builder, provider);
 
-            DependencyInjectionClientFactory<TApiImplementation> factory = new DependencyInjectionClientFactory<TApiImplementation>(builder.DependencyCollection);
-
-            factory.Initiate();
-
-            builder.DependencyCollection.AddDependency<IClientFactory>(factory);
+            DependencyInjectionClientFactory<TApiImplementation>.Configure(dependencies, services);
 
             return builder;
         }
 
-        private static IApiHandlerOptions<TApiImplementation> BuildApiHandlerOptions<TApiImplementation>(IServiceProvider provider) where TApiImplementation : ApiHandler
+        private static IApiHandlerOptions<TApiImplementation> BuildApiHandlerOptions<TApiImplementation>(IServiceProvider provider, IServiceCollection services) where TApiImplementation : ApiHandler
         {
             ApiHandlerOptionsBuilder<TApiImplementation> builder = provider.GetRequiredService<ApiHandlerOptionsBuilder<TApiImplementation>>();
 
-            builder.DependencyCollection.AddDependency(provider.GetRequiredService<IHttpClientFactory>());
-
-            return builder.BuildOptions();
+            return builder.BuildOptions(services);
         }
 
         private static CoreOptions GetCoreOptions(IApiHandlerExtensions extensions)

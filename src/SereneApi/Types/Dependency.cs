@@ -1,9 +1,11 @@
 ﻿using SereneApi.Enums;
 using SereneApi.Interfaces;
 using System;
+using System.Diagnostics;
 
 namespace SereneApi.Types
 {
+    [DebuggerDisplay("{Binding} - {Type.Name}")]
     public class Dependency: IDependency, IDisposable
     {
         /// <inheritdoc cref="IDependency.Binding"/>

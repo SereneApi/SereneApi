@@ -28,7 +28,15 @@ namespace SereneApi.Types
                 ApiHandlerOptionsRules.ValidateRetryAttempts(attemptCount);
             }
 
-            Timeout = timeout;
+            if(timeout == default)
+            {
+                Timeout = ApiHandlerOptionDefaults.Timeout;
+            }
+            else
+            {
+                Timeout = timeout;
+            }
+
             RetryAttempts = attemptCount;
         }
 
@@ -42,7 +50,15 @@ namespace SereneApi.Types
             Resource = SourceHelpers.EnsureSourceNoSlashTermination(resource);
             ResourcePath = ApiHandlerOptionsHelper.UseOrGetDefaultResourcePath(resourcePath);
 
-            Timeout = timeout;
+            if(timeout == default)
+            {
+                Timeout = ApiHandlerOptionDefaults.Timeout;
+            }
+            else
+            {
+                Timeout = timeout;
+            }
+
             RetryAttempts = attemptCount;
         }
 

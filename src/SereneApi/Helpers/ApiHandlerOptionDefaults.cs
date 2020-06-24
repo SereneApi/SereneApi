@@ -1,6 +1,5 @@
 ﻿using SereneApi.Factories;
 using SereneApi.Interfaces;
-using System;
 using System.Net;
 
 namespace SereneApi.Helpers
@@ -18,7 +17,7 @@ namespace SereneApi.Helpers
         /// <summary>
         /// The default Timeout Period that is used by the <see cref="ApiHandler"/>
         /// </summary>
-        public static TimeSpan TimeoutPeriod { get; } = new TimeSpan(0, 0, 30);
+        public static int Timeout { get; } = 30;
 
         /// <summary>
         /// The default Resource Precursor that is used by the <see cref="ApiHandler"/>

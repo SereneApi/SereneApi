@@ -1,28 +1,22 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SereneApi.Enums;
+using SereneApi.Extensions.DependencyInjection.Factories;
 using SereneApi.Extensions.DependencyInjection.Helpers;
 using SereneApi.Extensions.DependencyInjection.Interfaces;
 using SereneApi.Factories;
 using SereneApi.Interfaces;
 using SereneApi.Types;
 using System;
+using System.Net.Http;
 
 namespace SereneApi.Extensions.DependencyInjection.Types
 {
     /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiHandler}"/>
     internal class ApiHandlerOptionsBuilder<TApiHandler>: ApiHandlerOptionsBuilder, IApiHandlerOptionsBuilder<TApiHandler> where TApiHandler : ApiHandler
     {
-        private IServiceCollection _serviceCollection;
-
-        public ApiHandlerOptionsBuilder()
+        public ApiHandlerOptionsBuilder(DependencyCollection dependencyCollection) : base(dependencyCollection)
         {
-        }
-
-        public ApiHandlerOptionsBuilder(DependencyCollection dependencyCollection, IServiceCollection serviceCollection) : base(dependencyCollection)
-        {
-            DependencyCollection.AddDependency(serviceCollection);
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiHandler}.UseConfiguration"/>
@@ -79,31 +73,34 @@ namespace SereneApi.Extensions.DependencyInjection.Types
         {
             ExceptionHelper.EnsureParameterIsNotNull(loggerFactory, nameof(loggerFactory));
 
-            ILogger logger = loggerFactory.CreateLogger<TApiHandler>();
-
-            DependencyCollection.AddDependency(logger);
-        }
-
-        /// <summary>
-        /// Adds a <see cref="IServiceCollection"/> to the <see cref="ApiHandler"/>.
-        /// </summary>
-        /// <param name="serviceCollection">The <see cref="IServiceCollection"/> to be added.</param>
-        public void AddServicesCollection(IServiceCollection serviceCollection)
-        {
-            _serviceCollection = serviceCollection;
-
-            // Leaving unbound until testing can be done.
-            DependencyCollection.AddDependency(_serviceCollection, Binding.Unbound);
+            DependencyCollection.AddDependency(loggerFactory);
         }
 
         /// <summary>
         /// Builds the <see cref="IApiHandlerOptions"/> for the specified <see cref="ApiHandler"/>.
         /// </summary>
-        public new IApiHandlerOptions<TApiHandler> BuildOptions()
+        public IApiHandlerOptions<TApiHandler> BuildOptions(IServiceCollection services)
         {
             IConnectionInfo connection = DependencyCollection.GetDependency<IConnectionInfo>();
 
-            ApiHandlerOptions<TApiHandler> options = new ApiHandlerOptions<TApiHandler>(DependencyCollection, connection);
+            DependencyCollection dependencies = (DependencyCollection)DependencyCollection.Clone();
+
+            IServiceProvider serviceProvider = services.BuildServiceProvider();
+
+            DependencyInjectionClientFactory<TApiHandler> factory = new DependencyInjectionClientFactory<TApiHandler>(dependencies);
+
+            dependencies.AddDependency<IClientFactory>(factory);
+            dependencies.AddDependency(serviceProvider);
+            dependencies.AddDependency(serviceProvider.GetRequiredService<IHttpClientFactory>());
+
+            if(dependencies.TryGetDependency(out ILoggerFactory loggerFactory))
+            {
+                ILogger logger = loggerFactory.CreateLogger<TApiHandler>();
+
+                dependencies.AddDependency(logger);
+            }
+
+            ApiHandlerOptions<TApiHandler> options = new ApiHandlerOptions<TApiHandler>(dependencies, connection);
 
             return options;
         }
