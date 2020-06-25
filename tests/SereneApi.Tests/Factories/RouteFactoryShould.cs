@@ -106,7 +106,7 @@ namespace SereneApi.Tests.Factories
 
             Uri expectedRoute = new Uri(expected, UriKind.Relative);
 
-            IConnectionInfo connection = new ConnectionInfo("http://noteused/", null, resourcePath);
+            IConnectionSettings connection = new Connection("http://noteused/", null, resourcePath);
 
             IRouteFactory routeFactory = new RouteFactory(connection);
 
@@ -137,7 +137,7 @@ namespace SereneApi.Tests.Factories
 
             Uri expectedRoute = new Uri($"api/Users/{expected}", UriKind.Relative);
 
-            IConnectionInfo connection = new ConnectionInfo("http://noteused/", null, "api/");
+            IConnectionSettings connection = new Connection("http://noteused/", null, "api/");
 
             IRouteFactory routeFactory = new RouteFactory(connection);
 
@@ -167,7 +167,7 @@ namespace SereneApi.Tests.Factories
 
             Uri expectedRoute = new Uri($"api/Users/{expected}", UriKind.Relative);
 
-            IConnectionInfo connection = new ConnectionInfo("http://noteused/", null, "api/");
+            IConnectionSettings connection = new Connection("http://noteused/", null, "api/");
 
             IRouteFactory routeFactory = new RouteFactory(connection);
 
@@ -197,7 +197,7 @@ namespace SereneApi.Tests.Factories
 
             Uri expectedRoute = new Uri(expected, UriKind.Relative);
 
-            IConnectionInfo connection = new ConnectionInfo("http://noteused/", null, "api/");
+            IConnectionSettings connection = new Connection("http://noteused/", null, "api/");
 
             IRouteFactory routeFactory = new RouteFactory(connection);
 

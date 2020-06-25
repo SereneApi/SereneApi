@@ -133,7 +133,10 @@ namespace SereneApi.Types
         public IApiHandlerOptions BuildOptions()
         {
             // If no client factory has been provided the default will be used.
-            Dependencies.TryAddDependency<IClientFactory>(new DefaultClientFactory(Dependencies));
+            if(!Dependencies.HasDependency<IClientFactory>())
+            {
+                Dependencies.AddDependency<IClientFactory>(new DefaultClientFactory(Dependencies));
+            }
 
             IConnectionSettings connection = Dependencies.GetDependency<IConnectionSettings>();
 

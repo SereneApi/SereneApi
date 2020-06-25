@@ -21,8 +21,8 @@ namespace SereneApi
         /// Performs an API Request Asynchronously.
         /// </summary>
         /// <param name="method">The <see cref="Method"/> that will be used for the request.</param>
-        /// <param name="request">The <see cref="IRequest"/> that will be performed.</param>
-        protected Task<IApiResponse> PerformRequestAsync(Method method, Expression<Func<IRequest, IRequestCreated>> request = null)
+        /// <param name="requestAction">The <see cref="IRequest"/> that will be performed.</param>
+        protected Task<IApiResponse> PerformRequestAsync(Method method, Expression<Func<IRequest, IRequestCreated>> requestAction = null)
         {
             CheckIfDisposed();
 
@@ -31,18 +31,20 @@ namespace SereneApi
             requestBuilder.UsingMethod(method);
 
             // The request is optional, so a null check is applied.
-            request?.Compile().Invoke(requestBuilder);
+            requestAction?.Compile().Invoke(requestBuilder);
 
-            return BasePerformRequestAsync(requestBuilder.GetRequest());
+            IApiRequest required = requestBuilder.GetRequest();
+
+            return BasePerformRequestAsync(required);
         }
 
         /// <summary>
         /// Performs an API Request Asynchronously.
         /// </summary>
         /// <param name="method">The <see cref="Method"/> that will be used for the request.</param>
-        /// <param name="request">The <see cref="IRequest"/> that will be performed.</param>
+        /// <param name="requestAction">The <see cref="IRequest"/> that will be performed.</param>
         /// <typeparam name="TResponse">The <see cref="Type"/> to be deserialized from the body of the response.</typeparam>
-        protected Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(Method method, Expression<Func<IRequest, IRequestCreated>> request = null)
+        protected Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(Method method, Expression<Func<IRequest, IRequestCreated>> requestAction = null)
         {
             CheckIfDisposed();
 
@@ -51,9 +53,11 @@ namespace SereneApi
             requestBuilder.UsingMethod(method);
 
             // The request is optional, so a null check is applied.
-            request?.Compile().Invoke(requestBuilder);
+            requestAction?.Compile().Invoke(requestBuilder);
 
-            return BasePerformRequestAsync<TResponse>(requestBuilder.GetRequest());
+            IApiRequest request = requestBuilder.GetRequest();
+
+            return BasePerformRequestAsync<TResponse>(request);
         }
 
         #endregion

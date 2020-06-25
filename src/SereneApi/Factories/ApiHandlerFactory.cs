@@ -1,5 +1,4 @@
-﻿using SereneApi.Enums;
-using SereneApi.Helpers;
+﻿using SereneApi.Helpers;
 using SereneApi.Interfaces;
 using SereneApi.Types;
 using System;
@@ -13,8 +12,6 @@ namespace SereneApi.Factories
         private readonly Dictionary<Type, Action<IApiHandlerOptionsBuilder>> _handlerOptions = new Dictionary<Type, Action<IApiHandlerOptionsBuilder>>();
 
         private readonly Dictionary<Type, IApiHandlerExtensions> _handlerExtensions = new Dictionary<Type, IApiHandlerExtensions>();
-
-        private readonly Dictionary<Type, IClientFactory> _clientFactories = new Dictionary<Type, IClientFactory>();
 
         /// <inheritdoc>
         ///     <cref>IApiHandlerFactory.Build</cref>
@@ -33,17 +30,6 @@ namespace SereneApi.Factories
             ApiHandlerOptionsBuilder options = new ApiHandlerOptionsBuilder((DependencyCollection)extensions.Dependencies.Clone());
 
             optionsBuilderAction.Invoke(options);
-
-            if(_clientFactories.TryGetValue(handlerType, out IClientFactory clientFactory))
-            {
-                options.Dependencies.AddDependency(clientFactory, Binding.Unbound);
-            }
-            else
-            {
-                clientFactory = new DefaultClientFactory(options.Dependencies);
-
-                _clientFactories.Add(handlerType, clientFactory);
-            }
 
             TApiHandler handler = (TApiHandler)Activator.CreateInstance(typeof(TApiHandler), options.BuildOptions());
 
@@ -116,9 +102,9 @@ namespace SereneApi.Factories
 
             if(disposing)
             {
-                foreach(IClientFactory clientFactory in _clientFactories.Values)
+                foreach(IApiHandlerExtensions handlerExtensions in _handlerExtensions.Values)
                 {
-                    if(clientFactory is IDisposable disposable)
+                    if(handlerExtensions is IDisposable disposable)
                     {
                         disposable.Dispose();
                     }

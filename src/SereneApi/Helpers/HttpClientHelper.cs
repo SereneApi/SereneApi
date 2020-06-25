@@ -11,9 +11,15 @@ namespace SereneApi.Helpers
     {
         public static HttpClient BuildHttpClient(IDependencyCollection dependencies)
         {
-            HttpMessageHandler messageHandler = BuildMessageHandler(dependencies);
+            bool handlerFound = dependencies.TryGetDependency(out HttpMessageHandler messageHandler);
 
-            HttpClient client = new HttpClient(messageHandler);
+            if(!handlerFound)
+            {
+                messageHandler = BuildMessageHandler(dependencies);
+            }
+
+            // If a handle was found, the handler is not disposed of as the Dependency Collection has ownership.
+            HttpClient client = new HttpClient(messageHandler, !handlerFound);
 
             ConfigureHttpClient(client, dependencies);
             BuildRequestHeaders(client.DefaultRequestHeaders, dependencies);
@@ -44,15 +50,12 @@ namespace SereneApi.Helpers
 
         public static HttpMessageHandler BuildMessageHandler(IDependencyCollection dependencies)
         {
-            if(!dependencies.TryGetDependency(out HttpMessageHandler messageHandler))
-            {
-                ICredentials credentials = dependencies.GetDependency<ICredentials>();
+            ICredentials credentials = dependencies.GetDependency<ICredentials>();
 
-                messageHandler = new HttpClientHandler
-                {
-                    Credentials = credentials
-                };
-            }
+            HttpClientHandler messageHandler = new HttpClientHandler
+            {
+                Credentials = credentials
+            };
 
             return messageHandler;
         }

@@ -20,8 +20,8 @@ namespace SereneApi
         /// Performs an API Request Synchronously.
         /// </summary>
         /// <param name="method">The <see cref="Method"/> that will be used for the request.</param>
-        /// <param name="request">The <see cref="IRequest"/> that will be performed.</param>
-        protected IApiResponse PerformRequest(Method method, Expression<Func<IRequest, IRequestCreated>> request = null)
+        /// <param name="requestAction">The <see cref="IRequest"/> that will be performed.</param>
+        protected IApiResponse PerformRequest(Method method, Expression<Func<IRequest, IRequestCreated>> requestAction = null)
         {
             CheckIfDisposed();
 
@@ -29,18 +29,20 @@ namespace SereneApi
 
             requestBuilder.UsingMethod(method);
 
-            request?.Compile().Invoke(requestBuilder);
+            requestAction?.Compile().Invoke(requestBuilder);
 
-            return BasePerformRequest(requestBuilder.GetRequest());
+            IApiRequest request = requestBuilder.GetRequest();
+
+            return BasePerformRequest(request);
         }
 
         /// <summary>
         /// Performs an API Request Synchronously.
         /// </summary>
         /// <param name="method">The <see cref="Method"/> that will be used for the request.</param>
-        /// <param name="request">The <see cref="IRequest"/> that will be performed.</param>
+        /// <param name="requestAction">The <see cref="IRequest"/> that will be performed.</param>
         /// <typeparam name="TResponse">The <see cref="Type"/> to be deserialized from the body of the response.</typeparam>
-        protected IApiResponse<TResponse> PerformRequest<TResponse>(Method method, Expression<Func<IRequest, IRequestCreated>> request = null)
+        protected IApiResponse<TResponse> PerformRequest<TResponse>(Method method, Expression<Func<IRequest, IRequestCreated>> requestAction = null)
         {
             CheckIfDisposed();
 
@@ -48,9 +50,11 @@ namespace SereneApi
 
             requestBuilder.UsingMethod(method);
 
-            request?.Compile().Invoke(requestBuilder);
+            requestAction?.Compile().Invoke(requestBuilder);
 
-            return BasePerformRequest<TResponse>(requestBuilder.GetRequest());
+            IApiRequest request = requestBuilder.GetRequest();
+
+            return BasePerformRequest<TResponse>(request);
         }
 
         #endregion

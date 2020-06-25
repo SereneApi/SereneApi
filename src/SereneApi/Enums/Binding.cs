@@ -1,5 +1,5 @@
-﻿using System;
-using SereneApi.Interfaces;
+﻿using SereneApi.Interfaces;
+using System;
 
 namespace SereneApi.Enums
 {

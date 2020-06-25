@@ -42,7 +42,10 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
                 throw new ArgumentException("The timeout value must be greater than 0 seconds.");
             }
 
-            HttpMessageHandler messageHandler = HttpClientHelper.BuildMessageHandler(dependencies);
+            if(!dependencies.TryGetDependency(out HttpMessageHandler messageHandler))
+            {
+                messageHandler = HttpClientHelper.BuildMessageHandler(dependencies);
+            }
 
             services.AddHttpClient(handlerName, client =>
             {
