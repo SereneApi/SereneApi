@@ -2,7 +2,7 @@
 
 namespace SereneApi.Types.Headers.Authentication
 {
-    public readonly class BearerAuthentication: IAuthentication
+    public class BearerAuthentication: IAuthentication
     {
         public string Scheme => "Bearer";
 

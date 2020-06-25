@@ -109,7 +109,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             CoreOptions coreOptions = GetCoreOptions(extensions);
 
-            DependencyCollection dependencies = (DependencyCollection)coreOptions.DependencyCollection.Clone();
+            DependencyCollection dependencies = (DependencyCollection)coreOptions.Dependencies.Clone();
 
             ApiHandlerOptionsBuilder<TApiImplementation> builder = new ApiHandlerOptionsBuilder<TApiImplementation>(dependencies);
 
@@ -126,7 +126,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             CoreOptions coreOptions = GetCoreOptions(extensions);
 
-            DependencyCollection dependencies = (DependencyCollection)coreOptions.DependencyCollection.Clone();
+            DependencyCollection dependencies = (DependencyCollection)coreOptions.Dependencies.Clone();
 
             ApiHandlerOptionsBuilder<TApiImplementation> builder = new ApiHandlerOptionsBuilder<TApiImplementation>(dependencies);
 

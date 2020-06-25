@@ -37,7 +37,7 @@ namespace SereneApi.Extensions.Mocking
                 mockHandler = new MockMessageHandler(mockResponsesBuilder);
             }
 
-            coreOptions.DependencyCollection.AddDependency(mockHandler);
+            coreOptions.Dependencies.AddDependency(mockHandler);
 
             return registrationExtensions;
         }

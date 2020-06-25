@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace SereneApi.Types
 {
-    [DebuggerDisplay("Source: {ConnectionInfo.BaseAddress.ToString()}")]
+    [DebuggerDisplay("Source: {Connection.BaseAddress.ToString()}")]
     public class ApiHandlerOptions: IApiHandlerOptions, IDisposable
     {
         #region Properties
@@ -12,16 +12,16 @@ namespace SereneApi.Types
         /// <inheritdoc cref="IApiHandlerOptions.Dependencies"/>
         public IDependencyCollection Dependencies { get; }
 
-        /// <inheritdoc cref="IApiHandlerOptions.ConnectionInfo"/>
-        public IConnectionInfo ConnectionInfo { get; set; }
+        /// <inheritdoc cref="IApiHandlerOptions.Connection"/>
+        public IConnectionSettings Connection { get; set; }
 
         #endregion
         #region Conclassors
 
-        public ApiHandlerOptions(IDependencyCollection dependencyCollection, IConnectionInfo connectionInfo)
+        public ApiHandlerOptions(IDependencyCollection dependencies, IConnectionSettings connection)
         {
-            Dependencies = dependencyCollection;
-            ConnectionInfo = connectionInfo;
+            Dependencies = dependencies;
+            Connection = connection;
         }
 
         #endregion

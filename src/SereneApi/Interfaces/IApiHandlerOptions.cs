@@ -11,6 +11,6 @@ namespace SereneApi
         /// </summary>
         IDependencyCollection Dependencies { get; }
 
-        IConnectionInfo ConnectionInfo { get; }
+        IConnectionSettings Connection { get; }
     }
 }

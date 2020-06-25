@@ -5,7 +5,7 @@ namespace SereneApi.Interfaces
     /// <summary>
     /// The connection information for the <see cref="ApiHandler"/>.
     /// </summary>
-    public interface IConnectionInfo
+    public interface IConnectionSettings
     {
         Uri BaseAddress { get; }
 
@@ -25,8 +25,8 @@ namespace SereneApi.Interfaces
 
         int RetryAttempts { get; }
 
-        IConnectionInfo SetTimeout(int timeout);
+        IConnectionSettings SetTimeout(int timeout);
 
-        IConnectionInfo SetRetryAttempts(int attemptCount);
+        IConnectionSettings SetRetryAttempts(int attemptCount);
     }
 }

@@ -4,7 +4,7 @@ using System;
 
 namespace SereneApi.Types
 {
-    public class ConnectionInfo: IConnectionInfo
+    public class Connection: IConnectionSettings
     {
         public Uri BaseAddress { get; }
 
@@ -18,7 +18,7 @@ namespace SereneApi.Types
 
         public int RetryAttempts { get; }
 
-        public ConnectionInfo(Uri baseAddress, string resource = default, string resourcePath = default, int timeout = default, int attemptCount = default)
+        public Connection(Uri baseAddress, string resource = default, string resourcePath = default, int timeout = default, int attemptCount = default)
         {
             BaseAddress = baseAddress;
 
@@ -44,7 +44,7 @@ namespace SereneApi.Types
             RetryAttempts = attemptCount;
         }
 
-        public ConnectionInfo(string baseAddress, string resource = default, string resourcePath = default, int timeout = default, int attemptCount = default)
+        public Connection(string baseAddress, string resource = default, string resourcePath = default, int timeout = default, int attemptCount = default)
         {
             ExceptionHelper.EnsureParameterIsNotNull(baseAddress, nameof(baseAddress));
 
@@ -67,14 +67,14 @@ namespace SereneApi.Types
             RetryAttempts = attemptCount;
         }
 
-        public IConnectionInfo SetTimeout(int timeout)
+        public IConnectionSettings SetTimeout(int timeout)
         {
-            return new ConnectionInfo(BaseAddress, Resource, ResourcePath, timeout, RetryAttempts);
+            return new Connection(BaseAddress, Resource, ResourcePath, timeout, RetryAttempts);
         }
 
-        public IConnectionInfo SetRetryAttempts(int attemptCount)
+        public IConnectionSettings SetRetryAttempts(int attemptCount)
         {
-            return new ConnectionInfo(BaseAddress, Resource, ResourcePath, Timeout, attemptCount);
+            return new Connection(BaseAddress, Resource, ResourcePath, Timeout, attemptCount);
         }
     }
 }

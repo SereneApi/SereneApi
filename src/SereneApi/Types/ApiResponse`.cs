@@ -3,7 +3,7 @@ using System;
 
 namespace SereneApi.Types
 {
-    public readonly class ApiResponse<TResult>: IApiResponse<TResult>
+    public class ApiResponse<TResult>: IApiResponse<TResult>
     {
         public Status Status { get; }
 

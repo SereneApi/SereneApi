@@ -38,10 +38,10 @@ namespace SereneApi.Factories
         /// <summary>
         /// Instantiates a new instance of <see cref="RouteFactory"/>.
         /// </summary>
-        /// <param name="connectionInfo"></param>
-        public RouteFactory(IConnectionInfo connectionInfo)
+        /// <param name="connection"></param>
+        public RouteFactory(IConnectionSettings connection)
         {
-            ResourcePath = connectionInfo.ResourcePath;
+            ResourcePath = connection.ResourcePath;
         }
 
         #endregion

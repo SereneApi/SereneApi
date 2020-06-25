@@ -7,7 +7,7 @@ namespace SereneApi.Extensions.DependencyInjection.Types
     /// <inheritdoc cref="IApiHandlerOptions{TApiHandler}"/>
     public class ApiHandlerOptions<TApiHandler>: ApiHandlerOptions, IApiHandlerOptions<TApiHandler> where TApiHandler : ApiHandler
     {
-        public ApiHandlerOptions(IDependencyCollection dependencyCollection, IConnectionInfo connectionInfo) : base(dependencyCollection, connectionInfo)
+        public ApiHandlerOptions(IDependencyCollection dependencies, IConnectionSettings connection) : base(dependencies, connection)
         {
         }
     }

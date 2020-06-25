@@ -30,17 +30,17 @@ namespace SereneApi.Factories
 
             ApiHandlerExtensions extensions = (ApiHandlerExtensions)_handlerExtensions[handlerType];
 
-            ApiHandlerOptionsBuilder options = new ApiHandlerOptionsBuilder((DependencyCollection)extensions.DependencyCollection.Clone());
+            ApiHandlerOptionsBuilder options = new ApiHandlerOptionsBuilder((DependencyCollection)extensions.Dependencies.Clone());
 
             optionsBuilderAction.Invoke(options);
 
             if(_clientFactories.TryGetValue(handlerType, out IClientFactory clientFactory))
             {
-                options.DependencyCollection.AddDependency(clientFactory, Binding.Unbound);
+                options.Dependencies.AddDependency(clientFactory, Binding.Unbound);
             }
             else
             {
-                clientFactory = new DefaultClientFactory(options.DependencyCollection);
+                clientFactory = new DefaultClientFactory(options.Dependencies);
 
                 _clientFactories.Add(handlerType, clientFactory);
             }

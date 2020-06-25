@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SereneApi.Types.Headers.Authentication
 {
-    public readonly class BasicAuthentication: IAuthentication
+    public class BasicAuthentication: IAuthentication
     {
         public string Scheme => "Basic";
 

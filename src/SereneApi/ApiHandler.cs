@@ -41,7 +41,7 @@ namespace SereneApi
         #endregion
         #region Properties
 
-        public IConnectionInfo Connection { get; }
+        public IConnectionSettings Connection { get; }
 
         #endregion
         #region Conclassors
@@ -56,7 +56,7 @@ namespace SereneApi
 
             _options = options;
 
-            Connection = _options.ConnectionInfo;
+            Connection = _options.Connection;
 
             #region Configure Dependencies
             #region Required

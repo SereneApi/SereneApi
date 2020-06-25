@@ -16,20 +16,20 @@ namespace SereneApi.Types
 
         public ApiHandlerOptionsBuilder()
         {
-            DependencyCollection.AddDependency(ApiHandlerOptionDefaults.QueryFactory);
-            DependencyCollection.AddDependency(JsonSerializer.Default);
-            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory());
-            DependencyCollection.AddDependency(ContentType.Json);
-            DependencyCollection.AddDependency(ApiHandlerOptionDefaults.Credentials);
+            Dependencies.AddDependency(ApiHandlerOptionDefaults.QueryFactory);
+            Dependencies.AddDependency(JsonSerializer.Default);
+            Dependencies.AddDependency<IRouteFactory>(new RouteFactory());
+            Dependencies.AddDependency(ContentType.Json);
+            Dependencies.AddDependency(ApiHandlerOptionDefaults.Credentials);
         }
 
-        protected internal ApiHandlerOptionsBuilder(DependencyCollection dependencyCollection) : base(dependencyCollection)
+        protected internal ApiHandlerOptionsBuilder(DependencyCollection dependencies) : base(dependencies)
         {
-            DependencyCollection.AddDependency(ApiHandlerOptionDefaults.QueryFactory);
-            DependencyCollection.AddDependency(JsonSerializer.Default);
-            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory());
-            DependencyCollection.AddDependency(ContentType.Json);
-            DependencyCollection.AddDependency(ApiHandlerOptionDefaults.Credentials);
+            Dependencies.AddDependency(ApiHandlerOptionDefaults.QueryFactory);
+            Dependencies.AddDependency(JsonSerializer.Default);
+            Dependencies.AddDependency<IRouteFactory>(new RouteFactory());
+            Dependencies.AddDependency(ContentType.Json);
+            Dependencies.AddDependency(ApiHandlerOptionDefaults.Credentials);
         }
 
         #endregion
@@ -39,15 +39,15 @@ namespace SereneApi.Types
         {
             ExceptionHelper.EnsureParameterIsNotNull(source, nameof(source));
 
-            if(DependencyCollection.HasDependency<IConnectionInfo>())
+            if(Dependencies.HasDependency<IConnectionSettings>())
             {
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
-            IConnectionInfo connectionInfo = new ConnectionInfo(source, resource, resourcePath);
+            IConnectionSettings connection = new Connection(source, resource, resourcePath);
 
-            DependencyCollection.AddDependency(connectionInfo);
-            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory(connectionInfo));
+            Dependencies.AddDependency(connection);
+            Dependencies.AddDependency<IRouteFactory>(new RouteFactory(connection));
         }
 
         /// <inheritdoc>
@@ -55,89 +55,89 @@ namespace SereneApi.Types
         /// </inheritdoc>
         public void SetTimeoutPeriod(int seconds)
         {
-            if(!DependencyCollection.TryGetDependency(out IConnectionInfo connectionInfo))
+            if(!Dependencies.TryGetDependency(out IConnectionSettings connection))
             {
                 throw new MethodAccessException("Source information must be supplied fired.");
             }
 
-            DependencyCollection.AddDependency(connectionInfo.SetTimeout(seconds));
+            Dependencies.AddDependency(connection.SetTimeout(seconds));
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.SetRetryAttempts"/>
         public void SetRetryAttempts(int attemptCount)
         {
-            if(!DependencyCollection.TryGetDependency(out IConnectionInfo connectionInfo))
+            if(!Dependencies.TryGetDependency(out IConnectionSettings connection))
             {
                 throw new MethodAccessException("Source information must be supplied fired.");
             }
 
-            DependencyCollection.AddDependency(connectionInfo.SetRetryAttempts(attemptCount));
+            Dependencies.AddDependency(connection.SetRetryAttempts(attemptCount));
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddLogger"/>
         public void AddLogger(ILogger logger)
         {
-            DependencyCollection.AddDependency(logger);
+            Dependencies.AddDependency(logger);
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseQueryFactory"/>
         public void UseQueryFactory(IQueryFactory queryFactory)
         {
-            DependencyCollection.AddDependency(queryFactory);
+            Dependencies.AddDependency(queryFactory);
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseCredentials"/>
         public void UseCredentials(ICredentials credentials)
         {
-            DependencyCollection.AddDependency(credentials);
+            Dependencies.AddDependency(credentials);
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddAuthentication"/>
         public void AddAuthentication(IAuthentication authentication)
         {
-            if(DependencyCollection.HasDependency<IAuthentication>())
+            if(Dependencies.HasDependency<IAuthentication>())
             {
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
-            DependencyCollection.AddDependency(authentication);
+            Dependencies.AddDependency(authentication);
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddBasicAuthentication"/>
         public void AddBasicAuthentication(string username, string password)
         {
-            if(DependencyCollection.HasDependency<IAuthentication>())
+            if(Dependencies.HasDependency<IAuthentication>())
             {
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
-            DependencyCollection.AddDependency<IAuthentication>(new BasicAuthentication(username, password));
+            Dependencies.AddDependency<IAuthentication>(new BasicAuthentication(username, password));
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddBearerAuthentication"/>
         public void AddBearerAuthentication(string token)
         {
-            if(DependencyCollection.HasDependency<IAuthentication>())
+            if(Dependencies.HasDependency<IAuthentication>())
             {
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
-            DependencyCollection.AddDependency<IAuthentication>(new BearerAuthentication(token));
+            Dependencies.AddDependency<IAuthentication>(new BearerAuthentication(token));
         }
 
         public void AcceptContentType(ContentType content)
         {
-            DependencyCollection.AddDependency(content);
+            Dependencies.AddDependency(content);
         }
 
         public IApiHandlerOptions BuildOptions()
         {
             // If no client factory has been provided the default will be used.
-            DependencyCollection.TryAddDependency<IClientFactory>(new DefaultClientFactory(DependencyCollection));
+            Dependencies.TryAddDependency<IClientFactory>(new DefaultClientFactory(Dependencies));
 
-            IConnectionInfo connectionInfo = DependencyCollection.GetDependency<IConnectionInfo>();
+            IConnectionSettings connection = Dependencies.GetDependency<IConnectionSettings>();
 
-            IApiHandlerOptions options = new ApiHandlerOptions(DependencyCollection, connectionInfo);
+            IApiHandlerOptions options = new ApiHandlerOptions(Dependencies, connection);
 
             return options;
         }

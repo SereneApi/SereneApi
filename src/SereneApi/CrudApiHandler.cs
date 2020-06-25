@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace SereneApi
 {
     /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}"/>
-    public abstract class CrudApiHandler<TResource, TIdentifier>: ApiHandler, ICrudApi<TResource, TIdentifier> where TResource : class where TIdentifier : class
+    public abstract class CrudApiHandler<TResource, TIdentifier>: ApiHandler, ICrudApi<TResource, TIdentifier> where TResource : class where TIdentifier : struct
     {
         /// <summary>
         /// Instantiates a new Instance of the <see cref="CrudApiHandler{TResource,TIdentifier}"/>

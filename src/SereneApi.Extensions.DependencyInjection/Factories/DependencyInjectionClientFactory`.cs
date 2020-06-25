@@ -13,18 +13,18 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
     {
         public string HandlerName { get; }
 
-        private readonly DependencyCollection _dependencyCollection;
+        private readonly DependencyCollection _dependencies;
 
-        public DependencyInjectionClientFactory(IDependencyCollection dependencyCollection)
+        public DependencyInjectionClientFactory(IDependencyCollection dependencies)
         {
-            _dependencyCollection = (DependencyCollection)dependencyCollection;
+            _dependencies = (DependencyCollection)dependencies;
 
             HandlerName = GenerateHandlerName();
         }
 
         public HttpClient BuildClient()
         {
-            IHttpClientFactory clientFactory = _dependencyCollection.GetDependency<IHttpClientFactory>();
+            IHttpClientFactory clientFactory = _dependencies.GetDependency<IHttpClientFactory>();
 
             HttpClient client = clientFactory.CreateClient(HandlerName);
 
@@ -35,7 +35,7 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
         {
             string handlerName = GenerateHandlerName();
 
-            IConnectionInfo connection = dependencies.GetDependency<IConnectionInfo>();
+            IConnectionSettings connection = dependencies.GetDependency<IConnectionSettings>();
 
             if(connection.Timeout == default || connection.Timeout < 0)
             {

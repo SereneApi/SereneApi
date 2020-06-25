@@ -59,7 +59,7 @@ namespace SereneApi.Helpers
 
         public static void ConfigureHttpClient(HttpClient client, IDependencyCollection dependencies)
         {
-            IConnectionInfo connection = dependencies.GetDependency<IConnectionInfo>();
+            IConnectionSettings connection = dependencies.GetDependency<IConnectionSettings>();
 
             if(connection.Timeout == default || connection.Timeout < 0)
             {

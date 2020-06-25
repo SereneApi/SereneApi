@@ -15,14 +15,14 @@ namespace SereneApi.Extensions.DependencyInjection.Types
     /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiHandler}"/>
     internal class ApiHandlerOptionsBuilder<TApiHandler>: ApiHandlerOptionsBuilder, IApiHandlerOptionsBuilder<TApiHandler> where TApiHandler : ApiHandler
     {
-        public ApiHandlerOptionsBuilder(DependencyCollection dependencyCollection) : base(dependencyCollection)
+        public ApiHandlerOptionsBuilder(DependencyCollection dependencies) : base(dependencies)
         {
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiHandler}.UseConfiguration"/>
         public void UseConfiguration(IConfiguration configuration)
         {
-            if(DependencyCollection.HasDependency<IConnectionInfo>())
+            if(Dependencies.HasDependency<IConnectionSettings>())
             {
                 throw new MethodAccessException("This method cannot be called twice");
             }
@@ -31,10 +31,10 @@ namespace SereneApi.Extensions.DependencyInjection.Types
             string resource = configuration.Get<string>(ConfigurationConstants.ResourceKey, ConfigurationConstants.ResourceIsRequired);
             string resourcePath = configuration.Get<string>(ConfigurationConstants.ResourcePathKey, ConfigurationConstants.ResourcePathIsRequired);
 
-            IConnectionInfo connectionInfo = new ConnectionInfo(source, resource, resourcePath);
+            IConnectionSettings connection = new Connection(source, resource, resourcePath);
 
-            DependencyCollection.AddDependency(connectionInfo);
-            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory(connectionInfo));
+            Dependencies.AddDependency(connection);
+            Dependencies.AddDependency<IRouteFactory>(new RouteFactory(connection));
 
             #region Timeout
 
@@ -47,7 +47,7 @@ namespace SereneApi.Extensions.DependencyInjection.Types
 
             if(timeout != default)
             {
-                connectionInfo.SetTimeout(timeout);
+                connection.SetTimeout(timeout);
             }
 
             #endregion
@@ -59,11 +59,11 @@ namespace SereneApi.Extensions.DependencyInjection.Types
 
                 if(retryCount != default)
                 {
-                    connectionInfo.SetRetryAttempts(retryCount);
+                    connection.SetRetryAttempts(retryCount);
                 }
             }
 
-            DependencyCollection.AddDependency(connectionInfo);
+            Dependencies.AddDependency(connection);
 
             #endregion
         }
@@ -73,7 +73,7 @@ namespace SereneApi.Extensions.DependencyInjection.Types
         {
             ExceptionHelper.EnsureParameterIsNotNull(loggerFactory, nameof(loggerFactory));
 
-            DependencyCollection.AddDependency(loggerFactory);
+            Dependencies.AddDependency(loggerFactory);
         }
 
         /// <summary>
@@ -81,9 +81,9 @@ namespace SereneApi.Extensions.DependencyInjection.Types
         /// </summary>
         public IApiHandlerOptions<TApiHandler> BuildOptions(IServiceCollection services)
         {
-            IConnectionInfo connection = DependencyCollection.GetDependency<IConnectionInfo>();
+            IConnectionSettings connection = Dependencies.GetDependency<IConnectionSettings>();
 
-            DependencyCollection dependencies = (DependencyCollection)DependencyCollection.Clone();
+            DependencyCollection dependencies = (DependencyCollection)Dependencies.Clone();
 
             IServiceProvider serviceProvider = services.BuildServiceProvider();
 
