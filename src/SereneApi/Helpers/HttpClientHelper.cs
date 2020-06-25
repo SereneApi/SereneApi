@@ -33,7 +33,7 @@ namespace SereneApi.Helpers
 
             if(dependencies.TryGetDependency(out IAuthenticator authenticator))
             {
-                IAuthentication authentication = authenticator.GetAuthentication();
+                IAuthentication authentication = authenticator.GetAuthentication(dependencies);
 
                 requestHeaders.Authorization = new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);
             }
