@@ -1,4 +1,5 @@
-﻿using SereneApi.Types;
+﻿using SereneApi.Extensions.DependencyInjection.Interfaces;
+using SereneApi.Types;
 using SereneApi.Types.Authenticators;
 using System;
 using System.Threading.Tasks;
@@ -10,13 +11,13 @@ namespace SereneApi.Interfaces
     public static class RegisterApiHandlerExtensionsExtensions
     {
         /// <summary>
-        /// NOT FOR DI
+        /// FOR DI
         /// </summary>
-        public static IApiHandlerExtensions AddAuthenticator<TApi, TDto>(this IApiHandlerExtensions registrationExtensions, Func<TApi, Task<IApiResponse<TDto>>> callApiFunction, Func<TDto, TokenInfo> getTokenInfo) where TApi : class where TDto : class
+        public static IApiHandlerDiRegistrationExtensions AddAuthenticator<TApi, TDto>(this IApiHandlerDiRegistrationExtensions registrationExtensions, Func<TApi, Task<IApiResponse<TDto>>> callApiFunction, Func<TDto, TokenInfo> getTokenInfo) where TApi : class where TDto : class
         {
             CoreOptions coreOptions = GetCoreOptions(registrationExtensions);
 
-            TokenAuthenticator<TApi, TDto> authenticator = new TokenAuthenticator<TApi, TDto>(/*coreOptions.Dependencies, */callApiFunction, getTokenInfo);
+            DITokenAuthenticator<TApi, TDto> authenticator = new DITokenAuthenticator<TApi, TDto>(/*coreOptions.Dependencies, */callApiFunction, getTokenInfo);
 
             coreOptions.Dependencies.AddDependency<IAuthenticator>(authenticator);
 

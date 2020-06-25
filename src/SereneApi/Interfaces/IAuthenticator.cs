@@ -2,6 +2,6 @@
 {
     public interface IAuthenticator
     {
-        IAuthentication GetAuthentication();
+        IAuthentication GetAuthentication(IDependencyCollection dependencies);
     }
 }

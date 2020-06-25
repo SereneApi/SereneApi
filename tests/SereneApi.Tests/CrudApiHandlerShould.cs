@@ -2,6 +2,7 @@
 using SereneApi.Abstraction.Enums;
 using SereneApi.Extensions.Mocking;
 using SereneApi.Factories;
+using SereneApi.Tests.Interfaces;
 using SereneApi.Tests.Mock;
 using Shouldly;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace SereneApi.Tests
         {
             ApiHandlerFactory factory = new ApiHandlerFactory();
 
-            factory.RegisterApiHandler<CrudApiHandlerWrapper>(builder =>
+            factory.RegisterApiHandler<ICrudApi, CrudApiHandlerWrapper>(builder =>
             {
                 builder.UseSource("http://localhost:8080", "Person");
             }).WithMockResponses(builder =>
@@ -79,7 +80,7 @@ namespace SereneApi.Tests
                     .RespondsToRequestsWith(MockPersonDto.JohnSmith);
             });
 
-            _crudApiHandler = factory.Build<CrudApiHandlerWrapper>();
+            _crudApiHandler = factory.Build<ICrudApi>();
         }
 
         [Fact]

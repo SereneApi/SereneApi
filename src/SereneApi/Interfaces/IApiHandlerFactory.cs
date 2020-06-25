@@ -8,7 +8,6 @@
         /// <summary>
         /// Creates a new instance of the requested <see cref="ApiHandler"/> type.
         /// </summary>
-        /// <typeparam name="TApiHandler">The type to be instantiated that inherits from <see cref="TApiHandler"/>.</typeparam>
-        TApiHandler Build<TApiHandler>() where TApiHandler : ApiHandler;
+        TApiDefinition Build<TApiDefinition>() where TApiDefinition : class;
     }
 }
