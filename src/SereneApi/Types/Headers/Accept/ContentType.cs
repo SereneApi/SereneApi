@@ -1,6 +1,6 @@
 ﻿namespace SereneApi.Types.Headers.Accept
 {
-    public readonly struct ContentType
+    public class ContentType
     {
         public string Value { get; }
 

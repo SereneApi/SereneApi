@@ -1,5 +1,6 @@
 ﻿using SereneApi.Factories;
 using SereneApi.Interfaces;
+using SereneApi.Types;
 using Shouldly;
 using System;
 using Xunit;
@@ -105,7 +106,9 @@ namespace SereneApi.Tests.Factories
 
             Uri expectedRoute = new Uri(expected, UriKind.Relative);
 
-            IRouteFactory routeFactory = new RouteFactory(resourcePath);
+            IConnectionSettings connection = new Connection("http://noteused/", null, resourcePath);
+
+            IRouteFactory routeFactory = new RouteFactory(connection);
 
             routeFactory.AddResource(resource);
             routeFactory.AddEndPoint(endPoint);
@@ -134,7 +137,9 @@ namespace SereneApi.Tests.Factories
 
             Uri expectedRoute = new Uri($"api/Users/{expected}", UriKind.Relative);
 
-            IRouteFactory routeFactory = new RouteFactory("api/");
+            IConnectionSettings connection = new Connection("http://noteused/", null, "api/");
+
+            IRouteFactory routeFactory = new RouteFactory(connection);
 
             routeFactory.AddResource("Users");
             routeFactory.AddEndPoint(endPoint);
@@ -162,7 +167,9 @@ namespace SereneApi.Tests.Factories
 
             Uri expectedRoute = new Uri($"api/Users/{expected}", UriKind.Relative);
 
-            IRouteFactory routeFactory = new RouteFactory("api/");
+            IConnectionSettings connection = new Connection("http://noteused/", null, "api/");
+
+            IRouteFactory routeFactory = new RouteFactory(connection);
 
             routeFactory.AddResource("Users");
             routeFactory.AddEndPoint(endPoint);
@@ -190,7 +197,9 @@ namespace SereneApi.Tests.Factories
 
             Uri expectedRoute = new Uri(expected, UriKind.Relative);
 
-            IRouteFactory routeFactory = new RouteFactory("api/");
+            IConnectionSettings connection = new Connection("http://noteused/", null, "api/");
+
+            IRouteFactory routeFactory = new RouteFactory(connection);
 
             routeFactory.AddResource("Users");
             routeFactory.AddQuery(query);

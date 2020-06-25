@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SereneApi.Types.Content
 {
-    public readonly struct JsonContent: IApiRequestContent
+    public class JsonContent: IApiRequestContent
     {
         /// <summary>
         /// The <see cref="Encoding"/> of the in body content.

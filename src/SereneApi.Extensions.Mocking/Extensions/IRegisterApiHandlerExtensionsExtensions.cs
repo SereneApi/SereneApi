@@ -9,7 +9,7 @@ using System.Net.Http;
 // ReSharper disable once CheckNamespace
 namespace SereneApi.Extensions.Mocking
 {
-    public static class IRegisterApiHandlerExtensionsExtensions
+    public static class RegisterApiHandlerExtensionsExtensions
     {
         /// <summary>
         /// Adds the specified <see cref="IMockResponse"/>s to the <see cref="ApiHandler"/>.
@@ -18,7 +18,7 @@ namespace SereneApi.Extensions.Mocking
         /// <param name="mockResponseBuilder">The <see cref="IMockResponse"/>s to be added to the <see cref="ApiHandler"/>.</param>
         /// <param name="enableOutgoingRequests">If set to true, any request that does not have an associated <see cref="IMockResponse"/> will be processed normally.
         /// If set to false, if a request does not have an associated <see cref="IMockResponse"/> an <see cref="ArgumentException"/> will be thrown.</param>
-        public static void WithMockResponses(this IApiHandlerExtensions registrationExtensions, Action<IMockResponsesBuilder> mockResponseBuilder, bool enableOutgoingRequests = false)
+        public static IApiHandlerExtensions WithMockResponses(this IApiHandlerExtensions registrationExtensions, Action<IMockResponsesBuilder> mockResponseBuilder, bool enableOutgoingRequests = false)
         {
             CoreOptions coreOptions = GetCoreOptions(registrationExtensions);
 
@@ -37,7 +37,9 @@ namespace SereneApi.Extensions.Mocking
                 mockHandler = new MockMessageHandler(mockResponsesBuilder);
             }
 
-            coreOptions.DependencyCollection.AddDependency(mockHandler);
+            coreOptions.Dependencies.AddDependency(mockHandler);
+
+            return registrationExtensions;
         }
 
         private static CoreOptions GetCoreOptions(IApiHandlerExtensions extensions)

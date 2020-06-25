@@ -1,7 +1,6 @@
 ﻿using SereneApi.Enums;
 using SereneApi.Interfaces;
 using System;
-using System.Diagnostics;
 
 namespace SereneApi.Types
 {
@@ -9,8 +8,7 @@ namespace SereneApi.Types
     /// Stores the Dependencies Instance to be used at a later point.
     /// </summary>
     /// <typeparam name="TDependency"></typeparam>
-    [DebuggerDisplay("Type:{Type}; Binding:{Binding}")]
-    public class Dependency<TDependency>: Dependency, IDependency<TDependency>, ICloneable
+    public class Dependency<TDependency>: Dependency, IDependency<TDependency>
     {
         /// <inheritdoc cref="IDependency{TDependency}.Instance"/>
         public new TDependency Instance => (TDependency)base.Instance;

@@ -20,7 +20,7 @@ namespace DependencyInjection.WebUi.Handlers
         {
             // This GET request will use the students Id as a parameter for the request.
             // http://localhost:8080/api/Students/{studentId}
-            return PerformRequestAsync<StudentDto>(Method.Get, r => r
+            return PerformRequestAsync<StudentDto>(Method.GET, r => r
                 .WithEndPoint(studentId));
         }
 
@@ -28,14 +28,14 @@ namespace DependencyInjection.WebUi.Handlers
         {
             // This is a simple GET request with no endpoint or parameters provided.
             // http://localhost:8080/api/Students
-            return PerformRequestAsync<List<StudentDto>>(Method.Get);
+            return PerformRequestAsync<List<StudentDto>>(Method.GET);
         }
 
         public Task<IApiResponse<List<StudentDto>>> FindByGivenAndLastName(StudentDto student)
         {
             // In this example, only the Given and Last name values will used for the query.
             // http://localhost:8080/api/Students?GivenName=value&LastName=value
-            return PerformRequestAsync<List<StudentDto>>(Method.Get, r => r
+            return PerformRequestAsync<List<StudentDto>>(Method.GET, r => r
                 .WithEndPoint("SearchBy/GivenAndLastName")
                 .WithQuery(student, s => new { s.GivenName, s.LastName }));
         }
@@ -44,7 +44,7 @@ namespace DependencyInjection.WebUi.Handlers
         {
             // The StudentDto value will be passed to JSON and sent in the body of the request
             // http://localhost:8080/api/Students
-            return PerformRequestAsync(Method.Post, r => r
+            return PerformRequestAsync(Method.POST, r => r
                 .WithInBodyContent(student));
         }
 
@@ -52,7 +52,7 @@ namespace DependencyInjection.WebUi.Handlers
         {
             // Here we are using an Endpoint Template, allowing more complex APIs.
             // http://localhost:8080/api/Students/{studentId}/Classes
-            return PerformRequestAsync<List<ClassDto>>(Method.Get, r => r
+            return PerformRequestAsync<List<ClassDto>>(Method.GET, r => r
                 .WithEndPointTemplate("{0}/Classes", studentId));
         }
     }

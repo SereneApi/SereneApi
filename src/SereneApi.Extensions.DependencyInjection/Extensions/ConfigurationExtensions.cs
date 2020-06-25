@@ -5,7 +5,7 @@ using System.Collections.Generic;
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.Configuration
 {
-    public static class IConfigurationExtensions
+    public static class ConfigurationExtensions
     {
         /// <summary>
         /// Returns the <see cref="IConfiguration"/> from within ApiConfig that matches the specified <see cref="apiKey"/>

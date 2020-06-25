@@ -43,9 +43,10 @@ namespace DependencyInjection.WebUi
                 builder.AddLoggerFactory(provider.GetRequiredService<ILoggerFactory>());
             });
 
-            services.RegisterApiHandler<IValuesApi, ValuesApiHandler>(builder =>
+            services.RegisterApiHandler<IValuesApi, ValuesApiHandler>((builder, p) =>
             {
                 builder.UseSource("http://localhost:52279", "Values");
+                builder.AddLoggerFactory(p.GetRequiredService<ILoggerFactory>());
             });
 
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebUi", Version = "v1" }));

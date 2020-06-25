@@ -25,7 +25,7 @@ namespace SereneApi.Factories
         public string ResourcePath { get; }
 
         #endregion
-        #region Constructors
+        #region Conclassors
 
         /// <summary>
         /// Instantiates a new instance of <see cref="RouteFactory"/> with an empty Resource Path.
@@ -38,10 +38,10 @@ namespace SereneApi.Factories
         /// <summary>
         /// Instantiates a new instance of <see cref="RouteFactory"/>.
         /// </summary>
-        /// <param name="resourcePath">The Resource Path to be appended to the Route.</param>
-        public RouteFactory(string resourcePath)
+        /// <param name="connection"></param>
+        public RouteFactory(IConnectionSettings connection)
         {
-            ResourcePath = SourceHelpers.EnsureSourceSlashTermination(resourcePath);
+            ResourcePath = connection.ResourcePath;
         }
 
         #endregion
@@ -148,7 +148,7 @@ namespace SereneApi.Factories
         /// <summary>
         /// Formats the End Point Template.
         /// </summary>
-        /// <param name="endPointTemplate">The End Point Template to be formmatted.</param>
+        /// <param name="endPointTemplate">The End Point Template to be formatted.</param>
         /// <param name="templateParameters">The Parameters to be appended to the template.</param>
         /// <returns></returns>
         private static string FormatEndPointTemplate(string endPointTemplate, params object[] templateParameters)

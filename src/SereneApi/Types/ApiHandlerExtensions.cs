@@ -9,7 +9,7 @@ namespace SereneApi.Types
         {
         }
 
-        public ApiHandlerExtensions(DependencyCollection dependencyCollection) : base(dependencyCollection)
+        public ApiHandlerExtensions(DependencyCollection dependencies) : base(dependencies)
         {
         }
 
@@ -33,7 +33,7 @@ namespace SereneApi.Types
 
             if(disposing)
             {
-                DependencyCollection.Dispose();
+                Dependencies.Dispose();
             }
 
             _disposed = true;

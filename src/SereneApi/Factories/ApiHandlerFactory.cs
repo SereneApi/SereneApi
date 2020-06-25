@@ -3,7 +3,6 @@ using SereneApi.Interfaces;
 using SereneApi.Types;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 
 namespace SereneApi.Factories
 {
@@ -13,8 +12,6 @@ namespace SereneApi.Factories
         private readonly Dictionary<Type, Action<IApiHandlerOptionsBuilder>> _handlerOptions = new Dictionary<Type, Action<IApiHandlerOptionsBuilder>>();
 
         private readonly Dictionary<Type, IApiHandlerExtensions> _handlerExtensions = new Dictionary<Type, IApiHandlerExtensions>();
-
-        private readonly Dictionary<Type, HttpClient> _clients = new Dictionary<Type, HttpClient>();
 
         /// <inheritdoc>
         ///     <cref>IApiHandlerFactory.Build</cref>
@@ -30,22 +27,7 @@ namespace SereneApi.Factories
 
             ApiHandlerExtensions extensions = (ApiHandlerExtensions)_handlerExtensions[handlerType];
 
-            if(!_clients.TryGetValue(handlerType, out HttpClient client))
-            {
-                if(extensions.DependencyCollection.TryGetDependency(out HttpMessageHandler messageHandler))
-                {
-                    client = new HttpClient(messageHandler);
-                }
-                else
-                {
-                    client = new HttpClient();
-                }
-
-                _clients.Add(handlerType, client);
-            }
-
-            // Disable client disposal for this ApiHandler as this factory has ownership of the client.
-            ApiHandlerOptionsBuilder options = new ApiHandlerOptionsBuilder((DependencyCollection)extensions.DependencyCollection.Clone(), client, false);
+            ApiHandlerOptionsBuilder options = new ApiHandlerOptionsBuilder((DependencyCollection)extensions.Dependencies.Clone());
 
             optionsBuilderAction.Invoke(options);
 
@@ -120,9 +102,12 @@ namespace SereneApi.Factories
 
             if(disposing)
             {
-                foreach(HttpClient client in _clients.Values)
+                foreach(IApiHandlerExtensions handlerExtensions in _handlerExtensions.Values)
                 {
-                    client.Dispose();
+                    if(handlerExtensions is IDisposable disposable)
+                    {
+                        disposable.Dispose();
+                    }
                 }
             }
 

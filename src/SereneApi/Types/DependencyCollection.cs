@@ -29,11 +29,11 @@ namespace SereneApi.Types
         /// Adds a new <see cref="Dependency{TDependency}"/> or overrides an existing <see cref="Dependency{TDependency}"/>
         /// </summary>
         /// <typeparam name="TDependency"></typeparam>
-        /// <param name="dependencyInstance"></param>
+        /// <param name="instance"></param>
         /// <param name="binding"></param>
-        public void AddDependency<TDependency>(TDependency dependencyInstance, Binding binding = Binding.Bound)
+        public void AddDependency<TDependency>(TDependency instance, Binding binding = Binding.Bound)
         {
-            Dependency<TDependency> dependency = new Dependency<TDependency>(dependencyInstance, binding);
+            IDependency<TDependency> dependency = CreateDependency(instance, binding);
 
             if(_dependencyTypeMap.ContainsKey(dependency.Type))
             {
@@ -43,6 +43,20 @@ namespace SereneApi.Types
             {
                 _dependencyTypeMap.Add(dependency.Type, dependency);
             }
+        }
+
+        public bool TryAddDependency<TDependency>(TDependency instance, Binding binding = Binding.Bound)
+        {
+            IDependency<TDependency> dependency = CreateDependency(instance, binding);
+
+            if(_dependencyTypeMap.ContainsKey(dependency.Type))
+            {
+                return false;
+            }
+
+            _dependencyTypeMap.Add(dependency.Type, dependency);
+
+            return true;
         }
 
         /// <inheritdoc cref="IDependencyCollection.GetDependency{TDependency}"/>
@@ -105,6 +119,17 @@ namespace SereneApi.Types
             return new DependencyCollection(newDependencyTypeMap);
         }
 
+        private IDependency<TDependency> CreateDependency<TDependency>(TDependency dependencyInstance, Binding binding = Binding.Bound)
+        {
+            if(dependencyInstance is IDisposable)
+            {
+                return new Dependency<TDependency>(dependencyInstance, binding);
+            }
+
+            // Ths instance is not disposable so it is unbound.
+            return new Dependency<TDependency>(dependencyInstance, Binding.Unbound);
+        }
+
         #region IDisposable
 
         private volatile bool _disposed;
@@ -136,12 +161,9 @@ namespace SereneApi.Types
 
             if(disposing)
             {
-                foreach(IDependency dependency in _dependencyTypeMap.Values.ToList())
+                foreach(IDisposable dependency in _dependencyTypeMap.Values.Where(d => d.Binding == Binding.Bound))
                 {
-                    if(dependency is IDisposable disposableDependency)
-                    {
-                        disposableDependency.Dispose();
-                    }
+                    dependency.Dispose();
                 }
             }
 

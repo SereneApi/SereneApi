@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -20,9 +20,12 @@ SereneApi.Extensions.DependencyInjection adds support for AspNet DI and Configur
     <PackageTags>API; REST; RESTful; DI; DependencyInjection; AspNet; Extensions</PackageTags>
     <NeutralLanguage>en-AU</NeutralLanguage>
     <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageId>SereneApi.Extensions.DependencyInjection</PackageId>
+    <AssemblyName>DeltaWare.SereneApi.Extensions.DependencyInjection</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.4" />

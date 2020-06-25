@@ -1,6 +1,6 @@
 using Xunit;
 
-namespace SereneApi.DepedencyInjection.Tests
+namespace SereneApi.DependencyInjection.Tests
 {
     public class UnitTest1
     {

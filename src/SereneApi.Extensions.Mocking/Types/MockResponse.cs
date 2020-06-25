@@ -34,13 +34,13 @@ namespace SereneApi.Extensions.Mocking.Types
             Status = status;
             Serializer = serializer;
 
-            DependencyCollection.AddDependency(serializer);
+            Dependencies.AddDependency(serializer);
         }
 
         /// <inheritdoc cref="IWhitelist.Validate"/>
         public Validity Validate(object value)
         {
-            List<IWhitelist> whitelistDependencies = DependencyCollection.GetDependencies<IWhitelist>();
+            List<IWhitelist> whitelistDependencies = Dependencies.GetDependencies<IWhitelist>();
 
             // If 0 or any whitelist items return true. True is returned.
 
@@ -62,7 +62,7 @@ namespace SereneApi.Extensions.Mocking.Types
         /// <inheritdoc cref="IMockResponse"/>
         public async Task<IApiRequestContent> GetResponseContentAsync(CancellationToken cancellationToken = default)
         {
-            if(DependencyCollection.TryGetDependency(out DelayedResponseDependency delay))
+            if(Dependencies.TryGetDependency(out DelayedResponseDependency delay))
             {
                 await delay.DelayAsync(cancellationToken);
             }
@@ -76,7 +76,7 @@ namespace SereneApi.Extensions.Mocking.Types
         /// <remarks>The <see cref="IMockResponseExtensions"/> are used to add functionality to the <see cref="IMockResponse"/>.</remarks>
         public IMockResponseExtensions GetExtensions()
         {
-            return new MockResponseExtensions(DependencyCollection);
+            return new MockResponseExtensions(Dependencies);
         }
 
         #region IDisposable
@@ -99,7 +99,7 @@ namespace SereneApi.Extensions.Mocking.Types
 
             if(disposing)
             {
-                DependencyCollection.Dispose();
+                Dependencies.Dispose();
             }
 
             _disposed = true;

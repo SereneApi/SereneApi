@@ -4,7 +4,7 @@
     /// <summary>
     /// Species the status of the response from the API.
     /// </summary>
-    public enum Status: int
+    public enum Status
     {
         #region Supporting
 
