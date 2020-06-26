@@ -41,18 +41,21 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
             {
                 throw new ArgumentException("The timeout value must be greater than 0 seconds.");
             }
-
-            if(!dependencies.TryGetDependency(out HttpMessageHandler messageHandler))
-            {
-                messageHandler = HttpClientHelper.BuildMessageHandler(dependencies);
-            }
-
+            
             services.AddHttpClient(handlerName, client =>
             {
                 HttpClientHelper.ConfigureHttpClient(client, dependencies);
                 HttpClientHelper.BuildRequestHeaders(client.DefaultRequestHeaders, dependencies);
             })
-            .ConfigurePrimaryHttpMessageHandler(() => messageHandler);
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                if(!dependencies.TryGetDependency(out HttpMessageHandler messageHandler))
+                {
+                    messageHandler = HttpClientHelper.BuildMessageHandler(dependencies);
+                }
+
+                return messageHandler;
+            });
         }
 
         private static string GenerateHandlerName()

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 // ReSharper disable once CheckNamespace
 namespace SereneApi.Interfaces
 {
-    public static class RegisterApiHandlerExtensionsExtensions
+    public static class ApiHandlerExtensionsExtensions
     {
         /// <summary>
         /// NOT FOR DI
@@ -16,7 +16,7 @@ namespace SereneApi.Interfaces
         {
             CoreOptions coreOptions = GetCoreOptions(registrationExtensions);
 
-            TokenAuthenticator<TApi, TDto> authenticator = new TokenAuthenticator<TApi, TDto>(/*coreOptions.Dependencies, */callApiFunction, getTokenInfo);
+            TokenAuthenticator<TApi, TDto> authenticator = new TokenAuthenticator<TApi, TDto>(callApiFunction, getTokenInfo);
 
             coreOptions.Dependencies.AddDependency<IAuthenticator>(authenticator);
 

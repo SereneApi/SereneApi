@@ -3,21 +3,22 @@ using SereneApi.Types;
 using SereneApi.Types.Authenticators;
 using System;
 using System.Threading.Tasks;
+using SereneApi.Interfaces;
 
 // Do not change namespace
 // ReSharper disable once CheckNamespace
-namespace SereneApi.Interfaces
+namespace SereneApi.Extensions.DependencyInjection
 {
-    public static class RegisterApiHandlerExtensionsExtensions
+    public static class ApiHandlerExtensionsExtensions
     {
         /// <summary>
         /// FOR DI
         /// </summary>
-        public static IApiHandlerDiRegistrationExtensions AddAuthenticator<TApi, TDto>(this IApiHandlerDiRegistrationExtensions registrationExtensions, Func<TApi, Task<IApiResponse<TDto>>> callApiFunction, Func<TDto, TokenInfo> getTokenInfo) where TApi : class where TDto : class
+        public static IApiHandlerExtensions AddInjectedAuthenticator<TApi, TDto>(this IApiHandlerExtensions registrationExtensions, Func<TApi, Task<IApiResponse<TDto>>> callApiFunction, Func<TDto, TokenInfo> getTokenInfo) where TApi : class where TDto : class
         {
             CoreOptions coreOptions = GetCoreOptions(registrationExtensions);
 
-            DITokenAuthenticator<TApi, TDto> authenticator = new DITokenAuthenticator<TApi, TDto>(/*coreOptions.Dependencies, */callApiFunction, getTokenInfo);
+            DITokenAuthenticator<TApi, TDto> authenticator = new DITokenAuthenticator<TApi, TDto>(callApiFunction, getTokenInfo);
 
             coreOptions.Dependencies.AddDependency<IAuthenticator>(authenticator);
 
