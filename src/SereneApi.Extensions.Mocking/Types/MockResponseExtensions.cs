@@ -1,4 +1,5 @@
-﻿using SereneApi.Extensions.Mocking.Helpers;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Extensions.Mocking.Helpers;
 using SereneApi.Extensions.Mocking.Interfaces;
 using SereneApi.Extensions.Mocking.Types.Dependencies;
 using SereneApi.Interfaces;
@@ -13,11 +14,8 @@ namespace SereneApi.Extensions.Mocking.Types
     /// <inheritdoc cref="IMockResponseExtensions"/>
     public class MockResponseExtensions: CoreOptions, IMockResponseExtensions
     {
-        private readonly ISerializer _serializer;
-
-        public MockResponseExtensions(DependencyCollection dependencies) : base(dependencies)
+        public MockResponseExtensions(IDependencyCollection dependencies) : base(dependencies)
         {
-            _serializer = Dependencies.GetDependency<ISerializer>();
         }
 
         /// <inheritdoc>
@@ -34,7 +32,7 @@ namespace SereneApi.Extensions.Mocking.Types
 
             List<Uri> routeWhitelist = uris.Select(uri => new Uri(uri)).ToList();
 
-            Dependencies.AddDependency(new RouteWhitelistDependency(routeWhitelist));
+            Dependencies.AddDependency(() => new RouteWhitelistDependency(routeWhitelist));
 
             return this;
         }
@@ -46,16 +44,16 @@ namespace SereneApi.Extensions.Mocking.Types
         {
             ExceptionHelper.EnsureParameterIsNotNull(inBodyContent, nameof(inBodyContent));
 
-            IApiRequestContent content = _serializer.Serialize(inBodyContent);
+            Dependencies.AddDependency(() =>
+            {
+                using IDependencyProvider provider = Dependencies.BuildProvider();
 
-            if(Dependencies.TryGetDependency(out ContentWhitelistDependency contentWhitelist))
-            {
-                contentWhitelist.ExtendWhitelist(content);
-            }
-            else
-            {
-                Dependencies.AddDependency(new ContentWhitelistDependency(content));
-            }
+                ISerializer serializer = provider.GetDependency<ISerializer>();
+
+                IApiRequestContent content = serializer.Serialize(inBodyContent);
+
+                return new ContentWhitelistDependency(content);
+            });
 
             return this;
         }
@@ -72,7 +70,7 @@ namespace SereneApi.Extensions.Mocking.Types
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
-            Dependencies.AddDependency(new MethodWhitelistDependency(method));
+            Dependencies.AddDependency(() => new MethodWhitelistDependency(method));
 
             return this;
         }
@@ -85,7 +83,10 @@ namespace SereneApi.Extensions.Mocking.Types
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
-            Dependencies.AddDependency(new DelayedResponseDependency(seconds, delayCount));
+            DelayedResponseDependency delayedResponse = new DelayedResponseDependency(seconds, delayCount);
+
+            // We want to keep this instance, so it is not created within the dependency.
+            Dependencies.AddDependency(() => delayedResponse);
 
             return this;
         }

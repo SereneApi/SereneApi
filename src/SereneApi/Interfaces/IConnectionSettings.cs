@@ -24,9 +24,5 @@ namespace SereneApi.Interfaces
         int Timeout { get; }
 
         int RetryAttempts { get; }
-
-        IConnectionSettings SetTimeout(int timeout);
-
-        IConnectionSettings SetRetryAttempts(int attemptCount);
     }
 }

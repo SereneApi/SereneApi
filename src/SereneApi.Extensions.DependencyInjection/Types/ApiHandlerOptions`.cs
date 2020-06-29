@@ -1,4 +1,5 @@
-﻿using SereneApi.Extensions.DependencyInjection.Interfaces;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Extensions.DependencyInjection.Interfaces;
 using SereneApi.Interfaces;
 using SereneApi.Types;
 
@@ -7,7 +8,7 @@ namespace SereneApi.Extensions.DependencyInjection.Types
     /// <inheritdoc cref="IApiHandlerOptions{TApiHandler}"/>
     public class ApiHandlerOptions<TApiHandler>: ApiHandlerOptions, IApiHandlerOptions<TApiHandler> where TApiHandler : ApiHandler
     {
-        public ApiHandlerOptions(IDependencyCollection dependencies, IConnectionSettings connection) : base(dependencies, connection)
+        public ApiHandlerOptions(IDependencyProvider dependencies, IConnectionSettings connection) : base(dependencies, connection)
         {
         }
     }

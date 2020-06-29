@@ -26,18 +26,18 @@ namespace SereneApi.Extensions.Mocking
 
             mockResponseBuilder.Invoke(mockResponsesBuilder);
 
-            HttpMessageHandler mockHandler;
+            HttpMessageHandler handler;
 
             if(enableOutgoingRequests)
             {
-                mockHandler = new MockMessageHandler(new HttpClientHandler(), mockResponsesBuilder);
+                handler = new MockMessageHandler(new HttpClientHandler(), mockResponsesBuilder);
             }
             else
             {
-                mockHandler = new MockMessageHandler(mockResponsesBuilder);
+                handler = new MockMessageHandler(mockResponsesBuilder);
             }
 
-            coreOptions.Dependencies.AddDependency(mockHandler);
+            coreOptions.Dependencies.AddDependency(() => handler);
 
             return registrationExtensions;
         }

@@ -1,21 +1,21 @@
-﻿namespace SereneApi.Types
+﻿using DeltaWare.Dependencies;
+using DeltaWare.Dependencies.Abstractions;
+
+namespace SereneApi.Types
 {
-    /// <summary>
-    /// The Core of all Options, contains the <see cref="Dependencies"/> required for them to run.
-    /// </summary>
     public abstract class CoreOptions
     {
         /// <summary>
         /// The Dependencies required for the Options to function.
         /// </summary>
-        public DependencyCollection Dependencies { get; }
+        public IDependencyCollection Dependencies { get; }
 
         protected CoreOptions()
         {
             Dependencies = new DependencyCollection();
         }
 
-        protected CoreOptions(DependencyCollection dependencies)
+        protected CoreOptions(IDependencyCollection dependencies)
         {
             Dependencies = dependencies;
         }

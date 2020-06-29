@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using DeltaWare.Dependencies.Abstractions;
+using Microsoft.Extensions.Logging;
 using SereneApi.Factories;
 using SereneApi.Helpers;
 using SereneApi.Interfaces;
@@ -12,24 +13,26 @@ namespace SereneApi.Types
 {
     public class ApiHandlerOptionsBuilder: CoreOptions, IApiHandlerOptionsBuilder
     {
-        #region Conclassors
+        protected Connection Connection { get; set; }
+
+        #region Constructors
 
         public ApiHandlerOptionsBuilder()
         {
-            Dependencies.AddDependency(ApiHandlerOptionDefaults.QueryFactory);
-            Dependencies.AddDependency(JsonSerializer.Default);
-            Dependencies.AddDependency<IRouteFactory>(new RouteFactory());
-            Dependencies.AddDependency(ContentType.Json);
-            Dependencies.AddDependency(ApiHandlerOptionDefaults.Credentials);
+            Dependencies.AddDependency(() => ApiHandlerOptionDefaults.QueryFactory);
+            Dependencies.AddDependency(() => JsonSerializer.Default);
+            Dependencies.AddDependency(() => ContentType.Json);
+            Dependencies.AddDependency(() => ApiHandlerOptionDefaults.Credentials);
+            Dependencies.AddDependency<IClientFactory>(() => new DefaultClientFactory(Dependencies));
         }
 
-        protected internal ApiHandlerOptionsBuilder(DependencyCollection dependencies) : base(dependencies)
+        protected internal ApiHandlerOptionsBuilder(IDependencyCollection dependencies) : base(dependencies)
         {
-            Dependencies.AddDependency(ApiHandlerOptionDefaults.QueryFactory);
-            Dependencies.AddDependency(JsonSerializer.Default);
-            Dependencies.AddDependency<IRouteFactory>(new RouteFactory());
-            Dependencies.AddDependency(ContentType.Json);
-            Dependencies.AddDependency(ApiHandlerOptionDefaults.Credentials);
+            Dependencies.AddDependency(() => ApiHandlerOptionDefaults.QueryFactory);
+            Dependencies.AddDependency(() => JsonSerializer.Default);
+            Dependencies.AddDependency(() => ContentType.Json);
+            Dependencies.AddDependency(() => ApiHandlerOptionDefaults.Credentials);
+            Dependencies.AddDependency<IClientFactory>(() => new DefaultClientFactory(Dependencies));
         }
 
         #endregion
@@ -39,15 +42,7 @@ namespace SereneApi.Types
         {
             ExceptionHelper.EnsureParameterIsNotNull(source, nameof(source));
 
-            if(Dependencies.HasDependency<IConnectionSettings>())
-            {
-                ExceptionHelper.MethodCannotBeCalledTwice();
-            }
-
-            IConnectionSettings connection = new Connection(source, resource, resourcePath);
-
-            Dependencies.AddDependency(connection);
-            Dependencies.AddDependency<IRouteFactory>(new RouteFactory(connection));
+            Connection = new Connection(source, resource, resourcePath);
         }
 
         /// <inheritdoc>
@@ -55,41 +50,43 @@ namespace SereneApi.Types
         /// </inheritdoc>
         public void SetTimeoutPeriod(int seconds)
         {
-            if(!Dependencies.TryGetDependency(out IConnectionSettings connection))
+            if(Connection == null)
             {
                 throw new MethodAccessException("Source information must be supplied fired.");
             }
 
-            Dependencies.AddDependency(connection.SetTimeout(seconds));
+            Connection.Timeout = seconds;
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.SetRetryAttempts"/>
         public void SetRetryAttempts(int attemptCount)
         {
-            if(!Dependencies.TryGetDependency(out IConnectionSettings connection))
+            if(Connection == null)
             {
                 throw new MethodAccessException("Source information must be supplied fired.");
             }
 
-            Dependencies.AddDependency(connection.SetRetryAttempts(attemptCount));
+            ApiHandlerOptionsRules.ValidateRetryAttempts(attemptCount);
+
+            Connection.RetryAttempts = attemptCount;
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddLogger"/>
         public void AddLogger(ILogger logger)
         {
-            Dependencies.AddDependency(logger);
+            Dependencies.AddDependency(() => logger);
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseQueryFactory"/>
         public void UseQueryFactory(IQueryFactory queryFactory)
         {
-            Dependencies.AddDependency(queryFactory);
+            Dependencies.AddDependency(() => queryFactory);
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseCredentials"/>
         public void UseCredentials(ICredentials credentials)
         {
-            Dependencies.AddDependency(credentials);
+            Dependencies.AddDependency(() => credentials);
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddAuthentication"/>
@@ -100,7 +97,7 @@ namespace SereneApi.Types
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
-            Dependencies.AddDependency(authentication);
+            Dependencies.AddDependency(() => authentication);
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddBasicAuthentication"/>
@@ -111,7 +108,7 @@ namespace SereneApi.Types
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
-            Dependencies.AddDependency<IAuthentication>(new BasicAuthentication(username, password));
+            Dependencies.AddDependency<IAuthentication>(() => new BasicAuthentication(username, password));
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddBearerAuthentication"/>
@@ -122,25 +119,20 @@ namespace SereneApi.Types
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
-            Dependencies.AddDependency<IAuthentication>(new BearerAuthentication(token));
+            Dependencies.AddDependency<IAuthentication>(() => new BearerAuthentication(token));
         }
 
         public void AcceptContentType(ContentType content)
         {
-            Dependencies.AddDependency(content);
+            Dependencies.AddDependency(() => content);
         }
 
         public IApiHandlerOptions BuildOptions()
         {
-            // If no client factory has been provided the default will be used.
-            if(!Dependencies.HasDependency<IClientFactory>())
-            {
-                Dependencies.AddDependency<IClientFactory>(new DefaultClientFactory(Dependencies));
-            }
+            Dependencies.AddDependency<IConnectionSettings>(() => Connection);
+            Dependencies.AddDependency<IRouteFactory>(() => new RouteFactory(Connection));
 
-            IConnectionSettings connection = Dependencies.GetDependency<IConnectionSettings>();
-
-            IApiHandlerOptions options = new ApiHandlerOptions(Dependencies, connection);
+            IApiHandlerOptions options = new ApiHandlerOptions(Dependencies.BuildProvider(), Connection);
 
             return options;
         }

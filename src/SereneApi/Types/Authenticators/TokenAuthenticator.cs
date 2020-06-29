@@ -1,4 +1,5 @@
-﻿using SereneApi.Interfaces;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Interfaces;
 using SereneApi.Types.Headers.Authentication;
 using System;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace SereneApi.Types.Authenticators
     {
         //private readonly TimerCallback _tokenRefresher;
 
-        //private readonly IDependencyCollection _dependencies;
+        protected IDependencyCollection Dependencies { get; }
 
         protected Func<TApi, Task<IApiResponse<TDto>>> CallApiFunction { get; }
 
@@ -19,14 +20,14 @@ namespace SereneApi.Types.Authenticators
 
         protected BearerAuthentication Authentication { get; private set; }
 
-        public TokenAuthenticator(Func<TApi, Task<IApiResponse<TDto>>> callApiFunction, Func<TDto, TokenInfo> getTokenInfo = null)
+        public TokenAuthenticator(IDependencyCollection dependencies, Func<TApi, Task<IApiResponse<TDto>>> callApiFunction, Func<TDto, TokenInfo> getTokenInfo = null)
         {
-            //_dependencies = dependencies;
+            Dependencies = dependencies;
             CallApiFunction = callApiFunction;
             GetTokenFunction = getTokenInfo;
         }
 
-        public virtual IAuthentication GetAuthentication(IDependencyCollection dependencies)
+        public virtual IAuthentication Authenticate()
         {
             if(Authentication != null)
             {
@@ -35,9 +36,12 @@ namespace SereneApi.Types.Authenticators
 
             TApi apiHandler = null;
 
-            if(dependencies.TryGetDependency(out IApiHandlerFactory handlerFactory))
+            using(IDependencyProvider dependencies = Dependencies.BuildProvider())
             {
-                apiHandler = handlerFactory.Build<TApi>();
+                if(dependencies.TryGetDependency(out IApiHandlerFactory handlerFactory))
+                {
+                    apiHandler = handlerFactory.Build<TApi>();
+                }
             }
 
             if(apiHandler == null)
