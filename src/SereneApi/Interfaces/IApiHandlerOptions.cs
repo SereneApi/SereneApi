@@ -1,4 +1,5 @@
-﻿using SereneApi.Interfaces;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Interfaces;
 
 // Do not change namespace
 // ReSharper disable once CheckNamespace
@@ -9,7 +10,7 @@ namespace SereneApi
         /// <summary>
         /// The Dependencies required by the <see cref="ApiHandler"/>.
         /// </summary>
-        IDependencyCollection Dependencies { get; }
+        IDependencyProvider Dependencies { get; }
 
         IConnectionSettings Connection { get; }
     }

@@ -627,10 +627,11 @@ namespace SereneApi.Tests
             apiHandler.Connection.RetryAttempts.ShouldBe(retryCount);
             apiHandler.Connection.Timeout.ShouldBe(timeoutSeconds);
 
-            response.WasSuccessful.ShouldBe(true);
-            response.HasException.ShouldBe(false);
-            response.Message.ShouldBeNull();
             response.Exception.ShouldBeNull();
+            response.HasException.ShouldBe(false);
+            response.WasSuccessful.ShouldBe(true);
+            response.Message.ShouldBeNull();
+
             response.Status.ShouldBe(Status.Ok);
 
             MockPersonDto person = response.Result;

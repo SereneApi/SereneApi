@@ -14,37 +14,11 @@ namespace SereneApi.Types
 
         public string ResourcePath { get; }
 
-        public int Timeout { get; }
+        public int Timeout { get; set; } = ApiHandlerOptionDefaults.Timeout;
 
-        public int RetryAttempts { get; }
+        public int RetryAttempts { get; set; }
 
-        public Connection(Uri baseAddress, string resource = default, string resourcePath = default, int timeout = default, int attemptCount = default)
-        {
-            BaseAddress = baseAddress;
-
-            Resource = SourceHelpers.EnsureSourceNoSlashTermination(resource);
-            ResourcePath = ApiHandlerOptionsHelper.UseOrGetDefaultResourcePath(resourcePath);
-
-            Source = $"{BaseAddress}{ResourcePath}{Resource}";
-
-            if(attemptCount != default)
-            {
-                ApiHandlerOptionsRules.ValidateRetryAttempts(attemptCount);
-            }
-
-            if(timeout == default)
-            {
-                Timeout = ApiHandlerOptionDefaults.Timeout;
-            }
-            else
-            {
-                Timeout = timeout;
-            }
-
-            RetryAttempts = attemptCount;
-        }
-
-        public Connection(string baseAddress, string resource = default, string resourcePath = default, int timeout = default, int attemptCount = default)
+        public Connection(string baseAddress, string resource = default, string resourcePath = default)
         {
             ExceptionHelper.EnsureParameterIsNotNull(baseAddress, nameof(baseAddress));
 
@@ -54,27 +28,6 @@ namespace SereneApi.Types
             ResourcePath = ApiHandlerOptionsHelper.UseOrGetDefaultResourcePath(resourcePath);
 
             Source = $"{BaseAddress}{ResourcePath}{Resource}";
-
-            if(timeout == default)
-            {
-                Timeout = ApiHandlerOptionDefaults.Timeout;
-            }
-            else
-            {
-                Timeout = timeout;
-            }
-
-            RetryAttempts = attemptCount;
-        }
-
-        public IConnectionSettings SetTimeout(int timeout)
-        {
-            return new Connection(BaseAddress, Resource, ResourcePath, timeout, RetryAttempts);
-        }
-
-        public IConnectionSettings SetRetryAttempts(int attemptCount)
-        {
-            return new Connection(BaseAddress, Resource, ResourcePath, Timeout, attemptCount);
         }
     }
 }

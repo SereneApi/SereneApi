@@ -1,4 +1,4 @@
-﻿using SereneApi.Enums;
+﻿using DeltaWare.Dependencies.Abstractions;
 using SereneApi.Helpers;
 using SereneApi.Interfaces;
 using SereneApi.Types;
@@ -10,8 +10,6 @@ namespace SereneApi.Factories
     /// <inheritdoc cref="IApiHandlerFactory"/>
     public class ApiHandlerFactory: IApiHandlerFactory, IDisposable
     {
-        private readonly DependencyCollection _dependencies;
-
         private readonly Dictionary<Type, Type> _handlers = new Dictionary<Type, Type>();
 
         private readonly Dictionary<Type, Action<IApiHandlerOptionsBuilder>> _handlerOptions = new Dictionary<Type, Action<IApiHandlerOptionsBuilder>>();
@@ -20,9 +18,6 @@ namespace SereneApi.Factories
 
         public ApiHandlerFactory()
         {
-            _dependencies = new DependencyCollection();
-            // Enabled all handlers to have access to the IApiHandlerFactory.
-            _dependencies.AddDependency<IApiHandlerFactory>(this, Binding.Unbound);
         }
 
         /// <inheritdoc>
@@ -39,7 +34,7 @@ namespace SereneApi.Factories
 
             ApiHandlerExtensions extensions = (ApiHandlerExtensions)_handlerExtensions[handlerType];
 
-            ApiHandlerOptionsBuilder options = new ApiHandlerOptionsBuilder((DependencyCollection)extensions.Dependencies.Clone());
+            ApiHandlerOptionsBuilder options = new ApiHandlerOptionsBuilder(extensions.Dependencies);
 
             optionsBuilderAction.Invoke(options);
 
@@ -62,7 +57,9 @@ namespace SereneApi.Factories
                 throw new ArgumentException($"Cannot Register Multiple Instances of {nameof(TApiDefinition)}");
             }
 
-            ApiHandlerExtensions extensions = new ApiHandlerExtensions((DependencyCollection)_dependencies.Clone());
+            ApiHandlerExtensions extensions = new ApiHandlerExtensions();
+
+            extensions.Dependencies.AddDependency(() => this, Binding.Unbound);
 
             _handlers.Add(handlerType, typeof(TApiImplementation));
             _handlerExtensions.Add(handlerType, extensions);
@@ -113,8 +110,6 @@ namespace SereneApi.Factories
 
             if(disposing)
             {
-                _dependencies.Dispose();
-
                 foreach(IApiHandlerExtensions handlerExtensions in _handlerExtensions.Values)
                 {
                     if(handlerExtensions is IDisposable disposable)

@@ -1,4 +1,5 @@
-﻿using SereneApi.Interfaces;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Interfaces;
 using System;
 using System.Diagnostics;
 
@@ -10,7 +11,7 @@ namespace SereneApi.Types
         #region Properties
 
         /// <inheritdoc cref="IApiHandlerOptions.Dependencies"/>
-        public IDependencyCollection Dependencies { get; }
+        public IDependencyProvider Dependencies { get; }
 
         /// <inheritdoc cref="IApiHandlerOptions.Connection"/>
         public IConnectionSettings Connection { get; set; }
@@ -18,7 +19,7 @@ namespace SereneApi.Types
         #endregion
         #region Conclassors
 
-        public ApiHandlerOptions(IDependencyCollection dependencies, IConnectionSettings connection)
+        public ApiHandlerOptions(IDependencyProvider dependencies, IConnectionSettings connection)
         {
             Dependencies = dependencies;
             Connection = connection;

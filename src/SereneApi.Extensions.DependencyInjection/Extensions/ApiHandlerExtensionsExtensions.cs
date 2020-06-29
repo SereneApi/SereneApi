@@ -1,9 +1,8 @@
-﻿using SereneApi.Extensions.DependencyInjection.Interfaces;
+﻿using SereneApi.Extensions.DependencyInjection.Types.Authenticators;
+using SereneApi.Interfaces;
 using SereneApi.Types;
-using SereneApi.Types.Authenticators;
 using System;
 using System.Threading.Tasks;
-using SereneApi.Interfaces;
 
 // Do not change namespace
 // ReSharper disable once CheckNamespace
@@ -18,9 +17,7 @@ namespace SereneApi.Extensions.DependencyInjection
         {
             CoreOptions coreOptions = GetCoreOptions(registrationExtensions);
 
-            DITokenAuthenticator<TApi, TDto> authenticator = new DITokenAuthenticator<TApi, TDto>(callApiFunction, getTokenInfo);
-
-            coreOptions.Dependencies.AddDependency<IAuthenticator>(authenticator);
+            coreOptions.Dependencies.AddDependency<IAuthenticator>(() => new DITokenAuthenticator<TApi, TDto>(coreOptions.Dependencies, callApiFunction, getTokenInfo));
 
             return registrationExtensions;
         }

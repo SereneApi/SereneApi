@@ -40,6 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\DeltaWare.Dependencies\src\DeltaWare.Dependencies\DeltaWare.Dependencies.csproj" />
     <ProjectReference Include="..\SereneApi.Abstraction\SereneApi.Abstraction.csproj" />
   </ItemGroup>
 

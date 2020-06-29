@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using DeltaWare.Dependencies.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using SereneApi.Enums;
 using SereneApi.Extensions.DependencyInjection.Factories;
 using SereneApi.Extensions.DependencyInjection.Interfaces;
 using SereneApi.Extensions.DependencyInjection.Types;
@@ -110,15 +110,20 @@ namespace SereneApi.Extensions.DependencyInjection
 
             CoreOptions coreOptions = GetCoreOptions(extensions);
 
-            coreOptions.Dependencies.AddDependency(services, Binding.Unbound);
+            coreOptions.Dependencies.AddDependency(() => services, Binding.Unbound);
 
-            DependencyCollection dependencies = (DependencyCollection)coreOptions.Dependencies.Clone();
-
-            ApiHandlerOptionsBuilder<TApiImplementation> builder = new ApiHandlerOptionsBuilder<TApiImplementation>(dependencies);
+            ApiHandlerOptionsBuilder<TApiImplementation> builder = new ApiHandlerOptionsBuilder<TApiImplementation>(coreOptions.Dependencies);
 
             action.Invoke(builder);
 
-            DependencyInjectionClientFactory<TApiImplementation>.Configure(dependencies, services);
+            if(!coreOptions.Dependencies.HasDependency<IClientFactory>())
+            {
+                DependencyInjectionClientFactory<TApiImplementation> clientFactory = new DependencyInjectionClientFactory<TApiImplementation>(coreOptions.Dependencies);
+
+                clientFactory.Configure();
+
+                coreOptions.Dependencies.AddDependency<IClientFactory>(() => clientFactory);
+            }
 
             return builder;
         }
@@ -129,15 +134,20 @@ namespace SereneApi.Extensions.DependencyInjection
 
             CoreOptions coreOptions = GetCoreOptions(extensions);
 
-            coreOptions.Dependencies.AddDependency(services, Binding.Unbound);
+            coreOptions.Dependencies.AddDependency(() => services, Binding.Unbound);
 
-            DependencyCollection dependencies = (DependencyCollection)coreOptions.Dependencies.Clone();
-
-            ApiHandlerOptionsBuilder<TApiImplementation> builder = new ApiHandlerOptionsBuilder<TApiImplementation>(dependencies);
+            ApiHandlerOptionsBuilder<TApiImplementation> builder = new ApiHandlerOptionsBuilder<TApiImplementation>(coreOptions.Dependencies);
 
             action.Invoke(builder, provider);
 
-            DependencyInjectionClientFactory<TApiImplementation>.Configure(dependencies, services);
+            if(!coreOptions.Dependencies.HasDependency<IClientFactory>())
+            {
+                DependencyInjectionClientFactory<TApiImplementation> clientFactory = new DependencyInjectionClientFactory<TApiImplementation>(coreOptions.Dependencies);
+
+                clientFactory.Configure();
+
+                coreOptions.Dependencies.AddDependency<IClientFactory>(() => clientFactory);
+            }
 
             return builder;
         }

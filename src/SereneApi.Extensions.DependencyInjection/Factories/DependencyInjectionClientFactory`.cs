@@ -1,10 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using SereneApi.Helpers;
+﻿using DeltaWare.Dependencies.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 using SereneApi.Interfaces;
-using SereneApi.Types;
+using SereneApi.Types.Headers.Accept;
 using System;
 using System.Diagnostics;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace SereneApi.Extensions.DependencyInjection.Factories
 {
@@ -13,46 +15,82 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
     {
         public string HandlerName { get; }
 
-        private readonly DependencyCollection _dependencies;
+        private readonly IDependencyCollection _dependencies;
 
         public DependencyInjectionClientFactory(IDependencyCollection dependencies)
         {
-            _dependencies = (DependencyCollection)dependencies;
+            _dependencies = dependencies;
 
             HandlerName = GenerateHandlerName();
         }
 
         public HttpClient BuildClient()
         {
-            IHttpClientFactory clientFactory = _dependencies.GetDependency<IHttpClientFactory>();
+            using IDependencyProvider provider = _dependencies.BuildProvider();
+
+            IHttpClientFactory clientFactory = provider.GetDependency<IServiceProvider>().GetService<IHttpClientFactory>();
 
             HttpClient client = clientFactory.CreateClient(HandlerName);
 
             return client;
         }
 
-        public static void Configure(IDependencyCollection dependencies, IServiceCollection services)
+        public void Configure()
         {
             string handlerName = GenerateHandlerName();
 
-            IConnectionSettings connection = dependencies.GetDependency<IConnectionSettings>();
+            using IDependencyProvider provider = _dependencies.BuildProvider();
 
-            if(connection.Timeout == default || connection.Timeout < 0)
-            {
-                throw new ArgumentException("The timeout value must be greater than 0 seconds.");
-            }
-            
+            IServiceCollection services = provider.GetDependency<IServiceCollection>();
+
             services.AddHttpClient(handlerName, client =>
             {
-                HttpClientHelper.ConfigureHttpClient(client, dependencies);
-                HttpClientHelper.BuildRequestHeaders(client.DefaultRequestHeaders, dependencies);
+                using IDependencyProvider dependencies = _dependencies.BuildProvider();
+
+                IConnectionSettings connection = dependencies.GetDependency<IConnectionSettings>();
+
+                if(connection.Timeout == default || connection.Timeout < 0)
+                {
+                    throw new ArgumentException("The timeout value must be greater than 0 seconds.");
+                }
+
+                client.BaseAddress = connection.BaseAddress;
+                client.Timeout = TimeSpan.FromSeconds(connection.Timeout);
+                client.DefaultRequestHeaders.Accept.Clear();
+
+                if(dependencies.TryGetDependency(out IAuthenticator authenticator))
+                {
+                    IAuthentication authentication = authenticator.Authenticate();
+
+                    client.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);
+                }
+                else if(dependencies.TryGetDependency(out IAuthentication authentication))
+                {
+                    client.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);
+                }
+
+                if(dependencies.TryGetDependency(out ContentType contentType))
+                {
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType.Value));
+                }
             })
             .ConfigurePrimaryHttpMessageHandler(() =>
             {
-                if(!dependencies.TryGetDependency(out HttpMessageHandler messageHandler))
+                using IDependencyProvider dependencies = _dependencies.BuildProvider();
+
+                if(dependencies.TryGetDependency(out HttpMessageHandler messageHandler))
                 {
-                    messageHandler = HttpClientHelper.BuildMessageHandler(dependencies);
+                    return messageHandler;
                 }
+
+                ICredentials credentials = dependencies.GetDependency<ICredentials>();
+
+                messageHandler = new HttpClientHandler
+                {
+                    Credentials = credentials
+                };
 
                 return messageHandler;
             });

@@ -16,9 +16,9 @@ namespace SereneApi.Interfaces
         {
             CoreOptions coreOptions = GetCoreOptions(registrationExtensions);
 
-            TokenAuthenticator<TApi, TDto> authenticator = new TokenAuthenticator<TApi, TDto>(callApiFunction, getTokenInfo);
+            TokenAuthenticator<TApi, TDto> authenticator = new TokenAuthenticator<TApi, TDto>(coreOptions.Dependencies, callApiFunction, getTokenInfo);
 
-            coreOptions.Dependencies.AddDependency<IAuthenticator>(authenticator);
+            coreOptions.Dependencies.AddDependency<IAuthenticator>(() => authenticator);
 
             return registrationExtensions;
         }
