@@ -1,4 +1,4 @@
-﻿using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies;
 using Microsoft.Extensions.DependencyInjection;
 using SereneApi.Interfaces;
 using SereneApi.Types.Headers.Accept;
@@ -13,11 +13,12 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
     [DebuggerDisplay("{HandlerName}")]
     public class DependencyInjectionClientFactory<TApiHandler>: IClientFactory
     {
+        public bool IsConfigured { get; private set; }
         public string HandlerName { get; }
 
-        private readonly IDependencyCollection _dependencies;
+        private readonly IDependencyProvider _dependencies;
 
-        public DependencyInjectionClientFactory(IDependencyCollection dependencies)
+        public DependencyInjectionClientFactory(IDependencyProvider dependencies)
         {
             _dependencies = dependencies;
 
@@ -26,9 +27,7 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
 
         public HttpClient BuildClient()
         {
-            using IDependencyProvider provider = _dependencies.BuildProvider();
-
-            IHttpClientFactory clientFactory = provider.GetDependency<IServiceProvider>().GetService<IHttpClientFactory>();
+            IHttpClientFactory clientFactory = _dependencies.GetDependency<IServiceProvider>().GetService<IHttpClientFactory>();
 
             HttpClient client = clientFactory.CreateClient(HandlerName);
 
@@ -37,17 +36,18 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
 
         public void Configure()
         {
+            if(IsConfigured)
+            {
+                return;
+            }
+
             string handlerName = GenerateHandlerName();
 
-            using IDependencyProvider provider = _dependencies.BuildProvider();
-
-            IServiceCollection services = provider.GetDependency<IServiceCollection>();
+            IServiceCollection services = _dependencies.GetDependency<IServiceCollection>();
 
             services.AddHttpClient(handlerName, client =>
             {
-                using IDependencyProvider dependencies = _dependencies.BuildProvider();
-
-                IConnectionSettings connection = dependencies.GetDependency<IConnectionSettings>();
+                IConnectionSettings connection = _dependencies.GetDependency<IConnectionSettings>();
 
                 if(connection.Timeout == default || connection.Timeout < 0)
                 {
@@ -58,34 +58,32 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
                 client.Timeout = TimeSpan.FromSeconds(connection.Timeout);
                 client.DefaultRequestHeaders.Accept.Clear();
 
-                if(dependencies.TryGetDependency(out IAuthenticator authenticator))
+                if(_dependencies.TryGetDependency(out IAuthenticator authenticator))
                 {
                     IAuthentication authentication = authenticator.Authenticate();
 
                     client.DefaultRequestHeaders.Authorization =
                         new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);
                 }
-                else if(dependencies.TryGetDependency(out IAuthentication authentication))
+                else if(_dependencies.TryGetDependency(out IAuthentication authentication))
                 {
                     client.DefaultRequestHeaders.Authorization =
                         new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);
                 }
 
-                if(dependencies.TryGetDependency(out ContentType contentType))
+                if(_dependencies.TryGetDependency(out ContentType contentType))
                 {
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType.Value));
                 }
             })
             .ConfigurePrimaryHttpMessageHandler(() =>
             {
-                using IDependencyProvider dependencies = _dependencies.BuildProvider();
-
-                if(dependencies.TryGetDependency(out HttpMessageHandler messageHandler))
+                if(_dependencies.TryGetDependency(out HttpMessageHandler messageHandler))
                 {
                     return messageHandler;
                 }
 
-                ICredentials credentials = dependencies.GetDependency<ICredentials>();
+                ICredentials credentials = _dependencies.GetDependency<ICredentials>();
 
                 messageHandler = new HttpClientHandler
                 {
@@ -94,6 +92,8 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
 
                 return messageHandler;
             });
+
+            IsConfigured = true;
         }
 
         private static string GenerateHandlerName()

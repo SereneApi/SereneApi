@@ -1,4 +1,4 @@
-﻿using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies;
 using Microsoft.Extensions.DependencyInjection;
 using SereneApi.Interfaces;
 using SereneApi.Types;
@@ -10,7 +10,7 @@ namespace SereneApi.Extensions.DependencyInjection.Types.Authenticators
 {
     public class DITokenAuthenticator<TApi, TDto>: TokenAuthenticator<TApi, TDto> where TApi : class where TDto : class
     {
-        public DITokenAuthenticator(IDependencyCollection dependencies, Func<TApi, Task<IApiResponse<TDto>>> callApiFunction, Func<TDto, TokenInfo> getTokenInfo) : base(dependencies, callApiFunction, getTokenInfo)
+        public DITokenAuthenticator(IDependencyProvider dependencies, Func<TApi, Task<IApiResponse<TDto>>> callApiFunction, Func<TDto, TokenInfo> getTokenInfo) : base(dependencies, callApiFunction, getTokenInfo)
         {
         }
 
@@ -21,9 +21,7 @@ namespace SereneApi.Extensions.DependencyInjection.Types.Authenticators
                 return Authentication;
             }
 
-            using IDependencyProvider provider = Dependencies.BuildProvider();
-
-            TApi apiHandler = provider.GetDependency<IServiceProvider>().GetRequiredService<TApi>();
+            TApi apiHandler = Dependencies.GetDependency<IServiceProvider>().GetRequiredService<TApi>();
 
             IApiResponse<TDto> response = CallApiFunction.Invoke(apiHandler).GetAwaiter().GetResult();
 

@@ -1,4 +1,4 @@
-﻿using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies;
 using Microsoft.Extensions.Logging;
 using SereneApi.Factories;
 using SereneApi.Helpers;
@@ -19,20 +19,20 @@ namespace SereneApi.Types
 
         public ApiHandlerOptionsBuilder()
         {
-            Dependencies.AddDependency(() => ApiHandlerOptionDefaults.QueryFactory);
-            Dependencies.AddDependency(() => JsonSerializer.Default);
-            Dependencies.AddDependency(() => ContentType.Json);
-            Dependencies.AddDependency(() => ApiHandlerOptionDefaults.Credentials);
-            Dependencies.AddDependency<IClientFactory>(() => new DefaultClientFactory(Dependencies));
+            Dependencies.AddScoped(() => ApiHandlerOptionDefaults.QueryFactory);
+            Dependencies.AddScoped(() => JsonSerializer.Default);
+            Dependencies.AddScoped(() => ContentType.Json);
+            Dependencies.AddScoped(() => ApiHandlerOptionDefaults.Credentials);
+            Dependencies.AddScoped<IClientFactory>(p => new DefaultClientFactory(p));
         }
 
         protected internal ApiHandlerOptionsBuilder(IDependencyCollection dependencies) : base(dependencies)
         {
-            Dependencies.AddDependency(() => ApiHandlerOptionDefaults.QueryFactory);
-            Dependencies.AddDependency(() => JsonSerializer.Default);
-            Dependencies.AddDependency(() => ContentType.Json);
-            Dependencies.AddDependency(() => ApiHandlerOptionDefaults.Credentials);
-            Dependencies.AddDependency<IClientFactory>(() => new DefaultClientFactory(Dependencies));
+            Dependencies.AddScoped(() => ApiHandlerOptionDefaults.QueryFactory);
+            Dependencies.AddScoped(() => JsonSerializer.Default);
+            Dependencies.AddScoped(() => ContentType.Json);
+            Dependencies.AddScoped(() => ApiHandlerOptionDefaults.Credentials);
+            Dependencies.AddScoped<IClientFactory>(p => new DefaultClientFactory(p));
         }
 
         #endregion
@@ -74,19 +74,19 @@ namespace SereneApi.Types
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddLogger"/>
         public void AddLogger(ILogger logger)
         {
-            Dependencies.AddDependency(() => logger);
+            Dependencies.AddScoped(() => logger);
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseQueryFactory"/>
         public void UseQueryFactory(IQueryFactory queryFactory)
         {
-            Dependencies.AddDependency(() => queryFactory);
+            Dependencies.AddScoped(() => queryFactory);
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseCredentials"/>
         public void UseCredentials(ICredentials credentials)
         {
-            Dependencies.AddDependency(() => credentials);
+            Dependencies.AddScoped(() => credentials);
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddAuthentication"/>
@@ -97,7 +97,7 @@ namespace SereneApi.Types
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
-            Dependencies.AddDependency(() => authentication);
+            Dependencies.AddScoped(() => authentication);
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddBasicAuthentication"/>
@@ -108,7 +108,7 @@ namespace SereneApi.Types
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
-            Dependencies.AddDependency<IAuthentication>(() => new BasicAuthentication(username, password));
+            Dependencies.AddTransient<IAuthentication>(() => new BasicAuthentication(username, password));
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddBearerAuthentication"/>
@@ -119,18 +119,18 @@ namespace SereneApi.Types
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
-            Dependencies.AddDependency<IAuthentication>(() => new BearerAuthentication(token));
+            Dependencies.AddTransient<IAuthentication>(() => new BearerAuthentication(token));
         }
 
         public void AcceptContentType(ContentType content)
         {
-            Dependencies.AddDependency(() => content);
+            Dependencies.AddScoped(() => content);
         }
 
         public IApiHandlerOptions BuildOptions()
         {
-            Dependencies.AddDependency<IConnectionSettings>(() => Connection);
-            Dependencies.AddDependency<IRouteFactory>(() => new RouteFactory(Connection));
+            Dependencies.TryAddScoped<IConnectionSettings>(() => Connection);
+            Dependencies.TryAddScoped<IRouteFactory>(p => new RouteFactory(p));
 
             IApiHandlerOptions options = new ApiHandlerOptions(Dependencies.BuildProvider(), Connection);
 

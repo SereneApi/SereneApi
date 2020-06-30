@@ -1,8 +1,10 @@
-﻿using SereneApi.Extensions.Mocking.Interfaces;
+﻿using DeltaWare.Dependencies;
+using SereneApi.Extensions.Mocking.Interfaces;
 using SereneApi.Extensions.Mocking.Types;
 using SereneApi.Interfaces;
 using SereneApi.Types;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 
 // Do not change namespace
@@ -26,18 +28,17 @@ namespace SereneApi.Extensions.Mocking
 
             mockResponseBuilder.Invoke(mockResponsesBuilder);
 
-            HttpMessageHandler handler;
-
-            if(enableOutgoingRequests)
+            coreOptions.Dependencies.AddScoped<HttpMessageHandler>(() =>
             {
-                handler = new MockMessageHandler(new HttpClientHandler(), mockResponsesBuilder);
-            }
-            else
-            {
-                handler = new MockMessageHandler(mockResponsesBuilder);
-            }
+                List<IMockResponse> mockResponses = mockResponsesBuilder.Build();
 
-            coreOptions.Dependencies.AddDependency(() => handler);
+                if(enableOutgoingRequests)
+                {
+                    return new MockMessageHandler(mockResponses, new HttpClientHandler());
+                }
+
+                return new MockMessageHandler(mockResponses);
+            });
 
             return registrationExtensions;
         }
