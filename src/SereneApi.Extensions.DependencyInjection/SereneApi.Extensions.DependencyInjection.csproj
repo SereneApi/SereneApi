@@ -1,16 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.0.4.3-beta</Version>
+    <Version>1.0.4.5-beta</Version>
     <Authors>Bradley Clarke</Authors>
     <Company>DeltaWare</Company>
     <Product>SereneApi</Product>
     <Description>Serene API is a small library intended to provide a straightforward way of consuming RESTful APIs requiring as little code &amp; setup as possible whilst providing a powerful set of tools.
 
-SereneApi.Extensions.DependencyInjection adds support for AspNet DI and Configuration.</Description>
+        SereneApi.Extensions.DependencyInjection adds support for AspNet DI and Configuration.
+    </Description>
     <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/armorall171/SereneApi#what-is-serene-api</PackageProjectUrl>
@@ -20,13 +21,18 @@ SereneApi.Extensions.DependencyInjection adds support for AspNet DI and Configur
     <PackageTags>API; REST; RESTful; DI; DependencyInjection; AspNet; Extensions</PackageTags>
     <NeutralLanguage>en-AU</NeutralLanguage>
     <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageId>SereneApi.Extensions.DependencyInjection</PackageId>
+    <AssemblyName>DeltaWare.SereneApi.Extensions.DependencyInjection</AssemblyName>
+      <IncludeSymbols>true</IncludeSymbols>
+      <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.5" />
   </ItemGroup>
 
   <ItemGroup>

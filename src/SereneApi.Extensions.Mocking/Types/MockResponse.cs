@@ -1,10 +1,10 @@
-﻿using SereneApi.Abstraction.Enums;
+﻿using DeltaWare.Dependencies;
+using SereneApi.Abstraction.Enums;
 using SereneApi.Extensions.Mocking.Enums;
 using SereneApi.Extensions.Mocking.Interfaces;
 using SereneApi.Extensions.Mocking.Types.Dependencies;
 using SereneApi.Interfaces;
 using SereneApi.Interfaces.Requests;
-using SereneApi.Types;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -13,8 +13,10 @@ using System.Threading.Tasks;
 namespace SereneApi.Extensions.Mocking.Types
 {
     /// <inheritdoc cref="IMockResponse"/>
-    public class MockResponse: CoreOptions, IMockResponse, IDisposable
+    public class MockResponse: IMockResponse
     {
+        private readonly IDependencyProvider _dependencies;
+
         private readonly IApiRequestContent _responseContent;
 
         /// <inheritdoc cref="IMockResponse.Status"/>
@@ -26,21 +28,21 @@ namespace SereneApi.Extensions.Mocking.Types
         /// <inheritdoc cref="IMockResponse.Serializer"/>
         public ISerializer Serializer { get; }
 
-        public MockResponse(Status status, string message, IApiRequestContent responseContent, ISerializer serializer)
+        public MockResponse(IDependencyProvider dependencies, Status status, string message, IApiRequestContent responseContent)
         {
+            _dependencies = dependencies;
             _responseContent = responseContent;
 
             Message = message;
             Status = status;
-            Serializer = serializer;
 
-            DependencyCollection.AddDependency(serializer);
+            Serializer = dependencies.GetDependency<ISerializer>();
         }
 
         /// <inheritdoc cref="IWhitelist.Validate"/>
         public Validity Validate(object value)
         {
-            List<IWhitelist> whitelistDependencies = DependencyCollection.GetDependencies<IWhitelist>();
+            List<IWhitelist> whitelistDependencies = _dependencies.GetDependencies<IWhitelist>();
 
             // If 0 or any whitelist items return true. True is returned.
 
@@ -62,7 +64,7 @@ namespace SereneApi.Extensions.Mocking.Types
         /// <inheritdoc cref="IMockResponse"/>
         public async Task<IApiRequestContent> GetResponseContentAsync(CancellationToken cancellationToken = default)
         {
-            if(DependencyCollection.TryGetDependency(out DelayedResponseDependency delay))
+            if(_dependencies.TryGetDependency(out DelayedResponseDependency delay))
             {
                 await delay.DelayAsync(cancellationToken);
             }
@@ -70,23 +72,13 @@ namespace SereneApi.Extensions.Mocking.Types
             return _responseContent;
         }
 
-        /// <summary>
-        /// Returns the <see cref="IMockResponseExtensions"/> for this <see cref="IMockResponse"/>.
-        /// </summary>
-        /// <remarks>The <see cref="IMockResponseExtensions"/> are used to add functionality to the <see cref="IMockResponse"/>.</remarks>
-        public IMockResponseExtensions GetExtensions()
-        {
-            return new MockResponseExtensions(DependencyCollection);
-        }
-
-        #region IDisposable
+        #region IDisposeble
 
         private volatile bool _disposed;
 
         public void Dispose()
         {
             Dispose(true);
-
             GC.SuppressFinalize(this);
         }
 
@@ -99,7 +91,7 @@ namespace SereneApi.Extensions.Mocking.Types
 
             if(disposing)
             {
-                DependencyCollection.Dispose();
+                _dependencies.Dispose();
             }
 
             _disposed = true;

@@ -1,39 +1,28 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using DeltaWare.Dependencies;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SereneApi.Enums;
 using SereneApi.Extensions.DependencyInjection.Helpers;
 using SereneApi.Extensions.DependencyInjection.Interfaces;
 using SereneApi.Factories;
 using SereneApi.Helpers;
 using SereneApi.Interfaces;
 using SereneApi.Types;
-using SereneApi.Types.Dependencies;
-using SereneApi.Types.Headers.Accept;
 using System;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 
 namespace SereneApi.Extensions.DependencyInjection.Types
 {
     /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiHandler}"/>
     internal class ApiHandlerOptionsBuilder<TApiHandler>: ApiHandlerOptionsBuilder, IApiHandlerOptionsBuilder<TApiHandler> where TApiHandler : ApiHandler
     {
-        private IServiceCollection _serviceCollection;
-
-        public ApiHandlerOptionsBuilder()
-        {
-        }
-
-        public ApiHandlerOptionsBuilder(DependencyCollection dependencyCollection) : base(dependencyCollection)
+        public ApiHandlerOptionsBuilder(IDependencyCollection dependencies) : base(dependencies)
         {
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiHandler}.UseConfiguration"/>
         public void UseConfiguration(IConfiguration configuration)
         {
-            if(Source != null)
+            if(Dependencies.HasDependency<IConnectionSettings>())
             {
                 throw new MethodAccessException("This method cannot be called twice");
             }
@@ -42,40 +31,40 @@ namespace SereneApi.Extensions.DependencyInjection.Types
             string resource = configuration.Get<string>(ConfigurationConstants.ResourceKey, ConfigurationConstants.ResourceIsRequired);
             string resourcePath = configuration.Get<string>(ConfigurationConstants.ResourcePathKey, ConfigurationConstants.ResourcePathIsRequired);
 
-            Source = new Uri(SourceHelpers.EnsureSourceSlashTermination(source));
-            Resource = SourceHelpers.EnsureSourceNoSlashTermination(resource);
-            ResourcePath = ApiHandlerOptionsHelper.UseOrGetDefaultResourcePath(resourcePath);
-
-            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory(ResourcePath));
+            Connection = new Connection(source, resource, resourcePath);
 
             #region Timeout
 
-            TimeSpan timeout = configuration.Get<TimeSpan>(ConfigurationConstants.TimeoutKey, ConfigurationConstants.TimeoutIsRequired);
+            int timeout = configuration.Get<int>(ConfigurationConstants.TimeoutKey, ConfigurationConstants.TimeoutIsRequired);
 
-            if(timeout < TimeSpan.Zero)
+            if(timeout < 0)
             {
-                throw new ArgumentException("The Timeout value must be equal to or greater than 0");
+                throw new ArgumentException("The Timeout value must be greater than 0");
             }
 
-            if(timeout != TimeSpan.Zero)
+            if(timeout != default)
             {
-                Timeout = timeout;
+                Connection.Timeout = timeout;
             }
 
             #endregion
             #region Retry Count
 
-            if(configuration.ContainsKey(ConfigurationConstants.RetryCountKey))
+            if(!configuration.ContainsKey(ConfigurationConstants.RetryCountKey))
             {
-                int retryCount = configuration.Get<int>(ConfigurationConstants.RetryCountKey, ConfigurationConstants.RetryIsRequired);
-
-                ApiHandlerOptionsRules.ValidateRetryCount(retryCount);
-
-                RetryDependency retryDependency = new RetryDependency(retryCount);
-
-                DependencyCollection.AddDependency(retryDependency);
+                return;
             }
 
+            int retryCount = configuration.Get<int>(ConfigurationConstants.RetryCountKey, ConfigurationConstants.RetryIsRequired);
+
+            if(retryCount == default)
+            {
+                return;
+            }
+
+            ApiHandlerOptionsRules.ValidateRetryAttempts(retryCount);
+
+            Connection.RetryAttempts = retryCount;
 
             #endregion
         }
@@ -85,67 +74,19 @@ namespace SereneApi.Extensions.DependencyInjection.Types
         {
             ExceptionHelper.EnsureParameterIsNotNull(loggerFactory, nameof(loggerFactory));
 
-            ILogger logger = loggerFactory.CreateLogger<TApiHandler>();
-
-            DependencyCollection.AddDependency(logger);
-        }
-
-        /// <summary>
-        /// Adds a <see cref="IServiceCollection"/> to the <see cref="ApiHandler"/>.
-        /// </summary>
-        /// <param name="serviceCollection">The <see cref="IServiceCollection"/> to be added.</param>
-        public void AddServicesCollection(IServiceCollection serviceCollection)
-        {
-            _serviceCollection = serviceCollection;
-
-            // Leaving unbound until testing can be done.
-            DependencyCollection.AddDependency(_serviceCollection, Binding.Unbound);
+            Dependencies.AddScoped(loggerFactory.CreateLogger<TApiHandler>);
         }
 
         /// <summary>
         /// Builds the <see cref="IApiHandlerOptions"/> for the specified <see cref="ApiHandler"/>.
         /// </summary>
-        public new IApiHandlerOptions<TApiHandler> BuildOptions()
+        public IApiHandlerOptions<TApiHandler> BuildOptions(IServiceCollection services)
         {
-            if(!DependencyCollection.TryGetDependency(out HttpMessageHandler messageHandler))
-            {
-                ICredentials credentials = DependencyCollection.GetDependency<ICredentials>();
+            Dependencies.TryAddScoped<IConnectionSettings>(() => Connection);
+            Dependencies.TryAddScoped<IRouteFactory>(p => new RouteFactory(p));
+            Dependencies.TryAddScoped<IServiceProvider>(services.BuildServiceProvider);
 
-                messageHandler = new HttpClientHandler
-                {
-                    Credentials = credentials
-                };
-            }
-
-            _serviceCollection.AddHttpClient(typeof(TApiHandler).ToString(), client =>
-            {
-                client.BaseAddress = Source;
-                client.Timeout = Timeout;
-                client.DefaultRequestHeaders.Accept.Clear();
-
-                if(DependencyCollection.TryGetDependency(out IAuthentication authentication))
-                {
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);
-                }
-
-                if(DependencyCollection.TryGetDependency(out ContentType contentType))
-                {
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType.Value));
-                }
-            })
-            .ConfigurePrimaryHttpMessageHandler(() => messageHandler);
-
-            ServiceProvider serviceProvider = _serviceCollection.BuildServiceProvider();
-
-            DependencyCollection.AddDependency(serviceProvider);
-
-            IHttpClientFactory clientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
-
-            // The ClientFactory is Unbound as the Service Provider is controlling its lifetime.
-            DependencyCollection.AddDependency(clientFactory, Binding.Unbound);
-            DependencyCollection.AddDependency(clientFactory.CreateClient(typeof(TApiHandler).ToString()));
-
-            ApiHandlerOptions<TApiHandler> options = new ApiHandlerOptions<TApiHandler>(DependencyCollection, Source, Resource, ResourcePath);
+            ApiHandlerOptions<TApiHandler> options = new ApiHandlerOptions<TApiHandler>(Dependencies.BuildProvider(), Connection);
 
             return options;
         }

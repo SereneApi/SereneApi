@@ -1,15 +1,17 @@
-﻿using SereneApi.Extensions.Mocking.Interfaces;
+﻿using DeltaWare.Dependencies;
+using SereneApi.Extensions.Mocking.Interfaces;
 using SereneApi.Extensions.Mocking.Types;
 using SereneApi.Interfaces;
 using SereneApi.Types;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 
 // Do not change namespace
 // ReSharper disable once CheckNamespace
 namespace SereneApi.Extensions.Mocking
 {
-    public static class IRegisterApiHandlerExtensionsExtensions
+    public static class RegisterApiHandlerExtensionsExtensions
     {
         /// <summary>
         /// Adds the specified <see cref="IMockResponse"/>s to the <see cref="ApiHandler"/>.
@@ -18,7 +20,7 @@ namespace SereneApi.Extensions.Mocking
         /// <param name="mockResponseBuilder">The <see cref="IMockResponse"/>s to be added to the <see cref="ApiHandler"/>.</param>
         /// <param name="enableOutgoingRequests">If set to true, any request that does not have an associated <see cref="IMockResponse"/> will be processed normally.
         /// If set to false, if a request does not have an associated <see cref="IMockResponse"/> an <see cref="ArgumentException"/> will be thrown.</param>
-        public static void WithMockResponses(this IApiHandlerExtensions registrationExtensions, Action<IMockResponsesBuilder> mockResponseBuilder, bool enableOutgoingRequests = false)
+        public static IApiHandlerExtensions WithMockResponses(this IApiHandlerExtensions registrationExtensions, Action<IMockResponsesBuilder> mockResponseBuilder, bool enableOutgoingRequests = false)
         {
             CoreOptions coreOptions = GetCoreOptions(registrationExtensions);
 
@@ -26,18 +28,19 @@ namespace SereneApi.Extensions.Mocking
 
             mockResponseBuilder.Invoke(mockResponsesBuilder);
 
-            HttpMessageHandler mockHandler;
-
-            if(enableOutgoingRequests)
+            coreOptions.Dependencies.AddScoped<HttpMessageHandler>(() =>
             {
-                mockHandler = new MockMessageHandler(new HttpClientHandler(), mockResponsesBuilder);
-            }
-            else
-            {
-                mockHandler = new MockMessageHandler(mockResponsesBuilder);
-            }
+                List<IMockResponse> mockResponses = mockResponsesBuilder.Build();
 
-            coreOptions.DependencyCollection.AddDependency(mockHandler);
+                if(enableOutgoingRequests)
+                {
+                    return new MockMessageHandler(mockResponses, new HttpClientHandler());
+                }
+
+                return new MockMessageHandler(mockResponses);
+            });
+
+            return registrationExtensions;
         }
 
         private static CoreOptions GetCoreOptions(IApiHandlerExtensions extensions)

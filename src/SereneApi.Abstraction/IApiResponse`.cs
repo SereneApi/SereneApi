@@ -1,8 +1,8 @@
-﻿// Do not change namespace
-// ReSharper disable once CheckNamespace
-
+﻿
 using System;
 
+// Do not change namespace
+// ReSharper disable once CheckNamespace
 namespace SereneApi
 {
     /// <inheritdoc cref="IApiResponse"/>

@@ -1,35 +1,28 @@
-﻿using SereneApi.Interfaces;
+﻿using DeltaWare.Dependencies;
+using SereneApi.Interfaces;
 using System;
 using System.Diagnostics;
 
 namespace SereneApi.Types
 {
-    [DebuggerDisplay("Source: {Source.ToString()}")]
+    [DebuggerDisplay("Source: {Connection.BaseAddress.ToString()}")]
     public class ApiHandlerOptions: IApiHandlerOptions, IDisposable
     {
         #region Properties
 
         /// <inheritdoc cref="IApiHandlerOptions.Dependencies"/>
-        public IDependencyCollection Dependencies { get; }
+        public IDependencyProvider Dependencies { get; }
 
-        /// <inheritdoc cref="IApiHandlerOptions.Source"/>
-        public Uri Source { get; }
-
-        /// <inheritdoc cref="IApiHandlerOptions.Resource"/>
-        public string Resource { get; }
-
-        /// <inheritdoc cref="IApiHandlerOptions.ResourcePath"/>
-        public string ResourcePath { get; }
+        /// <inheritdoc cref="IApiHandlerOptions.Connection"/>
+        public IConnectionSettings Connection { get; set; }
 
         #endregion
-        #region Constructors
+        #region Conclassors
 
-        public ApiHandlerOptions(IDependencyCollection dependencyCollection, Uri source, string resource, string resourcePath)
+        public ApiHandlerOptions(IDependencyProvider dependencies, IConnectionSettings connection)
         {
-            Dependencies = dependencyCollection;
-            Source = source;
-            Resource = resource;
-            ResourcePath = resourcePath;
+            Dependencies = dependencies;
+            Connection = connection;
         }
 
         #endregion

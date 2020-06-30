@@ -20,7 +20,8 @@
 	  <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
 	  <PackageId>SereneApi.Extras</PackageId>
 	  <PackageIcon>nuget_logo.png</PackageIcon>
-	  <PackageReleaseNotes></PackageReleaseNotes>
+      <IncludeSymbols>true</IncludeSymbols>
+      <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>

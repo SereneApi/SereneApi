@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace DependencyInjection.Service.Controllers
 {
@@ -14,7 +13,7 @@ namespace DependencyInjection.Service.Controllers
         }
 
         [HttpGet("string/{value}")]
-        public async Task<string> GetString(string value)
+        public string GetString(string value)
         {
             return value;
         }

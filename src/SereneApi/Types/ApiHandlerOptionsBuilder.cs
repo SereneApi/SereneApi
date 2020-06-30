@@ -1,75 +1,38 @@
-﻿using Microsoft.Extensions.Logging;
-using SereneApi.Enums;
+﻿using DeltaWare.Dependencies;
+using Microsoft.Extensions.Logging;
 using SereneApi.Factories;
 using SereneApi.Helpers;
 using SereneApi.Interfaces;
 using SereneApi.Serializers;
-using SereneApi.Types.Dependencies;
 using SereneApi.Types.Headers.Accept;
 using SereneApi.Types.Headers.Authentication;
 using System;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 
 namespace SereneApi.Types
 {
     public class ApiHandlerOptionsBuilder: CoreOptions, IApiHandlerOptionsBuilder
     {
-        #region Variables
+        protected Connection Connection { get; set; }
 
-        private readonly HttpClient _baseClient;
-
-        private readonly bool _disposeClient;
-
-        #endregion
-        #region Properties
-
-        protected Uri Source { get; set; }
-
-        protected string Resource { get; set; }
-
-        protected string ResourcePath { get; set; }
-
-        protected TimeSpan Timeout = ApiHandlerOptionDefaults.TimeoutPeriod;
-
-        #endregion
         #region Constructors
 
         public ApiHandlerOptionsBuilder()
         {
-            DependencyCollection.AddDependency(ApiHandlerOptionDefaults.QueryFactory);
-            DependencyCollection.AddDependency(JsonSerializer.Default);
-            DependencyCollection.AddDependency(RetryDependency.Default);
-            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory());
-            DependencyCollection.AddDependency(ContentType.Json);
-            DependencyCollection.AddDependency(ApiHandlerOptionDefaults.Credentials);
+            Dependencies.AddScoped(() => ApiHandlerOptionDefaults.QueryFactory);
+            Dependencies.AddScoped(() => JsonSerializer.Default);
+            Dependencies.AddScoped(() => ContentType.Json);
+            Dependencies.AddScoped(() => ApiHandlerOptionDefaults.Credentials);
+            Dependencies.AddScoped<IClientFactory>(p => new DefaultClientFactory(p));
         }
 
-        protected ApiHandlerOptionsBuilder(DependencyCollection dependencyCollection) : base(dependencyCollection)
+        protected internal ApiHandlerOptionsBuilder(IDependencyCollection dependencies) : base(dependencies)
         {
-            DependencyCollection.AddDependency(ApiHandlerOptionDefaults.QueryFactory);
-            DependencyCollection.AddDependency(JsonSerializer.Default);
-            DependencyCollection.AddDependency(RetryDependency.Default);
-            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory());
-            DependencyCollection.AddDependency(ContentType.Json);
-            DependencyCollection.AddDependency(ApiHandlerOptionDefaults.Credentials);
-        }
-
-        internal ApiHandlerOptionsBuilder(HttpClient baseClient, bool disposeClient = true) : this()
-        {
-            _disposeClient = disposeClient;
-            _baseClient = baseClient;
-
-            Source = baseClient.BaseAddress;
-        }
-
-        internal ApiHandlerOptionsBuilder(DependencyCollection dependencyCollection, HttpClient baseClient, bool disposeClient = true) : this(dependencyCollection)
-        {
-            _disposeClient = disposeClient;
-            _baseClient = baseClient;
-
-            Source = baseClient.BaseAddress;
+            Dependencies.AddScoped(() => ApiHandlerOptionDefaults.QueryFactory);
+            Dependencies.AddScoped(() => JsonSerializer.Default);
+            Dependencies.AddScoped(() => ContentType.Json);
+            Dependencies.AddScoped(() => ApiHandlerOptionDefaults.Credentials);
+            Dependencies.AddScoped<IClientFactory>(p => new DefaultClientFactory(p));
         }
 
         #endregion
@@ -79,16 +42,7 @@ namespace SereneApi.Types
         {
             ExceptionHelper.EnsureParameterIsNotNull(source, nameof(source));
 
-            if(Source != null)
-            {
-                throw new MethodAccessException("This method cannot be called twice");
-            }
-
-            Source = new Uri(SourceHelpers.EnsureSourceSlashTermination(source));
-            Resource = SourceHelpers.EnsureSourceNoSlashTermination(resource);
-            ResourcePath = ApiHandlerOptionsHelper.UseOrGetDefaultResourcePath(resourcePath);
-
-            DependencyCollection.AddDependency<IRouteFactory>(new RouteFactory(ResourcePath));
+            Connection = new Connection(source, resource, resourcePath);
         }
 
         /// <inheritdoc>
@@ -96,123 +50,89 @@ namespace SereneApi.Types
         /// </inheritdoc>
         public void SetTimeoutPeriod(int seconds)
         {
-            SetTimeoutPeriod(TimeSpan.FromSeconds(seconds));
+            if(Connection == null)
+            {
+                throw new MethodAccessException("Source information must be supplied fired.");
+            }
+
+            Connection.Timeout = seconds;
         }
 
-        /// <inheritdoc>
-        ///     <cref>IApiHandlerOptionsBuilder.SetTimeoutPeriod</cref>
-        /// </inheritdoc>
-        public void SetTimeoutPeriod(TimeSpan timeoutPeriod)
+        /// <inheritdoc cref="IApiHandlerOptionsBuilder.SetRetryAttempts"/>
+        public void SetRetryAttempts(int attemptCount)
         {
-            Timeout = timeoutPeriod;
+            if(Connection == null)
+            {
+                throw new MethodAccessException("Source information must be supplied fired.");
+            }
+
+            ApiHandlerOptionsRules.ValidateRetryAttempts(attemptCount);
+
+            Connection.RetryAttempts = attemptCount;
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddLogger"/>
         public void AddLogger(ILogger logger)
         {
-            DependencyCollection.AddDependency(logger);
-        }
-
-        /// <inheritdoc cref="IApiHandlerOptionsBuilder.SetRetryOnTimeout"/>
-        public void SetRetryOnTimeout(int retryCount)
-        {
-            ApiHandlerOptionsRules.ValidateRetryCount(retryCount);
-
-            DependencyCollection.AddDependency(new RetryDependency(retryCount));
+            Dependencies.AddScoped(() => logger);
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseQueryFactory"/>
         public void UseQueryFactory(IQueryFactory queryFactory)
         {
-            DependencyCollection.AddDependency(queryFactory);
+            Dependencies.AddScoped(() => queryFactory);
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseCredentials"/>
         public void UseCredentials(ICredentials credentials)
         {
-            DependencyCollection.AddDependency(credentials);
+            Dependencies.AddScoped(() => credentials);
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddAuthentication"/>
         public void AddAuthentication(IAuthentication authentication)
         {
-            if(DependencyCollection.HasDependency<IAuthentication>())
+            if(Dependencies.HasDependency<IAuthentication>())
             {
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
-            DependencyCollection.AddDependency(authentication);
+            Dependencies.AddScoped(() => authentication);
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddBasicAuthentication"/>
         public void AddBasicAuthentication(string username, string password)
         {
-            if(DependencyCollection.HasDependency<IAuthentication>())
+            if(Dependencies.HasDependency<IAuthentication>())
             {
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
-            DependencyCollection.AddDependency<IAuthentication>(new BasicAuthentication(username, password));
+            Dependencies.AddTransient<IAuthentication>(() => new BasicAuthentication(username, password));
         }
 
         /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddBearerAuthentication"/>
         public void AddBearerAuthentication(string token)
         {
-            if(DependencyCollection.HasDependency<IAuthentication>())
+            if(Dependencies.HasDependency<IAuthentication>())
             {
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
-            DependencyCollection.AddDependency<IAuthentication>(new BearerAuthentication(token));
+            Dependencies.AddTransient<IAuthentication>(() => new BearerAuthentication(token));
         }
 
         public void AcceptContentType(ContentType content)
         {
-            DependencyCollection.AddDependency(content);
+            Dependencies.AddScoped(() => content);
         }
 
         public IApiHandlerOptions BuildOptions()
         {
-            HttpClient client;
+            Dependencies.TryAddScoped<IConnectionSettings>(() => Connection);
+            Dependencies.TryAddScoped<IRouteFactory>(p => new RouteFactory(p));
 
-            if(_baseClient != null)
-            {
-                client = _baseClient;
-            }
-            else
-            {
-                if(!DependencyCollection.TryGetDependency(out HttpClientHandler clientHandler))
-                {
-                    ICredentials credentials = DependencyCollection.GetDependency<ICredentials>();
-
-                    clientHandler = new HttpClientHandler
-                    {
-                        Credentials = credentials
-                    };
-                }
-
-                client = new HttpClient(clientHandler);
-            }
-
-            client.BaseAddress = Source;
-            client.Timeout = Timeout;
-            client.DefaultRequestHeaders.Accept.Clear();
-
-            if(DependencyCollection.TryGetDependency(out IAuthentication authentication))
-            {
-                AuthenticationHeaderValue authenticationHeader = new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);
-
-                client.DefaultRequestHeaders.Authorization = authenticationHeader;
-            }
-
-            if(DependencyCollection.TryGetDependency(out ContentType contentType))
-            {
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType.Value));
-            }
-
-            DependencyCollection.AddDependency(client, _disposeClient ? Binding.Bound : Binding.Unbound);
-
-            IApiHandlerOptions options = new ApiHandlerOptions(DependencyCollection, Source, Resource, ResourcePath);
+            IApiHandlerOptions options = new ApiHandlerOptions(Dependencies.BuildProvider(), Connection);
 
             return options;
         }

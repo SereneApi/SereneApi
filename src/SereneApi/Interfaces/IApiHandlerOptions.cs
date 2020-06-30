@@ -1,5 +1,5 @@
-﻿using SereneApi.Interfaces;
-using System;
+﻿using DeltaWare.Dependencies;
+using SereneApi.Interfaces;
 
 // Do not change namespace
 // ReSharper disable once CheckNamespace
@@ -10,21 +10,8 @@ namespace SereneApi
         /// <summary>
         /// The Dependencies required by the <see cref="ApiHandler"/>.
         /// </summary>
-        IDependencyCollection Dependencies { get; }
+        IDependencyProvider Dependencies { get; }
 
-        /// <summary>
-        /// The Source being used by the <see cref="ApiHandler"/>.
-        /// </summary>
-        Uri Source { get; }
-
-        /// <summary>
-        /// The Resource the <see cref="ApiHandler"/> is accessing.
-        /// </summary>
-        string Resource { get; }
-
-        /// <summary>
-        /// The Path to the resource.
-        /// </summary>
-        string ResourcePath { get; }
+        IConnectionSettings Connection { get; }
     }
 }

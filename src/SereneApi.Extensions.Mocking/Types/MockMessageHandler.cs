@@ -23,22 +23,17 @@ namespace SereneApi.Extensions.Mocking.Types
         /// <summary>
         /// Created a new instance of the <see cref="MockMessageHandler"/>.
         /// </summary>
-        /// <param name="mockResponsesBuilder">The builder which will be used to build the <see cref="IMockResponse"/>s.</param>
         /// <exception cref="ArgumentException">Thrown if a response is not found for the correct request.</exception>
-        public MockMessageHandler(IMockResponsesBuilder mockResponsesBuilder)
+        public MockMessageHandler(IReadOnlyList<IMockResponse> mockResponses)
         {
-            if(mockResponsesBuilder is MockResponsesBuilder builder)
-            {
-                _mockResponses = builder.Build();
-            }
+            _mockResponses = mockResponses;
         }
 
         /// <summary>
         /// Created a new instance of the <see cref="MockMessageHandler"/>.
         /// </summary>
         /// <param name="clientHandler">Will process outgoing requests if no <see cref="IMockResponse"/> is available.</param>
-        /// <param name="mockResponsesBuilder">The builder which will be used to build the <see cref="IMockResponse"/>s.</param>
-        public MockMessageHandler(HttpClientHandler clientHandler, IMockResponsesBuilder mockResponsesBuilder) : this(mockResponsesBuilder)
+        public MockMessageHandler(IReadOnlyList<IMockResponse> mockResponses, HttpClientHandler clientHandler) : this(mockResponses)
         {
             InnerHandler = clientHandler;
         }
@@ -148,7 +143,7 @@ namespace SereneApi.Extensions.Mocking.Types
         {
             IApiRequestContent requestContent = await mockResponse.GetResponseContentAsync(cancellationToken);
 
-            if (requestContent != null)
+            if(requestContent != null)
             {
                 return new HttpResponseMessage
                 {
@@ -166,7 +161,7 @@ namespace SereneApi.Extensions.Mocking.Types
 
         #region IDisposeble
 
-        private volatile bool _disposed = false;
+        private volatile bool _disposed;
 
         protected override void Dispose(bool disposing)
         {
@@ -181,10 +176,7 @@ namespace SereneApi.Extensions.Mocking.Types
             {
                 foreach(IMockResponse mockResponse in _mockResponses)
                 {
-                    if(mockResponse is IDisposable disposableResponse)
-                    {
-                        disposableResponse.Dispose();
-                    }
+                    mockResponse.Dispose();
                 }
             }
 

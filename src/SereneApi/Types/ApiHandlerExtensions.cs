@@ -1,44 +1,16 @@
-﻿using SereneApi.Interfaces;
-using System;
+﻿using DeltaWare.Dependencies;
+using SereneApi.Interfaces;
 
 namespace SereneApi.Types
 {
-    public class ApiHandlerExtensions: CoreOptions, IApiHandlerExtensions, IDisposable
+    public class ApiHandlerExtensions: CoreOptions, IApiHandlerExtensions
     {
         public ApiHandlerExtensions()
         {
         }
 
-        public ApiHandlerExtensions(DependencyCollection dependencyCollection) : base(dependencyCollection)
+        public ApiHandlerExtensions(IDependencyCollection dependencies) : base(dependencies)
         {
         }
-
-        #region IDisposable
-
-        private volatile bool _disposed;
-
-        public void Dispose()
-        {
-            Dispose(true);
-
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if(_disposed)
-            {
-                return;
-            }
-
-            if(disposing)
-            {
-                DependencyCollection.Dispose();
-            }
-
-            _disposed = true;
-        }
-
-        #endregion
     }
 }
