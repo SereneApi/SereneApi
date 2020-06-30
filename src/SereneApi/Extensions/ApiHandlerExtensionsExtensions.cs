@@ -1,4 +1,5 @@
-﻿using SereneApi.Types;
+﻿using DeltaWare.Dependencies;
+using SereneApi.Types;
 using SereneApi.Types.Authenticators;
 using System;
 using System.Threading.Tasks;
@@ -16,9 +17,7 @@ namespace SereneApi.Interfaces
         {
             CoreOptions coreOptions = GetCoreOptions(registrationExtensions);
 
-            TokenAuthenticator<TApi, TDto> authenticator = new TokenAuthenticator<TApi, TDto>(coreOptions.Dependencies, callApiFunction, getTokenInfo);
-
-            coreOptions.Dependencies.AddDependency<IAuthenticator>(() => authenticator);
+            coreOptions.Dependencies.AddSingleton<IAuthenticator>(p => new TokenAuthenticator<TApi, TDto>(p, callApiFunction, getTokenInfo));
 
             return registrationExtensions;
         }

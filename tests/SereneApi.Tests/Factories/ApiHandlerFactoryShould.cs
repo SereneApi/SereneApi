@@ -42,7 +42,7 @@ namespace SereneApi.Tests.Factories
         [InlineData("http://localhost", "TestSource3", "", "http://localhost/TestSource3", "TestSource3")]
         // Space or null is provided, uses default value.
         [InlineData("http://localhost", "TestSource4/", " ", "http://localhost/api/TestSource4", "TestSource4")]
-        [InlineData("http://localhost", "TestSource4", " ", "http://localhost/api/TestSource4", "TestSource4")]
+        [InlineData("http://localhost/Path", "TestSource4", " ", "http://localhost/Path/api/TestSource4", "TestSource4")]
         public void RegisterHandlerSourceResourceAndPath(string source, string resource, string resourcePath, string expectedSource, string expectedResource)
         {
             ApiHandlerFactory handlerFactory = new ApiHandlerFactory();

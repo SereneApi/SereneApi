@@ -1,4 +1,5 @@
-﻿using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies;
+using DeltaWare.Dependencies.Abstractions;
 using SereneApi.Helpers;
 using SereneApi.Interfaces;
 using SereneApi.Types;
@@ -59,7 +60,7 @@ namespace SereneApi.Factories
 
             ApiHandlerExtensions extensions = new ApiHandlerExtensions();
 
-            extensions.Dependencies.AddDependency(() => this, Binding.Unbound);
+            extensions.Dependencies.AddSingleton<IApiHandlerFactory>(() => this, Binding.Unbound);
 
             _handlers.Add(handlerType, typeof(TApiImplementation));
             _handlerExtensions.Add(handlerType, extensions);

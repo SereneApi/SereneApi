@@ -1,4 +1,4 @@
-﻿using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies;
 using SereneApi.Extensions.Mocking.Helpers;
 using SereneApi.Extensions.Mocking.Interfaces;
 using SereneApi.Extensions.Mocking.Types.Dependencies;
@@ -32,7 +32,7 @@ namespace SereneApi.Extensions.Mocking.Types
 
             List<Uri> routeWhitelist = uris.Select(uri => new Uri(uri)).ToList();
 
-            Dependencies.AddDependency(() => new RouteWhitelistDependency(routeWhitelist));
+            Dependencies.AddScoped(() => new RouteWhitelistDependency(routeWhitelist));
 
             return this;
         }
@@ -44,11 +44,9 @@ namespace SereneApi.Extensions.Mocking.Types
         {
             ExceptionHelper.EnsureParameterIsNotNull(inBodyContent, nameof(inBodyContent));
 
-            Dependencies.AddDependency(() =>
+            Dependencies.AddScoped(p =>
             {
-                using IDependencyProvider provider = Dependencies.BuildProvider();
-
-                ISerializer serializer = provider.GetDependency<ISerializer>();
+                ISerializer serializer = p.GetDependency<ISerializer>();
 
                 IApiRequestContent content = serializer.Serialize(inBodyContent);
 
@@ -70,7 +68,7 @@ namespace SereneApi.Extensions.Mocking.Types
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
-            Dependencies.AddDependency(() => new MethodWhitelistDependency(method));
+            Dependencies.AddScoped(() => new MethodWhitelistDependency(method));
 
             return this;
         }
@@ -83,10 +81,9 @@ namespace SereneApi.Extensions.Mocking.Types
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
-            DelayedResponseDependency delayedResponse = new DelayedResponseDependency(seconds, delayCount);
-
             // We want to keep this instance, so it is not created within the dependency.
-            Dependencies.AddDependency(() => delayedResponse);
+            Dependencies.AddScoped(() =>
+                new DelayedResponseDependency(seconds, delayCount));
 
             return this;
         }

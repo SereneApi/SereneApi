@@ -2,6 +2,7 @@
 using SereneApi.Extensions.Mocking.Types.Dependencies;
 using SereneApi.Interfaces;
 using SereneApi.Interfaces.Requests;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,7 +11,7 @@ namespace SereneApi.Extensions.Mocking.Interfaces
     /// <summary>
     /// Responds to mock API request.
     /// </summary>
-    public interface IMockResponse: IWhitelist
+    public interface IMockResponse: IWhitelist, IDisposable
     {
         /// <summary>
         /// The <see cref="ISerializer"/> used by the <see cref="IMockResponse"/>.

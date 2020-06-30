@@ -27,6 +27,9 @@ namespace SereneApi.Extensions.Mocking.Types.Dependencies
                 {
                     if(_delayCount <= 0)
                     {
+                        // Reset the delay count.
+                        _delayCount = DelayCount;
+
                         return;
                     }
 

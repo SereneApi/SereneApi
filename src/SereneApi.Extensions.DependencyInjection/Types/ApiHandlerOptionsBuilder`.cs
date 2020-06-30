@@ -1,4 +1,4 @@
-﻿using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -74,7 +74,7 @@ namespace SereneApi.Extensions.DependencyInjection.Types
         {
             ExceptionHelper.EnsureParameterIsNotNull(loggerFactory, nameof(loggerFactory));
 
-            Dependencies.AddDependency(loggerFactory.CreateLogger<TApiHandler>);
+            Dependencies.AddScoped(loggerFactory.CreateLogger<TApiHandler>);
         }
 
         /// <summary>
@@ -82,9 +82,9 @@ namespace SereneApi.Extensions.DependencyInjection.Types
         /// </summary>
         public IApiHandlerOptions<TApiHandler> BuildOptions(IServiceCollection services)
         {
-            Dependencies.AddDependency<IConnectionSettings>(() => Connection);
-            Dependencies.TryAddDependency<IRouteFactory>(() => new RouteFactory(Connection));
-            Dependencies.AddDependency(services.BuildServiceProvider);
+            Dependencies.TryAddScoped<IConnectionSettings>(() => Connection);
+            Dependencies.TryAddScoped<IRouteFactory>(p => new RouteFactory(p));
+            Dependencies.TryAddScoped<IServiceProvider>(services.BuildServiceProvider);
 
             ApiHandlerOptions<TApiHandler> options = new ApiHandlerOptions<TApiHandler>(Dependencies.BuildProvider(), Connection);
 

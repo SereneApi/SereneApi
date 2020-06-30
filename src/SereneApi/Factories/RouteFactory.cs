@@ -1,4 +1,5 @@
-﻿using SereneApi.Helpers;
+﻿using DeltaWare.Dependencies;
+using SereneApi.Helpers;
 using SereneApi.Interfaces;
 using System;
 using System.Linq;
@@ -38,10 +39,17 @@ namespace SereneApi.Factories
         /// <summary>
         /// Instantiates a new instance of <see cref="RouteFactory"/>.
         /// </summary>
-        /// <param name="connection"></param>
         public RouteFactory(IConnectionSettings connection)
         {
             ResourcePath = connection.ResourcePath;
+        }
+
+        /// <summary>
+        /// Instantiates a new instance of <see cref="RouteFactory"/>.
+        /// </summary>
+        public RouteFactory(IDependencyProvider provider)
+        {
+            ResourcePath = provider.GetDependency<IConnectionSettings>().ResourcePath;
         }
 
         #endregion

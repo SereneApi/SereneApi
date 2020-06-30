@@ -1,10 +1,14 @@
-﻿using SereneApi.Abstraction.Enums;
+﻿using DeltaWare.Dependencies;
+using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Abstraction.Enums;
 using SereneApi.Extensions.Mocking.Helpers;
 using SereneApi.Extensions.Mocking.Interfaces;
 using SereneApi.Interfaces;
 using SereneApi.Interfaces.Requests;
 using SereneApi.Serializers;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SereneApi.Extensions.Mocking.Types
 {
@@ -14,7 +18,7 @@ namespace SereneApi.Extensions.Mocking.Types
     {
         private ISerializer _serializer = new JsonSerializer();
 
-        private readonly List<IMockResponse> _mockResponses = new List<IMockResponse>();
+        private readonly List<Func<IMockResponse>> _mockResponses = new List<Func<IMockResponse>>();
 
         /// <inheritdoc cref="IMockResponsesBuilder"/>
         public void UseSerializer(ISerializer serializer)
@@ -34,11 +38,13 @@ namespace SereneApi.Extensions.Mocking.Types
         /// </inheritdoc>
         public IMockResponseExtensions AddMockResponse(Status status, string message = null)
         {
-            MockResponse mockResponse = new MockResponse(status, message, null, _serializer);
+            IDependencyCollection dependencies = new DependencyCollection();
 
-            _mockResponses.Add(mockResponse);
+            dependencies.AddScoped(() => _serializer, Binding.Unbound);
 
-            return mockResponse.GetExtensions();
+            _mockResponses.Add(() => new MockResponse(dependencies.BuildProvider(), status, message, null));
+
+            return new MockResponseExtensions(dependencies);
         }
 
         /// <inheritdoc>
@@ -46,13 +52,15 @@ namespace SereneApi.Extensions.Mocking.Types
         /// </inheritdoc>
         public IMockResponseExtensions AddMockResponse<TContent>(TContent content)
         {
-            IApiRequestContent requestContent = _serializer.Serialize(content);
+            IDependencyCollection dependencies = new DependencyCollection();
 
-            MockResponse mockResponse = new MockResponse(Status.Ok, null, requestContent, _serializer);
+            dependencies.AddScoped(() => _serializer, Binding.Unbound);
 
-            _mockResponses.Add(mockResponse);
+            IApiRequestContent responseContent = _serializer.Serialize(content);
 
-            return mockResponse.GetExtensions();
+            _mockResponses.Add(() => new MockResponse(dependencies.BuildProvider(), Status.Ok, null, responseContent));
+
+            return new MockResponseExtensions(dependencies);
         }
 
         /// <inheritdoc>
@@ -60,21 +68,23 @@ namespace SereneApi.Extensions.Mocking.Types
         /// </inheritdoc>
         public IMockResponseExtensions AddMockResponse<TContent>(TContent content, Status status)
         {
-            IApiRequestContent requestContent = _serializer.Serialize(content);
+            IDependencyCollection dependencies = new DependencyCollection();
 
-            MockResponse mockResponse = new MockResponse(status, null, requestContent, _serializer);
+            dependencies.AddScoped(() => _serializer, Binding.Unbound);
 
-            _mockResponses.Add(mockResponse);
+            IApiRequestContent responseContent = _serializer.Serialize(content);
 
-            return mockResponse.GetExtensions();
+            _mockResponses.Add(() => new MockResponse(dependencies.BuildProvider(), status, null, responseContent));
+
+            return new MockResponseExtensions(dependencies);
         }
 
         /// <summary>
-        /// Builds the <see cref="IMockResponse"/>s.
+        /// Builds the <see cref="IMockResponse"/>.
         /// </summary>
         public List<IMockResponse> Build()
         {
-            return _mockResponses;
+            return _mockResponses.Select(r => r.Invoke()).ToList();
         }
     }
 }

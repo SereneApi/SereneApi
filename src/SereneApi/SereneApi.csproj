@@ -21,9 +21,12 @@
     <PackageIcon>nuget_logo.png</PackageIcon>
     <PackageId>SereneApi</PackageId>
     <PackageReleaseNotes></PackageReleaseNotes>
+      <IncludeSymbols>true</IncludeSymbols>
+      <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
+	  <PackageReference Include="DeltaWare.Dependencies" Version="1.0.1.2-beta" />
 	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.5" />
 	  <PackageReference Include="System.Text.Json" Version="4.7.2" />
   </ItemGroup>
@@ -40,7 +43,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\DeltaWare.Dependencies\src\DeltaWare.Dependencies\DeltaWare.Dependencies.csproj" />
     <ProjectReference Include="..\SereneApi.Abstraction\SereneApi.Abstraction.csproj" />
   </ItemGroup>
 
