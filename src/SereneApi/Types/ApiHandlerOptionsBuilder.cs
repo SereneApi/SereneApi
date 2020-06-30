@@ -17,22 +17,12 @@ namespace SereneApi.Types
 
         #region Constructors
 
-        public ApiHandlerOptionsBuilder()
-        {
-            Dependencies.AddScoped(() => ApiHandlerOptionDefaults.QueryFactory);
-            Dependencies.AddScoped(() => JsonSerializer.Default);
-            Dependencies.AddScoped(() => ContentType.Json);
-            Dependencies.AddScoped(() => ApiHandlerOptionDefaults.Credentials);
-            Dependencies.AddScoped<IClientFactory>(p => new DefaultClientFactory(p));
-        }
-
         protected internal ApiHandlerOptionsBuilder(IDependencyCollection dependencies) : base(dependencies)
         {
             Dependencies.AddScoped(() => ApiHandlerOptionDefaults.QueryFactory);
             Dependencies.AddScoped(() => JsonSerializer.Default);
             Dependencies.AddScoped(() => ContentType.Json);
             Dependencies.AddScoped(() => ApiHandlerOptionDefaults.Credentials);
-            Dependencies.AddScoped<IClientFactory>(p => new DefaultClientFactory(p));
         }
 
         #endregion
@@ -131,6 +121,7 @@ namespace SereneApi.Types
         {
             Dependencies.TryAddScoped<IConnectionSettings>(() => Connection);
             Dependencies.TryAddScoped<IRouteFactory>(p => new RouteFactory(p));
+            Dependencies.TryAddScoped<IClientFactory>(p => new DefaultClientFactory(p));
 
             IApiHandlerOptions options = new ApiHandlerOptions(Dependencies.BuildProvider(), Connection);
 

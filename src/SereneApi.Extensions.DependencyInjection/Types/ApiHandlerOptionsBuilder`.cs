@@ -9,6 +9,7 @@ using SereneApi.Helpers;
 using SereneApi.Interfaces;
 using SereneApi.Types;
 using System;
+using System.Net.Mime;
 
 namespace SereneApi.Extensions.DependencyInjection.Types
 {

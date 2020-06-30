@@ -18,7 +18,7 @@ namespace SereneApi.Extensions.DependencyInjection
         {
             CoreOptions coreOptions = GetCoreOptions(registrationExtensions);
 
-            coreOptions.Dependencies.AddSingleton(p => new DITokenAuthenticator<TApi, TDto>(p, callApiFunction, getTokenInfo));
+            coreOptions.Dependencies.AddSingleton<IAuthenticator>(p => new DITokenAuthenticator<TApi, TDto>(p, callApiFunction, getTokenInfo));
 
             return registrationExtensions;
         }

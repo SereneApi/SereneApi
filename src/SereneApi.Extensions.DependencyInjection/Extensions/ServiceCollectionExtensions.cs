@@ -117,7 +117,7 @@ namespace SereneApi.Extensions.DependencyInjection
 
             action.Invoke(builder);
 
-            coreOptions.Dependencies.TryAddScoped<IClientFactory>(p =>
+            coreOptions.Dependencies.AddScoped<IClientFactory>(p =>
             {
                 DependencyInjectionClientFactory<TApiImplementation> clientFactory = new DependencyInjectionClientFactory<TApiImplementation>(p);
 
@@ -144,7 +144,7 @@ namespace SereneApi.Extensions.DependencyInjection
 
             action.Invoke(builder, provider);
 
-            coreOptions.Dependencies.TryAddScoped<IClientFactory>(p =>
+            coreOptions.Dependencies.AddScoped<IClientFactory>(p =>
             {
                 DependencyInjectionClientFactory<TApiImplementation> clientFactory = new DependencyInjectionClientFactory<TApiImplementation>(p);
 
