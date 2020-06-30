@@ -20,7 +20,9 @@
 	  <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
 	  <PackageIcon>nuget_logo.png</PackageIcon>
 	  <PackageId>SereneApi.Abstraction</PackageId>
-	  <PackageReleaseNotes>* Moved IApiResponse interfaces to this library</PackageReleaseNotes>
+	  <PackageReleaseNotes></PackageReleaseNotes>
+      <IncludeSymbols>true</IncludeSymbols>
+      <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>

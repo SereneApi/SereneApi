@@ -18,9 +18,12 @@
     <NeutralLanguage>English (Australia)</NeutralLanguage>
     <Description>Serene API is a small library intended to provide a straightforward way of consuming RESTful APIs requiring as little code &amp; setup as possible whilst providing a powerful set of tools.
 
- SereneApi.Extensions.Mocking adds support for Mocking API Responses to specified Requests allowing for easy testing in both unit tests and whilst developting.</Description>
+        SereneApi.Extensions.Mocking adds support for Mocking API Responses to specified Requests allowing for easy testing in both unit tests and whilst developting.
+    </Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+      <IncludeSymbols>true</IncludeSymbols>
+      <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>

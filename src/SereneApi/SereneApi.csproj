@@ -21,6 +21,8 @@
     <PackageIcon>nuget_logo.png</PackageIcon>
     <PackageId>SereneApi</PackageId>
     <PackageReleaseNotes></PackageReleaseNotes>
+      <IncludeSymbols>true</IncludeSymbols>
+      <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
