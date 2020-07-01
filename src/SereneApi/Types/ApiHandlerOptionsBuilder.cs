@@ -17,7 +17,7 @@ namespace SereneApi.Types
 
         #region Constructors
 
-        protected internal ApiHandlerOptionsBuilder(IDependencyCollection dependencies) : base(dependencies)
+        protected internal ApiHandlerOptionsBuilder()
         {
             Dependencies.AddScoped(() => ApiHandlerOptionDefaults.QueryFactory);
             Dependencies.AddScoped(() => JsonSerializer.Default);
@@ -127,5 +127,33 @@ namespace SereneApi.Types
 
             return options;
         }
+
+        #region IDisposable
+
+        private volatile bool _disposed;
+
+        public void Dispose()
+        {
+            Dispose(true);
+
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if(_disposed)
+            {
+                return;
+            }
+
+            if(disposing)
+            {
+                Dependencies.Dispose();
+            }
+
+            _disposed = true;
+        }
+
+        #endregion
     }
 }

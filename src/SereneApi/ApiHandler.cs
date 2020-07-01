@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using SereneApi.Abstraction.Enums;
+using SereneApi.Abstractions.Enums;
 using SereneApi.Extensions;
 using SereneApi.Interfaces;
 using SereneApi.Types;
 using System;
 using System.Diagnostics;
 using System.Net.Http;
-using SereneApi.Abstractions.Enums;
 
 namespace SereneApi
 {
@@ -131,7 +131,6 @@ namespace SereneApi
         /// </summary>
         protected void CheckIfDisposed()
         {
-            // TODO: Throw an exception if the HttpClient has been disposed of, at present there is no way to do this.
             if(_disposed)
             {
                 throw new ObjectDisposedException(nameof(GetType));
@@ -162,10 +161,7 @@ namespace SereneApi
 
             if(disposing)
             {
-                if(_options is IDisposable disposableOptions)
-                {
-                    disposableOptions.Dispose();
-                }
+                _options.Dispose();
             }
 
             _disposed = true;

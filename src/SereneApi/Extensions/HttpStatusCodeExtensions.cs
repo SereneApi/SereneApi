@@ -1,6 +1,5 @@
-﻿using SereneApi.Abstraction.Enums;
+﻿using SereneApi.Abstractions.Enums;
 using System.Net;
-using SereneApi.Abstractions.Enums;
 
 namespace SereneApi.Extensions
 {

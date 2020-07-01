@@ -1,8 +1,7 @@
-﻿using SereneApi.Abstraction.Enums;
+﻿using SereneApi.Abstractions.Enums;
 using SereneApi.Types;
 using Shouldly;
 using System;
-using SereneApi.Abstractions.Enums;
 using Xunit;
 
 namespace SereneApi.Tests.Types

@@ -1,11 +1,10 @@
-﻿using SereneApi.Abstraction.Enums;
+﻿using SereneApi.Abstractions.Enums;
 using SereneApi.Extensions.Mocking.Types.Dependencies;
 using SereneApi.Interfaces;
 using SereneApi.Interfaces.Requests;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SereneApi.Abstractions.Enums;
 
 namespace SereneApi.Extensions.Mocking.Interfaces
 {

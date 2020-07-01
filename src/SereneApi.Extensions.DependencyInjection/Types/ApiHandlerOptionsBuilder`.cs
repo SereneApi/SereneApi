@@ -9,18 +9,13 @@ using SereneApi.Helpers;
 using SereneApi.Interfaces;
 using SereneApi.Types;
 using System;
-using System.Net.Mime;
 
 namespace SereneApi.Extensions.DependencyInjection.Types
 {
-    /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiHandler}"/>
-    internal class ApiHandlerOptionsBuilder<TApiHandler>: ApiHandlerOptionsBuilder, IApiHandlerOptionsBuilder<TApiHandler> where TApiHandler : ApiHandler
+    /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiDefinition}"/>
+    internal class ApiHandlerOptionsBuilder<TApiDefinition>: ApiHandlerOptionsBuilder, IApiHandlerOptionsBuilder<TApiDefinition> where TApiDefinition : class
     {
-        public ApiHandlerOptionsBuilder(IDependencyCollection dependencies) : base(dependencies)
-        {
-        }
-
-        /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiHandler}.UseConfiguration"/>
+        /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiDefinition}.UseConfiguration"/>
         public void UseConfiguration(IConfiguration configuration)
         {
             if(Dependencies.HasDependency<IConnectionSettings>())
@@ -70,24 +65,24 @@ namespace SereneApi.Extensions.DependencyInjection.Types
             #endregion
         }
 
-        /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiHandler}.AddLoggerFactory"/>
+        /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiDefinition}.AddLoggerFactory"/>
         public void AddLoggerFactory(ILoggerFactory loggerFactory)
         {
             ExceptionHelper.EnsureParameterIsNotNull(loggerFactory, nameof(loggerFactory));
 
-            Dependencies.AddScoped(loggerFactory.CreateLogger<TApiHandler>);
+            Dependencies.AddScoped(loggerFactory.CreateLogger<TApiDefinition>);
         }
 
         /// <summary>
         /// Builds the <see cref="IApiHandlerOptions"/> for the specified <see cref="ApiHandler"/>.
         /// </summary>
-        public IApiHandlerOptions<TApiHandler> BuildOptions(IServiceCollection services)
+        public IApiHandlerOptions<TApiDefinition> BuildOptions(IServiceCollection services)
         {
             Dependencies.TryAddScoped<IConnectionSettings>(() => Connection);
             Dependencies.TryAddScoped<IRouteFactory>(p => new RouteFactory(p));
             Dependencies.TryAddScoped<IServiceProvider>(services.BuildServiceProvider);
 
-            ApiHandlerOptions<TApiHandler> options = new ApiHandlerOptions<TApiHandler>(Dependencies.BuildProvider(), Connection);
+            IApiHandlerOptions<TApiDefinition> options = new ApiHandlerOptions<TApiDefinition>(Dependencies.BuildProvider(), Connection);
 
             return options;
         }

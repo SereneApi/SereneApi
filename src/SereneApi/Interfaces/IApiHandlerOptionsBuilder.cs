@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using SereneApi.Types.Headers.Accept;
+using System;
 using System.Net;
 
 namespace SereneApi.Interfaces
 {
-    public interface IApiHandlerOptionsBuilder
+    public interface IApiHandlerOptionsBuilder: IDisposable
     {
         /// <summary>
         /// The Source the <see cref="ApiHandler"/> will use to make API requests against.

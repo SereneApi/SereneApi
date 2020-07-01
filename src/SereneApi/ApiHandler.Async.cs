@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SereneApi.Abstraction.Enums;
+using SereneApi.Abstractions.Enums;
 using SereneApi.Extensions;
 using SereneApi.Helpers;
 using SereneApi.Interfaces.Requests;
@@ -9,7 +10,6 @@ using System.Linq.Expressions;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using SereneApi.Abstractions.Enums;
 
 namespace SereneApi
 {

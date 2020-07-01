@@ -6,7 +6,7 @@ using System.Diagnostics;
 namespace SereneApi.Types
 {
     [DebuggerDisplay("Source: {Connection.BaseAddress.ToString()}")]
-    public class ApiHandlerOptions: IApiHandlerOptions, IDisposable
+    public class ApiHandlerOptions: IApiHandlerOptions
     {
         #region Properties
 
@@ -51,10 +51,7 @@ namespace SereneApi.Types
 
             if(disposing)
             {
-                if(Dependencies is IDisposable disposableDependencyCollection)
-                {
-                    disposableDependencyCollection.Dispose();
-                }
+                Dependencies.Dispose();
             }
 
             _disposed = true;

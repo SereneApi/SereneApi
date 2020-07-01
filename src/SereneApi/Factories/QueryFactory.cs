@@ -44,7 +44,7 @@ namespace SereneApi.Factories
                 object value = property.GetValue(query);
 
                 // TODO: Add Requirement check.
-                if (value == null)
+                if(value == null)
                 {
                     continue;
                 }
