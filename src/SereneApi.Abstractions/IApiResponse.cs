@@ -1,9 +1,6 @@
-﻿using SereneApi.Abstractions.Enums;
-using System;
+﻿using System;
 
-// Do not change namespace
-// ReSharper disable once CheckNamespace
-namespace SereneApi
+namespace SereneApi.Abstractions
 {
     /// <summary>
     /// The response received from the API.

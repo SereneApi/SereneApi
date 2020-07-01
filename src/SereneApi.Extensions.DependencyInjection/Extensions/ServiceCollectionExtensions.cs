@@ -2,11 +2,12 @@
 using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using SereneApi.Abstractions;
+using SereneApi.Abstractions.Factories;
+using SereneApi.Abstractions.Handler;
 using SereneApi.Extensions.DependencyInjection.Factories;
 using SereneApi.Extensions.DependencyInjection.Interfaces;
 using SereneApi.Extensions.DependencyInjection.Types;
-using SereneApi.Interfaces;
-using SereneApi.Types;
 using System;
 
 // Do not change namespace
@@ -24,10 +25,9 @@ namespace SereneApi.Extensions.DependencyInjection
         {
             using ServiceProvider serviceProvider = services.BuildServiceProvider();
 
-            CoreOptions options =
-                GetCoreOptions(serviceProvider.GetService<IApiHandlerOptionsBuilder<TApiDefinition>>());
+            IDependencyCollection dependencies = GetDependencies(serviceProvider.GetService<IApiHandlerOptionsBuilder<TApiDefinition>>());
 
-            return new ApiHandlerExtensions(options.Dependencies);
+            return new ApiHandlerExtensions<TApiDefinition>(dependencies);
         }
 
         /// <summary>
@@ -39,10 +39,9 @@ namespace SereneApi.Extensions.DependencyInjection
         {
             using ServiceProvider serviceProvider = services.BuildServiceProvider();
 
-            CoreOptions options =
-                GetCoreOptions(serviceProvider.GetService<IApiHandlerOptionsBuilder<TApiDefinition>>());
+            IDependencyCollection dependencies = GetDependencies(serviceProvider.GetService<IApiHandlerOptionsBuilder<TApiDefinition>>());
 
-            IApiHandlerExtensions extensions = new ApiHandlerExtensions(options.Dependencies);
+            IApiHandlerExtensions extensions = new ApiHandlerExtensions<TApiDefinition>(dependencies);
 
             factory.Invoke(extensions);
         }
@@ -54,7 +53,7 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <typeparam name="TApiImplementation">The implementation of the <see cref="ApiHandler"/> to be registered as a service</typeparam>
         /// <param name="services">The <see cref="IServiceCollection" /> to add services to</param>
         /// <param name="factory">An action to configure the <see cref="ApiHandler"/></param>
-        public static IApiHandlerExtensions RegisterApiHandler<TApiDefinition, TApiImplementation>(this IServiceCollection services, Action<IApiHandlerOptionsBuilder<TApiDefinition>> factory) where TApiDefinition : class where TApiImplementation : ApiHandler, TApiDefinition
+        public static IApiHandlerExtensions RegisterApiHandler<TApiDefinition, TApiImplementation>(this IServiceCollection services, Action<IApiHandlerOptionsBuilder<TApiDefinition>> factory) where TApiDefinition : class where TApiImplementation : class, IApiHandler, TApiDefinition
         {
             services.TryAddScoped<TApiDefinition, TApiImplementation>();
 
@@ -78,7 +77,7 @@ namespace SereneApi.Extensions.DependencyInjection
         public static IApiHandlerExtensions RegisterApiHandler<TApiDefinition, TApiImplementation>(
             this IServiceCollection services,
             Action<IApiHandlerOptionsBuilder<TApiDefinition>, IServiceProvider> factory)
-            where TApiDefinition : class where TApiImplementation : ApiHandler, TApiDefinition
+            where TApiDefinition : class where TApiImplementation : class, IApiHandler, TApiDefinition
         {
             services.TryAddScoped<TApiDefinition, TApiImplementation>();
 
@@ -141,14 +140,14 @@ namespace SereneApi.Extensions.DependencyInjection
             return builder.BuildOptions(services);
         }
 
-        private static CoreOptions GetCoreOptions(IApiHandlerOptionsBuilder builder)
+        private static IDependencyCollection GetDependencies(IApiHandlerOptionsBuilder builder)
         {
-            if(builder is CoreOptions coreOptions)
+            if(builder is ICoreOptions options)
             {
-                return coreOptions;
+                return options.Dependencies;
             }
 
-            throw new TypeAccessException($"Must be of type or inherit from {nameof(CoreOptions)}");
+            throw new TypeAccessException($"Must be of type or inherit from {nameof(ICoreOptions)}");
         }
     }
 }

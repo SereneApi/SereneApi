@@ -1,6 +1,8 @@
 ﻿using DeltaWare.Dependencies;
-using SereneApi.Types;
-using SereneApi.Types.Authenticators;
+using SereneApi.Abstractions;
+using SereneApi.Abstractions.Authenticators;
+using SereneApi.Abstractions.Handler;
+using SereneApi.Abstractions.Types;
 using System;
 using System.Threading.Tasks;
 
@@ -13,23 +15,23 @@ namespace SereneApi.Interfaces
         /// <summary>
         /// NOT FOR DI
         /// </summary>
-        public static IApiHandlerExtensions AddAuthenticator<TApi, TDto>(this IApiHandlerExtensions registrationExtensions, Func<TApi, Task<IApiResponse<TDto>>> callApiFunction, Func<TDto, TokenInfo> getTokenInfo) where TApi : class, IDisposable where TDto : class
+        public static IApiHandlerExtensions AddAuthenticator<TApi, TDto>(this IApiHandlerExtensions extensions, Func<TApi, Task<IApiResponse<TDto>>> callApiFunction, Func<TDto, TokenInfo> getTokenInfo) where TApi : class, IDisposable where TDto : class
         {
-            CoreOptions coreOptions = GetCoreOptions(registrationExtensions);
+            IDependencyCollection dependencies = extensions.GetDependencyCollection();
 
-            coreOptions.Dependencies.AddSingleton<IAuthenticator>(p => new TokenAuthenticator<TApi, TDto>(p, callApiFunction, getTokenInfo));
+            dependencies.AddSingleton<IAuthenticator>(p => new TokenAuthenticator<TApi, TDto>(p, callApiFunction, getTokenInfo));
 
-            return registrationExtensions;
+            return extensions;
         }
 
-        private static CoreOptions GetCoreOptions(IApiHandlerExtensions extensions)
+        internal static IDependencyCollection GetDependencyCollection(this IApiHandlerExtensions extensions)
         {
-            if(extensions is CoreOptions coreOptions)
+            if(extensions is ICoreOptions options)
             {
-                return coreOptions;
+                return options.Dependencies;
             }
 
-            throw new TypeAccessException($"Must be of type or inherit from {nameof(CoreOptions)}");
+            throw new InvalidCastException($"Must inherit from {nameof(ICoreOptions)}");
         }
     }
 }

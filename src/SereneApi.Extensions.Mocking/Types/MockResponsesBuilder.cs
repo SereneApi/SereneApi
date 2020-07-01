@@ -1,11 +1,10 @@
 ﻿using DeltaWare.Dependencies;
 using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Abstractions.Enums;
+using SereneApi.Abstractions;
+using SereneApi.Abstractions.Requests;
+using SereneApi.Abstractions.Serializers;
 using SereneApi.Extensions.Mocking.Helpers;
 using SereneApi.Extensions.Mocking.Interfaces;
-using SereneApi.Interfaces;
-using SereneApi.Interfaces.Requests;
-using SereneApi.Serializers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +15,7 @@ namespace SereneApi.Extensions.Mocking.Types
     /// <inheritdoc cref="IMockResponsesBuilder"/>
     public class MockResponsesBuilder: IMockResponsesBuilder
     {
-        private ISerializer _serializer = new JsonSerializer();
+        private ISerializer _serializer = new DefaultSerializer();
 
         private readonly List<Func<IMockResponse>> _mockResponses = new List<Func<IMockResponse>>();
 

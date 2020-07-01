@@ -1,8 +1,9 @@
 ﻿using DeltaWare.Dependencies;
 using Microsoft.Extensions.DependencyInjection;
-using SereneApi.Interfaces;
-using SereneApi.Types;
-using SereneApi.Types.Authenticators;
+using SereneApi.Abstractions;
+using SereneApi.Abstractions.Authentication;
+using SereneApi.Abstractions.Authenticators;
+using SereneApi.Abstractions.Types;
 using System;
 using System.Threading.Tasks;
 

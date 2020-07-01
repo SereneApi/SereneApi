@@ -1,8 +1,8 @@
-﻿using SereneApi.Abstraction.Enums;
+﻿using SereneApi.Abstractions.Enums;
+using SereneApi.Abstractions.Requests;
+using SereneApi.Abstractions.Requests.Content;
 using SereneApi.Extensions.Mocking.Enums;
 using SereneApi.Extensions.Mocking.Interfaces;
-using SereneApi.Interfaces.Requests;
-using SereneApi.Types.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;

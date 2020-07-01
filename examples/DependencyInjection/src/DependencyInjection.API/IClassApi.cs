@@ -1,5 +1,5 @@
 ﻿using DependencyInjection.API.DTOs;
-using SereneApi.Abstractions;
+using SereneApi.Abstractions.Handler;
 
 namespace DependencyInjection.API
 {

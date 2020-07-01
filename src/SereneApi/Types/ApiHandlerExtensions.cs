@@ -1,12 +1,16 @@
 ﻿using DeltaWare.Dependencies;
-using SereneApi.Interfaces;
+using SereneApi.Abstractions;
+using SereneApi.Abstractions.Handler;
 
 namespace SereneApi.Types
 {
-    public class ApiHandlerExtensions: CoreOptions, IApiHandlerExtensions
+    public class ApiHandlerExtensions: IApiHandlerExtensions, ICoreOptions
     {
-        public ApiHandlerExtensions(IDependencyCollection dependencies) : base(dependencies)
+        public IDependencyCollection Dependencies { get; }
+
+        public ApiHandlerExtensions(IDependencyCollection dependencies)
         {
+            Dependencies = dependencies;
         }
     }
 }

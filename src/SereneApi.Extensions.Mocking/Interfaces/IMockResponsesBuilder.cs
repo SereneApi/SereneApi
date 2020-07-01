@@ -1,6 +1,6 @@
-﻿using SereneApi.Abstractions.Enums;
-using SereneApi.Interfaces;
-using SereneApi.Interfaces.Requests;
+﻿using SereneApi.Abstractions;
+using SereneApi.Abstractions.Requests;
+using SereneApi.Abstractions.Serializers;
 using System;
 
 namespace SereneApi.Extensions.Mocking.Interfaces

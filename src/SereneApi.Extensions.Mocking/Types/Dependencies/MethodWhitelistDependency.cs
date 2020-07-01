@@ -1,4 +1,5 @@
-﻿using SereneApi.Extensions.Mocking.Enums;
+﻿using SereneApi.Abstractions;
+using SereneApi.Extensions.Mocking.Enums;
 using SereneApi.Extensions.Mocking.Interfaces;
 
 namespace SereneApi.Extensions.Mocking.Types.Dependencies

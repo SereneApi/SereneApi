@@ -1,8 +1,8 @@
 ﻿using DeltaWare.Dependencies;
+using SereneApi.Abstractions;
+using SereneApi.Abstractions.Handler;
 using SereneApi.Extensions.Mocking.Interfaces;
 using SereneApi.Extensions.Mocking.Types;
-using SereneApi.Interfaces;
-using SereneApi.Types;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -22,13 +22,13 @@ namespace SereneApi.Extensions.Mocking
         /// If set to false, if a request does not have an associated <see cref="IMockResponse"/> an <see cref="ArgumentException"/> will be thrown.</param>
         public static IApiHandlerExtensions WithMockResponses(this IApiHandlerExtensions registrationExtensions, Action<IMockResponsesBuilder> mockResponseBuilder, bool enableOutgoingRequests = false)
         {
-            CoreOptions coreOptions = GetCoreOptions(registrationExtensions);
+            IDependencyCollection dependencies = GetDependencies(registrationExtensions);
 
             MockResponsesBuilder mockResponsesBuilder = new MockResponsesBuilder();
 
             mockResponseBuilder.Invoke(mockResponsesBuilder);
 
-            coreOptions.Dependencies.AddScoped<HttpMessageHandler>(() =>
+            dependencies.AddScoped<HttpMessageHandler>(() =>
             {
                 List<IMockResponse> mockResponses = mockResponsesBuilder.Build();
 
@@ -43,14 +43,14 @@ namespace SereneApi.Extensions.Mocking
             return registrationExtensions;
         }
 
-        private static CoreOptions GetCoreOptions(IApiHandlerExtensions extensions)
+        private static IDependencyCollection GetDependencies(IApiHandlerExtensions extensions)
         {
-            if(extensions is CoreOptions coreOptions)
+            if(extensions is ICoreOptions options)
             {
-                return coreOptions;
+                return options.Dependencies;
             }
 
-            throw new TypeAccessException($"Must be of type or inherit from {nameof(CoreOptions)}");
+            throw new TypeAccessException($"Must be of type or inherit from {nameof(ICoreOptions)}");
         }
     }
 }

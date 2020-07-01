@@ -1,12 +1,16 @@
 ﻿using DeltaWare.Dependencies;
 using Microsoft.Extensions.DependencyInjection;
-using SereneApi.Interfaces;
-using SereneApi.Types.Headers.Accept;
+using SereneApi.Abstractions;
+using SereneApi.Abstractions.Authentication;
+using SereneApi.Abstractions.Authenticators;
+using SereneApi.Abstractions.Factories;
+using SereneApi.Abstractions.Requests.Content;
 using System;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace SereneApi.Extensions.DependencyInjection.Factories
 {
@@ -26,13 +30,17 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
             HandlerName = GenerateHandlerName();
         }
 
-        public HttpClient BuildClient()
+        public Task<HttpClient> BuildClientAsync()
         {
-            IHttpClientFactory clientFactory = _dependencies.GetDependency<IServiceProvider>().GetService<IHttpClientFactory>();
+            return Task.Factory.StartNew(() =>
+            {
+                IHttpClientFactory clientFactory =
+                    _dependencies.GetDependency<IServiceProvider>().GetService<IHttpClientFactory>();
 
-            HttpClient client = clientFactory.CreateClient(HandlerName);
+                HttpClient client = clientFactory.CreateClient(HandlerName);
 
-            return client;
+                return client;
+            });
         }
 
         public void Configure()
@@ -74,7 +82,7 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
 
                 if(_dependencies.TryGetDependency(out ContentType contentType))
                 {
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType.Value));
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType.ToTypeString()));
                 }
             })
             .ConfigurePrimaryHttpMessageHandler(() =>

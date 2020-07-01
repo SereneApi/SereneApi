@@ -1,8 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
-using SereneApi.Abstractions.Enums;
+using SereneApi.Abstractions;
+using SereneApi.Abstractions.Factories;
+using SereneApi.Abstractions.Requests;
+using SereneApi.Abstractions.Serializers;
 using SereneApi.Extensions;
 using SereneApi.Helpers;
-using SereneApi.Interfaces.Requests;
+using SereneApi.Interfaces;
 using SereneApi.Types;
 using System;
 using System.Linq.Expressions;
@@ -20,16 +23,16 @@ namespace SereneApi
         /// Performs an API Request Synchronously.
         /// </summary>
         /// <param name="method">The <see cref="Method"/> that will be used for the request.</param>
-        /// <param name="requestAction">The <see cref="IRequest"/> that will be performed.</param>
-        protected IApiResponse PerformRequest(Method method, Expression<Func<IRequest, IRequestCreated>> requestAction = null)
+        /// <param name="factory">The <see cref="IRequest"/> that will be performed.</param>
+        protected IApiResponse PerformRequest(Method method, Expression<Func<IRequest, IRequestCreated>> factory = null)
         {
             CheckIfDisposed();
 
-            RequestBuilder requestBuilder = new RequestBuilder(_routeFactory, _queryFactory, _serializer, Connection.Resource);
+            RequestBuilder requestBuilder = new RequestBuilder(Dependencies, Connection.Resource);
 
             requestBuilder.UsingMethod(method);
 
-            requestAction?.Compile().Invoke(requestBuilder);
+            factory?.Compile().Invoke(requestBuilder);
 
             IApiRequest request = requestBuilder.GetRequest();
 
@@ -40,17 +43,17 @@ namespace SereneApi
         /// Performs an API Request Synchronously.
         /// </summary>
         /// <param name="method">The <see cref="Method"/> that will be used for the request.</param>
-        /// <param name="requestAction">The <see cref="IRequest"/> that will be performed.</param>
+        /// <param name="factory">The <see cref="IRequest"/> that will be performed.</param>
         /// <typeparam name="TResponse">The <see cref="Type"/> to be deserialized from the body of the response.</typeparam>
-        protected IApiResponse<TResponse> PerformRequest<TResponse>(Method method, Expression<Func<IRequest, IRequestCreated>> requestAction = null)
+        protected IApiResponse<TResponse> PerformRequest<TResponse>(Method method, Expression<Func<IRequest, IRequestCreated>> factory = null)
         {
             CheckIfDisposed();
 
-            RequestBuilder requestBuilder = new RequestBuilder(_routeFactory, _queryFactory, _serializer, Connection.Resource);
+            RequestBuilder requestBuilder = new RequestBuilder(Dependencies, Connection.Resource);
 
             requestBuilder.UsingMethod(method);
 
-            requestAction?.Compile().Invoke(requestBuilder);
+            factory?.Compile().Invoke(requestBuilder);
 
             IApiRequest request = requestBuilder.GetRequest();
 
@@ -215,7 +218,9 @@ namespace SereneApi
             {
                 try
                 {
-                    using HttpClient client = _clientFactory.BuildClient();
+                    IClientFactory clientFactory = Dependencies.GetDependency<IClientFactory>();
+
+                    using HttpClient client = clientFactory.BuildClientAsync().Result;
 
                     // Using Task.Result bubbles the exception up to the caller.
                     // This means the Try Catch inside of RetryRequest does not catch the TaskCanceledException.
@@ -285,7 +290,9 @@ namespace SereneApi
 
             try
             {
-                TResponse response = _serializer.Deserialize<TResponse>(responseMessage.Content);
+                ISerializer serializer = Dependencies.GetDependency<ISerializer>();
+
+                TResponse response = serializer.Deserialize<TResponse>(responseMessage.Content);
 
                 return ApiResponse<TResponse>.Success(status, response);
             }

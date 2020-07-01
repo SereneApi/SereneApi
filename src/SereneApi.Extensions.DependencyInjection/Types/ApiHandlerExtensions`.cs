@@ -1,15 +1,20 @@
 ﻿using DeltaWare.Dependencies;
-using SereneApi.Extensions.DependencyInjection.Interfaces;
-using SereneApi.Types;
+using SereneApi.Abstractions;
+using SereneApi.Abstractions.Handler;
+using System;
 
 namespace SereneApi.Extensions.DependencyInjection.Types
 {
     /// <inheritdoc cref="IApiHandlerExtensions{TApiDefinition}"/>
-    internal class ApiHandlerExtensions<TApiDefinition>: ApiHandlerExtensions, IApiHandlerExtensions<TApiDefinition> where TApiDefinition : class
+    internal class ApiHandlerExtensions<TApiDefinition>: IApiHandlerExtensions<TApiDefinition>, ICoreOptions where TApiDefinition : class
     {
-        public ApiHandlerExtensions(IDependencyCollection dependencies) : base(dependencies)
-        {
+        public IDependencyCollection Dependencies { get; }
 
+        public Type HandlerType => typeof(TApiDefinition);
+
+        public ApiHandlerExtensions(IDependencyCollection dependencies)
+        {
+            Dependencies = dependencies;
         }
     }
 }

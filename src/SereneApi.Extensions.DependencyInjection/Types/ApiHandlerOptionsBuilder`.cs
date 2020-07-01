@@ -2,12 +2,13 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SereneApi.Abstractions;
+using SereneApi.Abstractions.Factories;
+using SereneApi.Abstractions.Handler;
+using SereneApi.Abstractions.Helpers;
+using SereneApi.Abstractions.Types;
 using SereneApi.Extensions.DependencyInjection.Helpers;
 using SereneApi.Extensions.DependencyInjection.Interfaces;
-using SereneApi.Factories;
-using SereneApi.Helpers;
-using SereneApi.Interfaces;
-using SereneApi.Types;
 using System;
 
 namespace SereneApi.Extensions.DependencyInjection.Types
@@ -15,6 +16,8 @@ namespace SereneApi.Extensions.DependencyInjection.Types
     /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiDefinition}"/>
     internal class ApiHandlerOptionsBuilder<TApiDefinition>: ApiHandlerOptionsBuilder, IApiHandlerOptionsBuilder<TApiDefinition> where TApiDefinition : class
     {
+        public Type HandlerType => typeof(TApiDefinition);
+
         /// <inheritdoc cref="IApiHandlerOptionsBuilder{TApiDefinition}.UseConfiguration"/>
         public void UseConfiguration(IConfiguration configuration)
         {
@@ -58,7 +61,7 @@ namespace SereneApi.Extensions.DependencyInjection.Types
                 return;
             }
 
-            ApiHandlerOptionsRules.ValidateRetryAttempts(retryCount);
+            Rules.ValidateRetryAttempts(retryCount);
 
             Connection.RetryAttempts = retryCount;
 
@@ -79,7 +82,7 @@ namespace SereneApi.Extensions.DependencyInjection.Types
         public IApiHandlerOptions<TApiDefinition> BuildOptions(IServiceCollection services)
         {
             Dependencies.TryAddScoped<IConnectionSettings>(() => Connection);
-            Dependencies.TryAddScoped<IRouteFactory>(p => new RouteFactory(p));
+            Dependencies.TryAddScoped<IRouteFactory>(p => new DefaultRouteFactory(p));
             Dependencies.TryAddScoped<IServiceProvider>(services.BuildServiceProvider);
 
             IApiHandlerOptions<TApiDefinition> options = new ApiHandlerOptions<TApiDefinition>(Dependencies.BuildProvider(), Connection);
