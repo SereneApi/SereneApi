@@ -1,4 +1,4 @@
-﻿using SereneApi.Helpers;
+﻿using SereneApi.Abstractions.Helpers;
 using Shouldly;
 using System;
 using Xunit;

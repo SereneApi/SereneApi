@@ -1,13 +1,14 @@
 ﻿using DependencyInjection.API;
 using SereneApi;
-using SereneApi.Extensions.DependencyInjection.Interfaces;
+using SereneApi.Abstractions;
+using SereneApi.Abstractions.Handler;
 using System.Threading.Tasks;
 
 namespace DependencyInjection.WebUi.Handlers
 {
     public class ValuesApiHandler: ApiHandler, IValuesApi
     {
-        public ValuesApiHandler(IApiHandlerOptions<ValuesApiHandler> options) : base(options)
+        public ValuesApiHandler(IApiHandlerOptions<IValuesApi> options) : base(options)
         {
         }
 

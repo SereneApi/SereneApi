@@ -1,8 +1,8 @@
-﻿using SereneApi.Abstraction.Enums;
+﻿using SereneApi.Abstractions.Enums;
+using SereneApi.Abstractions.Requests;
+using SereneApi.Abstractions.Requests.Content;
 using SereneApi.Extensions.Mocking.Enums;
 using SereneApi.Extensions.Mocking.Interfaces;
-using SereneApi.Interfaces.Requests;
-using SereneApi.Types.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +16,7 @@ namespace SereneApi.Extensions.Mocking.Types
     /// The <see cref="HttpMessageHandler"/> used by the <see cref="ApiHandler"/> when running in Mock Mode.
     /// </summary>
     /// <remarks>Override this class if you wish to extend or change its behaviour.</remarks>
-    public class MockMessageHandler: DelegatingHandler
+    internal class MockMessageHandler: DelegatingHandler
     {
         private readonly IReadOnlyList<IMockResponse> _mockResponses;
 

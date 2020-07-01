@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SereneApi.Abstractions;
+using System;
 
 namespace SereneApi.Extensions.Mocking.Helpers
 {

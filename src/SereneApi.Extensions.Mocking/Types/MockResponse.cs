@@ -1,10 +1,10 @@
 ﻿using DeltaWare.Dependencies;
-using SereneApi.Abstraction.Enums;
+using SereneApi.Abstractions;
+using SereneApi.Abstractions.Requests;
+using SereneApi.Abstractions.Serializers;
 using SereneApi.Extensions.Mocking.Enums;
 using SereneApi.Extensions.Mocking.Interfaces;
 using SereneApi.Extensions.Mocking.Types.Dependencies;
-using SereneApi.Interfaces;
-using SereneApi.Interfaces.Requests;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace SereneApi.Extensions.Mocking.Types
 {
     /// <inheritdoc cref="IMockResponse"/>
-    public class MockResponse: IMockResponse
+    internal class MockResponse: IMockResponse
     {
         private readonly IDependencyProvider _dependencies;
 

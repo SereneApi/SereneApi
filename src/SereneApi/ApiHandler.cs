@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
-using SereneApi.Abstraction.Enums;
+﻿using DeltaWare.Dependencies;
+using Microsoft.Extensions.Logging;
+using SereneApi.Abstractions;
+using SereneApi.Abstractions.Enums;
+using SereneApi.Abstractions.Handler;
 using SereneApi.Extensions;
-using SereneApi.Interfaces;
 using SereneApi.Types;
 using System;
 using System.Diagnostics;
@@ -13,30 +15,13 @@ namespace SereneApi
     /// When Inherited; Provides the methods required for implementing a RESTful Api consumer.
     /// </summary>
     [DebuggerDisplay("Source:{Connection.Source}; Timeout:{Connection.Timeout}")]
-    public abstract partial class ApiHandler: IDisposable
+    public abstract partial class ApiHandler: IApiHandler
     {
         #region Variables
 
-        private readonly IClientFactory _clientFactory;
+        protected IDependencyProvider Dependencies { get; }
 
-        /// <summary>
-        /// The <see cref="IApiHandlerOptions"/> this <see cref="ApiHandler"/> will use.
-        /// </summary>
-        private readonly IApiHandlerOptions _options;
-
-        /// <summary>
-        /// The <see cref="ILogger"/> this <see cref="ApiHandler"/> will use
-        /// </summary>
         private readonly ILogger _logger;
-
-        /// <summary>
-        /// The <see cref="IQueryFactory"/> that will be used for creating queries
-        /// </summary>
-        private readonly IQueryFactory _queryFactory;
-
-        private readonly IRouteFactory _routeFactory;
-
-        private readonly ISerializer _serializer;
 
         #endregion
         #region Properties
@@ -52,29 +37,9 @@ namespace SereneApi
         /// <param name="options">The <see cref="IApiHandlerOptions"/> the <see cref="ApiHandler"/> will use when making requests.</param>
         protected ApiHandler(IApiHandlerOptions options)
         {
-            CheckIfDisposed(options);
-
-            _options = options;
-
-            Connection = _options.Connection;
-
-            #region Configure Dependencies
-            #region Required
-
-            _clientFactory = _options.Dependencies.GetDependency<IClientFactory>();
-            _queryFactory = _options.Dependencies.GetDependency<IQueryFactory>();
-            _routeFactory = _options.Dependencies.GetDependency<IRouteFactory>();
-
-            _serializer = _options.Dependencies.GetDependency<ISerializer>();
-
-            #endregion
-            #region Optional
-
-            _options.Dependencies.TryGetDependency(out _logger);
-
-            #endregion
-
-            #endregion
+            Connection = options.Connection;
+            Dependencies = options.Dependencies;
+            Dependencies.TryGetDependency(out _logger);
 
             _logger?.LogTrace($"{GetType()} has been instantiated");
         }
@@ -115,22 +80,8 @@ namespace SereneApi
         /// <summary>
         /// Throws an Object Disposed Exception if the <see cref="ApiHandler"/> has been disposed.
         /// </summary>
-        private void CheckIfDisposed(IApiHandlerOptions options)
-        {
-            CheckIfDisposed();
-
-            if(options is ApiHandlerOptions apiHandlerOptions && apiHandlerOptions.IsDisposed())
-            {
-                throw new ObjectDisposedException(nameof(apiHandlerOptions.GetType));
-            }
-        }
-
-        /// <summary>
-        /// Throws an Object Disposed Exception if the <see cref="ApiHandler"/> has been disposed.
-        /// </summary>
         protected void CheckIfDisposed()
         {
-            // TODO: Throw an exception if the HttpClient has been disposed of, at present there is no way to do this.
             if(_disposed)
             {
                 throw new ObjectDisposedException(nameof(GetType));
@@ -161,10 +112,7 @@ namespace SereneApi
 
             if(disposing)
             {
-                if(_options is IDisposable disposableOptions)
-                {
-                    disposableOptions.Dispose();
-                }
+                Dependencies.Dispose();
             }
 
             _disposed = true;
