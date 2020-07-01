@@ -7,7 +7,7 @@
     <Authors>Bradley Clarke</Authors>
     <Company>DeltaWare</Company>
     <Product>SereneApi</Product>
-    <Version>1.0.4.5-beta</Version>
+    <Version>1.0.5.0-prerelease</Version>
     <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageIcon>nuget_logo.png</PackageIcon>

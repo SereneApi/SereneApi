@@ -1,14 +1,12 @@
-﻿using DeltaWare.Dependencies;
+﻿using System;
+using System.Threading.Tasks;
+using DeltaWare.Dependencies;
 using SereneApi.Abstractions;
 using SereneApi.Abstractions.Authenticators;
 using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Types;
-using System;
-using System.Threading.Tasks;
 
-// Do not change namespace
-// ReSharper disable once CheckNamespace
-namespace SereneApi.Interfaces
+namespace SereneApi.Extensions
 {
     public static class ApiHandlerExtensionsExtensions
     {
