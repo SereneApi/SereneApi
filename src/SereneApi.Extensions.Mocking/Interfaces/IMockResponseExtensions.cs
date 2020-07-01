@@ -1,4 +1,5 @@
-﻿using SereneApi.Extensions.Mocking.Types;
+﻿using SereneApi.Abstractions;
+using SereneApi.Extensions.Mocking.Types;
 using System;
 
 namespace SereneApi.Extensions.Mocking.Interfaces

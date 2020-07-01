@@ -1,5 +1,5 @@
-﻿using SereneApi.Abstraction;
-using SereneApi.Abstraction.Enums;
+﻿using SereneApi.Abstractions;
+using SereneApi.Abstractions.Handler;
 using SereneApi.Extensions.Mocking;
 using SereneApi.Factories;
 using SereneApi.Tests.Interfaces;

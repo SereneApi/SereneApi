@@ -1,7 +1,7 @@
-﻿using SereneApi.Abstraction.Enums;
+﻿using SereneApi.Abstractions;
+using SereneApi.Abstractions.Requests;
+using SereneApi.Abstractions.Serializers;
 using SereneApi.Extensions.Mocking.Types.Dependencies;
-using SereneApi.Interfaces;
-using SereneApi.Interfaces.Requests;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

@@ -1,5 +1,6 @@
-﻿using SereneApi.Helpers;
-using SereneApi.Interfaces.Requests;
+﻿using SereneApi.Abstractions;
+using SereneApi.Abstractions.Requests;
+using SereneApi.Helpers;
 using System;
 
 namespace SereneApi.Types

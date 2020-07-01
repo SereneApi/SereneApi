@@ -1,4 +1,5 @@
-﻿using SereneApi.Tests.Interfaces;
+﻿using SereneApi.Abstractions.Handler;
+using SereneApi.Tests.Interfaces;
 
 namespace SereneApi.Tests.Mock
 {

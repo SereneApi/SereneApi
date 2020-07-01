@@ -7,6 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\src\SereneApi.Extensions.DependencyInjection\SereneApi.Extensions.DependencyInjection.csproj" />
     <ProjectReference Include="..\..\..\..\src\SereneApi.Extensions.Mocking\SereneApi.Extensions.Mocking.csproj" />
+    <ProjectReference Include="..\..\..\..\src\SereneApi\SereneApi.csproj" />
     <ProjectReference Include="..\DependencyInjection.API\DependencyInjection.API.csproj" />
   </ItemGroup>
 

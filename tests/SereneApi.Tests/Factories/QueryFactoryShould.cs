@@ -1,5 +1,4 @@
-﻿using SereneApi.Factories;
-using SereneApi.Interfaces;
+﻿using SereneApi.Abstractions.Factories;
 using SereneApi.Tests.Mock;
 using Shouldly;
 using System;
@@ -12,7 +11,7 @@ namespace SereneApi.Tests.Factories
         [Fact]
         public void BuildQuery()
         {
-            IQueryFactory queryFactory = new QueryFactory();
+            IQueryFactory queryFactory = new DefaultQueryFactory();
 
             MockPersonDto personDto = new MockPersonDto
             {
@@ -29,7 +28,7 @@ namespace SereneApi.Tests.Factories
         [Fact]
         public void BuildQueryWithDateTime()
         {
-            IQueryFactory queryFactory = new QueryFactory();
+            IQueryFactory queryFactory = new DefaultQueryFactory();
 
             MockPersonDto personDto = new MockPersonDto
             {
@@ -46,7 +45,7 @@ namespace SereneApi.Tests.Factories
         [Fact]
         public void BuildQueryWithNoQuerySection()
         {
-            IQueryFactory queryFactory = new QueryFactory();
+            IQueryFactory queryFactory = new DefaultQueryFactory();
 
             MockPersonDto personDto = new MockPersonDto
             {
@@ -63,7 +62,7 @@ namespace SereneApi.Tests.Factories
         [Fact]
         public void BuildQueryWithOneQuerySection()
         {
-            IQueryFactory queryFactory = new QueryFactory();
+            IQueryFactory queryFactory = new DefaultQueryFactory();
 
             MockPersonDto personDto = new MockPersonDto
             {
@@ -80,7 +79,7 @@ namespace SereneApi.Tests.Factories
         [Fact]
         public void BuildQueryWithTwoQuerySection()
         {
-            IQueryFactory queryFactory = new QueryFactory();
+            IQueryFactory queryFactory = new DefaultQueryFactory();
 
             MockPersonDto personDto = new MockPersonDto
             {
@@ -97,7 +96,7 @@ namespace SereneApi.Tests.Factories
         [Fact]
         public void BuildQueryUsingCustomFormatter()
         {
-            IQueryFactory queryFactory = new QueryFactory(CustomQueryFormatter);
+            IQueryFactory queryFactory = new DefaultQueryFactory(CustomQueryFormatter);
 
             MockPersonDto personDto = new MockPersonDto
             {

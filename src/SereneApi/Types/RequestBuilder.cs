@@ -1,6 +1,10 @@
-﻿using SereneApi.Helpers;
+﻿using DeltaWare.Dependencies;
+using SereneApi.Abstractions;
+using SereneApi.Abstractions.Factories;
+using SereneApi.Abstractions.Requests;
+using SereneApi.Abstractions.Serializers;
+using SereneApi.Helpers;
 using SereneApi.Interfaces;
-using SereneApi.Interfaces.Requests;
 using System;
 using System.Linq.Expressions;
 
@@ -35,12 +39,11 @@ namespace SereneApi.Types
 
         private string _suppliedResource;
 
-        public RequestBuilder(IRouteFactory routeFactory, IQueryFactory queryFactory, ISerializer serializer,
-            string resource = null)
+        public RequestBuilder(IDependencyProvider dependencies, string resource = null)
         {
-            _routeFactory = routeFactory;
-            _queryFactory = queryFactory;
-            _serializer = serializer;
+            _routeFactory = dependencies.GetDependency<IRouteFactory>();
+            _queryFactory = dependencies.GetDependency<IQueryFactory>();
+            _serializer = dependencies.GetDependency<ISerializer>();
             _resource = resource;
         }
 

@@ -1,16 +1,17 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using SereneApi.Interfaces;
+using SereneApi.Abstractions.Handler;
 using System;
 
 namespace SereneApi.Extensions.DependencyInjection.Interfaces
 {
-    /// <summary>
-    /// Builds <see cref="IApiHandlerOptions"/> for the specified <see cref="ApiHandler"/>.
-    /// </summary>
-    /// <typeparam name="TApiHandler">The <see cref="ApiHandler"/> the options are intended for.</typeparam>
-    public interface IApiHandlerOptionsBuilder<TApiHandler>: IApiHandlerOptionsBuilder where TApiHandler : ApiHandler
+    public interface IApiHandlerOptionsBuilder<TApiDefinition>: IApiHandlerOptionsBuilder where TApiDefinition : class
     {
+        /// <summary>
+        /// The specific handler the <see cref="IApiHandlerOptionsBuilder"/> are for.
+        /// </summary>
+        Type HandlerType { get; }
+
         /// <summary>
         /// Gets the Source, Resource, ResourcePrecursor and Timeout period from the <see cref="IConfiguration"/>.
         /// </summary>

@@ -1,6 +1,6 @@
-﻿using SereneApi.Factories;
-using SereneApi.Interfaces;
-using SereneApi.Types;
+﻿using SereneApi.Abstractions;
+using SereneApi.Abstractions.Factories;
+using SereneApi.Abstractions.Types;
 using Shouldly;
 using System;
 using Xunit;
@@ -14,7 +14,7 @@ namespace SereneApi.Tests.Factories
         {
             #region Arrange
 
-            IRouteFactory routeFactory = new RouteFactory();
+            IRouteFactory routeFactory = new DefaultRouteFactory();
 
             routeFactory.AddParameters("string", 10);
 
@@ -32,7 +32,7 @@ namespace SereneApi.Tests.Factories
         {
             #region Arrange
 
-            IRouteFactory routeFactory = new RouteFactory();
+            IRouteFactory routeFactory = new DefaultRouteFactory();
 
             routeFactory.AddEndPoint("{0}/Details/{1}");
             routeFactory.AddParameters(10);
@@ -51,7 +51,7 @@ namespace SereneApi.Tests.Factories
         {
             #region Arrange
 
-            IRouteFactory routeFactory = new RouteFactory();
+            IRouteFactory routeFactory = new DefaultRouteFactory();
 
             routeFactory.AddEndPoint("{0}/Details/{1}/{2}");
             routeFactory.AddParameters(10, "John");
@@ -77,7 +77,7 @@ namespace SereneApi.Tests.Factories
 
             Uri expectedRoute = new Uri(expected, UriKind.Relative);
 
-            IRouteFactory routeFactory = new RouteFactory();
+            IRouteFactory routeFactory = new DefaultRouteFactory();
 
             routeFactory.AddResource(resource);
             routeFactory.AddEndPoint(endPoint);
@@ -108,7 +108,7 @@ namespace SereneApi.Tests.Factories
 
             IConnectionSettings connection = new Connection("http://noteused/", null, resourcePath);
 
-            IRouteFactory routeFactory = new RouteFactory(connection);
+            IRouteFactory routeFactory = new DefaultRouteFactory(connection);
 
             routeFactory.AddResource(resource);
             routeFactory.AddEndPoint(endPoint);
@@ -139,7 +139,7 @@ namespace SereneApi.Tests.Factories
 
             IConnectionSettings connection = new Connection("http://noteused/", null, "api/");
 
-            IRouteFactory routeFactory = new RouteFactory(connection);
+            IRouteFactory routeFactory = new DefaultRouteFactory(connection);
 
             routeFactory.AddResource("Users");
             routeFactory.AddEndPoint(endPoint);
@@ -169,7 +169,7 @@ namespace SereneApi.Tests.Factories
 
             IConnectionSettings connection = new Connection("http://noteused/", null, "api/");
 
-            IRouteFactory routeFactory = new RouteFactory(connection);
+            IRouteFactory routeFactory = new DefaultRouteFactory(connection);
 
             routeFactory.AddResource("Users");
             routeFactory.AddEndPoint(endPoint);
@@ -199,7 +199,7 @@ namespace SereneApi.Tests.Factories
 
             IConnectionSettings connection = new Connection("http://noteused/", null, "api/");
 
-            IRouteFactory routeFactory = new RouteFactory(connection);
+            IRouteFactory routeFactory = new DefaultRouteFactory(connection);
 
             routeFactory.AddResource("Users");
             routeFactory.AddQuery(query);
