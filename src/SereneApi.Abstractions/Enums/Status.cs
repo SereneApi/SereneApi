@@ -1,4 +1,4 @@
-﻿namespace SereneApi.Abstraction.Enums
+﻿namespace SereneApi.Abstractions.Enums
 {
     // https://restfulapi.net/http-status-codes/
     /// <summary>

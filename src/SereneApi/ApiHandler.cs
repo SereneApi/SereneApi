@@ -6,6 +6,7 @@ using SereneApi.Types;
 using System;
 using System.Diagnostics;
 using System.Net.Http;
+using SereneApi.Abstractions.Enums;
 
 namespace SereneApi
 {

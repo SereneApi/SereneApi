@@ -13,7 +13,7 @@ namespace SereneApi.Interfaces
         /// <summary>
         /// NOT FOR DI
         /// </summary>
-        public static IApiHandlerExtensions AddAuthenticator<TApi, TDto>(this IApiHandlerExtensions registrationExtensions, Func<TApi, Task<IApiResponse<TDto>>> callApiFunction, Func<TDto, TokenInfo> getTokenInfo) where TApi : class where TDto : class
+        public static IApiHandlerExtensions AddAuthenticator<TApi, TDto>(this IApiHandlerExtensions registrationExtensions, Func<TApi, Task<IApiResponse<TDto>>> callApiFunction, Func<TDto, TokenInfo> getTokenInfo) where TApi : class, IDisposable where TDto : class
         {
             CoreOptions coreOptions = GetCoreOptions(registrationExtensions);
 

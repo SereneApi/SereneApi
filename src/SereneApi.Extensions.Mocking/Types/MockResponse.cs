@@ -9,11 +9,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Enums;
 
 namespace SereneApi.Extensions.Mocking.Types
 {
     /// <inheritdoc cref="IMockResponse"/>
-    public class MockResponse: IMockResponse
+    internal class MockResponse: IMockResponse
     {
         private readonly IDependencyProvider _dependencies;
 

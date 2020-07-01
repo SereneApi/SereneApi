@@ -1,5 +1,5 @@
-﻿using SereneApi.Abstraction.Enums;
-using System;
+﻿using System;
+using SereneApi.Abstractions.Enums;
 
 // Do not change namespace
 // ReSharper disable once CheckNamespace

@@ -8,7 +8,7 @@ using System.Net.Http.Headers;
 
 namespace SereneApi.Factories
 {
-    public class DefaultClientFactory: IClientFactory
+    internal class DefaultClientFactory: IClientFactory
     {
         private readonly IDependencyProvider _dependencies;
 
@@ -47,7 +47,7 @@ namespace SereneApi.Factories
 
             if(_dependencies.TryGetDependency(out IAuthenticator authenticator))
             {
-                IAuthentication authentication = authenticator.Authenticate();
+                IAuthentication authentication = authenticator.AuthenticateAsync().GetAwaiter().GetResult();
 
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);

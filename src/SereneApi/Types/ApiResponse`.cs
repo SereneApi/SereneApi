@@ -1,5 +1,6 @@
 ﻿using SereneApi.Abstraction.Enums;
 using System;
+using SereneApi.Abstractions.Enums;
 
 namespace SereneApi.Types
 {

@@ -119,7 +119,7 @@ namespace SereneApi.Extensions.DependencyInjection
 
             coreOptions.Dependencies.AddScoped<IClientFactory>(p =>
             {
-                DependencyInjectionClientFactory<TApiImplementation> clientFactory = new DependencyInjectionClientFactory<TApiImplementation>(p);
+                ClientFactory<TApiImplementation> clientFactory = new ClientFactory<TApiImplementation>(p);
 
                 if(!clientFactory.IsConfigured)
                 {
@@ -146,7 +146,7 @@ namespace SereneApi.Extensions.DependencyInjection
 
             coreOptions.Dependencies.AddScoped<IClientFactory>(p =>
             {
-                DependencyInjectionClientFactory<TApiImplementation> clientFactory = new DependencyInjectionClientFactory<TApiImplementation>(p);
+                ClientFactory<TApiImplementation> clientFactory = new ClientFactory<TApiImplementation>(p);
 
                 if(!clientFactory.IsConfigured)
                 {

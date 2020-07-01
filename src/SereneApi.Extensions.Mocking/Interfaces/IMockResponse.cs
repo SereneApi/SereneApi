@@ -5,6 +5,7 @@ using SereneApi.Interfaces.Requests;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Enums;
 
 namespace SereneApi.Extensions.Mocking.Interfaces
 {

@@ -9,6 +9,7 @@ using System.Linq.Expressions;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Enums;
 
 namespace SereneApi
 {

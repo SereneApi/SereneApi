@@ -14,11 +14,11 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <summary>
         /// FOR DI
         /// </summary>
-        public static IApiHandlerExtensions AddInjectedAuthenticator<TApi, TDto>(this IApiHandlerExtensions registrationExtensions, Func<TApi, Task<IApiResponse<TDto>>> callApiFunction, Func<TDto, TokenInfo> getTokenInfo) where TApi : class where TDto : class
+        public static IApiHandlerExtensions AddInjectedAuthenticator<TApi, TDto>(this IApiHandlerExtensions registrationExtensions, Func<TApi, Task<IApiResponse<TDto>>> callApiFunction, Func<TDto, TokenInfo> getTokenInfo) where TApi : class, IDisposable where TDto : class
         {
             CoreOptions coreOptions = GetCoreOptions(registrationExtensions);
 
-            coreOptions.Dependencies.AddSingleton<IAuthenticator>(p => new DITokenAuthenticator<TApi, TDto>(p, callApiFunction, getTokenInfo));
+            coreOptions.Dependencies.AddSingleton<IAuthenticator>(p => new DiTokenAuthenticator<TApi, TDto>(p, callApiFunction, getTokenInfo));
 
             return registrationExtensions;
         }

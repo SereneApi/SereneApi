@@ -2,6 +2,7 @@
 using SereneApi.Interfaces;
 using SereneApi.Interfaces.Requests;
 using System;
+using SereneApi.Abstractions.Enums;
 
 namespace SereneApi.Extensions.Mocking.Interfaces
 {

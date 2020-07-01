@@ -1,5 +1,6 @@
 ﻿
 using System.Net;
+using SereneApi.Abstractions.Enums;
 
 // Do note change namespace
 // ReSharper disable once CheckNamespace

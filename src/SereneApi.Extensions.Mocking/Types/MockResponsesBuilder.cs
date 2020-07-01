@@ -9,6 +9,7 @@ using SereneApi.Serializers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SereneApi.Abstractions.Enums;
 
 namespace SereneApi.Extensions.Mocking.Types
 {
@@ -42,9 +43,9 @@ namespace SereneApi.Extensions.Mocking.Types
 
             dependencies.AddScoped(() => _serializer, Binding.Unbound);
 
-            _mockResponses.Add(() => new MockResponse(dependencies.BuildProvider(), status, message, null));
+            _mockResponses.Add(() => BuildMockResponse(dependencies.BuildProvider(), status, message, null));
 
-            return new MockResponseExtensions(dependencies);
+            return BuildResponseExtensions(dependencies);
         }
 
         /// <inheritdoc>
@@ -58,9 +59,9 @@ namespace SereneApi.Extensions.Mocking.Types
 
             IApiRequestContent responseContent = _serializer.Serialize(content);
 
-            _mockResponses.Add(() => new MockResponse(dependencies.BuildProvider(), Status.Ok, null, responseContent));
+            _mockResponses.Add(() => BuildMockResponse(dependencies.BuildProvider(), Status.Ok, null, responseContent));
 
-            return new MockResponseExtensions(dependencies);
+            return BuildResponseExtensions(dependencies);
         }
 
         /// <inheritdoc>
@@ -74,9 +75,19 @@ namespace SereneApi.Extensions.Mocking.Types
 
             IApiRequestContent responseContent = _serializer.Serialize(content);
 
-            _mockResponses.Add(() => new MockResponse(dependencies.BuildProvider(), status, null, responseContent));
+            _mockResponses.Add(() => BuildMockResponse(dependencies.BuildProvider(), status, null, responseContent));
 
+            return BuildResponseExtensions(dependencies);
+        }
+
+        protected virtual IMockResponseExtensions BuildResponseExtensions(IDependencyCollection dependencies)
+        {
             return new MockResponseExtensions(dependencies);
+        }
+
+        protected virtual IMockResponse BuildMockResponse(IDependencyProvider provider, Status status, string message, IApiRequestContent responseContent)
+        {
+            return new MockResponse(provider, status, message, responseContent);
         }
 
         /// <summary>

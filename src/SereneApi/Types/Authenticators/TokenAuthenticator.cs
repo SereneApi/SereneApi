@@ -6,28 +6,29 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Types.Authenticators
 {
-    public class TokenAuthenticator<TApi, TDto>: IAuthenticator where TApi : class where TDto : class
+    public class TokenAuthenticator<TApi, TDto>: IAuthenticator where TApi : class, IDisposable where TDto : class
     {
         //private readonly TimerCallback _tokenRefresher;
 
+        private readonly Func<TApi, Task<IApiResponse<TDto>>> _apiCallFunction;
+
+        private readonly Func<TDto, TokenInfo> _getTokenFunction;
+
         protected IDependencyProvider Dependencies { get; }
-
-        protected Func<TApi, Task<IApiResponse<TDto>>> CallApiFunction { get; }
-
-        protected Func<TDto, TokenInfo> GetTokenFunction { get; }
 
         protected int TokenExpiryTime { get; private set; }
 
         protected BearerAuthentication Authentication { get; private set; }
 
-        public TokenAuthenticator(IDependencyProvider dependencies, Func<TApi, Task<IApiResponse<TDto>>> callApiFunction, Func<TDto, TokenInfo> getTokenInfo = null)
+        public TokenAuthenticator(IDependencyProvider dependencies, Func<TApi, Task<IApiResponse<TDto>>> apiCallFunction, Func<TDto, TokenInfo> getTokenInfo = null)
         {
             Dependencies = dependencies;
-            CallApiFunction = callApiFunction;
-            GetTokenFunction = getTokenInfo;
+
+            _apiCallFunction = apiCallFunction;
+            _getTokenFunction = getTokenInfo;
         }
 
-        public virtual IAuthentication Authenticate()
+        public virtual async Task<IAuthentication> AuthenticateAsync()
         {
             if(Authentication != null)
             {
@@ -46,16 +47,18 @@ namespace SereneApi.Types.Authenticators
                 throw new ArgumentException($"Could not find any registered instances of {typeof(TApi).Name}");
             }
 
-            IApiResponse<TDto> response = CallApiFunction.Invoke(apiHandler).GetAwaiter().GetResult();
+            IApiResponse<TDto> response = await GetTokenAsync(apiHandler);
 
-            if(apiHandler is IDisposable disposable)
-            {
-                disposable.Dispose();
-            }
+            apiHandler.Dispose();
 
             ProcessResponse(response);
 
             return Authentication;
+        }
+
+        protected Task<IApiResponse<TDto>> GetTokenAsync(TApi handler)
+        {
+            return _apiCallFunction.Invoke(handler);
         }
 
         protected void ProcessResponse(IApiResponse<TDto> response)
@@ -70,7 +73,7 @@ namespace SereneApi.Types.Authenticators
                 throw new Exception(response.Message);
             }
 
-            TokenInfo tokenInfo = GetTokenFunction.Invoke(response.Result);
+            TokenInfo tokenInfo = _getTokenFunction.Invoke(response.Result);
 
             if(tokenInfo == null)
             {

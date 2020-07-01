@@ -7,6 +7,8 @@ using SereneApi.Tests.Mock;
 using Shouldly;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SereneApi.Abstractions;
+using SereneApi.Abstractions.Enums;
 using Xunit;
 
 namespace SereneApi.Tests

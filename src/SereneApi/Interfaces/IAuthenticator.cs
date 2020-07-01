@@ -1,7 +1,9 @@
-﻿namespace SereneApi.Interfaces
+﻿using System.Threading.Tasks;
+
+namespace SereneApi.Interfaces
 {
     public interface IAuthenticator
     {
-        IAuthentication Authenticate();
+        Task<IAuthentication> AuthenticateAsync();
     }
 }

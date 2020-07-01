@@ -11,14 +11,15 @@ using System.Net.Http.Headers;
 namespace SereneApi.Extensions.DependencyInjection.Factories
 {
     [DebuggerDisplay("{HandlerName}")]
-    public class DependencyInjectionClientFactory<TApiHandler>: IClientFactory
+    internal class ClientFactory<TApiHandler>: IClientFactory
     {
-        public bool IsConfigured { get; private set; }
-        public string HandlerName { get; }
-
         private readonly IDependencyProvider _dependencies;
 
-        public DependencyInjectionClientFactory(IDependencyProvider dependencies)
+        public bool IsConfigured { get; private set; }
+
+        public string HandlerName { get; }
+
+        public ClientFactory(IDependencyProvider dependencies)
         {
             _dependencies = dependencies;
 
@@ -60,7 +61,7 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
 
                 if(_dependencies.TryGetDependency(out IAuthenticator authenticator))
                 {
-                    IAuthentication authentication = authenticator.Authenticate();
+                    IAuthentication authentication = authenticator.AuthenticateAsync().GetAwaiter().GetResult();
 
                     client.DefaultRequestHeaders.Authorization =
                         new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);

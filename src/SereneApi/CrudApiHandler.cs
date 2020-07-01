@@ -1,6 +1,7 @@
 using SereneApi.Abstraction;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SereneApi.Abstractions;
 
 namespace SereneApi
 {

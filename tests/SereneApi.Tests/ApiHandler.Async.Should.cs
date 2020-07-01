@@ -7,6 +7,7 @@ using SereneApi.Tests.Mock;
 using Shouldly;
 using System;
 using System.Text.Json;
+using SereneApi.Abstractions.Enums;
 using Xunit;
 
 namespace SereneApi.Tests

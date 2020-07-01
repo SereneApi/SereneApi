@@ -47,7 +47,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SereneApi.Abstraction\SereneApi.Abstraction.csproj" />
     <ProjectReference Include="..\SereneApi\SereneApi.csproj" />
   </ItemGroup>
 

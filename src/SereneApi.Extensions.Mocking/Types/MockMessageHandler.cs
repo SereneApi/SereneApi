@@ -16,7 +16,7 @@ namespace SereneApi.Extensions.Mocking.Types
     /// The <see cref="HttpMessageHandler"/> used by the <see cref="ApiHandler"/> when running in Mock Mode.
     /// </summary>
     /// <remarks>Override this class if you wish to extend or change its behaviour.</remarks>
-    public class MockMessageHandler: DelegatingHandler
+    internal class MockMessageHandler: DelegatingHandler
     {
         private readonly IReadOnlyList<IMockResponse> _mockResponses;
 

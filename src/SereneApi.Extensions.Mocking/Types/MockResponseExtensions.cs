@@ -21,7 +21,7 @@ namespace SereneApi.Extensions.Mocking.Types
         /// <inheritdoc>
         ///     <cref>IMockResponseExtensions.RespondsToRequestsWith</cref>
         /// </inheritdoc>
-        public IMockResponseExtensions RespondsToRequestsWith(params string[] uris)
+        public virtual IMockResponseExtensions RespondsToRequestsWith(params string[] uris)
         {
             ExceptionHelper.EnsureArrayIsNotEmpty(uris, nameof(uris));
 
@@ -40,7 +40,7 @@ namespace SereneApi.Extensions.Mocking.Types
         /// <inheritdoc>
         ///     <cref>IMockResponseExtensions.RespondsToRequestsWith</cref>
         /// </inheritdoc>
-        public IMockResponseExtensions RespondsToRequestsWith<TContent>(TContent inBodyContent)
+        public virtual IMockResponseExtensions RespondsToRequestsWith<TContent>(TContent inBodyContent)
         {
             ExceptionHelper.EnsureParameterIsNotNull(inBodyContent, nameof(inBodyContent));
 
@@ -59,7 +59,7 @@ namespace SereneApi.Extensions.Mocking.Types
         /// <inheritdoc>
         ///     <cref>IMockResponseExtensions.RespondsToRequestsWith</cref>
         /// </inheritdoc>
-        public IMockResponseExtensions RespondsToRequestsWith(Method method)
+        public virtual IMockResponseExtensions RespondsToRequestsWith(Method method)
         {
             ExceptionHelper.EnsureCorrectMethod(method);
 
@@ -74,7 +74,7 @@ namespace SereneApi.Extensions.Mocking.Types
         }
 
         /// <inheritdoc cref="IMockResponseExtensions.ResponseIsDelayed"/>
-        public IMockResponseExtensions ResponseIsDelayed(int seconds, int delayCount = 0)
+        public virtual IMockResponseExtensions ResponseIsDelayed(int seconds, int delayCount = 0)
         {
             if(Dependencies.HasDependency<DelayedResponseDependency>())
             {
