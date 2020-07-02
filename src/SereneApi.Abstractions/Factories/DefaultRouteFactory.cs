@@ -25,7 +25,7 @@ namespace SereneApi.Abstractions.Factories
         public string ResourcePath { get; }
 
         #endregion
-        #region Conclassors
+        #region Constructors
 
         /// <summary>
         /// Instantiates a new instance of <see cref="DefaultRouteFactory"/> with an empty Resource Path.

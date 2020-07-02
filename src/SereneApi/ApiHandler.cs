@@ -29,7 +29,7 @@ namespace SereneApi
         public IConnectionSettings Connection { get; }
 
         #endregion
-        #region Conclassors
+        #region Constructors
 
         /// <summary>
         /// Creates a new instance of the <see cref="ApiHandler"/>.

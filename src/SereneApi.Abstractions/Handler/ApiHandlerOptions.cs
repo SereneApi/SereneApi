@@ -16,7 +16,7 @@ namespace SereneApi.Abstractions.Handler
         public IConnectionSettings Connection { get; set; }
 
         #endregion
-        #region Conclassors
+        #region Constructors
 
         public ApiHandlerOptions(IDependencyProvider dependencies, IConnectionSettings connection)
         {
