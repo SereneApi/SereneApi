@@ -2,6 +2,8 @@ using SereneApi.Abstractions;
 using SereneApi.Abstractions.Handler;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Handler.Options;
+using SereneApi.Abstractions.Responses;
 
 namespace SereneApi
 {

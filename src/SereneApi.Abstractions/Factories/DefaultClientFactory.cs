@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Configuration;
 
 namespace SereneApi.Abstractions.Factories
 {

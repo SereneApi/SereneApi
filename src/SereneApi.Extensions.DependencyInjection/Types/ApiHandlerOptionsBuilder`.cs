@@ -10,6 +10,9 @@ using SereneApi.Abstractions.Types;
 using SereneApi.Extensions.DependencyInjection.Helpers;
 using SereneApi.Extensions.DependencyInjection.Interfaces;
 using System;
+using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Handler.Options;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace SereneApi.Extensions.DependencyInjection.Types
 {
@@ -81,9 +84,8 @@ namespace SereneApi.Extensions.DependencyInjection.Types
         /// </summary>
         public IApiHandlerOptions<TApiDefinition> BuildOptions(IServiceCollection services)
         {
-            Dependencies.TryAddScoped<IConnectionSettings>(() => Connection);
-            Dependencies.TryAddScoped<IRouteFactory>(p => new DefaultRouteFactory(p));
-            Dependencies.TryAddScoped<IServiceProvider>(services.BuildServiceProvider);
+            Dependencies.AddScoped<IConnectionSettings>(() => Connection);
+            Dependencies.AddScoped<IServiceProvider>(services.BuildServiceProvider);
 
             IApiHandlerOptions<TApiDefinition> options = new ApiHandlerOptions<TApiDefinition>(Dependencies.BuildProvider(), Connection);
 

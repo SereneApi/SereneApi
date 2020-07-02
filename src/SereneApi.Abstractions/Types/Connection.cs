@@ -1,5 +1,6 @@
 ﻿using SereneApi.Abstractions.Helpers;
 using System;
+using SereneApi.Abstractions.Configuration;
 
 namespace SereneApi.Abstractions.Types
 {

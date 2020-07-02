@@ -5,6 +5,8 @@ using SereneApi.Tests.Interfaces;
 using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Handler.Options;
+using SereneApi.Abstractions.Responses;
 
 namespace SereneApi.Tests.Mock
 {

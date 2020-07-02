@@ -6,6 +6,9 @@ using SereneApi.Abstractions.Types;
 using SereneApi.Extensions.DependencyInjection.Types.Authenticators;
 using System;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Handler.Extensions;
+using SereneApi.Abstractions.Responses;
 
 // Do not change namespace
 // ReSharper disable once CheckNamespace

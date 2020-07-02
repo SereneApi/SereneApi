@@ -2,6 +2,8 @@
 using SereneApi.Abstractions;
 using SereneApi.Abstractions.Handler;
 using System;
+using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Handler.Options;
 
 namespace SereneApi.Extensions.DependencyInjection.Types
 {

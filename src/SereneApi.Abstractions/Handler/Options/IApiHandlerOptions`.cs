@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SereneApi.Abstractions.Handler
+namespace SereneApi.Abstractions.Handler.Options
 {
     /// <summary>
     /// The options used to create the <see cref="ApiHandler"/>.

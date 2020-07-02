@@ -3,6 +3,7 @@ using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Types;
 using Shouldly;
 using System;
+using SereneApi.Abstractions.Configuration;
 using Xunit;
 
 namespace SereneApi.Tests.Factories

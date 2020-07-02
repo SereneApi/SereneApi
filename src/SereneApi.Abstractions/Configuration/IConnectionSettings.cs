@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SereneApi.Abstractions
+namespace SereneApi.Abstractions.Configuration
 {
     public interface IConnectionSettings
     {

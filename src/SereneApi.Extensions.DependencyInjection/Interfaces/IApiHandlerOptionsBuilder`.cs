@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Handler;
 using System;
+using SereneApi.Abstractions.Handler.Options;
 
 namespace SereneApi.Extensions.DependencyInjection.Interfaces
 {

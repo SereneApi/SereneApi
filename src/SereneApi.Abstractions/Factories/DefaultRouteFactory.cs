@@ -2,11 +2,12 @@
 using SereneApi.Abstractions.Helpers;
 using System;
 using System.Linq;
+using SereneApi.Abstractions.Configuration;
 
 namespace SereneApi.Abstractions.Factories
 {
     /// <inheritdoc cref="IRouteFactory"/>
-    public sealed class DefaultRouteFactory: IRouteFactory
+    internal class DefaultRouteFactory: IRouteFactory
     {
         #region Variables
 

@@ -1,8 +1,9 @@
-﻿using DeltaWare.Dependencies;
-using System;
+﻿using System;
 using System.Diagnostics;
+using DeltaWare.Dependencies;
+using SereneApi.Abstractions.Configuration;
 
-namespace SereneApi.Abstractions.Handler
+namespace SereneApi.Abstractions.Handler.Options
 {
     [DebuggerDisplay("Source: {Connection.BaseAddress.ToString()}")]
     public class ApiHandlerOptions: IApiHandlerOptions

@@ -3,7 +3,10 @@ using System.Threading.Tasks;
 using DeltaWare.Dependencies;
 using SereneApi.Abstractions;
 using SereneApi.Abstractions.Authenticators;
+using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Handler;
+using SereneApi.Abstractions.Handler.Extensions;
+using SereneApi.Abstractions.Responses;
 using SereneApi.Abstractions.Types;
 
 namespace SereneApi.Extensions

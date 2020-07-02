@@ -8,6 +8,9 @@ using SereneApi.Types;
 using System;
 using System.Diagnostics;
 using System.Net.Http;
+using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Handler.Options;
+using SereneApi.Abstractions.Responses;
 
 namespace SereneApi
 {

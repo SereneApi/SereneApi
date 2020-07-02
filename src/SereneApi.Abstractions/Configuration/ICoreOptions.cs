@@ -1,6 +1,6 @@
 ﻿using DeltaWare.Dependencies;
 
-namespace SereneApi.Abstractions
+namespace SereneApi.Abstractions.Configuration
 {
     public interface ICoreOptions
     {

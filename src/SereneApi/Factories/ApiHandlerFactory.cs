@@ -5,6 +5,9 @@ using SereneApi.Helpers;
 using SereneApi.Types;
 using System;
 using System.Collections.Generic;
+using SereneApi.Abstractions.Factories;
+using SereneApi.Abstractions.Handler.Extensions;
+using SereneApi.Abstractions.Handler.Options;
 
 namespace SereneApi.Factories
 {

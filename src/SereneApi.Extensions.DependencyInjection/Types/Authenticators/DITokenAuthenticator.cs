@@ -6,6 +6,7 @@ using SereneApi.Abstractions.Authenticators;
 using SereneApi.Abstractions.Types;
 using System;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Responses;
 
 namespace SereneApi.Extensions.DependencyInjection.Types.Authenticators
 {

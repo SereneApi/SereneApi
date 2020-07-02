@@ -1,5 +1,6 @@
 ﻿using SereneApi.Abstractions;
 using System;
+using SereneApi.Abstractions.Responses;
 
 namespace SereneApi.Types
 {

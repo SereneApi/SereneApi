@@ -6,6 +6,8 @@ using SereneApi.Extensions.Mocking.Types;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Handler.Extensions;
 
 // Do not change namespace
 // ReSharper disable once CheckNamespace

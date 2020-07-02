@@ -1,14 +1,15 @@
-﻿using DeltaWare.Dependencies;
+﻿using System;
+using System.Net;
+using DeltaWare.Dependencies;
 using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Authentication;
+using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Helpers;
 using SereneApi.Abstractions.Requests.Content;
 using SereneApi.Abstractions.Types;
-using System;
-using System.Net;
 
-namespace SereneApi.Abstractions.Handler
+namespace SereneApi.Abstractions.Handler.Options
 {
     public class ApiHandlerOptionsBuilder: IApiHandlerOptionsBuilder, ICoreOptions
     {
@@ -122,9 +123,7 @@ namespace SereneApi.Abstractions.Handler
 
         public IApiHandlerOptions BuildOptions()
         {
-            Dependencies.TryAddScoped<IConnectionSettings>(() => Connection);
-            Dependencies.TryAddScoped<IRouteFactory>(p => new DefaultRouteFactory(p));
-            Dependencies.TryAddScoped<IClientFactory>(p => new DefaultClientFactory(p));
+            Dependencies.AddScoped<IConnectionSettings>(() => Connection);
 
             IApiHandlerOptions options = new ApiHandlerOptions(Dependencies.BuildProvider(), Connection);
 

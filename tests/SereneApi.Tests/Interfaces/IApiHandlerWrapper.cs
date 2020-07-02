@@ -3,6 +3,8 @@ using SereneApi.Interfaces;
 using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Responses;
 
 namespace SereneApi.Tests.Interfaces
 {

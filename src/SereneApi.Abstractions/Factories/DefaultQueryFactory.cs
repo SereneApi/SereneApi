@@ -9,7 +9,7 @@ using System.Text;
 namespace SereneApi.Abstractions.Factories
 {
     /// <inheritdoc cref="IQueryFactory"/>
-    public sealed class DefaultQueryFactory: IQueryFactory
+    internal class DefaultQueryFactory: IQueryFactory
     {
         private readonly ObjectToStringFormatter _formatter;
 

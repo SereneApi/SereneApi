@@ -9,6 +9,9 @@ using SereneApi.Extensions.DependencyInjection.Factories;
 using SereneApi.Extensions.DependencyInjection.Interfaces;
 using SereneApi.Extensions.DependencyInjection.Types;
 using System;
+using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Handler.Extensions;
+using SereneApi.Abstractions.Handler.Options;
 
 // Do not change namespace
 // ReSharper disable once CheckNamespace
@@ -27,7 +30,7 @@ namespace SereneApi.Extensions.DependencyInjection
 
             IDependencyCollection dependencies = GetDependencies(serviceProvider.GetService<IApiHandlerOptionsBuilder<TApiDefinition>>());
 
-            return new ApiHandlerExtensions<TApiDefinition>(dependencies);
+            return new ApiHandlerExtensions(dependencies);
         }
 
         /// <summary>
@@ -41,7 +44,7 @@ namespace SereneApi.Extensions.DependencyInjection
 
             IDependencyCollection dependencies = GetDependencies(serviceProvider.GetService<IApiHandlerOptionsBuilder<TApiDefinition>>());
 
-            IApiHandlerExtensions extensions = new ApiHandlerExtensions<TApiDefinition>(dependencies);
+            IApiHandlerExtensions extensions = new ApiHandlerExtensions(dependencies);
 
             factory.Invoke(extensions);
         }
@@ -64,7 +67,7 @@ namespace SereneApi.Extensions.DependencyInjection
 
             services.TryAdd(new ServiceDescriptor(typeof(IApiHandlerOptions<TApiDefinition>), p => BuildApiHandlerOptions<TApiDefinition>(p, services), ServiceLifetime.Scoped));
 
-            return new ApiHandlerExtensions<TApiDefinition>(builder.Dependencies);
+            return new ApiHandlerExtensions(builder.Dependencies);
         }
 
         /// <summary>
@@ -89,7 +92,7 @@ namespace SereneApi.Extensions.DependencyInjection
             services.TryAdd(new ServiceDescriptor(typeof(IApiHandlerOptions<TApiDefinition>),
                 p => BuildApiHandlerOptions<TApiDefinition>(p, services), ServiceLifetime.Scoped));
 
-            return new ApiHandlerExtensions<TApiDefinition>(builder.Dependencies);
+            return new ApiHandlerExtensions(builder.Dependencies);
         }
 
 
