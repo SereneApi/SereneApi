@@ -1,4 +1,4 @@
-﻿namespace SereneApi.Abstractions.Requests.Content
+﻿namespace SereneApi.Abstractions.Request.Content
 {
     public enum ContentType
     {

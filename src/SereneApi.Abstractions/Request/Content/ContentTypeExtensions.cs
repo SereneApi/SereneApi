@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace SereneApi.Abstractions.Requests.Content
+namespace SereneApi.Abstractions.Request.Content
 {
     public static class ContentTypeExtensions
     {
-        public static string ToTypestring(this ContentType mediaType)
+        public static string ToTypeString(this ContentType mediaType)
         {
             return mediaType switch
             {

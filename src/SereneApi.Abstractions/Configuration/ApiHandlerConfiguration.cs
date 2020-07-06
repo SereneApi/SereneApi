@@ -1,7 +1,7 @@
 ﻿using DeltaWare.Dependencies;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Handler.Options;
-using SereneApi.Abstractions.Requests.Content;
+using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Serializers;
 using System;
 using System.Net;
@@ -28,15 +28,14 @@ namespace SereneApi.Abstractions.Configuration
 
         public ApiHandlerConfiguration()
         {
-            _dependencyFactory = collection =>
+            _dependencyFactory = dependencies =>
             {
-                collection.AddTransient<IApiHandlerConfiguration>(() => this);
-                collection.AddScoped(() => QueryFactory);
-                collection.AddScoped(() => Serializer);
-                collection.AddScoped(() => ContentType);
-                collection.AddScoped(() => Credentials);
-                collection.AddScoped<IRouteFactory>(p => new DefaultRouteFactory(p));
-                collection.AddScoped<IClientFactory>(p => new DefaultClientFactory(p));
+                dependencies.AddScoped(() => QueryFactory);
+                dependencies.AddScoped(() => Serializer);
+                dependencies.AddScoped(() => ContentType);
+                dependencies.AddScoped(() => Credentials);
+                dependencies.AddScoped<IRouteFactory>(p => new DefaultRouteFactory(p));
+                dependencies.AddScoped<IClientFactory>(p => new DefaultClientFactory(p));
             };
         }
 
@@ -47,11 +46,13 @@ namespace SereneApi.Abstractions.Configuration
 
         public IOptionsBuilder GetOptionsBuilder()
         {
-            OptionsBuilder optionsBuilder = new OptionsBuilder();
+            OptionsBuilder builder = new OptionsBuilder();
 
-            _dependencyFactory.Invoke(optionsBuilder.Dependencies);
+            _dependencyFactory.Invoke(builder.Dependencies);
 
-            return optionsBuilder;
+            builder.Dependencies.TryAddTransient<IApiHandlerConfiguration>(() => this);
+
+            return builder;
         }
 
         public TBuilder GetOptionsBuilder<TBuilder>() where TBuilder : IOptionsBuilder, new()
@@ -59,6 +60,8 @@ namespace SereneApi.Abstractions.Configuration
             TBuilder builder = new TBuilder();
 
             _dependencyFactory.Invoke(builder.Dependencies);
+
+            builder.Dependencies.TryAddTransient<IApiHandlerConfiguration>(() => this);
 
             return builder;
         }

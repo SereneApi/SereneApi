@@ -1,4 +1,4 @@
-﻿namespace SereneApi.Abstractions.Types
+﻿namespace SereneApi.Abstractions.Authentication
 {
     public class TokenInfo
     {

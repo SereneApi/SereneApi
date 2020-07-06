@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Handler.Options;
 using SereneApi.Abstractions.Helpers;
-using SereneApi.Abstractions.Types;
 using SereneApi.Extensions.DependencyInjection.Helpers;
 using SereneApi.Extensions.DependencyInjection.Interfaces;
 using System;
@@ -42,7 +41,7 @@ namespace SereneApi.Extensions.DependencyInjection.Types
                 }
             }
 
-            Connection = new Connection(source, resource, resourcePath)
+            ConnectionSettings = new ConnectionSettings(source, resource, resourcePath)
             {
                 Timeout = handlerConfiguration.Timeout,
                 RetryAttempts = handlerConfiguration.RetryCount
@@ -61,7 +60,7 @@ namespace SereneApi.Extensions.DependencyInjection.Types
 
                 if(timeout != default)
                 {
-                    Connection.Timeout = timeout;
+                    ConnectionSettings.Timeout = timeout;
                 }
             }
 
@@ -82,7 +81,7 @@ namespace SereneApi.Extensions.DependencyInjection.Types
 
             Rules.ValidateRetryAttempts(retryCount);
 
-            Connection.RetryAttempts = retryCount;
+            ConnectionSettings.RetryAttempts = retryCount;
 
             #endregion
         }
@@ -100,9 +99,9 @@ namespace SereneApi.Extensions.DependencyInjection.Types
         /// </summary>
         public new IOptions<TApiDefinition> BuildOptions()
         {
-            Dependencies.AddScoped<IConnectionSettings>(() => Connection);
+            Dependencies.AddScoped<IConnectionSettings>(() => ConnectionSettings);
 
-            IOptions<TApiDefinition> options = new Options<TApiDefinition>(Dependencies.BuildProvider(), Connection);
+            IOptions<TApiDefinition> options = new Options<TApiDefinition>(Dependencies.BuildProvider(), ConnectionSettings);
 
             return options;
         }

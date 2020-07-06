@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SereneApi.Abstractions.Responses
+namespace SereneApi.Abstractions.Response
 {
     /// <summary>
     /// The response received from the API.

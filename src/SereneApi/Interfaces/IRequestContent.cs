@@ -1,4 +1,4 @@
-﻿using SereneApi.Abstractions.Requests;
+﻿using SereneApi.Abstractions.Request.Content;
 using System;
 using System.Linq.Expressions;
 

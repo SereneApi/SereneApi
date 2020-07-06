@@ -1,6 +1,7 @@
-﻿using System;
+﻿using SereneApi.Abstractions.Request.Content;
+using System;
 
-namespace SereneApi.Abstractions.Requests
+namespace SereneApi.Abstractions.Request
 {
     /// <summary>
     /// A request to be performed against an API.

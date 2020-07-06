@@ -1,10 +1,9 @@
-﻿using SereneApi.Abstractions.Configuration;
-using SereneApi.Abstractions.Helpers;
+﻿using SereneApi.Abstractions.Helpers;
 using System;
 
-namespace SereneApi.Abstractions.Types
+namespace SereneApi.Abstractions.Configuration
 {
-    public class Connection: IConnectionSettings
+    public class ConnectionSettings: IConnectionSettings
     {
         public Uri BaseAddress { get; }
 
@@ -18,7 +17,7 @@ namespace SereneApi.Abstractions.Types
 
         public int RetryAttempts { get; set; }
 
-        public Connection(string baseAddress, string resource = default, string resourcePath = default)
+        public ConnectionSettings(string baseAddress, string resource = default, string resourcePath = default)
         {
             ExceptionHelper.EnsureParameterIsNotNull(baseAddress, nameof(baseAddress));
 

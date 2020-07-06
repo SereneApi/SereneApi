@@ -3,7 +3,7 @@ using System;
 using System.Net.Http;
 using System.Text;
 
-namespace SereneApi.Abstractions.Requests.Content
+namespace SereneApi.Abstractions.Request.Content
 {
     public class JsonContent: IApiRequestContent
     {

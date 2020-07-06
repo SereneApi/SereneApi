@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
-using SereneApi.Abstractions.Requests;
-using SereneApi.Abstractions.Requests.Content;
+using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Serializers;
 using System.Net.Http;
 using System.Threading.Tasks;

@@ -1,6 +1,6 @@
 ﻿using DependencyInjection.API;
 using Microsoft.AspNetCore.Mvc;
-using SereneApi.Abstractions.Responses;
+using SereneApi.Abstractions.Response;
 using System.Threading.Tasks;
 
 namespace DependencyInjection.WebUi.Controllers

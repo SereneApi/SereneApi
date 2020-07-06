@@ -1,4 +1,4 @@
-﻿using SereneApi.Abstractions.Requests;
+﻿using SereneApi.Abstractions.Request;
 
 // Do not change namespace
 // ReSharper disable once CheckNamespace

@@ -34,9 +34,9 @@ namespace SereneApi.Abstractions.Helpers
         /// </summary>
         public static Uri EnsureSourceSlashTermination(Uri value)
         {
-            string valuestring = EnsureSourceSlashTermination(value.ToString());
+            string valueString = EnsureSourceSlashTermination(value.ToString());
 
-            return new Uri(valuestring);
+            return new Uri(valueString);
         }
 
         /// <summary>
@@ -66,9 +66,9 @@ namespace SereneApi.Abstractions.Helpers
         /// </summary>
         public static Uri EnsureSourceNoSlashTermination(Uri value)
         {
-            string valuestring = EnsureSourceNoSlashTermination(value.ToString());
+            string valueString = EnsureSourceNoSlashTermination(value.ToString());
 
-            return new Uri(valuestring);
+            return new Uri(valueString);
         }
 
         /// <summary>

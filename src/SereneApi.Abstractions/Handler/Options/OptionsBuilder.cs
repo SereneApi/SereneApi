@@ -4,8 +4,7 @@ using SereneApi.Abstractions.Authentication;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Helpers;
-using SereneApi.Abstractions.Requests.Content;
-using SereneApi.Abstractions.Types;
+using SereneApi.Abstractions.Request.Content;
 using System;
 using System.Net;
 
@@ -15,7 +14,7 @@ namespace SereneApi.Abstractions.Handler.Options
     {
         public IDependencyCollection Dependencies { get; } = new DependencyCollection();
 
-        protected Connection Connection { get; set; }
+        protected ConnectionSettings ConnectionSettings { get; set; }
 
         /// <inheritdoc cref="IOptionsConfigurator.UseSource"/>
         public void UseSource(string source, string resource = null, string resourcePath = null)
@@ -34,7 +33,7 @@ namespace SereneApi.Abstractions.Handler.Options
                 }
             }
 
-            Connection = new Connection(source, resource, resourcePath)
+            ConnectionSettings = new ConnectionSettings(source, resource, resourcePath)
             {
                 Timeout = configuration.Timeout,
                 RetryAttempts = configuration.RetryCount
@@ -46,25 +45,25 @@ namespace SereneApi.Abstractions.Handler.Options
         /// </inheritdoc>
         public void SetTimeoutPeriod(int seconds)
         {
-            if(Connection == null)
+            if(ConnectionSettings == null)
             {
                 throw new MethodAccessException("Source information must be supplied fired.");
             }
 
-            Connection.Timeout = seconds;
+            ConnectionSettings.Timeout = seconds;
         }
 
         /// <inheritdoc cref="IOptionsConfigurator.SetRetryAttempts"/>
         public void SetRetryAttempts(int attemptCount)
         {
-            if(Connection == null)
+            if(ConnectionSettings == null)
             {
                 throw new MethodAccessException("Source information must be supplied fired.");
             }
 
             Rules.ValidateRetryAttempts(attemptCount);
 
-            Connection.RetryAttempts = attemptCount;
+            ConnectionSettings.RetryAttempts = attemptCount;
         }
 
         /// <inheritdoc cref="IOptionsConfigurator.AddLogger"/>
@@ -125,9 +124,9 @@ namespace SereneApi.Abstractions.Handler.Options
 
         public IOptions BuildOptions()
         {
-            Dependencies.AddScoped<IConnectionSettings>(() => Connection);
+            Dependencies.AddScoped<IConnectionSettings>(() => ConnectionSettings);
 
-            IOptions options = new Options(Dependencies.BuildProvider(), Connection);
+            IOptions options = new Options(Dependencies.BuildProvider(), ConnectionSettings);
 
             return options;
         }

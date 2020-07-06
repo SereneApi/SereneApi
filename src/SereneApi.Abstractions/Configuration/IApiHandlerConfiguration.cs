@@ -1,6 +1,6 @@
 ﻿using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Handler.Options;
-using SereneApi.Abstractions.Requests.Content;
+using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Serializers;
 using System.Net;
 

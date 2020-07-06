@@ -1,4 +1,4 @@
-﻿namespace SereneApi.Abstractions.Requests
+﻿namespace SereneApi.Abstractions.Request.Content
 {
     /// <summary>
     /// The content to be sent in the body of an <see cref="IApiRequest"/>.

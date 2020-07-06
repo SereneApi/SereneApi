@@ -1,4 +1,4 @@
-﻿namespace SereneApi.Abstractions.Requests
+﻿namespace SereneApi.Abstractions.Request
 {
     /// <summary>
     /// The API Method in which the RESTful request will be made.

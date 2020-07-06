@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Authentication;
 using SereneApi.Abstractions.Factories;
-using SereneApi.Abstractions.Requests.Content;
+using SereneApi.Abstractions.Request.Content;
 using System.Net;
 
 namespace SereneApi.Abstractions.Handler.Options

@@ -1,6 +1,6 @@
 ﻿using SereneApi.Abstractions.Handler.Options;
-using SereneApi.Abstractions.Requests;
-using SereneApi.Abstractions.Responses;
+using SereneApi.Abstractions.Request;
+using SereneApi.Abstractions.Response;
 using SereneApi.Interfaces;
 using SereneApi.Tests.Interfaces;
 using System;
