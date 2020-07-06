@@ -3,12 +3,15 @@ using SereneApi;
 using SereneApi.Abstractions;
 using SereneApi.Abstractions.Handler;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Handler.Options;
+using SereneApi.Abstractions.Requests;
+using SereneApi.Abstractions.Responses;
 
 namespace DependencyInjection.WebUi.Handlers
 {
     public class ValuesApiHandler: ApiHandler, IValuesApi
     {
-        public ValuesApiHandler(IApiHandlerOptions<IValuesApi> options) : base(options)
+        public ValuesApiHandler(IOptions<IValuesApi> options) : base(options)
         {
         }
 

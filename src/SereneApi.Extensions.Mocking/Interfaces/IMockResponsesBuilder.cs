@@ -2,6 +2,7 @@
 using SereneApi.Abstractions.Requests;
 using SereneApi.Abstractions.Serializers;
 using System;
+using SereneApi.Abstractions.Responses;
 
 namespace SereneApi.Extensions.Mocking.Interfaces
 {

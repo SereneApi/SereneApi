@@ -7,6 +7,7 @@ using SereneApi.Tests.Mock;
 using Shouldly;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Requests;
 using SereneApi.Abstractions.Responses;
 using Xunit;
 

@@ -1,6 +1,7 @@
 ﻿using SereneApi.Abstractions;
 using SereneApi.Extensions.Mocking.Types;
 using System;
+using SereneApi.Abstractions.Requests;
 
 namespace SereneApi.Extensions.Mocking.Interfaces
 {

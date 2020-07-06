@@ -2,6 +2,7 @@
 using DependencyInjection.API.DTOs;
 using SereneApi;
 using SereneApi.Abstractions.Handler;
+using SereneApi.Abstractions.Handler.Options;
 
 namespace DependencyInjection.WebUi.Handlers
 {
@@ -11,7 +12,7 @@ namespace DependencyInjection.WebUi.Handlers
     // This will become apparent in the Class Page.
     public class ClassApiHandler: CrudApiHandler<ClassDto, long>, IClassApi
     {
-        public ClassApiHandler(IApiHandlerOptions<IClassApi> options) : base(options)
+        public ClassApiHandler(IOptions<IClassApi> options) : base(options)
         {
         }
     }

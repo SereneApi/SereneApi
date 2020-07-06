@@ -1,5 +1,8 @@
 ﻿// Do note change namespace
 // ReSharper disable once CheckNamespace
+
+using SereneApi.Abstractions.Responses;
+
 namespace SereneApi.Abstractions.Enums
 {
     public static class StatusExtensions

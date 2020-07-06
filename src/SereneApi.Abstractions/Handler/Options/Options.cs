@@ -6,20 +6,20 @@ using SereneApi.Abstractions.Configuration;
 namespace SereneApi.Abstractions.Handler.Options
 {
     [DebuggerDisplay("Source: {Connection.BaseAddress.ToString()}")]
-    public class ApiHandlerOptions: IApiHandlerOptions
+    public class Options: IOptions
     {
         #region Properties
 
-        /// <inheritdoc cref="IApiHandlerOptions.Dependencies"/>
+        /// <inheritdoc cref="IOptions.Dependencies"/>
         public IDependencyProvider Dependencies { get; }
 
-        /// <inheritdoc cref="IApiHandlerOptions.Connection"/>
+        /// <inheritdoc cref="IOptions.Connection"/>
         public IConnectionSettings Connection { get; set; }
 
         #endregion
         #region Constructors
 
-        public ApiHandlerOptions(IDependencyProvider dependencies, IConnectionSettings connection)
+        public Options(IDependencyProvider dependencies, IConnectionSettings connection)
         {
             Dependencies = dependencies;
             Connection = connection;

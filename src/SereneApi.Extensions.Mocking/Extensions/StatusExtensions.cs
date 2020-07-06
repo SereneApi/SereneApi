@@ -1,5 +1,6 @@
 ﻿
 using System.Net;
+using SereneApi.Abstractions.Responses;
 
 // Do note change namespace
 // ReSharper disable once CheckNamespace

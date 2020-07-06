@@ -7,7 +7,7 @@ using SereneApi.Abstractions.Requests.Content;
 
 namespace SereneApi.Abstractions.Handler.Options
 {
-    public interface IApiHandlerOptionsBuilder: IDisposable
+    public interface IOptionsConfigurator
     {
         void UseSource(string source, string resource = null, string resourcePath = null);
 

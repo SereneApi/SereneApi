@@ -8,6 +8,7 @@ using SereneApi.Extensions.Mocking.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SereneApi.Abstractions.Responses;
 
 namespace SereneApi.Extensions.Mocking.Types
 {

@@ -2,6 +2,7 @@
 using SereneApi.Abstractions;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Responses;
 
 namespace DependencyInjection.API
 {

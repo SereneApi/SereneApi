@@ -11,7 +11,7 @@ using SereneApi.Abstractions.Types;
 
 namespace SereneApi.Abstractions.Handler.Options
 {
-    public class ApiHandlerOptionsBuilder: IApiHandlerOptionsBuilder, ICoreOptions
+    public class OptionsBuilder: IOptionsBuilder
     {
         public IDependencyCollection Dependencies { get; }
 
@@ -19,7 +19,7 @@ namespace SereneApi.Abstractions.Handler.Options
 
         #region Constructors
 
-        public ApiHandlerOptionsBuilder()
+        public OptionsBuilder()
         {
             Dependencies = new DependencyCollection();
 
@@ -31,7 +31,7 @@ namespace SereneApi.Abstractions.Handler.Options
 
         #endregion
 
-        /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseSource"/>
+        /// <inheritdoc cref="IOptionsConfigurator.UseSource"/>
         public void UseSource(string source, string resource = null, string resourcePath = null)
         {
             ExceptionHelper.EnsureParameterIsNotNull(source, nameof(source));
@@ -52,7 +52,7 @@ namespace SereneApi.Abstractions.Handler.Options
             Connection.Timeout = seconds;
         }
 
-        /// <inheritdoc cref="IApiHandlerOptionsBuilder.SetRetryAttempts"/>
+        /// <inheritdoc cref="IOptionsConfigurator.SetRetryAttempts"/>
         public void SetRetryAttempts(int attemptCount)
         {
             if(Connection == null)
@@ -65,25 +65,25 @@ namespace SereneApi.Abstractions.Handler.Options
             Connection.RetryAttempts = attemptCount;
         }
 
-        /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddLogger"/>
+        /// <inheritdoc cref="IOptionsConfigurator.AddLogger"/>
         public void AddLogger(ILogger logger)
         {
             Dependencies.AddScoped(() => logger);
         }
 
-        /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseQueryFactory"/>
+        /// <inheritdoc cref="IOptionsConfigurator.UseQueryFactory"/>
         public void UseQueryFactory(IQueryFactory queryFactory)
         {
             Dependencies.AddScoped(() => queryFactory);
         }
 
-        /// <inheritdoc cref="IApiHandlerOptionsBuilder.UseCredentials"/>
+        /// <inheritdoc cref="IOptionsConfigurator.UseCredentials"/>
         public void UseCredentials(ICredentials credentials)
         {
             Dependencies.AddScoped(() => credentials);
         }
 
-        /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddAuthentication"/>
+        /// <inheritdoc cref="IOptionsConfigurator.AddAuthentication"/>
         public void AddAuthentication(IAuthentication authentication)
         {
             if(Dependencies.HasDependency<IAuthentication>())
@@ -94,7 +94,7 @@ namespace SereneApi.Abstractions.Handler.Options
             Dependencies.AddScoped(() => authentication);
         }
 
-        /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddBasicAuthentication"/>
+        /// <inheritdoc cref="IOptionsConfigurator.AddBasicAuthentication"/>
         public void AddBasicAuthentication(string username, string password)
         {
             if(Dependencies.HasDependency<IAuthentication>())
@@ -105,7 +105,7 @@ namespace SereneApi.Abstractions.Handler.Options
             Dependencies.AddTransient<IAuthentication>(() => new BasicAuthentication(username, password));
         }
 
-        /// <inheritdoc cref="IApiHandlerOptionsBuilder.AddBearerAuthentication"/>
+        /// <inheritdoc cref="IOptionsConfigurator.AddBearerAuthentication"/>
         public void AddBearerAuthentication(string token)
         {
             if(Dependencies.HasDependency<IAuthentication>())
@@ -121,11 +121,11 @@ namespace SereneApi.Abstractions.Handler.Options
             Dependencies.AddScoped(() => content);
         }
 
-        public IApiHandlerOptions BuildOptions()
+        public IOptions BuildOptions()
         {
             Dependencies.AddScoped<IConnectionSettings>(() => Connection);
 
-            IApiHandlerOptions options = new ApiHandlerOptions(Dependencies.BuildProvider(), Connection);
+            IOptions options = new Options(Dependencies.BuildProvider(), Connection);
 
             return options;
         }

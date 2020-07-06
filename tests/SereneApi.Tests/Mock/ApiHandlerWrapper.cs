@@ -6,13 +6,14 @@ using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using SereneApi.Abstractions.Handler.Options;
+using SereneApi.Abstractions.Requests;
 using SereneApi.Abstractions.Responses;
 
 namespace SereneApi.Tests.Mock
 {
     public class ApiHandlerWrapper: ApiHandler, IApiHandlerWrapper
     {
-        public ApiHandlerWrapper(IApiHandlerOptions options) : base(options)
+        public ApiHandlerWrapper(IOptions options) : base(options)
         {
         }
 

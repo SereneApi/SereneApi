@@ -37,8 +37,8 @@ namespace SereneApi
         /// <summary>
         /// Creates a new instance of the <see cref="ApiHandler"/>.
         /// </summary>
-        /// <param name="options">The <see cref="IApiHandlerOptions"/> the <see cref="ApiHandler"/> will use when making requests.</param>
-        protected ApiHandler(IApiHandlerOptions options)
+        /// <param name="options">The <see cref="IOptions"/> the <see cref="ApiHandler"/> will use when making requests.</param>
+        protected ApiHandler(IOptions options)
         {
             Connection = options.Connection;
             Dependencies = options.Dependencies;

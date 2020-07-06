@@ -1,5 +1,6 @@
 ﻿using SereneApi.Abstractions;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Responses;
 
 namespace DependencyInjection.API
 {

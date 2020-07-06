@@ -5,6 +5,7 @@ using SereneApi.Extensions.Mocking.Types.Dependencies;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Responses;
 
 namespace SereneApi.Extensions.Mocking.Interfaces
 {

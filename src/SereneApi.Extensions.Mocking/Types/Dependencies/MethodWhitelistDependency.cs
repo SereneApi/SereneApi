@@ -1,4 +1,5 @@
 ﻿using SereneApi.Abstractions;
+using SereneApi.Abstractions.Requests;
 using SereneApi.Extensions.Mocking.Enums;
 using SereneApi.Extensions.Mocking.Interfaces;
 

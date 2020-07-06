@@ -4,6 +4,6 @@ namespace SereneApi.Abstractions.Configuration
 {
     public interface IConfiguration
     {
-        IApiHandlerConfiguration ApiHandler { get; set; }
+        IApiHandlerConfiguration ApiHandler { get; }
     }
 }

@@ -4,7 +4,7 @@ using SereneApi.Abstractions.Configuration;
 
 namespace SereneApi.Abstractions.Handler.Options
 {
-    public interface IApiHandlerOptions: IDisposable
+    public interface IOptions: IDisposable
     {
         IDependencyProvider Dependencies { get; }
 

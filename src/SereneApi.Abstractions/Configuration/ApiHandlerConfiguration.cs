@@ -2,6 +2,7 @@
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Helpers;
 using System;
+using SereneApi.Abstractions.Handler.Options;
 
 namespace SereneApi.Abstractions.Configuration
 {
@@ -17,6 +18,24 @@ namespace SereneApi.Abstractions.Configuration
         public ApiHandlerConfiguration(Action<IDependencyCollection> defaultBuilder)
         {
             _defaultBuilder = defaultBuilder;
+        }
+
+        public IOptionsBuilder GetOptionsBuilder()
+        {
+            OptionsBuilder optionsBuilder = new OptionsBuilder();
+
+            ConfigureDefaultDependencies(optionsBuilder.Dependencies);
+
+            return optionsBuilder;
+        }
+
+        public IOptionsBuilder GetOptionsBuilder<TBuilder>() where TBuilder : IOptionsBuilder, new()
+        {
+            TBuilder builder = new TBuilder();
+
+            ConfigureDefaultDependencies(builder.Dependencies);
+
+            return builder;
         }
 
         public static IApiHandlerConfiguration Default { get; } = new ApiHandlerConfiguration(d =>
