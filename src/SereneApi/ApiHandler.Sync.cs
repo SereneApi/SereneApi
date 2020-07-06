@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
-using SereneApi.Abstractions;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Requests;
+using SereneApi.Abstractions.Responses;
 using SereneApi.Abstractions.Serializers;
 using SereneApi.Extensions;
 using SereneApi.Helpers;
@@ -12,7 +12,6 @@ using System.Linq.Expressions;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using SereneApi.Abstractions.Responses;
 
 namespace SereneApi
 {

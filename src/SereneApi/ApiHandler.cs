@@ -1,16 +1,15 @@
 ﻿using DeltaWare.Dependencies;
 using Microsoft.Extensions.Logging;
-using SereneApi.Abstractions;
+using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Enums;
 using SereneApi.Abstractions.Handler;
+using SereneApi.Abstractions.Handler.Options;
+using SereneApi.Abstractions.Responses;
 using SereneApi.Extensions;
 using SereneApi.Types;
 using System;
 using System.Diagnostics;
 using System.Net.Http;
-using SereneApi.Abstractions.Configuration;
-using SereneApi.Abstractions.Handler.Options;
-using SereneApi.Abstractions.Responses;
 
 namespace SereneApi
 {

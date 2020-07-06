@@ -2,16 +2,15 @@
 using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using SereneApi.Abstractions;
+using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Handler;
+using SereneApi.Abstractions.Handler.Extensions;
+using SereneApi.Abstractions.Handler.Options;
 using SereneApi.Extensions.DependencyInjection.Factories;
 using SereneApi.Extensions.DependencyInjection.Interfaces;
 using SereneApi.Extensions.DependencyInjection.Types;
 using System;
-using SereneApi.Abstractions.Configuration;
-using SereneApi.Abstractions.Handler.Extensions;
-using SereneApi.Abstractions.Handler.Options;
 
 // Do not change namespace
 // ReSharper disable once CheckNamespace
@@ -19,6 +18,27 @@ namespace SereneApi.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {
+        public static void ConfigureSereneApi(this IServiceCollection services, IApiHandlerConfiguration configuration)
+        {
+            ServiceDescriptor service = ServiceDescriptor.Singleton(configuration);
+
+            if(!services.Contains(service))
+            {
+                throw new ArgumentException();
+            }
+
+            services.AddSingleton(configuration);
+        }
+
+        public static void ConfigureSereneApi(this IServiceCollection services, Action<ApiHandlerConfiguration> factory)
+        {
+            ApiHandlerConfiguration configuration = (ApiHandlerConfiguration)ApiHandlerConfiguration.Default;
+
+            factory.Invoke(configuration);
+
+            services.ConfigureSereneApi(configuration);
+        }
+
         /// <summary>
         /// Allows a registered <see cref="ApiHandler"/> to be extended upon.
         /// </summary>
@@ -58,23 +78,27 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <param name="factory">An action to configure the <see cref="ApiHandler"/></param>
         public static IApiHandlerExtensions RegisterApiHandler<TApiDefinition, TApiImplementation>(this IServiceCollection services, Action<IOptionsConfigurator<TApiDefinition>> factory) where TApiDefinition : class where TApiImplementation : class, IApiHandler, TApiDefinition
         {
-            services.TryAddSingleton(Configuration.Default);
+            services.TryAddSingleton(ApiHandlerConfiguration.Default);
 
             ServiceDescriptor service = ServiceDescriptor.Scoped<TApiDefinition, TApiImplementation>();
 
-            if (services.Contains(service))
+            if(services.Contains(service))
             {
                 throw new ArgumentException();
             }
 
             services.Add(service);
 
-            OptionsBuilder<TApiDefinition> builder = new OptionsBuilder<TApiDefinition>();
+            using ServiceProvider provider = services.BuildServiceProvider();
+
+            IApiHandlerConfiguration configuration = provider.GetRequiredService<IApiHandlerConfiguration>();
+
+            OptionsBuilder<TApiDefinition> builder = configuration.GetOptionsBuilder<OptionsBuilder<TApiDefinition>>();
 
             services.Add(new ServiceDescriptor(typeof(IOptionsConfigurator<TApiDefinition>),
                 p => CreateApiHandlerOptionsBuilder(factory, builder, services), ServiceLifetime.Singleton));
 
-            services.Add(new ServiceDescriptor(typeof(IOptions<TApiDefinition>), p => BuildApiHandlerOptions<TApiDefinition>(p, services), ServiceLifetime.Scoped));
+            services.Add(new ServiceDescriptor(typeof(IOptions<TApiDefinition>), BuildApiHandlerOptions<TApiDefinition>, ServiceLifetime.Scoped));
 
             return new ApiHandlerExtensions(builder.Dependencies);
         }
@@ -91,6 +115,8 @@ namespace SereneApi.Extensions.DependencyInjection
             Action<IOptionsConfigurator<TApiDefinition>, IServiceProvider> factory)
             where TApiDefinition : class where TApiImplementation : class, IApiHandler, TApiDefinition
         {
+            services.TryAddSingleton(ApiHandlerConfiguration.Default);
+
             ServiceDescriptor service = ServiceDescriptor.Scoped<TApiDefinition, TApiImplementation>();
 
             if(services.Contains(service))
@@ -100,23 +126,27 @@ namespace SereneApi.Extensions.DependencyInjection
 
             services.Add(service);
 
-            OptionsBuilder<TApiDefinition> builder = new OptionsBuilder<TApiDefinition>();
+            using ServiceProvider provider = services.BuildServiceProvider();
+
+            IApiHandlerConfiguration configuration = provider.GetRequiredService<IApiHandlerConfiguration>();
+
+            OptionsBuilder<TApiDefinition> builder = configuration.GetOptionsBuilder<OptionsBuilder<TApiDefinition>>();
 
             services.TryAdd(new ServiceDescriptor(typeof(IOptionsConfigurator<TApiDefinition>),
                 p => CreateApiHandlerOptionsBuilder(factory, builder, services, p), ServiceLifetime.Singleton));
 
             services.TryAdd(new ServiceDescriptor(typeof(IOptions<TApiDefinition>),
-                p => BuildApiHandlerOptions<TApiDefinition>(p, services), ServiceLifetime.Scoped));
+                BuildApiHandlerOptions<TApiDefinition>, ServiceLifetime.Scoped));
 
             return new ApiHandlerExtensions(builder.Dependencies);
         }
-
 
         private static IOptionsConfigurator<TApiDefinition> CreateApiHandlerOptionsBuilder<TApiDefinition>(Action<IOptionsConfigurator<TApiDefinition>> factory, OptionsBuilder<TApiDefinition> builder, IServiceCollection services) where TApiDefinition : class
         {
             factory.Invoke(builder);
 
             builder.Dependencies.AddSingleton(() => services, Binding.Unbound);
+            builder.Dependencies.AddScoped<IServiceProvider>(p => p.GetDependency<IServiceCollection>().BuildServiceProvider());
             builder.Dependencies.AddScoped<IClientFactory>(p =>
             {
                 ClientFactory<TApiDefinition> clientFactory = new ClientFactory<TApiDefinition>(p);
@@ -153,7 +183,7 @@ namespace SereneApi.Extensions.DependencyInjection
             return builder;
         }
 
-        private static IOptions<TApiDefinition> BuildApiHandlerOptions<TApiDefinition>(IServiceProvider provider, IServiceCollection services) where TApiDefinition : class
+        private static IOptions<TApiDefinition> BuildApiHandlerOptions<TApiDefinition>(IServiceProvider provider) where TApiDefinition : class
         {
             OptionsBuilder<TApiDefinition> builder = (OptionsBuilder<TApiDefinition>)provider.GetRequiredService<IOptionsConfigurator<TApiDefinition>>();
 

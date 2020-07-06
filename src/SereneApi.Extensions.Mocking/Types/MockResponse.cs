@@ -1,6 +1,6 @@
 ﻿using DeltaWare.Dependencies;
-using SereneApi.Abstractions;
 using SereneApi.Abstractions.Requests;
+using SereneApi.Abstractions.Responses;
 using SereneApi.Abstractions.Serializers;
 using SereneApi.Extensions.Mocking.Enums;
 using SereneApi.Extensions.Mocking.Interfaces;
@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using SereneApi.Abstractions.Responses;
 
 namespace SereneApi.Extensions.Mocking.Types
 {

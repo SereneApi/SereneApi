@@ -2,7 +2,7 @@
 
 namespace DependencyInjection.Service.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v2/[controller]")]
     [ApiController]
     public class ValuesController: ControllerBase
     {
@@ -13,7 +13,7 @@ namespace DependencyInjection.Service.Controllers
         }
 
         [HttpGet("string/{value}")]
-        public string GetString(string value)
+        public string Getstring(string value)
         {
             return value;
         }

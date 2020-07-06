@@ -1,7 +1,6 @@
 ﻿using DependencyInjection.API;
 using DependencyInjection.API.DTOs;
 using SereneApi;
-using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Handler.Options;
 
 namespace DependencyInjection.WebUi.Handlers

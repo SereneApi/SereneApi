@@ -18,7 +18,17 @@ namespace SereneApi.Factories
 
         private readonly Dictionary<Type, IOptionsBuilder> _handlerOptions = new Dictionary<Type, IOptionsBuilder>();
 
-        private readonly IConfiguration _configuration = Configuration.Default;
+        private readonly IApiHandlerConfiguration _configuration;
+
+        public ApiHandlerFactory()
+        {
+            _configuration = ApiHandlerConfiguration.Default;
+        }
+
+        public ApiHandlerFactory(IApiHandlerConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
         /// <inheritdoc>
         ///     <cref>IApiHandlerFactory.Build</cref>
@@ -57,7 +67,7 @@ namespace SereneApi.Factories
                 throw new ArgumentException($"Cannot Register Multiple Instances of {nameof(TApiDefinition)}");
             }
 
-            IOptionsBuilder configurator = _configuration.ApiHandler.GetOptionsBuilder();
+            IOptionsBuilder configurator = _configuration.GetOptionsBuilder();
 
             configurator.Dependencies.AddSingleton<IApiHandlerFactory>(() => this, Binding.Unbound);
 

@@ -1,6 +1,5 @@
-﻿using SereneApi.Abstractions;
+﻿using SereneApi.Abstractions.Requests;
 using System;
-using SereneApi.Abstractions.Requests;
 
 namespace SereneApi.Helpers
 {

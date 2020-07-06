@@ -14,7 +14,7 @@ namespace SereneApi.Abstractions.Helpers
         {
             const char termination = '/';
 
-            if(String.IsNullOrWhiteSpace(value))
+            if(string.IsNullOrWhiteSpace(value))
             {
                 return value;
             }
@@ -34,9 +34,9 @@ namespace SereneApi.Abstractions.Helpers
         /// </summary>
         public static Uri EnsureSourceSlashTermination(Uri value)
         {
-            string valueString = EnsureSourceSlashTermination(value.ToString());
+            string valuestring = EnsureSourceSlashTermination(value.ToString());
 
-            return new Uri(valueString);
+            return new Uri(valuestring);
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace SereneApi.Abstractions.Helpers
         /// </summary>
         public static string EnsureSourceNoSlashTermination(string value)
         {
-            if(String.IsNullOrWhiteSpace(value))
+            if(string.IsNullOrWhiteSpace(value))
             {
                 return value;
             }
@@ -66,9 +66,9 @@ namespace SereneApi.Abstractions.Helpers
         /// </summary>
         public static Uri EnsureSourceNoSlashTermination(Uri value)
         {
-            string valueString = EnsureSourceNoSlashTermination(value.ToString());
+            string valuestring = EnsureSourceNoSlashTermination(value.ToString());
 
-            return new Uri(valueString);
+            return new Uri(valuestring);
         }
 
         /// <summary>
@@ -90,30 +90,6 @@ namespace SereneApi.Abstractions.Helpers
         public static void CheckIfValid(Uri source)
         {
             CheckIfValid(source.ToString());
-        }
-
-        /// <summary>
-        /// If the resource path is null or whitespace the default value will be used.
-        /// If the string contains anything other than whitespace the value provided will be used.
-        /// Setting an Empty string will disable the default value.
-        /// </summary>
-        public static string UseOrGetDefaultResourcePath(string resourcePath)
-        {
-            // If an empty string is supplied, the default value is disabled.
-            if(resourcePath == String.Empty)
-            {
-                return resourcePath;
-            }
-
-            // Null or whitespace strings will enabled the default.
-            if(String.IsNullOrWhiteSpace(resourcePath))
-            {
-                resourcePath = Defaults.Handler.ResourcePath;
-            }
-
-            resourcePath = SourceHelpers.EnsureSourceSlashTermination(resourcePath);
-
-            return resourcePath;
         }
     }
 }

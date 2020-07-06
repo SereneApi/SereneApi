@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace DependencyInjection.Service.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v2/[controller]")]
     [ApiController]
     public class StudentsController: ControllerBase
     {

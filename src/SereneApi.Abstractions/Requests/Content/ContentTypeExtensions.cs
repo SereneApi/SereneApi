@@ -4,7 +4,7 @@ namespace SereneApi.Abstractions.Requests.Content
 {
     public static class ContentTypeExtensions
     {
-        public static string ToTypeString(this ContentType mediaType)
+        public static string ToTypestring(this ContentType mediaType)
         {
             return mediaType switch
             {

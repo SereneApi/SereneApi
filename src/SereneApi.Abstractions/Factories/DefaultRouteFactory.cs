@@ -1,8 +1,8 @@
 ﻿using DeltaWare.Dependencies;
+using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Helpers;
 using System;
 using System.Linq;
-using SereneApi.Abstractions.Configuration;
 
 namespace SereneApi.Abstractions.Factories
 {
@@ -63,16 +63,16 @@ namespace SereneApi.Abstractions.Factories
         }
 
         /// <inheritdoc cref="IRouteFactory.AddQuery"/>
-        public void AddQuery(string queryString)
+        public void AddQuery(string querystring)
         {
             if(!string.IsNullOrWhiteSpace(_query))
             {
                 ExceptionHelper.MethodCannotBeCalledTwice();
             }
 
-            ExceptionHelper.EnsureParameterIsNotNull(queryString, nameof(queryString));
+            ExceptionHelper.EnsureParameterIsNotNull(querystring, nameof(querystring));
 
-            _query = queryString;
+            _query = querystring;
         }
 
         /// <inheritdoc cref="IRouteFactory.AddParameters"/>

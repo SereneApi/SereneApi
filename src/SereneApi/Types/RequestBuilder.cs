@@ -1,5 +1,4 @@
 ﻿using DeltaWare.Dependencies;
-using SereneApi.Abstractions;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Requests;
 using SereneApi.Abstractions.Serializers;

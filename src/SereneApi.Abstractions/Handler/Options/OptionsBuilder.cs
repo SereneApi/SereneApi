@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net;
-using DeltaWare.Dependencies;
+﻿using DeltaWare.Dependencies;
 using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Authentication;
 using SereneApi.Abstractions.Configuration;
@@ -8,35 +6,39 @@ using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Helpers;
 using SereneApi.Abstractions.Requests.Content;
 using SereneApi.Abstractions.Types;
+using System;
+using System.Net;
 
 namespace SereneApi.Abstractions.Handler.Options
 {
     public class OptionsBuilder: IOptionsBuilder
     {
-        public IDependencyCollection Dependencies { get; }
+        public IDependencyCollection Dependencies { get; } = new DependencyCollection();
 
         protected Connection Connection { get; set; }
-
-        #region Constructors
-
-        public OptionsBuilder()
-        {
-            Dependencies = new DependencyCollection();
-
-            Dependencies.AddScoped(() => Defaults.Factories.QueryFactory);
-            Dependencies.AddScoped(() => Defaults.Serializer);
-            Dependencies.AddScoped(() => Defaults.ContentType);
-            Dependencies.AddScoped(() => Defaults.Handler.Credentials);
-        }
-
-        #endregion
 
         /// <inheritdoc cref="IOptionsConfigurator.UseSource"/>
         public void UseSource(string source, string resource = null, string resourcePath = null)
         {
             ExceptionHelper.EnsureParameterIsNotNull(source, nameof(source));
 
-            Connection = new Connection(source, resource, resourcePath);
+            using IDependencyProvider provider = Dependencies.BuildProvider();
+
+            IApiHandlerConfiguration configuration = provider.GetDependency<IApiHandlerConfiguration>();
+
+            if(string.IsNullOrWhiteSpace(resourcePath))
+            {
+                if(resourcePath != string.Empty)
+                {
+                    resourcePath = configuration.ResourcePath;
+                }
+            }
+
+            Connection = new Connection(source, resource, resourcePath)
+            {
+                Timeout = configuration.Timeout,
+                RetryAttempts = configuration.RetryCount
+            };
         }
 
         /// <inheritdoc>

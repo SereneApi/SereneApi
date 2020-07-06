@@ -1,6 +1,5 @@
-﻿using SereneApi.Abstractions.Handler;
+﻿using SereneApi.Abstractions.Handler.Options;
 using System;
-using SereneApi.Abstractions.Handler.Options;
 
 namespace SereneApi.Interfaces
 {

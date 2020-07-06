@@ -1,7 +1,7 @@
-﻿using System;
-using System.Diagnostics;
-using DeltaWare.Dependencies;
+﻿using DeltaWare.Dependencies;
 using SereneApi.Abstractions.Configuration;
+using System;
+using System.Diagnostics;
 
 namespace SereneApi.Abstractions.Handler.Options
 {

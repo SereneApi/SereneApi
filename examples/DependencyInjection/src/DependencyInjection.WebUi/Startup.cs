@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using SereneApi.Abstractions.Configuration;
 using SereneApi.Extensions.DependencyInjection;
 
 namespace DependencyInjection.WebUi
@@ -24,6 +25,8 @@ namespace DependencyInjection.WebUi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers().AddNewtonsoftJson();
+
+            services.ConfigureSereneApi(r => r.ResourcePath = "api/v2/");
 
             // Add an ApiHandler to the services collection, this enables dependency injection.
             // You are required to supply an interface for the definition and a class inheriting form ApiHandler and the interface as the definition.

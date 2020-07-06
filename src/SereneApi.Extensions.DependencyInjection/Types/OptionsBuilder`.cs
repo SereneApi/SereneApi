@@ -2,16 +2,13 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SereneApi.Abstractions;
-using SereneApi.Abstractions.Factories;
-using SereneApi.Abstractions.Handler;
+using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Handler.Options;
 using SereneApi.Abstractions.Helpers;
 using SereneApi.Abstractions.Types;
 using SereneApi.Extensions.DependencyInjection.Helpers;
 using SereneApi.Extensions.DependencyInjection.Interfaces;
 using System;
-using SereneApi.Abstractions.Configuration;
-using SereneApi.Abstractions.Handler.Options;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace SereneApi.Extensions.DependencyInjection.Types
@@ -33,20 +30,39 @@ namespace SereneApi.Extensions.DependencyInjection.Types
             string resource = configuration.Get<string>(ConfigurationConstants.ResourceKey, ConfigurationConstants.ResourceIsRequired);
             string resourcePath = configuration.Get<string>(ConfigurationConstants.ResourcePathKey, ConfigurationConstants.ResourcePathIsRequired);
 
-            Connection = new Connection(source, resource, resourcePath);
+            using IDependencyProvider provider = Dependencies.BuildProvider();
+
+            IApiHandlerConfiguration handlerConfiguration = provider.GetDependency<IApiHandlerConfiguration>();
+
+            if(string.IsNullOrWhiteSpace(resourcePath))
+            {
+                if(resourcePath != string.Empty)
+                {
+                    resourcePath = handlerConfiguration.ResourcePath;
+                }
+            }
+
+            Connection = new Connection(source, resource, resourcePath)
+            {
+                Timeout = handlerConfiguration.Timeout,
+                RetryAttempts = handlerConfiguration.RetryCount
+            };
 
             #region Timeout
 
-            int timeout = configuration.Get<int>(ConfigurationConstants.TimeoutKey, ConfigurationConstants.TimeoutIsRequired);
-
-            if(timeout < 0)
+            if(configuration.ContainsKey(ConfigurationConstants.TimeoutKey))
             {
-                throw new ArgumentException("The Timeout value must be greater than 0");
-            }
+                int timeout = configuration.Get<int>(ConfigurationConstants.TimeoutKey, ConfigurationConstants.TimeoutIsRequired);
 
-            if(timeout != default)
-            {
-                Connection.Timeout = timeout;
+                if(timeout < 0)
+                {
+                    throw new ArgumentException("The Timeout value must be greater than 0");
+                }
+
+                if(timeout != default)
+                {
+                    Connection.Timeout = timeout;
+                }
             }
 
             #endregion
