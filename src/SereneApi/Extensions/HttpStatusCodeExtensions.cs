@@ -1,4 +1,4 @@
-﻿using SereneApi.Abstractions;
+﻿using SereneApi.Abstractions.Responses;
 using System.Net;
 
 namespace SereneApi.Extensions

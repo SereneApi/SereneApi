@@ -4,7 +4,7 @@ namespace SereneApi.Abstractions.Media
 {
     public static class MediaTypeExtensions
     {
-        public static string GetTypeString(this MediaType mediaType)
+        public static string GetTypestring(this MediaType mediaType)
         {
             return mediaType switch
             {

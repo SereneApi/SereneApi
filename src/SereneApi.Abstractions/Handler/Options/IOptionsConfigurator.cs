@@ -2,12 +2,11 @@
 using SereneApi.Abstractions.Authentication;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Requests.Content;
-using System;
 using System.Net;
 
-namespace SereneApi.Abstractions.Handler
+namespace SereneApi.Abstractions.Handler.Options
 {
-    public interface IApiHandlerOptionsBuilder: IDisposable
+    public interface IOptionsConfigurator
     {
         void UseSource(string source, string resource = null, string resourcePath = null);
 

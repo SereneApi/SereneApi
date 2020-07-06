@@ -1,4 +1,5 @@
 ﻿
+using SereneApi.Abstractions.Responses;
 using System.Net;
 
 // Do note change namespace

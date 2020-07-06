@@ -1,8 +1,8 @@
 ﻿using DeltaWare.Dependencies;
 using Microsoft.Extensions.DependencyInjection;
-using SereneApi.Abstractions;
 using SereneApi.Abstractions.Authentication;
 using SereneApi.Abstractions.Authenticators;
+using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Requests.Content;
 using System;
@@ -82,7 +82,7 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
 
                 if(_dependencies.TryGetDependency(out ContentType contentType))
                 {
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType.ToTypeString()));
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType.ToTypestring()));
                 }
             })
             .ConfigurePrimaryHttpMessageHandler(() =>

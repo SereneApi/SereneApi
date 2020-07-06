@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SereneApi.Abstractions.Handler
+namespace SereneApi.Abstractions.Factories
 {
     /// <summary>
     /// Builds instances of the request <see cref="ApiHandler"/>.

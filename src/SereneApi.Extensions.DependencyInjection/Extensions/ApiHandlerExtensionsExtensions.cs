@@ -1,7 +1,8 @@
 ﻿using DeltaWare.Dependencies;
-using SereneApi.Abstractions;
 using SereneApi.Abstractions.Authenticators;
-using SereneApi.Abstractions.Handler;
+using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Handler.Extensions;
+using SereneApi.Abstractions.Responses;
 using SereneApi.Abstractions.Types;
 using SereneApi.Extensions.DependencyInjection.Types.Authenticators;
 using System;

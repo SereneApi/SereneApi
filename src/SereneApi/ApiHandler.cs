@@ -1,8 +1,10 @@
 ﻿using DeltaWare.Dependencies;
 using Microsoft.Extensions.Logging;
-using SereneApi.Abstractions;
+using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Enums;
 using SereneApi.Abstractions.Handler;
+using SereneApi.Abstractions.Handler.Options;
+using SereneApi.Abstractions.Responses;
 using SereneApi.Extensions;
 using SereneApi.Types;
 using System;
@@ -34,8 +36,8 @@ namespace SereneApi
         /// <summary>
         /// Creates a new instance of the <see cref="ApiHandler"/>.
         /// </summary>
-        /// <param name="options">The <see cref="IApiHandlerOptions"/> the <see cref="ApiHandler"/> will use when making requests.</param>
-        protected ApiHandler(IApiHandlerOptions options)
+        /// <param name="options">The <see cref="IOptions"/> the <see cref="ApiHandler"/> will use when making requests.</param>
+        protected ApiHandler(IOptions options)
         {
             Connection = options.Connection;
             Dependencies = options.Dependencies;

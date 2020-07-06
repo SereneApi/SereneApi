@@ -1,8 +1,9 @@
 ﻿using DependencyInjection.API;
 using DependencyInjection.API.DTOs;
 using SereneApi;
-using SereneApi.Abstractions;
-using SereneApi.Abstractions.Handler;
+using SereneApi.Abstractions.Handler.Options;
+using SereneApi.Abstractions.Requests;
+using SereneApi.Abstractions.Responses;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,7 +14,7 @@ namespace DependencyInjection.WebUi.Handlers
         // This is important for Dependency Injection to work!
         // The Handler interface must be set as the generic for IApiHandlerOptions.
         // This is required so AspNet gets the right options for the current handler.
-        public StudentApiHandler(IApiHandlerOptions<IStudentApi> options) : base(options)
+        public StudentApiHandler(IOptions<IStudentApi> options) : base(options)
         {
         }
 

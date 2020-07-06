@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SereneApi.Abstractions.Responses;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SereneApi.Abstractions.Handler

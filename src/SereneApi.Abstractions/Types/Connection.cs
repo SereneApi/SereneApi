@@ -1,4 +1,5 @@
-﻿using SereneApi.Abstractions.Helpers;
+﻿using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Helpers;
 using System;
 
 namespace SereneApi.Abstractions.Types
@@ -13,7 +14,7 @@ namespace SereneApi.Abstractions.Types
 
         public string ResourcePath { get; }
 
-        public int Timeout { get; set; } = Defaults.Handler.Timeout;
+        public int Timeout { get; set; }
 
         public int RetryAttempts { get; set; }
 
@@ -26,7 +27,7 @@ namespace SereneApi.Abstractions.Types
             BaseAddress = new Uri(baseAddress);
 
             Resource = SourceHelpers.EnsureSourceNoSlashTermination(resource);
-            ResourcePath = SourceHelpers.UseOrGetDefaultResourcePath(resourcePath);
+            ResourcePath = SourceHelpers.EnsureSourceSlashTermination(resourcePath);
 
             Source = $"{BaseAddress}{ResourcePath}{Resource}";
         }

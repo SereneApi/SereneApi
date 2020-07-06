@@ -1,8 +1,7 @@
 ﻿using DeltaWare.Dependencies;
-using SereneApi.Abstractions;
-using SereneApi.Abstractions.Handler;
+using SereneApi.Abstractions.Configuration;
 
-namespace SereneApi.Types
+namespace SereneApi.Abstractions.Handler.Extensions
 {
     public class ApiHandlerExtensions: IApiHandlerExtensions, ICoreOptions
     {

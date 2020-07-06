@@ -1,6 +1,6 @@
 ﻿using DeltaWare.Dependencies;
-using SereneApi.Abstractions;
-using SereneApi.Abstractions.Handler;
+using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Handler.Extensions;
 using SereneApi.Extensions.Mocking.Interfaces;
 using SereneApi.Extensions.Mocking.Types;
 using System;

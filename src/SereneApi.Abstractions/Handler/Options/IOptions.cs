@@ -1,9 +1,10 @@
 ﻿using DeltaWare.Dependencies;
+using SereneApi.Abstractions.Configuration;
 using System;
 
-namespace SereneApi.Abstractions.Handler
+namespace SereneApi.Abstractions.Handler.Options
 {
-    public interface IApiHandlerOptions: IDisposable
+    public interface IOptions: IDisposable
     {
         IDependencyProvider Dependencies { get; }
 

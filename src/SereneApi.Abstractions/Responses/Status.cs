@@ -1,4 +1,4 @@
-﻿namespace SereneApi.Abstractions
+﻿namespace SereneApi.Abstractions.Responses
 {
     // https://restfulapi.net/http-status-codes/
     /// <summary>

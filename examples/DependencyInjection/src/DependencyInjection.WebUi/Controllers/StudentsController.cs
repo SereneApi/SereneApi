@@ -1,7 +1,7 @@
 ﻿using DependencyInjection.API;
 using DependencyInjection.API.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using SereneApi.Abstractions;
+using SereneApi.Abstractions.Responses;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

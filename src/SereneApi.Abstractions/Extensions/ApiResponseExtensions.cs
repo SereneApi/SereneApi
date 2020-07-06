@@ -1,6 +1,9 @@
 ﻿
 // Do not change namespace
 // ReSharper disable once CheckNamespace
+
+using SereneApi.Abstractions.Responses;
+
 namespace SereneApi.Abstractions
 {
     public static class ApiResponseExtensions

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SereneApi.Abstractions.Configuration;
+using System;
 
 namespace SereneApi.Abstractions.Handler
 {

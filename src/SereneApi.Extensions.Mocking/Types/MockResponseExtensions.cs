@@ -1,5 +1,5 @@
 ﻿using DeltaWare.Dependencies;
-using SereneApi.Abstractions;
+using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Requests;
 using SereneApi.Abstractions.Serializers;
 using SereneApi.Extensions.Mocking.Helpers;

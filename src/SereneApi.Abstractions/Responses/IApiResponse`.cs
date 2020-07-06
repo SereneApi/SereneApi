@@ -1,7 +1,6 @@
-﻿
-using System;
+﻿using System;
 
-namespace SereneApi.Abstractions
+namespace SereneApi.Abstractions.Responses
 {
     /// <inheritdoc cref="IApiResponse"/>
     /// <typeparam name="TEntity">The <see cref="Type"/> to be deserialized from the body of the response.</typeparam>
