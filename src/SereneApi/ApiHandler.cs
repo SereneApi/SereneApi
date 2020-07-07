@@ -1,8 +1,9 @@
 ﻿using DeltaWare.Dependencies;
 using Microsoft.Extensions.Logging;
-using SereneApi.Abstractions;
-using SereneApi.Abstractions.Enums;
+using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Handler;
+using SereneApi.Abstractions.Options;
+using SereneApi.Abstractions.Response;
 using SereneApi.Extensions;
 using SereneApi.Types;
 using System;
@@ -29,16 +30,16 @@ namespace SereneApi
         public IConnectionSettings Connection { get; }
 
         #endregion
-        #region Conclassors
+        #region Constructors
 
         /// <summary>
         /// Creates a new instance of the <see cref="ApiHandler"/>.
         /// </summary>
-        /// <param name="options">The <see cref="IApiHandlerOptions"/> the <see cref="ApiHandler"/> will use when making requests.</param>
-        protected ApiHandler(IApiHandlerOptions options)
+        /// <param name="apiOptions">The <see cref="IApiOptions"/> the <see cref="ApiHandler"/> will use when making requests.</param>
+        protected ApiHandler(IApiOptions apiOptions)
         {
-            Connection = options.Connection;
-            Dependencies = options.Dependencies;
+            Connection = apiOptions.Connection;
+            Dependencies = apiOptions.Dependencies;
             Dependencies.TryGetDependency(out _logger);
 
             _logger?.LogTrace($"{GetType()} has been instantiated");

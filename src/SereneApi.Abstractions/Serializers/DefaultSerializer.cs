@@ -1,5 +1,4 @@
-﻿using SereneApi.Abstractions.Requests;
-using SereneApi.Abstractions.Requests.Content;
+﻿using SereneApi.Abstractions.Request.Content;
 using System.IO;
 using System.Net.Http;
 using System.Text.Json;
@@ -33,9 +32,9 @@ namespace SereneApi.Abstractions.Serializers
 
         public TObject Deserialize<TObject>(HttpContent content)
         {
-            string contentString = content.ReadAsStringAsync().Result;
+            string contentstring = content.ReadAsStringAsync().Result;
 
-            return System.Text.Json.JsonSerializer.Deserialize<TObject>(contentString, _deserializerOptions);
+            return System.Text.Json.JsonSerializer.Deserialize<TObject>(contentstring, _deserializerOptions);
         }
 
         public async Task<TObject> DeserializeAsync<TObject>(HttpContent content)

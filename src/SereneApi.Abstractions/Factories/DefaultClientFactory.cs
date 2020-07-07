@@ -1,7 +1,8 @@
 ﻿using DeltaWare.Dependencies;
 using SereneApi.Abstractions.Authentication;
 using SereneApi.Abstractions.Authenticators;
-using SereneApi.Abstractions.Requests.Content;
+using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Request.Content;
 using System;
 using System.Net;
 using System.Net.Http;

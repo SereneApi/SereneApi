@@ -1,6 +1,7 @@
-﻿using SereneApi.Abstractions;
-using SereneApi.Abstractions.Handler;
-using SereneApi.Interfaces;
+﻿using SereneApi.Abstractions.Options;
+using SereneApi.Abstractions.Request;
+using SereneApi.Abstractions.Response;
+using SereneApi.Request;
 using SereneApi.Tests.Interfaces;
 using System;
 using System.Linq.Expressions;
@@ -10,7 +11,7 @@ namespace SereneApi.Tests.Mock
 {
     public class ApiHandlerWrapper: ApiHandler, IApiHandlerWrapper
     {
-        public ApiHandlerWrapper(IApiHandlerOptions options) : base(options)
+        public ApiHandlerWrapper(IApiOptions apiOptions) : base(apiOptions)
         {
         }
 

@@ -1,9 +1,7 @@
-﻿
+﻿using SereneApi.Abstractions.Response;
 using System.Net;
 
-// Do note change namespace
-// ReSharper disable once CheckNamespace
-namespace SereneApi.Abstractions.Enums
+namespace SereneApi.Extensions.Mocking.Extensions
 {
     internal static class StatusExtensions
     {

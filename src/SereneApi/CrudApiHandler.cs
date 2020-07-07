@@ -1,5 +1,7 @@
-using SereneApi.Abstractions;
 using SereneApi.Abstractions.Handler;
+using SereneApi.Abstractions.Options;
+using SereneApi.Abstractions.Request;
+using SereneApi.Abstractions.Response;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,8 +13,8 @@ namespace SereneApi
         /// <summary>
         /// Instantiates a new Instance of the <see cref="CrudApiHandler{TResource,TIdentifier}"/>
         /// </summary>
-        /// <param name="options"></param>
-        protected CrudApiHandler(IApiHandlerOptions options) : base(options)
+        /// <param name="apiOptions"></param>
+        protected CrudApiHandler(IApiOptions apiOptions) : base(apiOptions)
         {
         }
 

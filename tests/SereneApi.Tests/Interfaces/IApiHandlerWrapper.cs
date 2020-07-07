@@ -1,5 +1,7 @@
-﻿using SereneApi.Abstractions;
-using SereneApi.Interfaces;
+﻿using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Request;
+using SereneApi.Abstractions.Response;
+using SereneApi.Request;
 using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;

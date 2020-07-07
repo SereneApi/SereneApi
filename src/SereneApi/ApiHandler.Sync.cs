@@ -1,11 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
-using SereneApi.Abstractions;
 using SereneApi.Abstractions.Factories;
-using SereneApi.Abstractions.Requests;
+using SereneApi.Abstractions.Request;
+using SereneApi.Abstractions.Response;
 using SereneApi.Abstractions.Serializers;
 using SereneApi.Extensions;
 using SereneApi.Helpers;
-using SereneApi.Interfaces;
+using SereneApi.Request;
+using SereneApi.Response;
 using SereneApi.Types;
 using System;
 using System.Linq.Expressions;

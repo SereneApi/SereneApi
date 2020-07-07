@@ -1,0 +1,43 @@
+<Project>
+    <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+
+    <PropertyGroup>
+        <Description>Serene API is a small library intended to provide a straightforward way of consuming RESTful APIs requiring as little code &amp; setup as possible whilst providing a powerful set of tools.</Description>
+        <TargetFrameworks>netstandard2.1;netcoreapp3.1</TargetFrameworks>
+        <PackageId>SereneApi.AspNetCore</PackageId>
+        <PackageTags>sereneapi;api;webapi;aspnet;aspnetcore</PackageTags>
+        <PackageProjectUrl>https://github.com/armorall171/SereneApi#what-is-serene-api</PackageProjectUrl>
+        <PackageLicenseUrl></PackageLicenseUrl>
+        <RepositoryType>GIT</RepositoryType>
+        <RepositoryUrl>https://github.com/armorall171/SereneApi.git</RepositoryUrl>
+
+        <!-- Package contains only the final .nuspec file with a few listed dependencies. -->
+        <GenerateNuspecDependsOn>$(GenerateNuspecDependsOn);PopulateNuspec</GenerateNuspecDependsOn>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <IncludeContentInPack>false</IncludeContentInPack>
+        <IncludeSource>false</IncludeSource>
+        <IncludeSymbols>false</IncludeSymbols>
+        <NuspecFile>$(MSBuildProjectName).nuspec</NuspecFile>
+        <MicrosoftExtensionsApiDescriptionServerPackageVersion>3.0.0</MicrosoftExtensionsApiDescriptionServerPackageVersion>
+        <Authors>Bradley Clarke</Authors>
+        <Company>DeltaWare</Company>
+        <Product>SereneApi</Product>
+        <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
+        <PackageLicenseFile>README.md</PackageLicenseFile>
+        <NeutralLanguage>en-AU</NeutralLanguage>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <Version>1.0.5.1-prerelease</Version>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Include="..\..\README.md">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+      </None>
+    </ItemGroup>
+
+    <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+
+    <Target Name="Compile" />
+    <Target Name="CopyFilesToOutputDirectory" />
+</Project>

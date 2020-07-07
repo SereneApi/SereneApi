@@ -1,6 +1,6 @@
 ﻿using DependencyInjection.API;
 using Microsoft.AspNetCore.Mvc;
-using SereneApi.Abstractions;
+using SereneApi.Abstractions.Response;
 using System.Threading.Tasks;
 
 namespace DependencyInjection.WebUi.Controllers
@@ -25,7 +25,7 @@ namespace DependencyInjection.WebUi.Controllers
         }
 
         [HttpGet("string/{value}")]
-        public ActionResult<IApiResponse<string>> GetStringAsync(string value)
+        public ActionResult<IApiResponse<string>> GetstringAsync(string value)
         {
             IApiResponse<string> response = _valuesApi.GetAsync(value);
 

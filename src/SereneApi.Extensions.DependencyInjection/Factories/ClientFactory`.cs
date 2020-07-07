@@ -1,10 +1,10 @@
 ﻿using DeltaWare.Dependencies;
 using Microsoft.Extensions.DependencyInjection;
-using SereneApi.Abstractions;
 using SereneApi.Abstractions.Authentication;
 using SereneApi.Abstractions.Authenticators;
+using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Factories;
-using SereneApi.Abstractions.Requests.Content;
+using SereneApi.Abstractions.Request.Content;
 using System;
 using System.Diagnostics;
 using System.Net;

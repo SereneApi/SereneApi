@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>DeltaWare.SereneApi.Extensions.Newtonsoft</AssemblyName>
+    <PackageId>SereneApi.Extensions.Newtonsoft</PackageId>
+    <Authors>Bradley Clarke</Authors>
+    <Company>DeltaWare</Company>
+    <Product>SereneApi</Product>
+    <Version>1.0.5.1-prerelease</Version>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageIcon>nuget_logo.png</PackageIcon>
+    <RepositoryUrl>https://github.com/armorall171/SereneApi</RepositoryUrl>
+    <RepositoryType>GIT</RepositoryType>
+    <PackageTags>API; REST; RESTful; Extensions; Newtonsoft</PackageTags>
+    <NeutralLanguage>en-AU</NeutralLanguage>
+    <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
+    <Description>Adds Newtonsoft.Json to support to SereneApi</Description>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+      <IncludeSymbols>true</IncludeSymbols>
+      <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SereneApi.Abstractions\SereneApi.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\..\nuget_logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

@@ -21,8 +21,8 @@ namespace SereneApi.Abstractions.Factories
         /// <summary>
         /// Supplies the Query to be appended to the end of the route.
         /// </summary>
-        /// <param name="queryString"></param>
-        void AddQuery(string queryString);
+        /// <param name="querystring"></param>
+        void AddQuery(string querystring);
 
         /// <summary>
         /// Supplies the parameters to be appended to the route.

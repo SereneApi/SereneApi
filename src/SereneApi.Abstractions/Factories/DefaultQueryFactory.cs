@@ -9,7 +9,7 @@ using System.Text;
 namespace SereneApi.Abstractions.Factories
 {
     /// <inheritdoc cref="IQueryFactory"/>
-    public sealed class DefaultQueryFactory: IQueryFactory
+    internal class DefaultQueryFactory: IQueryFactory
     {
         private readonly ObjectToStringFormatter _formatter;
 
@@ -19,14 +19,6 @@ namespace SereneApi.Abstractions.Factories
         public DefaultQueryFactory()
         {
             _formatter = DefaultQueryFormatter;
-        }
-
-        /// <summary>
-        /// Instantiates a new instance of the <see cref="DefaultQueryFactory"/> using the supplied <see cref="ObjectToStringFormatter"/>.
-        /// </summary>
-        public DefaultQueryFactory(ObjectToStringFormatter formatter)
-        {
-            _formatter = formatter;
         }
 
         /// <inheritdoc>
@@ -48,15 +40,15 @@ namespace SereneApi.Abstractions.Factories
                     continue;
                 }
 
-                string valueString = _formatter(value);
+                string valuestring = _formatter(value);
 
-                if(!string.IsNullOrEmpty(valueString))
+                if(!string.IsNullOrEmpty(valuestring))
                 {
-                    querySections.Add(BuildQuerySection(property.Name, valueString));
+                    querySections.Add(BuildQuerySection(property.Name, valuestring));
                 }
             }
 
-            return BuildQueryString(querySections);
+            return BuildQuerystring(querySections);
         }
 
         /// <inheritdoc>
@@ -96,14 +88,14 @@ namespace SereneApi.Abstractions.Factories
                 }
             }
 
-            return BuildQueryString(querySections);
+            return BuildQuerystring(querySections);
         }
 
         /// <summary>
         /// Builds the query string using the supplied array of strings.
         /// </summary>
         /// <param name="querySections">Each string index represents an element in the query.</param>
-        private static string BuildQueryString(IReadOnlyList<string> querySections)
+        private static string BuildQuerystring(IReadOnlyList<string> querySections)
         {
             // No sections return empty string.
             if(querySections.Count == 0)

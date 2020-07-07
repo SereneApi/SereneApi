@@ -1,8 +1,7 @@
-﻿using SereneApi.Abstractions;
+﻿using SereneApi.Abstractions.Request;
+using System.Net.Http;
 
-// Do not change namespace
-// ReSharper disable once CheckNamespace
-namespace System.Net.Http
+namespace SereneApi.Extensions.Mocking.Extensions
 {
     internal static class HttpMethodExtensions
     {
@@ -12,9 +11,9 @@ namespace System.Net.Http
         /// <param name="method">The <see cref="HttpMethod"/> to be converted.</param>
         public static Method ToMethod(this HttpMethod method)
         {
-            string methodString = method.Method;
+            string methodstring = method.Method;
 
-            return methodString switch
+            return methodstring switch
             {
                 "GET" => Method.GET,
                 "POST" => Method.POST,
