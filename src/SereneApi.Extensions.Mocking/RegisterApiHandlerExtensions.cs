@@ -9,7 +9,7 @@ using System.Net.Http;
 
 namespace SereneApi.Extensions.Mocking
 {
-    public static class RegisterApiHandlerExtensionsExtensions
+    public static class RegisterApiHandlerExtensions
     {
         /// <summary>
         /// Adds the specified <see cref="IMockResponse"/>s to the <see cref="ApiHandler"/>.
@@ -22,12 +22,12 @@ namespace SereneApi.Extensions.Mocking
         {
             IDependencyCollection dependencies = GetDependencies(registrationExtensions);
 
-            MockResponsesBuilder mockResponsesBuilder = new MockResponsesBuilder();
-
-            mockResponseBuilder.Invoke(mockResponsesBuilder);
-
-            dependencies.AddScoped<HttpMessageHandler>(() =>
+            dependencies.AddScoped<HttpMessageHandler>(p =>
             {
+                MockResponsesBuilder mockResponsesBuilder = new MockResponsesBuilder(p);
+
+                mockResponseBuilder.Invoke(mockResponsesBuilder);
+
                 List<IMockResponse> mockResponses = mockResponsesBuilder.Build();
 
                 if(enableOutgoingRequests)
