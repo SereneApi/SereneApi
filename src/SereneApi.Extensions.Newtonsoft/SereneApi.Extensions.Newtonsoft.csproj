@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>DeltaWare.SereneApi.Extensions.Newtonsoft</AssemblyName>
+    <PackageId>SereneApi.Extensions.Newtonsoft</PackageId>
+    <Authors>Bradley Clarke</Authors>
+    <Company>DeltaWare</Company>
+    <Product>SereneApi</Product>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SereneApi.Abstractions\SereneApi.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

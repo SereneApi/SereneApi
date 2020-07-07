@@ -34,7 +34,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Extensions.Mockin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Abstractions", "src\SereneApi.Abstractions\SereneApi.Abstractions.csproj", "{18E5FD44-C306-49AD-8B38-99F303B51375}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SereneApi.AspNetCore", "src\SereneApi.AspNetCore\SereneApi.AspNetCore.csproj", "{7413DB8D-38F2-4703-9627-08A40B5F7AD3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Extensions.Newtonsoft", "src\SereneApi.Extensions.Newtonsoft\SereneApi.Extensions.Newtonsoft.csproj", "{6EF8F6A6-5A51-4B6D-97E9-F6376CAD070D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.AspNetCore", "src\SereneApi.AspNetCore\SereneApi.AspNetCore.csproj", "{5D6F1C53-2D9F-4AD4-9880-180E42DA1B62}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -78,10 +80,14 @@ Global
 		{18E5FD44-C306-49AD-8B38-99F303B51375}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18E5FD44-C306-49AD-8B38-99F303B51375}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18E5FD44-C306-49AD-8B38-99F303B51375}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7413DB8D-38F2-4703-9627-08A40B5F7AD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7413DB8D-38F2-4703-9627-08A40B5F7AD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7413DB8D-38F2-4703-9627-08A40B5F7AD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7413DB8D-38F2-4703-9627-08A40B5F7AD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EF8F6A6-5A51-4B6D-97E9-F6376CAD070D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EF8F6A6-5A51-4B6D-97E9-F6376CAD070D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EF8F6A6-5A51-4B6D-97E9-F6376CAD070D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EF8F6A6-5A51-4B6D-97E9-F6376CAD070D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D6F1C53-2D9F-4AD4-9880-180E42DA1B62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D6F1C53-2D9F-4AD4-9880-180E42DA1B62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D6F1C53-2D9F-4AD4-9880-180E42DA1B62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D6F1C53-2D9F-4AD4-9880-180E42DA1B62}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

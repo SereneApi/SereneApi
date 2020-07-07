@@ -1,6 +1,5 @@
 ﻿using SereneApi.Abstractions.Enums;
-using SereneApi.Abstractions.Requests;
-using SereneApi.Abstractions.Requests.Content;
+using SereneApi.Abstractions.Request.Content;
 using SereneApi.Extensions.Mocking.Enums;
 using SereneApi.Extensions.Mocking.Interfaces;
 using System;

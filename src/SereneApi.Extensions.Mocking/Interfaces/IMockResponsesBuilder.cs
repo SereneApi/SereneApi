@@ -1,5 +1,5 @@
-﻿using SereneApi.Abstractions.Requests;
-using SereneApi.Abstractions.Responses;
+﻿using SereneApi.Abstractions.Request.Content;
+using SereneApi.Abstractions.Response;
 using SereneApi.Abstractions.Serializers;
 using System;
 

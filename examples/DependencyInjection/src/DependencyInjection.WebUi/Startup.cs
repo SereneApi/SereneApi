@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using SereneApi.Abstractions.Configuration;
 using SereneApi.Extensions.DependencyInjection;
 
 namespace DependencyInjection.WebUi

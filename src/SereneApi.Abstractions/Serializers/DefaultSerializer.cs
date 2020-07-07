@@ -1,5 +1,4 @@
-﻿using SereneApi.Abstractions.Requests;
-using SereneApi.Abstractions.Requests.Content;
+﻿using SereneApi.Abstractions.Request.Content;
 using System.IO;
 using System.Net.Http;
 using System.Text.Json;

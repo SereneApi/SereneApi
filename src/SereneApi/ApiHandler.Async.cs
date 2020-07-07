@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
-using SereneApi.Abstractions.Enums;
 using SereneApi.Abstractions.Factories;
-using SereneApi.Abstractions.Requests;
-using SereneApi.Abstractions.Responses;
+using SereneApi.Abstractions.Request;
+using SereneApi.Abstractions.Response;
 using SereneApi.Abstractions.Serializers;
 using SereneApi.Extensions;
 using SereneApi.Helpers;

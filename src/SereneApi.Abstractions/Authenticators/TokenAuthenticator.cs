@@ -1,8 +1,7 @@
 ﻿using DeltaWare.Dependencies;
 using SereneApi.Abstractions.Authentication;
 using SereneApi.Abstractions.Factories;
-using SereneApi.Abstractions.Responses;
-using SereneApi.Abstractions.Types;
+using SereneApi.Abstractions.Response;
 using System;
 using System.Threading.Tasks;
 
