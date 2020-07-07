@@ -1,12 +1,12 @@
-﻿using System;
-using System.Net;
-using DeltaWare.Dependencies;
+﻿using DeltaWare.Dependencies;
 using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Authentication;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Helpers;
 using SereneApi.Abstractions.Request.Content;
+using System;
+using System.Net;
 
 namespace SereneApi.Abstractions.Options
 {

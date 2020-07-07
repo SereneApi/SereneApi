@@ -1,6 +1,6 @@
-﻿using System;
+﻿using SereneApi.Abstractions.Request.Content;
+using System;
 using System.Linq.Expressions;
-using SereneApi.Abstractions.Request.Content;
 
 namespace SereneApi.Request
 {

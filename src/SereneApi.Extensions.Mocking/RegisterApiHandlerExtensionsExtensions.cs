@@ -1,11 +1,11 @@
 ﻿using DeltaWare.Dependencies;
 using SereneApi.Abstractions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
 using SereneApi.Abstractions.Options;
 using SereneApi.Extensions.Mocking.Handlers;
 using SereneApi.Extensions.Mocking.Response;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
 
 namespace SereneApi.Extensions.Mocking
 {

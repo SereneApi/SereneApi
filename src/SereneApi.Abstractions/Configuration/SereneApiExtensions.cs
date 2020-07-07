@@ -1,5 +1,5 @@
-﻿using System;
-using DeltaWare.Dependencies;
+﻿using DeltaWare.Dependencies;
+using System;
 
 namespace SereneApi.Abstractions.Configuration
 {

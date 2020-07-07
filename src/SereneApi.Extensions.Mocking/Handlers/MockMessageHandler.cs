@@ -1,13 +1,13 @@
-﻿using System;
+﻿using SereneApi.Abstractions.Request.Content;
+using SereneApi.Extensions.Mocking.Dependencies;
+using SereneApi.Extensions.Mocking.Extensions;
+using SereneApi.Extensions.Mocking.Response;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using SereneApi.Abstractions.Request.Content;
-using SereneApi.Extensions.Mocking.Dependencies;
-using SereneApi.Extensions.Mocking.Extensions;
-using SereneApi.Extensions.Mocking.Response;
 
 namespace SereneApi.Extensions.Mocking.Handlers
 {

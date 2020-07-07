@@ -1,9 +1,9 @@
 ﻿using DeltaWare.Dependencies;
 using Newtonsoft.Json;
+using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Serializers;
 using SereneApi.Extensions.Newtonsoft.Serializers;
 using System;
-using SereneApi.Abstractions.Configuration;
 
 namespace SereneApi.Extensions.Newtonsoft
 {

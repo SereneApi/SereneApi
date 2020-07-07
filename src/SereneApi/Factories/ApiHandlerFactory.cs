@@ -3,10 +3,10 @@ using DeltaWare.Dependencies.Abstractions;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Handler;
+using SereneApi.Abstractions.Options;
 using SereneApi.Helpers;
 using System;
 using System.Collections.Generic;
-using SereneApi.Abstractions.Options;
 
 namespace SereneApi.Factories
 {

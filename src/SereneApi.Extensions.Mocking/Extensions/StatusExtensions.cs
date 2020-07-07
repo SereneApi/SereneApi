@@ -1,5 +1,5 @@
-﻿using System.Net;
-using SereneApi.Abstractions.Response;
+﻿using SereneApi.Abstractions.Response;
+using System.Net;
 
 namespace SereneApi.Extensions.Mocking.Extensions
 {

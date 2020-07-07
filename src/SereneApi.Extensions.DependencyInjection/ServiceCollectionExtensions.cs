@@ -1,5 +1,4 @@
-﻿using System;
-using DeltaWare.Dependencies;
+﻿using DeltaWare.Dependencies;
 using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -9,6 +8,7 @@ using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Options;
 using SereneApi.Extensions.DependencyInjection.Factories;
 using SereneApi.Extensions.DependencyInjection.Options;
+using System;
 
 namespace SereneApi.Extensions.DependencyInjection
 {

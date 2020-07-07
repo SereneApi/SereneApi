@@ -2,10 +2,10 @@
 using SereneApi.Abstractions.Authentication;
 using SereneApi.Abstractions.Authenticators;
 using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Response;
 using System;
 using System.Threading.Tasks;
-using SereneApi.Abstractions.Options;
 
 namespace SereneApi.Extensions
 {

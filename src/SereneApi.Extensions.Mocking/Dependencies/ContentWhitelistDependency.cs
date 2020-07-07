@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using SereneApi.Abstractions.Request.Content;
+﻿using SereneApi.Abstractions.Request.Content;
+using System.Collections.Generic;
 
 namespace SereneApi.Extensions.Mocking.Dependencies
 {

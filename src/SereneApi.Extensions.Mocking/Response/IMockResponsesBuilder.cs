@@ -1,8 +1,7 @@
-﻿using System;
-using SereneApi.Abstractions.Request.Content;
+﻿using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Response;
 using SereneApi.Abstractions.Serializers;
-using SereneApi.Extensions.Mocking.Extensions;
+using System;
 
 namespace SereneApi.Extensions.Mocking.Response
 {

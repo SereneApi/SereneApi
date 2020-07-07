@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using DeltaWare.Dependencies;
+﻿using DeltaWare.Dependencies;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Request;
 using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Serializers;
 using SereneApi.Extensions.Mocking.Dependencies;
 using SereneApi.Extensions.Mocking.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SereneApi.Extensions.Mocking.Response
 {

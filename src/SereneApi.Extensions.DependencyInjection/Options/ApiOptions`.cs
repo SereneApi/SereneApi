@@ -1,7 +1,7 @@
-﻿using System;
-using DeltaWare.Dependencies;
+﻿using DeltaWare.Dependencies;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Options;
+using System;
 
 namespace SereneApi.Extensions.DependencyInjection.Options
 {

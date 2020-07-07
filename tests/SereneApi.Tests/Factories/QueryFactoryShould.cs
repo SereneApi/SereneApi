@@ -1,9 +1,9 @@
 ﻿using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Factories;
+using SereneApi.Abstractions.Options;
 using SereneApi.Tests.Mock;
 using Shouldly;
 using System;
-using SereneApi.Abstractions.Options;
 using Xunit;
 
 namespace SereneApi.Tests.Factories

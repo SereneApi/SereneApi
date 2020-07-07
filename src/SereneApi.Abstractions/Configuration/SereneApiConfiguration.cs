@@ -1,10 +1,10 @@
 ﻿using DeltaWare.Dependencies;
 using SereneApi.Abstractions.Factories;
+using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Serializers;
 using System;
 using System.Net;
-using SereneApi.Abstractions.Options;
 
 namespace SereneApi.Abstractions.Configuration
 {

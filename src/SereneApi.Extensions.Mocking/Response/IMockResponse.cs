@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using SereneApi.Abstractions.Request.Content;
+﻿using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Response;
 using SereneApi.Abstractions.Serializers;
 using SereneApi.Extensions.Mocking.Dependencies;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SereneApi.Extensions.Mocking.Response
 {

@@ -1,5 +1,5 @@
-﻿using System.Net.Http;
-using SereneApi.Abstractions.Request;
+﻿using SereneApi.Abstractions.Request;
+using System.Net.Http;
 
 namespace SereneApi.Extensions.Mocking.Extensions
 {
