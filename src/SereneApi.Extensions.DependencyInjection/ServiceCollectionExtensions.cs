@@ -23,7 +23,7 @@ namespace SereneApi.Extensions.DependencyInjection
 
             ServiceDescriptor service = ServiceDescriptor.Singleton(configuration);
 
-            if(!services.Contains(service))
+            if(services.Contains(service))
             {
                 throw new ArgumentException();
             }

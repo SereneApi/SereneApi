@@ -5,16 +5,16 @@ namespace SereneApi.Abstractions.Configuration
 {
     public class SereneApiExtensions: ISereneApiExtensions
     {
-        private Action<IDependencyCollection> _dependencyFactory;
+        private readonly ISereneApiConfigurationBuilder _builder;
 
-        public SereneApiExtensions(Action<IDependencyCollection> dependencyFactory)
+        public SereneApiExtensions(ISereneApiConfigurationBuilder builder)
         {
-            _dependencyFactory = dependencyFactory;
+            _builder = builder;
         }
 
         public void ExtendDependencyFactory(Action<IDependencyCollection> factory)
         {
-            _dependencyFactory += factory;
+            _builder.AddDependencies(factory);
         }
     }
 }

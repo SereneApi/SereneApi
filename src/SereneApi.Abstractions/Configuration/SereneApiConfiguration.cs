@@ -63,7 +63,7 @@ namespace SereneApi.Abstractions.Configuration
 
         public ISereneApiExtensions GetExtensions()
         {
-            return new SereneApiExtensions(_dependencyFactory);
+            return new SereneApiExtensions(this);
         }
 
         public static ISereneApiConfiguration Default { get; } = new SereneApiConfiguration();

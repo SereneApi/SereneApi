@@ -1,6 +1,6 @@
-﻿using System;
+﻿using SereneApi.Abstractions.Request;
+using System;
 using System.Text;
-using SereneApi.Abstractions.Request;
 
 namespace SereneApi.Abstractions.Authentication
 {

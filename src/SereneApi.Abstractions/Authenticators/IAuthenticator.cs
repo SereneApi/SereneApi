@@ -1,6 +1,6 @@
 ﻿using SereneApi.Abstractions.Authentication;
-using System.Threading.Tasks;
 using SereneApi.Abstractions.Request;
+using System.Threading.Tasks;
 
 namespace SereneApi.Abstractions.Authenticators
 {

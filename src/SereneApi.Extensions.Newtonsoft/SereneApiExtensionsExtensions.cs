@@ -13,7 +13,10 @@ namespace SereneApi.Extensions.Newtonsoft
         {
             if(factory == null)
             {
-                extensions.ExtendDependencyFactory(d => d.AddScoped<ISerializer>(() => new NewtonsoftSerializer()));
+                extensions.ExtendDependencyFactory(d =>
+                {
+                    d.AddScoped<ISerializer>(() => new NewtonsoftSerializer());
+                });
 
                 return extensions;
             }
