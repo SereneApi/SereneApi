@@ -26,6 +26,7 @@
         <PackageLicenseFile>README.md</PackageLicenseFile>
         <NeutralLanguage>en-AU</NeutralLanguage>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <Version>1.0.5.1-prerelease</Version>
     </PropertyGroup>
 
     <ItemGroup>
