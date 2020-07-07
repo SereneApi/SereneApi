@@ -14,21 +14,13 @@ namespace SereneApi.Extensions.Mocking.Response
     /// <inheritdoc cref="IMockResponsesBuilder"/>
     public class MockResponsesBuilder: IMockResponsesBuilder
     {
-        private ISerializer _serializer = new DefaultSerializer();
-
         private readonly List<Func<IMockResponse>> _mockResponses = new List<Func<IMockResponse>>();
 
-        /// <inheritdoc cref="IMockResponsesBuilder"/>
-        public void UseSerializer(ISerializer serializer)
+        private readonly IDependencyProvider _dependencies;
+
+        public MockResponsesBuilder(IDependencyProvider dependencies)
         {
-            ExceptionHelper.EnsureParameterIsNotNull(serializer, nameof(serializer));
-
-            if(_serializer != null)
-            {
-                ExceptionHelper.MethodCannotBeCalledTwice();
-            }
-
-            _serializer = serializer;
+            _dependencies = dependencies;
         }
 
         /// <inheritdoc>
@@ -38,7 +30,7 @@ namespace SereneApi.Extensions.Mocking.Response
         {
             IDependencyCollection dependencies = new DependencyCollection();
 
-            dependencies.AddScoped(() => _serializer, Binding.Unbound);
+            dependencies.AddScoped(() => _dependencies.GetDependency<ISerializer>(), Binding.Unbound);
 
             _mockResponses.Add(() => BuildMockResponse(dependencies.BuildProvider(), status, message, null));
 
@@ -52,9 +44,9 @@ namespace SereneApi.Extensions.Mocking.Response
         {
             IDependencyCollection dependencies = new DependencyCollection();
 
-            dependencies.AddScoped(() => _serializer, Binding.Unbound);
+            dependencies.AddScoped(() => _dependencies.GetDependency<ISerializer>(), Binding.Unbound);
 
-            IApiRequestContent responseContent = _serializer.Serialize(content);
+            IApiRequestContent responseContent = _dependencies.GetDependency<ISerializer>().Serialize(content);
 
             _mockResponses.Add(() => BuildMockResponse(dependencies.BuildProvider(), Status.Ok, null, responseContent));
 
@@ -68,9 +60,9 @@ namespace SereneApi.Extensions.Mocking.Response
         {
             IDependencyCollection dependencies = new DependencyCollection();
 
-            dependencies.AddScoped(() => _serializer, Binding.Unbound);
+            dependencies.AddScoped(() => _dependencies.GetDependency<ISerializer>(), Binding.Unbound);
 
-            IApiRequestContent responseContent = _serializer.Serialize(content);
+            IApiRequestContent responseContent = _dependencies.GetDependency<ISerializer>().Serialize(content);
 
             _mockResponses.Add(() => BuildMockResponse(dependencies.BuildProvider(), status, null, responseContent));
 
