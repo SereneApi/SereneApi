@@ -6,20 +6,19 @@ using SereneApi.Abstractions.Response;
 using System;
 using System.Threading.Tasks;
 using SereneApi.Abstractions.Options;
-using SereneApi.Extensions.DependencyInjection.Authenticators;
 
-namespace SereneApi.Extensions.DependencyInjection
+namespace SereneApi.Extensions
 {
-    public static class ApiHandlerExtensionsExtensions
+    public static class ApiOptionsExtensionsExtensions
     {
         /// <summary>
-        /// FOR DI
+        /// NOT FOR DI
         /// </summary>
         public static IApiOptionsExtensions AddAuthenticator<TApi, TDto>(this IApiOptionsExtensions extensions, Func<TApi, Task<IApiResponse<TDto>>> callApiFunction, Func<TDto, TokenInfo> getTokenInfo) where TApi : class, IDisposable where TDto : class
         {
             IDependencyCollection dependencies = extensions.GetDependencyCollection();
 
-            dependencies.AddSingleton<IAuthenticator>(p => new DiTokenAuthenticator<TApi, TDto>(p, callApiFunction, getTokenInfo));
+            dependencies.AddSingleton<IAuthenticator>(p => new TokenAuthenticator<TApi, TDto>(p, callApiFunction, getTokenInfo));
 
             return extensions;
         }

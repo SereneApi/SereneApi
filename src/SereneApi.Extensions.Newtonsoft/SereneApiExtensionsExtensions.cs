@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using SereneApi.Abstractions.Serializers;
 using SereneApi.Extensions.Newtonsoft.Serializers;
 using System;
-using SereneApi.Abstractions.Extensions;
+using SereneApi.Abstractions.Configuration;
 
 namespace SereneApi.Extensions.Newtonsoft
 {

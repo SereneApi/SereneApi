@@ -1,10 +1,10 @@
 ﻿using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Request;
 using SereneApi.Abstractions.Response;
-using SereneApi.Interfaces;
 using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using SereneApi.Request;
 
 namespace SereneApi.Tests.Interfaces
 {

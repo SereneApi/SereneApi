@@ -2,6 +2,7 @@
 using SereneApi.Types;
 using Shouldly;
 using System;
+using SereneApi.Response;
 using Xunit;
 
 namespace SereneApi.Tests.Types

@@ -4,7 +4,6 @@ using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Serializers;
 using System;
 using System.Net;
-using SereneApi.Abstractions.Extensions;
 using SereneApi.Abstractions.Options;
 
 namespace SereneApi.Abstractions.Configuration

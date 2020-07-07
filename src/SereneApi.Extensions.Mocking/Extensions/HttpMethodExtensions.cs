@@ -1,8 +1,7 @@
-﻿using SereneApi.Abstractions.Request;
+﻿using System.Net.Http;
+using SereneApi.Abstractions.Request;
 
-// Do not change namespace
-// ReSharper disable once CheckNamespace
-namespace System.Net.Http
+namespace SereneApi.Extensions.Mocking.Extensions
 {
     internal static class HttpMethodExtensions
     {

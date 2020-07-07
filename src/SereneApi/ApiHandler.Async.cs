@@ -5,13 +5,14 @@ using SereneApi.Abstractions.Response;
 using SereneApi.Abstractions.Serializers;
 using SereneApi.Extensions;
 using SereneApi.Helpers;
-using SereneApi.Interfaces;
 using SereneApi.Types;
 using System;
 using System.Linq.Expressions;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using SereneApi.Request;
+using SereneApi.Response;
 
 namespace SereneApi
 {
