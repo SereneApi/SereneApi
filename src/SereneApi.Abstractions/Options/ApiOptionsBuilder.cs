@@ -1,29 +1,29 @@
-﻿using DeltaWare.Dependencies;
+﻿using System;
+using System.Net;
+using DeltaWare.Dependencies;
 using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Authentication;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Helpers;
 using SereneApi.Abstractions.Request.Content;
-using System;
-using System.Net;
 
-namespace SereneApi.Abstractions.Handler.Options
+namespace SereneApi.Abstractions.Options
 {
-    public class OptionsBuilder: IOptionsBuilder
+    public class ApiOptionsBuilder: IApiOptionsBuilder
     {
         public IDependencyCollection Dependencies { get; } = new DependencyCollection();
 
         protected ConnectionSettings ConnectionSettings { get; set; }
 
-        /// <inheritdoc cref="IOptionsConfigurator.UseSource"/>
+        /// <inheritdoc cref="IApiOptionsConfigurator.UseSource"/>
         public void UseSource(string source, string resource = null, string resourcePath = null)
         {
             ExceptionHelper.EnsureParameterIsNotNull(source, nameof(source));
 
             using IDependencyProvider provider = Dependencies.BuildProvider();
 
-            IApiHandlerConfiguration configuration = provider.GetDependency<IApiHandlerConfiguration>();
+            ISereneApiConfiguration configuration = provider.GetDependency<ISereneApiConfiguration>();
 
             if(string.IsNullOrWhiteSpace(resourcePath))
             {
@@ -53,7 +53,7 @@ namespace SereneApi.Abstractions.Handler.Options
             ConnectionSettings.Timeout = seconds;
         }
 
-        /// <inheritdoc cref="IOptionsConfigurator.SetRetryAttempts"/>
+        /// <inheritdoc cref="IApiOptionsConfigurator.SetRetryAttempts"/>
         public void SetRetryAttempts(int attemptCount)
         {
             if(ConnectionSettings == null)
@@ -66,25 +66,25 @@ namespace SereneApi.Abstractions.Handler.Options
             ConnectionSettings.RetryAttempts = attemptCount;
         }
 
-        /// <inheritdoc cref="IOptionsConfigurator.AddLogger"/>
+        /// <inheritdoc cref="IApiOptionsConfigurator.AddLogger"/>
         public void AddLogger(ILogger logger)
         {
             Dependencies.AddScoped(() => logger);
         }
 
-        /// <inheritdoc cref="IOptionsConfigurator.UseQueryFactory"/>
+        /// <inheritdoc cref="IApiOptionsConfigurator.UseQueryFactory"/>
         public void UseQueryFactory(IQueryFactory queryFactory)
         {
             Dependencies.AddScoped(() => queryFactory);
         }
 
-        /// <inheritdoc cref="IOptionsConfigurator.UseCredentials"/>
+        /// <inheritdoc cref="IApiOptionsConfigurator.UseCredentials"/>
         public void UseCredentials(ICredentials credentials)
         {
             Dependencies.AddScoped(() => credentials);
         }
 
-        /// <inheritdoc cref="IOptionsConfigurator.AddAuthentication"/>
+        /// <inheritdoc cref="IApiOptionsConfigurator.AddAuthentication"/>
         public void AddAuthentication(IAuthentication authentication)
         {
             if(Dependencies.HasDependency<IAuthentication>())
@@ -95,7 +95,7 @@ namespace SereneApi.Abstractions.Handler.Options
             Dependencies.AddScoped(() => authentication);
         }
 
-        /// <inheritdoc cref="IOptionsConfigurator.AddBasicAuthentication"/>
+        /// <inheritdoc cref="IApiOptionsConfigurator.AddBasicAuthentication"/>
         public void AddBasicAuthentication(string username, string password)
         {
             if(Dependencies.HasDependency<IAuthentication>())
@@ -106,7 +106,7 @@ namespace SereneApi.Abstractions.Handler.Options
             Dependencies.AddTransient<IAuthentication>(() => new BasicAuthentication(username, password));
         }
 
-        /// <inheritdoc cref="IOptionsConfigurator.AddBearerAuthentication"/>
+        /// <inheritdoc cref="IApiOptionsConfigurator.AddBearerAuthentication"/>
         public void AddBearerAuthentication(string token)
         {
             if(Dependencies.HasDependency<IAuthentication>())
@@ -122,13 +122,13 @@ namespace SereneApi.Abstractions.Handler.Options
             Dependencies.AddScoped(() => content);
         }
 
-        public IOptions BuildOptions()
+        public IApiOptions BuildOptions()
         {
             Dependencies.AddScoped<IConnectionSettings>(() => ConnectionSettings);
 
-            IOptions options = new Options(Dependencies.BuildProvider(), ConnectionSettings);
+            IApiOptions apiOptions = new ApiOptions(Dependencies.BuildProvider(), ConnectionSettings);
 
-            return options;
+            return apiOptions;
         }
 
         #region IDisposable

@@ -1,25 +1,25 @@
-﻿using DeltaWare.Dependencies;
-using SereneApi.Abstractions.Configuration;
-using System;
+﻿using System;
 using System.Diagnostics;
+using DeltaWare.Dependencies;
+using SereneApi.Abstractions.Configuration;
 
-namespace SereneApi.Abstractions.Handler.Options
+namespace SereneApi.Abstractions.Options
 {
     [DebuggerDisplay("Source: {Connection.BaseAddress.ToString()}")]
-    public class Options: IOptions
+    public class ApiOptions: IApiOptions
     {
         #region Properties
 
-        /// <inheritdoc cref="IOptions.Dependencies"/>
+        /// <inheritdoc cref="IApiOptions.Dependencies"/>
         public IDependencyProvider Dependencies { get; }
 
-        /// <inheritdoc cref="IOptions.Connection"/>
+        /// <inheritdoc cref="IApiOptions.Connection"/>
         public IConnectionSettings Connection { get; set; }
 
         #endregion
         #region Constructors
 
-        public Options(IDependencyProvider dependencies, IConnectionSettings connection)
+        public ApiOptions(IDependencyProvider dependencies, IConnectionSettings connection)
         {
             Dependencies = dependencies;
             Connection = connection;

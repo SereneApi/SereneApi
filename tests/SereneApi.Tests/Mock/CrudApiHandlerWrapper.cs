@@ -1,11 +1,11 @@
-﻿using SereneApi.Abstractions.Handler.Options;
+﻿using SereneApi.Abstractions.Options;
 using SereneApi.Tests.Interfaces;
 
 namespace SereneApi.Tests.Mock
 {
     public class CrudApiHandlerWrapper: CrudApiHandler<MockPersonDto, long>, ICrudApi
     {
-        public CrudApiHandlerWrapper(IOptions options) : base(options)
+        public CrudApiHandlerWrapper(IApiOptions apiOptions) : base(apiOptions)
         {
         }
     }

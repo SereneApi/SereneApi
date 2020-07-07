@@ -1,14 +1,14 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using SereneApi.Abstractions.Handler.Options;
-using System;
+using SereneApi.Abstractions.Options;
 
-namespace SereneApi.Extensions.DependencyInjection.Interfaces
+namespace SereneApi.Extensions.DependencyInjection.Options
 {
-    public interface IOptionsConfigurator<TApiDefinition>: IOptionsConfigurator where TApiDefinition : class
+    public interface IApiOptionsConfigurator<TApiDefinition>: IApiOptionsConfigurator where TApiDefinition : class
     {
         /// <summary>
-        /// The specific handler the <see cref="IOptionsConfigurator"/> are for.
+        /// The specific handler the <see cref="IApiOptionsConfigurator"/> are for.
         /// </summary>
         Type HandlerType { get; }
 

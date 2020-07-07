@@ -1,12 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Net;
+using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Authentication;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Request.Content;
-using System.Net;
 
-namespace SereneApi.Abstractions.Handler.Options
+namespace SereneApi.Abstractions.Options
 {
-    public interface IOptionsConfigurator
+    public interface IApiOptionsConfigurator
     {
         void UseSource(string source, string resource = null, string resourcePath = null);
 

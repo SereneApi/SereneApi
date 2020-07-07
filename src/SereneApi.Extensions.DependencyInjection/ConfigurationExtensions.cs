@@ -1,9 +1,7 @@
-﻿using SereneApi.Extensions.DependencyInjection;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
 
-// Do not change namespace
-// ReSharper disable once CheckNamespace
-namespace Microsoft.Extensions.Configuration
+namespace SereneApi.Extensions.DependencyInjection
 {
     public static class ConfigurationExtensions
     {

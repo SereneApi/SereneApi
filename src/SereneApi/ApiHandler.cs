@@ -2,13 +2,13 @@
 using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Handler;
-using SereneApi.Abstractions.Handler.Options;
 using SereneApi.Abstractions.Response;
 using SereneApi.Extensions;
 using SereneApi.Types;
 using System;
 using System.Diagnostics;
 using System.Net.Http;
+using SereneApi.Abstractions.Options;
 
 namespace SereneApi
 {
@@ -35,11 +35,11 @@ namespace SereneApi
         /// <summary>
         /// Creates a new instance of the <see cref="ApiHandler"/>.
         /// </summary>
-        /// <param name="options">The <see cref="IOptions"/> the <see cref="ApiHandler"/> will use when making requests.</param>
-        protected ApiHandler(IOptions options)
+        /// <param name="apiOptions">The <see cref="IApiOptions"/> the <see cref="ApiHandler"/> will use when making requests.</param>
+        protected ApiHandler(IApiOptions apiOptions)
         {
-            Connection = options.Connection;
-            Dependencies = options.Dependencies;
+            Connection = apiOptions.Connection;
+            Dependencies = apiOptions.Dependencies;
             Dependencies.TryGetDependency(out _logger);
 
             _logger?.LogTrace($"{GetType()} has been instantiated");

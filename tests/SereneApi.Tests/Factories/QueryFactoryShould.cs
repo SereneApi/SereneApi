@@ -3,6 +3,7 @@ using SereneApi.Abstractions.Factories;
 using SereneApi.Tests.Mock;
 using Shouldly;
 using System;
+using SereneApi.Abstractions.Options;
 using Xunit;
 
 namespace SereneApi.Tests.Factories
@@ -12,9 +13,13 @@ namespace SereneApi.Tests.Factories
         [Fact]
         public void BuildQuery()
         {
+            ISereneApiConfiguration configuration = SereneApiConfiguration.Default;
 
+            IApiOptionsBuilder apiOptionsBuilder = configuration.GetOptionsBuilder();
 
-            IQueryFactory queryFactory = ApiHandlerConfiguration.Default.QueryFactory;
+            apiOptionsBuilder.BuildOptions();
+
+            IQueryFactory queryFactory = SereneApiConfiguration.Default.QueryFactory;
 
             MockPersonDto personDto = new MockPersonDto
             {
@@ -31,7 +36,7 @@ namespace SereneApi.Tests.Factories
         [Fact]
         public void BuildQueryWithDateTime()
         {
-            IQueryFactory queryFactory = ApiHandlerConfiguration.Default.QueryFactory;
+            IQueryFactory queryFactory = SereneApiConfiguration.Default.QueryFactory;
 
             MockPersonDto personDto = new MockPersonDto
             {
@@ -48,7 +53,7 @@ namespace SereneApi.Tests.Factories
         [Fact]
         public void BuildQueryWithNoQuerySection()
         {
-            IQueryFactory queryFactory = ApiHandlerConfiguration.Default.QueryFactory;
+            IQueryFactory queryFactory = SereneApiConfiguration.Default.QueryFactory;
 
             MockPersonDto personDto = new MockPersonDto
             {
@@ -65,7 +70,7 @@ namespace SereneApi.Tests.Factories
         [Fact]
         public void BuildQueryWithOneQuerySection()
         {
-            IQueryFactory queryFactory = ApiHandlerConfiguration.Default.QueryFactory;
+            IQueryFactory queryFactory = SereneApiConfiguration.Default.QueryFactory;
 
             MockPersonDto personDto = new MockPersonDto
             {
@@ -82,7 +87,7 @@ namespace SereneApi.Tests.Factories
         [Fact]
         public void BuildQueryWithTwoQuerySection()
         {
-            IQueryFactory queryFactory = ApiHandlerConfiguration.Default.QueryFactory;
+            IQueryFactory queryFactory = SereneApiConfiguration.Default.QueryFactory;
 
             MockPersonDto personDto = new MockPersonDto
             {

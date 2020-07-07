@@ -1,4 +1,4 @@
-﻿namespace SereneApi.Abstractions.Handler.Extensions
+﻿namespace SereneApi.Abstractions.Extensions
 {
     public interface IApiHandlerExtensions
     {

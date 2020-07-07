@@ -3,11 +3,11 @@ using DeltaWare.Dependencies.Abstractions;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Handler;
-using SereneApi.Abstractions.Handler.Extensions;
-using SereneApi.Abstractions.Handler.Options;
 using SereneApi.Helpers;
 using System;
 using System.Collections.Generic;
+using SereneApi.Abstractions.Extensions;
+using SereneApi.Abstractions.Options;
 
 namespace SereneApi.Factories
 {
@@ -16,16 +16,16 @@ namespace SereneApi.Factories
     {
         private readonly Dictionary<Type, Type> _handlers = new Dictionary<Type, Type>();
 
-        private readonly Dictionary<Type, IOptionsBuilder> _handlerOptions = new Dictionary<Type, IOptionsBuilder>();
+        private readonly Dictionary<Type, IApiOptionsBuilder> _handlerOptions = new Dictionary<Type, IApiOptionsBuilder>();
 
-        private readonly IApiHandlerConfiguration _configuration;
+        private readonly ISereneApiConfiguration _configuration;
 
         public ApiHandlerFactory()
         {
-            _configuration = ApiHandlerConfiguration.Default;
+            _configuration = SereneApiConfiguration.Default;
         }
 
-        public ApiHandlerFactory(IApiHandlerConfiguration configuration)
+        public ApiHandlerFactory(ISereneApiConfiguration configuration)
         {
             _configuration = configuration;
         }
@@ -39,24 +39,24 @@ namespace SereneApi.Factories
 
             Type handlerType = typeof(TApiDefinition);
 
-            if(!_handlerOptions.TryGetValue(handlerType, out IOptionsBuilder builder))
+            if(!_handlerOptions.TryGetValue(handlerType, out IApiOptionsBuilder builder))
             {
                 throw new ArgumentException($"{nameof(TApiDefinition)} has not been registered.");
             }
 
-            IOptions options = builder.BuildOptions();
+            IApiOptions apiOptions = builder.BuildOptions();
 
-            TApiDefinition handler = (TApiDefinition)Activator.CreateInstance(_handlers[handlerType], options);
+            TApiDefinition handler = (TApiDefinition)Activator.CreateInstance(_handlers[handlerType], apiOptions);
 
             return handler;
         }
 
         /// <summary>
         /// Registers an <see cref="ApiHandler"/> implementation to the <see cref="ApiHandlerFactory"/>.
-        /// The supplied <see cref="IOptionsConfigurator"/> will be used to build the <see cref="ApiHandler"/>.
+        /// The supplied <see cref="IApiOptionsConfigurator"/> will be used to build the <see cref="ApiHandler"/>.
         /// </summary>
-        /// <param name="factory">The <see cref="IOptionsConfigurator"/> that will be used to build the <see cref="ApiHandler"/>.</param>
-        public IApiHandlerExtensions RegisterApiHandler<TApiDefinition, TApiImplementation>(Action<IOptionsConfigurator> factory) where TApiImplementation : IApiHandler, TApiDefinition
+        /// <param name="factory">The <see cref="IApiOptionsConfigurator"/> that will be used to build the <see cref="ApiHandler"/>.</param>
+        public IApiHandlerExtensions RegisterApiHandler<TApiDefinition, TApiImplementation>(Action<IApiOptionsConfigurator> factory) where TApiImplementation : IApiHandler, TApiDefinition
         {
             CheckIfDisposed();
 
@@ -67,7 +67,7 @@ namespace SereneApi.Factories
                 throw new ArgumentException($"Cannot Register Multiple Instances of {nameof(TApiDefinition)}");
             }
 
-            IOptionsBuilder configurator = _configuration.GetOptionsBuilder();
+            IApiOptionsBuilder configurator = _configuration.GetOptionsBuilder();
 
             configurator.Dependencies.AddSingleton<IApiHandlerFactory>(() => this, Binding.Unbound);
 
@@ -83,7 +83,7 @@ namespace SereneApi.Factories
         {
             CheckIfDisposed();
 
-            if(!_handlerOptions.TryGetValue(typeof(TApiDefinition), out IOptionsBuilder builder))
+            if(!_handlerOptions.TryGetValue(typeof(TApiDefinition), out IApiOptionsBuilder builder))
             {
                 throw new ArgumentException($"Could not find any registered extensions to {typeof(TApiDefinition)}");
             }
@@ -130,7 +130,7 @@ namespace SereneApi.Factories
 
             if(disposing)
             {
-                foreach(IOptionsBuilder builder in _handlerOptions.Values)
+                foreach(IApiOptionsBuilder builder in _handlerOptions.Values)
                 {
                     builder.Dispose();
                 }

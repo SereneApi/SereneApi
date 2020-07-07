@@ -1,23 +1,20 @@
-﻿using DeltaWare.Dependencies;
+﻿using System;
+using DeltaWare.Dependencies;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Configuration;
-using SereneApi.Abstractions.Handler.Options;
 using SereneApi.Abstractions.Helpers;
+using SereneApi.Abstractions.Options;
 using SereneApi.Extensions.DependencyInjection.Helpers;
-using SereneApi.Extensions.DependencyInjection.Interfaces;
-using System;
-using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
-namespace SereneApi.Extensions.DependencyInjection.Types
+namespace SereneApi.Extensions.DependencyInjection.Options
 {
-    /// <inheritdoc cref="IOptionsConfigurator{TApiDefinition}"/>
-    internal class OptionsBuilder<TApiDefinition>: OptionsBuilder, IOptionsBuilder<TApiDefinition>, IOptionsConfigurator<TApiDefinition> where TApiDefinition : class
+    /// <inheritdoc cref="IApiOptionsConfigurator{TApiDefinition}"/>
+    internal class ApiApiOptionsBuilder<TApiDefinition>: ApiOptionsBuilder, IApiOptionsBuilder<TApiDefinition>, IApiOptionsConfigurator<TApiDefinition> where TApiDefinition : class
     {
         public Type HandlerType => typeof(TApiDefinition);
 
-        /// <inheritdoc cref="IOptionsConfigurator{TApiDefinition}.UseConfiguration"/>
+        /// <inheritdoc cref="IApiOptionsConfigurator{TApiDefinition}.UseConfiguration"/>
         public void UseConfiguration(IConfiguration configuration)
         {
             if(Dependencies.HasDependency<IConnectionSettings>())
@@ -31,20 +28,20 @@ namespace SereneApi.Extensions.DependencyInjection.Types
 
             using IDependencyProvider provider = Dependencies.BuildProvider();
 
-            IApiHandlerConfiguration handlerConfiguration = provider.GetDependency<IApiHandlerConfiguration>();
+            ISereneApiConfiguration sereneApiConfiguration = provider.GetDependency<ISereneApiConfiguration>();
 
             if(string.IsNullOrWhiteSpace(resourcePath))
             {
                 if(resourcePath != string.Empty)
                 {
-                    resourcePath = handlerConfiguration.ResourcePath;
+                    resourcePath = sereneApiConfiguration.ResourcePath;
                 }
             }
 
             ConnectionSettings = new ConnectionSettings(source, resource, resourcePath)
             {
-                Timeout = handlerConfiguration.Timeout,
-                RetryAttempts = handlerConfiguration.RetryCount
+                Timeout = sereneApiConfiguration.Timeout,
+                RetryAttempts = sereneApiConfiguration.RetryCount
             };
 
             #region Timeout
@@ -86,7 +83,7 @@ namespace SereneApi.Extensions.DependencyInjection.Types
             #endregion
         }
 
-        /// <inheritdoc cref="IOptionsConfigurator{TApiDefinition}.AddLoggerFactory"/>
+        /// <inheritdoc cref="IApiOptionsConfigurator{TApiDefinition}.AddLoggerFactory"/>
         public void AddLoggerFactory(ILoggerFactory loggerFactory)
         {
             ExceptionHelper.EnsureParameterIsNotNull(loggerFactory, nameof(loggerFactory));
@@ -95,15 +92,15 @@ namespace SereneApi.Extensions.DependencyInjection.Types
         }
 
         /// <summary>
-        /// Builds the <see cref="IOptions"/> for the specified <see cref="ApiHandler"/>.
+        /// Builds the <see cref="IApiOptions"/> for the specified <see cref="ApiHandler"/>.
         /// </summary>
-        public new IOptions<TApiDefinition> BuildOptions()
+        public new IApiOptions<TApiDefinition> BuildOptions()
         {
             Dependencies.AddScoped<IConnectionSettings>(() => ConnectionSettings);
 
-            IOptions<TApiDefinition> options = new Options<TApiDefinition>(Dependencies.BuildProvider(), ConnectionSettings);
+            IApiOptions<TApiDefinition> apiOptions = new ApiOptions<TApiDefinition>(Dependencies.BuildProvider(), ConnectionSettings);
 
-            return options;
+            return apiOptions;
         }
     }
 }

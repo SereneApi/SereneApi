@@ -4,27 +4,27 @@ using SereneApi.Abstractions.Serializers;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace SereneApi.Serialization.Newtonsoft
+namespace SereneApi.Extensions.Newtonsoft.Serializers
 {
-    public class NewtonsoftDeserializer: ISerializer
+    public class NewtonsoftSerializer: ISerializer
     {
         private readonly JsonSerializerSettings _deserializerOptions;
 
         private readonly JsonSerializerSettings _serializerOptions;
 
-        public NewtonsoftDeserializer()
+        public NewtonsoftSerializer()
         {
             _deserializerOptions = DefaultDeserializerOptions;
             _serializerOptions = DefaultSerializerOptions;
         }
 
-        public NewtonsoftDeserializer(JsonSerializerSettings sharedOptions)
+        public NewtonsoftSerializer(JsonSerializerSettings sharedOptions)
         {
             _deserializerOptions = sharedOptions;
             _serializerOptions = sharedOptions;
         }
 
-        public NewtonsoftDeserializer(JsonSerializerSettings deserializerOptions, JsonSerializerSettings serializerOptions)
+        public NewtonsoftSerializer(JsonSerializerSettings deserializerOptions, JsonSerializerSettings serializerOptions)
         {
             _deserializerOptions = deserializerOptions;
             _serializerOptions = serializerOptions;
@@ -61,11 +61,11 @@ namespace SereneApi.Serialization.Newtonsoft
             });
         }
 
-        public static JsonSerializerSettings DefaultDeserializerOptions = new JsonSerializerSettings
+        public static JsonSerializerSettings DefaultDeserializerOptions { get; } = new JsonSerializerSettings
         {
         };
 
-        public static JsonSerializerSettings DefaultSerializerOptions = new JsonSerializerSettings
+        public static JsonSerializerSettings DefaultSerializerOptions { get; } = new JsonSerializerSettings
         {
         };
     }

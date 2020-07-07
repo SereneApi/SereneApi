@@ -2,14 +2,12 @@
 using SereneApi.Abstractions.Authentication;
 using SereneApi.Abstractions.Authenticators;
 using SereneApi.Abstractions.Configuration;
-using SereneApi.Abstractions.Handler.Extensions;
 using SereneApi.Abstractions.Response;
-using SereneApi.Extensions.DependencyInjection.Types.Authenticators;
 using System;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Extensions;
+using SereneApi.Extensions.DependencyInjection.Authenticators;
 
-// Do not change namespace
-// ReSharper disable once CheckNamespace
 namespace SereneApi.Extensions.DependencyInjection
 {
     public static class ApiHandlerExtensionsExtensions
