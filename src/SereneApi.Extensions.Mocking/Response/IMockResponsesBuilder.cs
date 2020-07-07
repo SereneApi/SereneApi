@@ -1,20 +1,10 @@
-﻿using SereneApi.Abstractions.Request.Content;
-using SereneApi.Abstractions.Response;
-using SereneApi.Abstractions.Serializers;
+﻿using SereneApi.Abstractions.Response;
 using System;
 
 namespace SereneApi.Extensions.Mocking.Response
 {
     public interface IMockResponsesBuilder
     {
-        /// <summary>
-        /// Adds a <see cref="ISerializer"/> to be used for serializing and deserializing the <see cref="IApiRequestContent"/>.
-        /// </summary>
-        /// <param name="serializer">The <see cref="ISerializer"/> to be used.</param>
-        /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
-        /// <exception cref="MethodAccessException">Thrown if an <see cref="ISerializer"/> has already been provided.</exception>
-        void UseSerializer(ISerializer serializer);
-
         /// <summary>
         /// Adds a <see cref="IMockResponse"/>.
         /// </summary>
