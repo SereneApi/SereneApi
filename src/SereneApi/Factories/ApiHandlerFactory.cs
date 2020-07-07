@@ -3,11 +3,10 @@ using DeltaWare.Dependencies.Abstractions;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Handler;
+using SereneApi.Abstractions.Options;
 using SereneApi.Helpers;
 using System;
 using System.Collections.Generic;
-using SereneApi.Abstractions.Extensions;
-using SereneApi.Abstractions.Options;
 
 namespace SereneApi.Factories
 {
@@ -56,7 +55,7 @@ namespace SereneApi.Factories
         /// The supplied <see cref="IApiOptionsConfigurator"/> will be used to build the <see cref="ApiHandler"/>.
         /// </summary>
         /// <param name="factory">The <see cref="IApiOptionsConfigurator"/> that will be used to build the <see cref="ApiHandler"/>.</param>
-        public IApiHandlerExtensions RegisterApiHandler<TApiDefinition, TApiImplementation>(Action<IApiOptionsConfigurator> factory) where TApiImplementation : IApiHandler, TApiDefinition
+        public IApiOptionsExtensions RegisterApiHandler<TApiDefinition, TApiImplementation>(Action<IApiOptionsConfigurator> factory) where TApiImplementation : IApiHandler, TApiDefinition
         {
             CheckIfDisposed();
 
@@ -76,10 +75,10 @@ namespace SereneApi.Factories
             _handlers.Add(handlerType, typeof(TApiImplementation));
             _handlerOptions.Add(handlerType, configurator);
 
-            return new ApiHandlerExtensions(configurator.Dependencies);
+            return new ApiOptionsExtensions(configurator.Dependencies);
         }
 
-        public IApiHandlerExtensions ExtendApiHandler<TApiDefinition>() where TApiDefinition : class
+        public IApiOptionsExtensions ExtendApiHandler<TApiDefinition>() where TApiDefinition : class
         {
             CheckIfDisposed();
 
@@ -88,16 +87,16 @@ namespace SereneApi.Factories
                 throw new ArgumentException($"Could not find any registered extensions to {typeof(TApiDefinition)}");
             }
 
-            return new ApiHandlerExtensions(builder.Dependencies);
+            return new ApiOptionsExtensions(builder.Dependencies);
         }
 
-        public void ExtendApiHandler<TApiDefinition>(Action<IApiHandlerExtensions> factory) where TApiDefinition : class
+        public void ExtendApiHandler<TApiDefinition>(Action<IApiOptionsExtensions> factory) where TApiDefinition : class
         {
             CheckIfDisposed();
 
             ExceptionHelper.EnsureParameterIsNotNull(factory, nameof(factory));
 
-            IApiHandlerExtensions extensions = ExtendApiHandler<TApiDefinition>();
+            IApiOptionsExtensions extensions = ExtendApiHandler<TApiDefinition>();
 
             factory.Invoke(extensions);
         }

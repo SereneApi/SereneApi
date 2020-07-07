@@ -1,7 +1,7 @@
-﻿using System;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Options;
+using System;
 
 namespace SereneApi.Extensions.DependencyInjection.Options
 {

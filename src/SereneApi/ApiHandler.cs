@@ -2,13 +2,13 @@
 using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Handler;
+using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Response;
 using SereneApi.Extensions;
 using SereneApi.Types;
 using System;
 using System.Diagnostics;
 using System.Net.Http;
-using SereneApi.Abstractions.Options;
 
 namespace SereneApi
 {

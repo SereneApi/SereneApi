@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using DeltaWare.Dependencies;
+﻿using DeltaWare.Dependencies;
 using Microsoft.Extensions.DependencyInjection;
 using SereneApi.Abstractions.Authentication;
 using SereneApi.Abstractions.Authenticators;
 using SereneApi.Abstractions.Response;
+using System;
+using System.Threading.Tasks;
 
 namespace SereneApi.Extensions.DependencyInjection.Authenticators
 {

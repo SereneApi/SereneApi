@@ -1,9 +1,9 @@
 ﻿using DependencyInjection.API;
 using SereneApi;
+using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Request;
 using SereneApi.Abstractions.Response;
 using System.Threading.Tasks;
-using SereneApi.Abstractions.Options;
 
 namespace DependencyInjection.WebUi.Handlers
 {

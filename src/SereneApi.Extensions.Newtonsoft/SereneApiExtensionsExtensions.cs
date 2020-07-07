@@ -1,9 +1,9 @@
 ﻿using DeltaWare.Dependencies;
 using Newtonsoft.Json;
+using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Serializers;
 using SereneApi.Extensions.Newtonsoft.Serializers;
 using System;
-using SereneApi.Abstractions.Extensions;
 
 namespace SereneApi.Extensions.Newtonsoft
 {
@@ -13,7 +13,10 @@ namespace SereneApi.Extensions.Newtonsoft
         {
             if(factory == null)
             {
-                extensions.ExtendDependencyFactory(d => d.AddScoped<ISerializer>(() => new NewtonsoftSerializer()));
+                extensions.ExtendDependencyFactory(d =>
+                {
+                    d.AddScoped<ISerializer>(() => new NewtonsoftSerializer());
+                });
 
                 return extensions;
             }

@@ -1,5 +1,4 @@
-﻿using SereneApi.Abstractions.Extensions;
-using SereneApi.Abstractions.Options;
+﻿using SereneApi.Abstractions.Options;
 
 namespace SereneApi.Abstractions.Configuration
 {

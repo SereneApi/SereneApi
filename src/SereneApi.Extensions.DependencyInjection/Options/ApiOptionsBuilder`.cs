@@ -1,11 +1,11 @@
-﻿using System;
-using DeltaWare.Dependencies;
+﻿using DeltaWare.Dependencies;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Helpers;
 using SereneApi.Abstractions.Options;
 using SereneApi.Extensions.DependencyInjection.Helpers;
+using System;
 
 namespace SereneApi.Extensions.DependencyInjection.Options
 {
