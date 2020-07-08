@@ -1,10 +1,13 @@
 ﻿using SereneApi.Abstractions.Delegates;
+using SereneApi.Abstractions.Queries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using SereneApi.Abstractions.Queries.Attributes;
+using SereneApi.Abstractions.Queries.Exceptions;
 
 namespace SereneApi.Abstractions.Factories
 {
@@ -26,27 +29,9 @@ namespace SereneApi.Abstractions.Factories
         /// </inheritdoc>
         public string Build<TQueryable>(TQueryable query)
         {
-            List<string> querySections = new List<string>();
+            PropertyInfo[] queryProperties = typeof(TQueryable).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-            PropertyInfo[] properties = typeof(TQueryable).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-
-            foreach(PropertyInfo property in properties)
-            {
-                object value = property.GetValue(query);
-
-                // TODO: Add Requirement check.
-                if(value == null)
-                {
-                    continue;
-                }
-
-                string valuestring = _formatter(value);
-
-                if(!string.IsNullOrEmpty(valuestring))
-                {
-                    querySections.Add(BuildQuerySection(property.Name, valuestring));
-                }
-            }
+            List<string> querySections = queryProperties.Select(p => ExtractQueryString(p, query)).Where(q => !string.IsNullOrWhiteSpace(q)).ToList();
 
             return BuildQuerystring(querySections);
         }
@@ -72,23 +57,75 @@ namespace SereneApi.Abstractions.Factories
 
                 PropertyInfo property = (PropertyInfo)member.Member;
 
-                object value = property.GetValue(query);
+                string queryString = ExtractQueryString(property, query);
 
-                if(value == null)
+                if (string.IsNullOrWhiteSpace(queryString))
                 {
-                    // The property was not set, so it is skipped.
                     continue;
                 }
 
-                string valueString = _formatter(value);
-
-                if(!string.IsNullOrEmpty(valueString))
-                {
-                    querySections.Add(BuildQuerySection(property.Name, valueString));
-                }
+                querySections.Add(queryString);
             }
 
             return BuildQuerystring(querySections);
+        }
+
+        private string ExtractQueryString<TQueryable>(PropertyInfo queryProperty, TQueryable query)
+        {
+            object queryValue = queryProperty.GetValue(query);
+
+            if(queryValue == null)
+            {
+                // Requirement only matters if no value was supplied.
+                QueryRequiredAttribute required = queryProperty.GetCustomAttribute<QueryRequiredAttribute>();
+
+                if(required != null && required.IsRequired)
+                {
+                    throw new QueryRequiredException(queryProperty.Name);
+                }
+
+                return string.Empty;
+            }
+
+            QueryKeyAttribute key = queryProperty.GetCustomAttribute<QueryKeyAttribute>();
+            QueryConverterAttribute converter = queryProperty.GetCustomAttribute<QueryConverterAttribute>();
+
+            string queryString;
+
+            if(converter == null)
+            {
+                queryString = _formatter(queryValue);
+            }
+            else
+            {
+                queryString = converter.Converter.Convert(queryValue);
+            }
+
+            if(string.IsNullOrWhiteSpace(queryString))
+            {
+                // Requirement only matters if no value was supplied.
+                QueryRequiredAttribute required = queryProperty.GetCustomAttribute<QueryRequiredAttribute>();
+
+                if(required != null && required.IsRequired)
+                {
+                    throw new QueryRequiredException(queryProperty.Name);
+                }
+
+                return string.Empty;
+            }
+
+            string queryKey;
+
+            if(key == null)
+            {
+                queryKey = queryProperty.Name;
+            }
+            else
+            {
+                queryKey = key.Value;
+            }
+
+            return BuildQuerySection(queryKey, queryString);
         }
 
         /// <summary>
