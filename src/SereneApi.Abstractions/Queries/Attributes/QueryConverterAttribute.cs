@@ -9,6 +9,11 @@ namespace SereneApi.Abstractions.Queries.Attributes
 
         public QueryConverterAttribute(Type converter)
         {
+            if(!converter.IsClass)
+            {
+                throw new ArgumentException($"{converter.FullName} must be a class");
+            }
+
             Converter = (IQueryConverter)Activator.CreateInstance(converter);
         }
     }

@@ -8,7 +8,7 @@ namespace SereneApi.Abstractions.Queries
 
         public string Convert(object value)
         {
-            if (value is T queryValue)
+            if(value is T queryValue)
             {
                 return Convert(queryValue);
             }

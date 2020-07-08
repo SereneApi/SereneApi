@@ -38,6 +38,7 @@
 
   <ItemGroup>
     <PackageReference Include="DeltaWare.Dependencies" Version="1.0.1.3-beta" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
     <PackageReference Include="System.Text.Json" Version="4.7.2" />
   </ItemGroup>
 
