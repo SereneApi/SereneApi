@@ -2,13 +2,13 @@
 
 namespace SereneApi.Abstractions.Queries
 {
-    public abstract class QueryConverter<T>: IQueryConverter
+    public abstract class QueryConverter<T>: IQueryConverter<T>
     {
-        protected abstract string Convert(T value);
+        public abstract string Convert(T value);
 
         public string Convert(object value)
         {
-            if (value is T queryValue)
+            if(value is T queryValue)
             {
                 return Convert(queryValue);
             }
