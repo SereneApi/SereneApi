@@ -2,7 +2,7 @@
 
 namespace SereneApi.Abstractions.Queries
 {
-    public abstract class QueryConverter1<T>: IQueryConverter
+    public abstract class QueryConverter<T>: IQueryConverter
     {
         protected abstract string Convert(T value);
 
