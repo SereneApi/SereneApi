@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Authentication;
-using SereneApi.Abstractions.Factories;
+using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Request.Content;
 using System.Net;
 

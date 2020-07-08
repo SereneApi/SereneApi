@@ -1,6 +1,6 @@
 ﻿using SereneApi.Abstractions.Configuration;
-using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Options;
+using SereneApi.Abstractions.Queries;
 using SereneApi.Tests.Mock;
 using Shouldly;
 using System;

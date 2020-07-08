@@ -1,4 +1,5 @@
 ﻿using SereneApi.Abstractions.Delegates;
+using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Queries.Attributes;
 using SereneApi.Abstractions.Queries.Exceptions;
 using System;

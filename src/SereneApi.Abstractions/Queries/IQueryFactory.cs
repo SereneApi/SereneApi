@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace SereneApi.Abstractions.Factories
+namespace SereneApi.Abstractions.Queries
 {
     /// <summary>
     /// Builds a query string from the supplied object.
