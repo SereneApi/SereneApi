@@ -1,13 +1,14 @@
 ﻿using SereneApi.Abstractions.Delegates;
 using SereneApi.Abstractions.Queries;
+using SereneApi.Abstractions.Queries.Attributes;
+using SereneApi.Abstractions.Queries.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using SereneApi.Abstractions.Queries.Attributes;
-using SereneApi.Abstractions.Queries.Exceptions;
 
 namespace SereneApi.Abstractions.Factories
 {
@@ -59,7 +60,7 @@ namespace SereneApi.Abstractions.Factories
 
                 string queryString = ExtractQueryString(property, query);
 
-                if (string.IsNullOrWhiteSpace(queryString))
+                if(string.IsNullOrWhiteSpace(queryString))
                 {
                     continue;
                 }
@@ -72,49 +73,57 @@ namespace SereneApi.Abstractions.Factories
 
         private string ExtractQueryString<TQueryable>(PropertyInfo queryProperty, TQueryable query)
         {
+            string queryString = string.Empty;
+
             object queryValue = queryProperty.GetValue(query);
 
-            if(queryValue == null)
-            {
-                // Requirement only matters if no value was supplied.
-                QueryRequiredAttribute required = queryProperty.GetCustomAttribute<QueryRequiredAttribute>();
+            // Requirement only matters if no value was supplied.
+            RequiredAttribute requiredAttribute = queryProperty.GetCustomAttribute<RequiredAttribute>();
 
-                if(required != null && required.IsRequired)
+            bool required = false;
+
+            if(requiredAttribute != null)
+            {
+                requiredAttribute?.Validate(queryValue, queryProperty.Name);
+
+                required = true;
+            }
+
+            if(queryValue != null)
+            {
+                QueryConverterAttribute converter = queryProperty.GetCustomAttribute<QueryConverterAttribute>();
+
+                if(converter == null)
                 {
-                    throw new QueryRequiredException(queryProperty.Name);
+                    queryString = _formatter(queryValue);
+                }
+                else
+                {
+                    queryString = converter.Converter.Convert(queryValue);
                 }
 
-                return string.Empty;
-            }
+                if(string.IsNullOrWhiteSpace(queryString))
+                {
+                    if(required)
+                    {
+                        throw new QueryRequiredException(queryProperty.Name);
+                    }
 
-            QueryKeyAttribute key = queryProperty.GetCustomAttribute<QueryKeyAttribute>();
-            QueryConverterAttribute converter = queryProperty.GetCustomAttribute<QueryConverterAttribute>();
-
-            string queryString;
-
-            if(converter == null)
-            {
-                queryString = _formatter(queryValue);
-            }
-            else
-            {
-                queryString = converter.Converter.Convert(queryValue);
+                    queryString = string.Empty;
+                }
             }
 
             if(string.IsNullOrWhiteSpace(queryString))
             {
-                // Requirement only matters if no value was supplied.
-                QueryRequiredAttribute required = queryProperty.GetCustomAttribute<QueryRequiredAttribute>();
-
-                if(required != null && required.IsRequired)
-                {
-                    throw new QueryRequiredException(queryProperty.Name);
-                }
-
-                return string.Empty;
+                return queryString;
             }
 
+            queryProperty.GetCustomAttribute<MinLengthAttribute>()?.Validate(queryString, queryProperty.Name);
+            queryProperty.GetCustomAttribute<MaxLengthAttribute>()?.Validate(queryString, queryProperty.Name);
+
             string queryKey;
+
+            QueryKeyAttribute key = queryProperty.GetCustomAttribute<QueryKeyAttribute>();
 
             if(key == null)
             {
