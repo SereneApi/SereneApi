@@ -1,9 +1,8 @@
-﻿using SereneApi.Abstractions.Response;
-using System;
+﻿using System;
 
-namespace SereneApi.Types
+namespace SereneApi.Abstractions.Response
 {
-    public class ApiResponse: IApiResponse
+    public class ApiResponse<TResult>: IApiResponse<TResult>
     {
         public Status Status { get; }
 
@@ -15,9 +14,12 @@ namespace SereneApi.Types
 
         public Exception Exception { get; }
 
-        private ApiResponse(Status status)
+        public TResult Result { get; }
+
+        private ApiResponse(Status status, TResult result)
         {
             WasSuccessful = true;
+            Result = result;
             Message = null;
             Status = status;
             Exception = null;
@@ -26,13 +28,14 @@ namespace SereneApi.Types
         private ApiResponse(Status status, string message, Exception exception)
         {
             WasSuccessful = false;
+            Result = default;
             Message = message;
             Status = status;
             Exception = exception;
         }
 
-        public static IApiResponse Success(Status status) => new ApiResponse(status);
+        public static IApiResponse<TResult> Success(Status status, TResult result) => new ApiResponse<TResult>(status, result);
 
-        public static IApiResponse Failure(Status status, string message, Exception exception = null) => new ApiResponse(status, message, exception);
+        public static IApiResponse<TResult> Failure(Status status, string message, Exception exception = null) => new ApiResponse<TResult>(status, message, exception);
     }
 }

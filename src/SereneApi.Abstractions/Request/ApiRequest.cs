@@ -1,9 +1,8 @@
-﻿using SereneApi.Abstractions.Request;
+﻿using SereneApi.Abstractions.Helpers;
 using SereneApi.Abstractions.Request.Content;
-using SereneApi.Helpers;
 using System;
 
-namespace SereneApi.Request
+namespace SereneApi.Abstractions.Request
 {
     /// <inheritdoc cref="IApiRequest"/>
     public class ApiRequest: IApiRequest

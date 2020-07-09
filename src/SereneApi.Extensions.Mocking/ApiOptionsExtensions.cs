@@ -5,21 +5,27 @@ using SereneApi.Extensions.Mocking.Handlers;
 using SereneApi.Extensions.Mocking.Response;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 
 namespace SereneApi.Extensions.Mocking
 {
-    public static class RegisterApiHandlerExtensions
+    public static class ApiOptionsExtensions
     {
         /// <summary>
-        /// Adds the specified <see cref="IMockResponse"/>s to the <see cref="ApiHandler"/>.
+        /// Adds the specified <see cref="IMockResponse"/>s
         /// </summary>
-        /// <param name="registrationExtensions">The extensions that the <see cref="IMockResponse"/>s will be appended to.</param>
-        /// <param name="mockResponseBuilder">The <see cref="IMockResponse"/>s to be added to the <see cref="ApiHandler"/>.</param>
+        /// <param name="mockResponseBuilder">The <see cref="IMockResponse"/>s to be added.</param>
         /// <param name="enableOutgoingRequests">If set to true, any request that does not have an associated <see cref="IMockResponse"/> will be processed normally.
         /// If set to false, if a request does not have an associated <see cref="IMockResponse"/> an <see cref="ArgumentException"/> will be thrown.</param>
-        public static IApiOptionsExtensions WithMockResponses(this IApiOptionsExtensions registrationExtensions, Action<IMockResponsesBuilder> mockResponseBuilder, bool enableOutgoingRequests = false)
+        /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
+        public static IApiOptionsExtensions WithMockResponses(this IApiOptionsExtensions registrationExtensions, [NotNull] Action<IMockResponsesBuilder> mockResponseBuilder, bool enableOutgoingRequests = false)
         {
+            if(mockResponseBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(mockResponseBuilder));
+            }
+
             IDependencyCollection dependencies = GetDependencies(registrationExtensions);
 
             dependencies.AddScoped<HttpMessageHandler>(p =>

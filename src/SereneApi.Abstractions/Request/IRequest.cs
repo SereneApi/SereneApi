@@ -1,7 +1,7 @@
 ﻿using SereneApi.Abstractions.Options;
 using System;
 
-namespace SereneApi.Request
+namespace SereneApi.Abstractions.Request
 {
     public interface IRequest: IRequestEndPoint
     {

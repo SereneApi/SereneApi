@@ -25,7 +25,7 @@ namespace SereneApi.Extensions.Mocking.Response
         /// <inheritdoc>
         ///     <cref>IMockResponsesBuilder.AddMockResponse</cref>
         /// </inheritdoc>
-        public IMockResponseExtensions AddMockResponse(Status status, string message = null)
+        public IMockResponseConfigurator AddMockResponse(Status status, string message = null)
         {
             IDependencyCollection dependencies = new DependencyCollection();
 
@@ -39,7 +39,7 @@ namespace SereneApi.Extensions.Mocking.Response
         /// <inheritdoc>
         ///     <cref>IMockResponsesBuilder.AddMockResponse</cref>
         /// </inheritdoc>
-        public IMockResponseExtensions AddMockResponse<TContent>(TContent content)
+        public IMockResponseConfigurator AddMockResponse<TContent>(TContent content)
         {
             IDependencyCollection dependencies = new DependencyCollection();
 
@@ -55,7 +55,7 @@ namespace SereneApi.Extensions.Mocking.Response
         /// <inheritdoc>
         ///     <cref>IMockResponsesBuilder.AddMockResponse</cref>
         /// </inheritdoc>
-        public IMockResponseExtensions AddMockResponse<TContent>(TContent content, Status status)
+        public IMockResponseConfigurator AddMockResponse<TContent>(TContent content, Status status)
         {
             IDependencyCollection dependencies = new DependencyCollection();
 
@@ -68,9 +68,9 @@ namespace SereneApi.Extensions.Mocking.Response
             return BuildResponseExtensions(dependencies);
         }
 
-        protected virtual IMockResponseExtensions BuildResponseExtensions(IDependencyCollection dependencies)
+        protected virtual IMockResponseConfigurator BuildResponseExtensions(IDependencyCollection dependencies)
         {
-            return new MockResponseExtensions(dependencies);
+            return new MockResponseConfigurator(dependencies);
         }
 
         protected virtual IMockResponse BuildMockResponse(IDependencyProvider provider, Status status, string message, IApiRequestContent responseContent)

@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using SereneApi.Extensions.DependencyInjection;
 using SereneApi.Extensions.Newtonsoft;
@@ -42,15 +41,11 @@ namespace DependencyInjection.WebUi
             {
                 // Instead of using appsettings. You can also manually specify the source information.
                 builder.UseSource("http://localhost:52279", "Class");
-
-                // Using the provider you can inject a logger factory.
-                builder.AddLoggerFactory(provider.GetRequiredService<ILoggerFactory>());
             });
 
             services.RegisterApiHandler<IValuesApi, ValuesApiHandler>((builder, p) =>
             {
                 builder.UseSource("http://localhost:52279", "Values");
-                builder.AddLoggerFactory(p.GetRequiredService<ILoggerFactory>());
             });
 
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebUi", Version = "v1" }));

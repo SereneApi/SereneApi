@@ -2,12 +2,10 @@
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Request;
 using SereneApi.Abstractions.Response;
+using SereneApi.Abstractions.Response.Content;
 using SereneApi.Abstractions.Serializers;
 using SereneApi.Extensions;
 using SereneApi.Helpers;
-using SereneApi.Request;
-using SereneApi.Response;
-using SereneApi.Types;
 using System;
 using System.Linq.Expressions;
 using System.Net.Http;
@@ -69,7 +67,7 @@ namespace SereneApi
 
         protected virtual async Task<IApiResponse> BasePerformRequestAsync(IApiRequest request)
         {
-            HttpResponseMessage responseMessage;
+            HttpResponseMessage responseMessage = null;
 
             Uri endPoint = request.EndPoint;
 
@@ -113,6 +111,8 @@ namespace SereneApi
                         };
                     }, endPoint);
                 }
+
+                return ProcessResponse(responseMessage);
             }
             catch(ArgumentException)
             {
@@ -129,16 +129,19 @@ namespace SereneApi
                     "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
                     method.ToString(), endPoint);
 
-                return ApiResponse.Failure(Status.None, $"An Exception occured whilst performing a HTTP {method} Request",
+                return ApiResponse.Failure(Status.None,
+                    $"An Exception occured whilst performing a HTTP {method} Request",
                     exception);
             }
-
-            return ProcessResponse(responseMessage);
+            finally
+            {
+                responseMessage?.Dispose();
+            }
         }
 
         protected virtual async Task<IApiResponse<TResponse>> BasePerformRequestAsync<TResponse>(IApiRequest request)
         {
-            HttpResponseMessage responseMessage;
+            HttpResponseMessage responseMessage = null;
 
             Uri endPoint = request.EndPoint;
 
@@ -182,6 +185,8 @@ namespace SereneApi
                         };
                     }, endPoint);
                 }
+
+                return await ProcessResponseAsync<TResponse>(responseMessage);
             }
             catch(ArgumentException)
             {
@@ -190,7 +195,8 @@ namespace SereneApi
             }
             catch(TimeoutException timeoutException)
             {
-                return ApiResponse<TResponse>.Failure(Status.None, "The Request Timed Out; Retry limit reached", timeoutException);
+                return ApiResponse<TResponse>.Failure(Status.None, "The Request Timed Out; Retry limit reached",
+                    timeoutException);
             }
             catch(Exception exception)
             {
@@ -198,11 +204,14 @@ namespace SereneApi
                     "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
                     method.ToString(), endPoint);
 
-                return ApiResponse<TResponse>.Failure(Status.None, $"An Exception occured whilst performing a HTTP {method} Request",
+                return ApiResponse<TResponse>.Failure(Status.None,
+                    $"An Exception occured whilst performing a HTTP {method} Request",
                     exception);
             }
-
-            return await ProcessResponseAsync<TResponse>(responseMessage);
+            finally
+            {
+                responseMessage?.Dispose();
+            }
         }
 
         /// <summary>
@@ -291,7 +300,7 @@ namespace SereneApi
             {
                 ISerializer serializer = Dependencies.GetDependency<ISerializer>();
 
-                TResponse response = await serializer.DeserializeAsync<TResponse>(responseMessage.Content);
+                TResponse response = await serializer.DeserializeAsync<TResponse>(new HttpContentResponse(responseMessage.Content));
 
                 return ApiResponse<TResponse>.Success(status, response);
             }

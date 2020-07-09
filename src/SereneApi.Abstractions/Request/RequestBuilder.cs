@@ -1,14 +1,13 @@
 ﻿using DeltaWare.Dependencies;
 using SereneApi.Abstractions.Factories;
+using SereneApi.Abstractions.Helpers;
 using SereneApi.Abstractions.Queries;
-using SereneApi.Abstractions.Request;
 using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Serializers;
-using SereneApi.Helpers;
 using System;
 using System.Linq.Expressions;
 
-namespace SereneApi.Request
+namespace SereneApi.Abstractions.Request
 {
     /// <summary>
     ///  Builds an <see cref="IApiRequest"/> based on the supplied values.

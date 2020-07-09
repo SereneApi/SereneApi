@@ -11,9 +11,9 @@ namespace SereneApi.Extensions.Mocking.Extensions
         /// <param name="method">The <see cref="HttpMethod"/> to be converted.</param>
         public static Method ToMethod(this HttpMethod method)
         {
-            string methodstring = method.Method;
+            string methodString = method.Method;
 
-            return methodstring switch
+            return methodString switch
             {
                 "GET" => Method.GET,
                 "POST" => Method.POST,

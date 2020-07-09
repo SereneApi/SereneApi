@@ -2,7 +2,7 @@
 using System;
 using System.Linq.Expressions;
 
-namespace SereneApi.Request
+namespace SereneApi.Abstractions.Request
 {
     public interface IRequestContent: IRequestCreated
     {

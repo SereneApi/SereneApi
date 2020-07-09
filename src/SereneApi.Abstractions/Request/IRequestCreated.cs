@@ -1,6 +1,4 @@
-﻿using SereneApi.Abstractions.Request;
-
-namespace SereneApi.Request
+﻿namespace SereneApi.Abstractions.Request
 {
     public interface IRequestCreated
     {

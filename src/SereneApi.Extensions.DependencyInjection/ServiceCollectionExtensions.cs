@@ -2,6 +2,7 @@
 using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Handler;
@@ -52,7 +53,7 @@ namespace SereneApi.Extensions.DependencyInjection
         /// </summary>
         /// <typeparam name="TApiDefinition">The <see cref="ApiHandler"/> Definition.</typeparam>
         /// <exception cref="ArgumentException">Thrown if the specified <see cref="ApiHandler"/> has not been registered.</exception>
-        public static IApiOptionsExtensions ExtendApiHandler<TApiDefinition>(this IServiceCollection services) where TApiDefinition : class
+        public static IApiOptionsExtensions ExtendApi<TApiDefinition>(this IServiceCollection services) where TApiDefinition : class
         {
             using ServiceProvider serviceProvider = services.BuildServiceProvider();
 
@@ -66,7 +67,7 @@ namespace SereneApi.Extensions.DependencyInjection
         /// </summary>
         /// <typeparam name="TApiDefinition">The <see cref="ApiHandler"/> Definition.</typeparam>
         /// /// <exception cref="ArgumentException">Thrown if the specified <see cref="ApiHandler"/> has not been registered.</exception>
-        public static void ExtendApiHandler<TApiDefinition>(this IServiceCollection services, Action<IApiOptionsExtensions> factory) where TApiDefinition : class
+        public static void ExtendApi<TApiDefinition>(this IServiceCollection services, Action<IApiOptionsExtensions> factory) where TApiDefinition : class
         {
             using ServiceProvider serviceProvider = services.BuildServiceProvider();
 
@@ -155,6 +156,13 @@ namespace SereneApi.Extensions.DependencyInjection
 
             builder.Dependencies.AddSingleton(() => services, Binding.Unbound);
             builder.Dependencies.AddScoped<IServiceProvider>(p => p.GetDependency<IServiceCollection>().BuildServiceProvider());
+            builder.Dependencies.AddScoped<ILogger>(p =>
+            {
+                IServiceProvider serviceProvider = p.GetDependency<IServiceProvider>();
+                ILoggerFactory loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+
+                return loggerFactory?.CreateLogger<TApiDefinition>();
+            });
             builder.Dependencies.AddScoped<IClientFactory>(p =>
             {
                 ClientFactory<TApiDefinition> clientFactory = new ClientFactory<TApiDefinition>(p);
@@ -176,6 +184,13 @@ namespace SereneApi.Extensions.DependencyInjection
 
             builder.Dependencies.AddSingleton(() => services, Binding.Unbound);
             builder.Dependencies.AddScoped<IServiceProvider>(p => p.GetDependency<IServiceCollection>().BuildServiceProvider());
+            builder.Dependencies.AddScoped<ILogger>(p =>
+            {
+                IServiceProvider serviceProvider = p.GetDependency<IServiceProvider>();
+                ILoggerFactory loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+
+                return loggerFactory?.CreateLogger<TApiDefinition>();
+            });
             builder.Dependencies.AddScoped<IClientFactory>(p =>
             {
                 ClientFactory<TApiDefinition> clientFactory = new ClientFactory<TApiDefinition>(p);

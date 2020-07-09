@@ -1,10 +1,8 @@
 ﻿using DeltaWare.Dependencies;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Helpers;
 using SereneApi.Abstractions.Options;
-using SereneApi.Extensions.DependencyInjection.Helpers;
 using System;
 
 namespace SereneApi.Extensions.DependencyInjection.Options
@@ -81,14 +79,6 @@ namespace SereneApi.Extensions.DependencyInjection.Options
             ConnectionSettings.RetryAttempts = retryCount;
 
             #endregion
-        }
-
-        /// <inheritdoc cref="IApiOptionsConfigurator{TApiDefinition}.AddLoggerFactory"/>
-        public void AddLoggerFactory(ILoggerFactory loggerFactory)
-        {
-            ExceptionHelper.EnsureParameterIsNotNull(loggerFactory, nameof(loggerFactory));
-
-            Dependencies.AddScoped(loggerFactory.CreateLogger<TApiDefinition>);
         }
 
         /// <summary>

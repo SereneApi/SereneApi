@@ -78,7 +78,7 @@ namespace SereneApi.Factories
             return new ApiOptionsExtensions(configurator.Dependencies);
         }
 
-        public IApiOptionsExtensions ExtendApiHandler<TApiDefinition>() where TApiDefinition : class
+        public IApiOptionsExtensions ExtendApi<TApiDefinition>() where TApiDefinition : class
         {
             CheckIfDisposed();
 
@@ -90,13 +90,13 @@ namespace SereneApi.Factories
             return new ApiOptionsExtensions(builder.Dependencies);
         }
 
-        public void ExtendApiHandler<TApiDefinition>(Action<IApiOptionsExtensions> factory) where TApiDefinition : class
+        public void ExtendApi<TApiDefinition>(Action<IApiOptionsExtensions> factory) where TApiDefinition : class
         {
             CheckIfDisposed();
 
             ExceptionHelper.EnsureParameterIsNotNull(factory, nameof(factory));
 
-            IApiOptionsExtensions extensions = ExtendApiHandler<TApiDefinition>();
+            IApiOptionsExtensions extensions = ExtendApi<TApiDefinition>();
 
             factory.Invoke(extensions);
         }

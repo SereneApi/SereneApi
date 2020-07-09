@@ -1,4 +1,4 @@
-﻿namespace SereneApi.Extensions.Mocking.Dependencies
+﻿namespace SereneApi.Extensions.Mocking.Dependencies.Whitelist
 {
     /// <summary>
     /// Used in conjunction with <see cref="IWhitelist"/> to weigh the response.
