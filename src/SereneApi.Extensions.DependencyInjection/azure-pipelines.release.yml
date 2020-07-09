@@ -25,7 +25,7 @@ steps:
   inputs:
     command: 'build'
     arguments: '--configuration $(buildConfiguration)'
-    projects: 'src/SereneApi.DependencyInjection/SereneApi.DependencyInjection.csproj'
+    projects: 'src/SereneApi.Extensions.DependencyInjection/SereneApi.Extensions.DependencyInjection.csproj'
 
 # The second task is dotnet pack command again pointing to the csproj file
 # The nobuild means the project will not be compiled before running pack, because its already built in above step
@@ -34,7 +34,7 @@ steps:
   inputs:
     command: 'pack'
     arguments: '--configuration $(buildConfiguration)'
-    packagesToPack: 'src/SereneApi.DependencyInjection/SereneApi.DependencyInjection.csproj'
+    packagesToPack: 'src/SereneApi.Extensions.DependencyInjection/SereneApi.Extensions.DependencyInjection.csproj'
     nobuild: true
     versioningScheme: 'off'
 
