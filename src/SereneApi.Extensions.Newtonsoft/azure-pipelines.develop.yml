@@ -5,7 +5,7 @@
 
 # the build will trigger on any changes to the master branch
 trigger:
-- master
+- develop
 
 # the build will run on a Microsoft hosted agent, using the lastest Windows VM Image
 pool:
@@ -14,7 +14,7 @@ pool:
 # these variables are available throughout the build file
 # just the build configuration is defined, in this case we are building Release packages
 variables:
-  buildConfiguration: 'Release'
+  buildConfiguration: 'Debug'
 
 #The build has 3 seperate tasks run under 1 step
 steps:
@@ -26,36 +26,10 @@ steps:
     command: 'build'
     arguments: '--configuration $(buildConfiguration)'
     projects: 'src/SereneApi.Extensions.Newtonsoft/SereneApi.Extensions.Newtonsoft.csproj'
-
+    
 - task: DotNetCoreCLI@2
   displayName: 'Test'
   inputs:
     command: test
     projects: 'tests/SereneApi.Extensions.Newtonsoft.Tests/SereneApi.Extensions.Newtonsoft.Tests.csproj'
     arguments: '--configuration $(buildConfiguration)'
-
-# The second task is dotnet pack command again pointing to the csproj file
-# The nobuild means the project will not be compiled before running pack, because its already built in above step
-- task: DotNetCoreCLI@2
-  displayName: 'Pack'
-  inputs:
-    command: 'pack'
-    arguments: '--configuration $(buildConfiguration)'
-    packagesToPack: 'src/SereneApi.Extensions.Newtonsoft/SereneApi.Extensions.Newtonsoft.csproj'
-    nobuild: true
-    versioningScheme: 'off'
-
-# The last task is a nuget command, nuget push
-# This will push any .nupkg files to the 'TestFeed' artifact feed
-# allowPackageConflicts allows us to build the same version and not throw an error when trying to push
-# instead it just ingores the latest package unless the version changes
-- task: NuGetCommand@2
-  displayName: 'NuGet Push'
-  inputs:
-    command: 'push'
-    feedsToUse: 'select'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/Release/*.nupkg;!$(Build.ArtifactStagingDirectory)/Release/*.snupkg'
-    nuGetFeedType: 'internal'
-    publishVstsFeed: 'TestFeed'
-    versioningScheme: 'off'
-    allowPackageConflicts: true

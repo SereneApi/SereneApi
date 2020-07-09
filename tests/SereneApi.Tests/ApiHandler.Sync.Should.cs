@@ -3,7 +3,6 @@ using SereneApi.Abstractions.Request;
 using SereneApi.Abstractions.Response;
 using SereneApi.Extensions.Mocking;
 using SereneApi.Factories;
-using SereneApi.Helpers;
 using SereneApi.Tests.Interfaces;
 using SereneApi.Tests.Mock;
 using Shouldly;

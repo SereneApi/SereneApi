@@ -21,16 +21,23 @@ steps:
 
 # The first task is the dotnet command build, pointing to our csproj file
 - task: DotNetCoreCLI@2
-  displayName: 'dotnet build'
+  displayName: 'Build'
   inputs:
     command: 'build'
     arguments: '--configuration $(buildConfiguration)'
     projects: 'src/SereneApi.Abstractions/SereneApi.Abstractions.csproj'
 
+- task: DotNetCoreCLI@2
+  displayName: 'Test'
+  inputs:
+    command: test
+    projects: 'tests/SereneApi.Abstractions.Tests/SereneApi.Abstractions.Tests.csproj'
+    arguments: '--configuration $(buildConfiguration)'
+
 # The second task is dotnet pack command again pointing to the csproj file
 # The nobuild means the project will not be compiled before running pack, because its already built in above step
 - task: DotNetCoreCLI@2
-  displayName: "dotnet pack"
+  displayName: 'Pack'
   inputs:
     command: 'pack'
     arguments: '--configuration $(buildConfiguration)'
@@ -43,7 +50,7 @@ steps:
 # allowPackageConflicts allows us to build the same version and not throw an error when trying to push
 # instead it just ingores the latest package unless the version changes
 - task: NuGetCommand@2
-  displayName: 'nuget push'
+  displayName: 'NuGet Push'
   inputs:
     command: 'push'
     feedsToUse: 'select'

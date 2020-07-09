@@ -1,12 +1,12 @@
 ﻿using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Queries;
-using SereneApi.Tests.Mock;
+using SereneApi.Abstractions.Tests.Mock;
 using Shouldly;
 using System;
 using Xunit;
 
-namespace SereneApi.Tests.Factories
+namespace SereneApi.Abstractions.Tests.Factories
 {
     public class QueryFactoryShould
     {
