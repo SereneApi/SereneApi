@@ -909,7 +909,7 @@ namespace SereneApi.Tests
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(true);
-            response.Message.ShouldBe(MessageHelper.RequestTimedOutRetryLimit);
+            response.Message.ShouldBe("The Request Timed Out; Retry limit reached");
             response.Exception.ShouldBeOfType<TimeoutException>();
             response.Status.ShouldBe(Status.None);
 
@@ -964,7 +964,7 @@ namespace SereneApi.Tests
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(true);
-            response.Message.ShouldBe(MessageHelper.RequestTimedOutRetryLimit);
+            response.Message.ShouldBe("The Request Timed Out; Retry limit reached");
             response.Exception.ShouldBeOfType<TimeoutException>();
             response.Status.ShouldBe(Status.None);
             response.Result.ShouldBeNull();
