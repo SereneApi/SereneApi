@@ -6,7 +6,7 @@ using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Request.Content;
 using System;
-using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -14,35 +14,51 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Extensions.DependencyInjection.Factories
 {
-    [DebuggerDisplay("{HandlerName}")]
-    internal class ClientFactory<TApiHandler>: IClientFactory
+    /// <summary>
+    /// Configures the API to use <see cref="IHttpClientFactory"/>.
+    /// </summary>
+    /// <typeparam name="TApi">The API that will be using <see cref="IHttpClientFactory"/>.</typeparam>
+    internal class ClientFactory<TApi>: IClientFactory
     {
         private readonly IDependencyProvider _dependencies;
 
+        private readonly string _handlerName;
+
+        /// <summary>
+        /// Specifies if the <see cref="ClientFactory{TApi}"/> has been configured.
+        /// </summary>
         public bool IsConfigured { get; private set; }
 
-        public string HandlerName { get; }
-
-        public ClientFactory(IDependencyProvider dependencies)
+        /// <summary>
+        /// Creates a new instance of <see cref="ClientFactory{TApi}"/>.
+        /// </summary>
+        /// <param name="dependencies">The dependencies that can be used.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        public ClientFactory([NotNull] IDependencyProvider dependencies)
         {
-            _dependencies = dependencies;
-
-            HandlerName = GenerateHandlerName();
+            _dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
+            _handlerName = GenerateClientName();
         }
 
+        /// <inheritdoc cref="IClientFactory.BuildClientAsync"/>
         public Task<HttpClient> BuildClientAsync()
         {
             return Task.Factory.StartNew(() =>
             {
-                IHttpClientFactory clientFactory =
-                    _dependencies.GetDependency<IServiceProvider>().GetService<IHttpClientFactory>();
+                IServiceProvider provider = _dependencies.GetDependency<IServiceProvider>();
 
-                HttpClient client = clientFactory.CreateClient(HandlerName);
+                IHttpClientFactory clientFactory = provider.GetRequiredService<IHttpClientFactory>();
+
+                HttpClient client = clientFactory.CreateClient(_handlerName);
 
                 return client;
             });
         }
 
+        /// <summary>
+        /// Configures the <see cref="ClientFactory{TApi}"/>.
+        /// </summary>
+        /// <exception cref="ArgumentException">Thrown when an invalid value is provided.</exception>
         public void Configure()
         {
             if(IsConfigured)
@@ -50,11 +66,9 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
                 return;
             }
 
-            string handlerName = GenerateHandlerName();
-
             IServiceCollection services = _dependencies.GetDependency<IServiceCollection>();
 
-            services.AddHttpClient(handlerName, client =>
+            services.AddHttpClient(_handlerName, client =>
             {
                 IConnectionSettings connection = _dependencies.GetDependency<IConnectionSettings>();
 
@@ -105,9 +119,12 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
             IsConfigured = true;
         }
 
-        private static string GenerateHandlerName()
+        /// <summary>
+        /// Generates the <see cref="HttpClient"/> name.
+        /// </summary>
+        private static string GenerateClientName()
         {
-            return $"SereneApi.{typeof(TApiHandler).FullName}";
+            return $"SereneApi.{typeof(TApi).Name}.Client";
         }
     }
 }

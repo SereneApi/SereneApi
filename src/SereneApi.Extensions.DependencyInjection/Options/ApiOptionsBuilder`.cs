@@ -1,30 +1,32 @@
 ﻿using DeltaWare.Dependencies;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Helpers;
 using SereneApi.Abstractions.Options;
-using SereneApi.Extensions.DependencyInjection.Helpers;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Extensions.DependencyInjection.Options
 {
-    /// <inheritdoc cref="IApiOptionsConfigurator{TApiDefinition}"/>
-    internal class ApiApiOptionsBuilder<TApiDefinition>: ApiOptionsBuilder, IApiOptionsBuilder<TApiDefinition>, IApiOptionsConfigurator<TApiDefinition> where TApiDefinition : class
+    /// <inheritdoc cref="IApiOptionsConfigurator{TApi}"/>
+    internal class ApiApiOptionsBuilder<TApi>: ApiOptionsBuilder, IApiOptionsBuilder<TApi>, IApiOptionsConfigurator<TApi> where TApi : class
     {
-        public Type HandlerType => typeof(TApiDefinition);
-
-        /// <inheritdoc cref="IApiOptionsConfigurator{TApiDefinition}.UseConfiguration"/>
-        public void UseConfiguration(IConfiguration configuration)
+        /// <inheritdoc cref="IApiOptionsConfigurator{TApi}.UseConfiguration"/>
+        public void UseConfiguration([NotNull] IConfiguration configuration)
         {
+            if(configuration == null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
+
             if(Dependencies.HasDependency<IConnectionSettings>())
             {
                 throw new MethodAccessException("This method cannot be called twice");
             }
 
-            string source = configuration.Get<string>(ConfigurationConstants.SourceKey, ConfigurationConstants.SourceIsRequired);
-            string resource = configuration.Get<string>(ConfigurationConstants.ResourceKey, ConfigurationConstants.ResourceIsRequired);
-            string resourcePath = configuration.Get<string>(ConfigurationConstants.ResourcePathKey, ConfigurationConstants.ResourcePathIsRequired);
+            string source = configuration.Get<string>(ConfigurationExtensions.SourceKey, ConfigurationExtensions.SourceIsRequired);
+            string resource = configuration.Get<string>(ConfigurationExtensions.ResourceKey, ConfigurationExtensions.ResourceIsRequired);
+            string resourcePath = configuration.Get<string>(ConfigurationExtensions.ResourcePathKey, ConfigurationExtensions.ResourcePathIsRequired);
 
             using IDependencyProvider provider = Dependencies.BuildProvider();
 
@@ -46,9 +48,9 @@ namespace SereneApi.Extensions.DependencyInjection.Options
 
             #region Timeout
 
-            if(configuration.ContainsKey(ConfigurationConstants.TimeoutKey))
+            if(configuration.ContainsKey(ConfigurationExtensions.TimeoutKey))
             {
-                int timeout = configuration.Get<int>(ConfigurationConstants.TimeoutKey, ConfigurationConstants.TimeoutIsRequired);
+                int timeout = configuration.Get<int>(ConfigurationExtensions.TimeoutKey, ConfigurationExtensions.TimeoutIsRequired);
 
                 if(timeout < 0)
                 {
@@ -64,12 +66,12 @@ namespace SereneApi.Extensions.DependencyInjection.Options
             #endregion
             #region Retry Count
 
-            if(!configuration.ContainsKey(ConfigurationConstants.RetryCountKey))
+            if(!configuration.ContainsKey(ConfigurationExtensions.RetryCountKey))
             {
                 return;
             }
 
-            int retryCount = configuration.Get<int>(ConfigurationConstants.RetryCountKey, ConfigurationConstants.RetryIsRequired);
+            int retryCount = configuration.Get<int>(ConfigurationExtensions.RetryCountKey, ConfigurationExtensions.RetryIsRequired);
 
             if(retryCount == default)
             {
@@ -83,22 +85,12 @@ namespace SereneApi.Extensions.DependencyInjection.Options
             #endregion
         }
 
-        /// <inheritdoc cref="IApiOptionsConfigurator{TApiDefinition}.AddLoggerFactory"/>
-        public void AddLoggerFactory(ILoggerFactory loggerFactory)
-        {
-            ExceptionHelper.EnsureParameterIsNotNull(loggerFactory, nameof(loggerFactory));
-
-            Dependencies.AddScoped(loggerFactory.CreateLogger<TApiDefinition>);
-        }
-
-        /// <summary>
-        /// Builds the <see cref="IApiOptions"/> for the specified <see cref="ApiHandler"/>.
-        /// </summary>
-        public new IApiOptions<TApiDefinition> BuildOptions()
+        /// <inheritdoc cref="IApiOptionsBuilder{TApi}.BuildOptions"/>
+        public new IApiOptions<TApi> BuildOptions()
         {
             Dependencies.AddScoped<IConnectionSettings>(() => ConnectionSettings);
 
-            IApiOptions<TApiDefinition> apiOptions = new ApiOptions<TApiDefinition>(Dependencies.BuildProvider(), ConnectionSettings);
+            IApiOptions<TApi> apiOptions = new ApiOptions<TApi>(Dependencies.BuildProvider(), ConnectionSettings);
 
             return apiOptions;
         }
