@@ -19,7 +19,7 @@ namespace SereneApi.Extensions.Mocking
         /// <param name="enableOutgoingRequests">If set to true, any request that does not have an associated <see cref="IMockResponse"/> will be processed normally.
         /// If set to false, if a request does not have an associated <see cref="IMockResponse"/> an <see cref="ArgumentException"/> will be thrown.</param>
         /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
-        public static IApiOptionsExtensions WithMockResponses(this IApiOptionsExtensions registrationExtensions, [NotNull] Action<IMockResponsesBuilder> mockResponseBuilder, bool enableOutgoingRequests = false)
+        public static IApiOptionsExtensions WithMockResponse(this IApiOptionsExtensions registrationExtensions, [NotNull] Action<IMockResponsesBuilder> mockResponseBuilder, bool enableOutgoingRequests = false)
         {
             if(mockResponseBuilder == null)
             {

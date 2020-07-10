@@ -2,7 +2,6 @@
 using SereneApi.Abstractions.Authentication;
 using SereneApi.Abstractions.Authenticators;
 using SereneApi.Abstractions.Configuration;
-using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Response;
 using SereneApi.Extensions.DependencyInjection.Authenticators;
 using System;
@@ -11,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Extensions.DependencyInjection
 {
-    public static class ApiHandlerExtensionsExtensions
+    public static class SereneApiExtensionsExtensions
     {
         /// <summary>
         /// Adds an authentication API. Before a request is made it will be authenticated.
@@ -22,7 +21,7 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <param name="callApi">Perform the authentication request.</param>
         /// <param name="extractToken">Extract the token information from the response.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public static IApiOptionsExtensions AddAuthenticator<TApi, TDto>([NotNull] this IApiOptionsExtensions extensions, [NotNull] Func<TApi, Task<IApiResponse<TDto>>> callApi, [NotNull] Func<TDto, TokenInfo> extractToken) where TApi : class, IDisposable where TDto : class
+        public static ISereneApiExtensions AddAuthenticator<TApi, TDto>([NotNull] this ISereneApiExtensions extensions, [NotNull] Func<TApi, Task<IApiResponse<TDto>>> callApi, [NotNull] Func<TDto, TokenInfo> extractToken) where TApi : class, IDisposable where TDto : class
         {
             if(extensions == null)
             {
@@ -39,21 +38,13 @@ namespace SereneApi.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(extractToken));
             }
 
-            IDependencyCollection dependencies = extensions.GetDependencyCollection();
-
-            dependencies.AddSingleton<IAuthenticator>(p => new InjectedTokenAuthenticator<TApi, TDto>(p, callApi, extractToken));
+            extensions.ExtendDependencyFactory(d =>
+                d.AddSingleton<IAuthenticator>(p => new InjectedTokenAuthenticator<TApi, TDto>(p, callApi, extractToken)));
 
             return extensions;
         }
 
-        internal static IDependencyCollection GetDependencyCollection(this IApiOptionsExtensions extensions)
-        {
-            if(extensions is ICoreOptions options)
-            {
-                return options.Dependencies;
-            }
 
-            throw new InvalidCastException($"Must inherit from {nameof(ICoreOptions)}");
-        }
+
     }
 }

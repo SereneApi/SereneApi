@@ -2,16 +2,20 @@
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Options;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Extensions.DependencyInjection.Options
 {
-    /// <inheritdoc cref="IApiOptions{TApiDefinition}"/>
-    internal class ApiOptions<TApiDefinition>: ApiOptions, IApiOptions<TApiDefinition> where TApiDefinition : class
+    /// <inheritdoc cref="IApiOptions{TApi}"/>
+    internal class ApiOptions<TApi>: ApiOptions, IApiOptions<TApi> where TApi : class
     {
-        public Type HandlerType => typeof(TApiDefinition);
-
-        public ApiOptions(IDependencyProvider dependencies, IConnectionSettings connection) : base(dependencies,
-            connection)
+        /// <summary>
+        /// Creates a new instance of <see cref="ApiOptions{TApi}"/>
+        /// </summary>
+        /// <param name="dependencies">The dependencies that can be used.</param>
+        /// <param name="connection">The <see cref="IConnectionSettings"/> used to make requests to the API.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        public ApiOptions([NotNull] IDependencyProvider dependencies, [NotNull] IConnectionSettings connection) : base(dependencies, connection)
         {
         }
     }

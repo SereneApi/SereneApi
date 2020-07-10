@@ -54,7 +54,7 @@ steps:
   inputs:
     command: 'push'
     feedsToUse: 'select'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/Release/*.nupkg;!$(Build.ArtifactStagingDirectory)/Release/*.snupkg'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.snupkg'
     nuGetFeedType: 'internal'
     publishVstsFeed: 'TestFeed'
     versioningScheme: 'off'

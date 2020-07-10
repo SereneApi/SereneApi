@@ -5,6 +5,7 @@ using System.Diagnostics;
 
 namespace SereneApi.Abstractions.Options
 {
+    /// <inheritdoc cref="IApiOptions"/>
     [DebuggerDisplay("Source: {Connection.BaseAddress.ToString()}")]
     public class ApiOptions: IApiOptions
     {
@@ -19,10 +20,16 @@ namespace SereneApi.Abstractions.Options
         #endregion
         #region Constructors
 
+        /// <summary>
+        /// Creates a new instance of <see cref="ApiOptions"/>
+        /// </summary>
+        /// <param name="dependencies">The dependencies that can be used when making an API request.</param>
+        /// <param name="connection">The <see cref="IConnectionSettings"/> used to make requests to the API.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         public ApiOptions(IDependencyProvider dependencies, IConnectionSettings connection)
         {
-            Dependencies = dependencies;
-            Connection = connection;
+            Dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
+            Connection = connection ?? throw new ArgumentNullException(nameof(connection));
         }
 
         #endregion
