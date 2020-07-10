@@ -39,7 +39,7 @@ steps:
     versioningScheme: 'off'
 
 - task: NuGetAuthenticate@0
- displayName: 'NuGet Authenticate'
+  displayName: 'NuGet Authenticate'
   inputs:
     nuGetServiceConnections: 'NuGet'
 - task: NuGetCommand@2
