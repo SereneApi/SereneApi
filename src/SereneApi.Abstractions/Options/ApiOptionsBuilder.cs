@@ -2,10 +2,13 @@
 using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Authentication;
 using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Helpers;
 using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Request.Content;
+using SereneApi.Abstractions.Serializers;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
 namespace SereneApi.Abstractions.Options
@@ -43,7 +46,7 @@ namespace SereneApi.Abstractions.Options
         /// <inheritdoc>
         ///     <cref>IApiHandlerOptionsBuilder.SetTimeoutPeriod</cref>
         /// </inheritdoc>
-        public void SetTimeoutPeriod(int seconds)
+        public void SetTimeout(int seconds)
         {
             if(ConnectionSettings == null)
             {
@@ -155,6 +158,21 @@ namespace SereneApi.Abstractions.Options
             }
 
             _disposed = true;
+        }
+
+        public void SetTimeout([NotNull] int seconds, [NotNull] int attempts)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UseRouteFactory([NotNull] IRouteFactory routeFactory)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UseSerializer([NotNull] ISerializer serializer)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

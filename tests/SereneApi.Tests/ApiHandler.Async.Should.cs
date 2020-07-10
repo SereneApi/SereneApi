@@ -3,7 +3,6 @@ using SereneApi.Abstractions.Request;
 using SereneApi.Abstractions.Response;
 using SereneApi.Extensions.Mocking;
 using SereneApi.Factories;
-using SereneApi.Helpers;
 using SereneApi.Tests.Interfaces;
 using SereneApi.Tests.Mock;
 using Shouldly;
@@ -28,9 +27,9 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(
                     o => o.UseSource(source, resource))
-                .WithMockResponses(r =>
+                .WithMockResponse(r =>
                 {
                     r.AddMockResponse(MockPersonDto.All)
                         .RespondsToRequestsWith(Method.GET)
@@ -73,7 +72,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(
                 o => o.UseSource(source, resource));
 
             #endregion
@@ -109,7 +108,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(
                 o => o.UseSource(source, resource));
 
             #endregion
@@ -145,7 +144,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(
                 o => o.UseSource(source, resource));
 
             #endregion
@@ -181,7 +180,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(
                 o => o.UseSource(source, resource));
 
             #endregion
@@ -217,7 +216,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(
                 o => o.UseSource(source, resource));
 
             #endregion
@@ -253,7 +252,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(
                 o => o.UseSource(source, resource));
 
             #endregion
@@ -290,7 +289,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(
                 o => o.UseSource(source, resource));
 
             #endregion
@@ -326,7 +325,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(
                 o => o.UseSource(source, resource));
 
             #endregion
@@ -362,7 +361,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(
                 o => o.UseSource(source, resource));
 
             #endregion
@@ -400,7 +399,7 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(
                 o => o.UseSource(source, resource));
 
             #endregion
@@ -445,10 +444,10 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(
                 o => o.UseSource(source, resource));
 
-            handlerFactory.ExtendApiHandler<IApiHandlerWrapper>().WithMockResponses(r =>
+            handlerFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
                 r.AddMockResponse(Status.Ok)
                     .RespondsToRequestsWith(Method.GET)
@@ -495,10 +494,10 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(
                 o => o.UseSource(source, resource));
 
-            handlerFactory.ExtendApiHandler<IApiHandlerWrapper>().WithMockResponses(r =>
+            handlerFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
                 r.AddMockResponse(MockPersonDto.JohnSmith)
                     .RespondsToRequestsWith(Method.GET)
@@ -547,14 +546,14 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
             {
                 o.UseSource(source, resource);
-                o.SetTimeoutPeriod(timeoutSeconds);
+                o.SetTimeout(timeoutSeconds);
                 o.SetRetryAttempts(retryCount);
             });
 
-            handlerFactory.ExtendApiHandler<IApiHandlerWrapper>().WithMockResponses(r =>
+            handlerFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
                 r.AddMockResponse(Status.Ok)
                     .ResponseIsDelayed(timeoutSeconds + 2, retryCount - 1)
@@ -598,14 +597,14 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
             {
                 o.UseSource(source, resource);
-                o.SetTimeoutPeriod(timeoutSeconds);
+                o.SetTimeout(timeoutSeconds);
                 o.SetRetryAttempts(retryCount);
             });
 
-            handlerFactory.ExtendApiHandler<IApiHandlerWrapper>().WithMockResponses(r =>
+            handlerFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
                 r.AddMockResponse(MockPersonDto.JohnSmith)
                     .ResponseIsDelayed(timeoutSeconds + 2, retryCount - 1)
@@ -663,10 +662,10 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(
                 o => o.UseSource(source, resource));
 
-            handlerFactory.ExtendApiHandler<IApiHandlerWrapper>().WithMockResponses(r =>
+            handlerFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
                 r.AddMockResponse(status, message)
                     .RespondsToRequestsWith(Method.GET)
@@ -716,10 +715,10 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(
                 o => o.UseSource(source, resource));
 
-            handlerFactory.ExtendApiHandler<IApiHandlerWrapper>().WithMockResponses(r =>
+            handlerFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
                 r.AddMockResponse(status, message)
                     .RespondsToRequestsWith(Method.GET)
@@ -766,14 +765,14 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
             {
                 o.UseSource(source, resource);
-                o.SetTimeoutPeriod(timeoutSeconds);
+                o.SetTimeout(timeoutSeconds);
                 o.SetRetryAttempts(retryCount);
             });
 
-            handlerFactory.ExtendApiHandler<IApiHandlerWrapper>().WithMockResponses(r =>
+            handlerFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
                 r.AddMockResponse(status, message)
                     .ResponseIsDelayed(timeoutSeconds + 2, retryCount - 1)
@@ -820,14 +819,14 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
             {
                 o.UseSource(source, resource);
-                o.SetTimeoutPeriod(timeoutSeconds);
+                o.SetTimeout(timeoutSeconds);
                 o.SetRetryAttempts(retryCount);
             });
 
-            handlerFactory.ExtendApiHandler<IApiHandlerWrapper>().WithMockResponses(r =>
+            handlerFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
                 r.AddMockResponse(status, message)
                     .ResponseIsDelayed(timeoutSeconds + 2, retryCount - 1)
@@ -872,10 +871,10 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
             {
                 o.UseSource(source, resource);
-                o.SetTimeoutPeriod(timeoutSeconds);
+                o.SetTimeout(timeoutSeconds);
 
                 if(retryCount > 0)
                 {
@@ -883,7 +882,7 @@ namespace SereneApi.Tests
                 }
             });
 
-            handlerFactory.ExtendApiHandler<IApiHandlerWrapper>().WithMockResponses(r =>
+            handlerFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
                 r.AddMockResponse(Status.Ok)
                     .ResponseIsDelayed(timeoutSeconds + 2, retryCount)
@@ -909,7 +908,7 @@ namespace SereneApi.Tests
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(true);
-            response.Message.ShouldBe(MessageHelper.RequestTimedOutRetryLimit);
+            response.Message.ShouldBe("The Request Timed Out; Retry limit reached");
             response.Exception.ShouldBeOfType<TimeoutException>();
             response.Status.ShouldBe(Status.None);
 
@@ -927,10 +926,10 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
             {
                 o.UseSource(source, resource);
-                o.SetTimeoutPeriod(timeoutSeconds);
+                o.SetTimeout(timeoutSeconds);
 
                 if(retryCount > 0)
                 {
@@ -938,7 +937,7 @@ namespace SereneApi.Tests
                 }
             });
 
-            handlerFactory.ExtendApiHandler<IApiHandlerWrapper>().WithMockResponses(r =>
+            handlerFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
                 r.AddMockResponse(Status.Ok)
                     .ResponseIsDelayed(timeoutSeconds + 2, retryCount)
@@ -964,7 +963,7 @@ namespace SereneApi.Tests
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(true);
-            response.Message.ShouldBe(MessageHelper.RequestTimedOutRetryLimit);
+            response.Message.ShouldBe("The Request Timed Out; Retry limit reached");
             response.Exception.ShouldBeOfType<TimeoutException>();
             response.Status.ShouldBe(Status.None);
             response.Result.ShouldBeNull();
@@ -991,10 +990,10 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(
                 o => o.UseSource(source));
 
-            handlerFactory.ExtendApiHandler<IApiHandlerWrapper>().WithMockResponses(r =>
+            handlerFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
                 r.AddMockResponse(Status.Ok)
                     .RespondsToRequestsWith(Method.GET)
@@ -1043,10 +1042,10 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(
                 o => o.UseSource(source));
 
-            handlerFactory.ExtendApiHandler<IApiHandlerWrapper>().WithMockResponses(r =>
+            handlerFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
                 r.AddMockResponse(MockPersonDto.JohnSmith)
                     .RespondsToRequestsWith(Method.GET)
@@ -1103,10 +1102,10 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(
                 o => o.UseSource(source, resource));
 
-            handlerFactory.ExtendApiHandler<IApiHandlerWrapper>().WithMockResponses(r =>
+            handlerFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
                 r.AddMockResponse(Status.Ok)
                     .RespondsToRequestsWith(Method.GET)
@@ -1154,10 +1153,10 @@ namespace SereneApi.Tests
 
             using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
 
-            handlerFactory.RegisterApiHandler<IApiHandlerWrapper, ApiHandlerWrapper>(
+            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(
                 o => o.UseSource(source, resource));
 
-            handlerFactory.ExtendApiHandler<IApiHandlerWrapper>().WithMockResponses(r =>
+            handlerFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
                 r.AddMockResponse(MockPersonDto.JohnSmith)
                     .RespondsToRequestsWith(Method.GET)

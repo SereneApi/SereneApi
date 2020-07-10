@@ -1,7 +1,7 @@
 ﻿namespace SereneApi.Abstractions.Options
 {
-    public interface IApiOptionsBuilder<TApiDefinition>: IApiOptionsBuilder where TApiDefinition : class
+    public interface IApiOptionsBuilder<TApi>: IApiOptionsBuilder where TApi : class
     {
-        new IApiOptions<TApiDefinition> BuildOptions();
+        new IApiOptions<TApi> BuildOptions();
     }
 }

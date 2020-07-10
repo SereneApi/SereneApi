@@ -1,45 +1,71 @@
 ﻿using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Authentication;
+using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Request.Content;
+using SereneApi.Abstractions.Serializers;
+using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
 namespace SereneApi.Abstractions.Options
 {
     public interface IApiOptionsConfigurator
     {
-        void UseSource(string source, string resource = null, string resourcePath = null);
+        /// <summary>
+        /// The source that requests will be made against.
+        /// </summary>
+        /// <param name="source">The source of the host.</param>
+        /// <param name="resource">The api resource.</param>
+        /// <param name="resourcePath">The api resource path, appended before the resource.</param>
+        /// <remarks>
+        /// <para>By default the resource path is set to "api/". To disable the default set the value to an empty string.</para>
+        /// <para>If a resource is not provided it can be supplied when making requests by using the AgainstResource method.</para>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        void UseSource([NotNull] string source, [AllowNull] string resource = null, [AllowNull] string resourcePath = null);
 
         /// <summary>
-        /// Sets the timeout to be used by the <see cref="ApiHandler"/> when making API requests. By default this value is set to 30 seconds.
+        /// Sets the timeout period.
         /// </summary>
-        /// <param name="seconds">the time in seconds before the request will be timed out.</param>
-        void SetTimeoutPeriod(int seconds);
+        /// <param name="seconds">The time in seconds.</param>
+        /// <remarks>By defaults request will timeout in 30 seconds.</remarks>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        /// <exception cref="ArgumentException">Thrown when a value of 0 or less is provided.</exception>
+        void SetTimeout([NotNull] int seconds);
 
         /// <summary>
-        /// Adds an <see cref="ILogger"/> to the <see cref="ApiHandler"/> allowing built in Logging.
+        /// Sets the timeout period.
         /// </summary>
-        /// <param name="logger">The <see cref="ILogger"/> to be used for Logging.</param>
-        void AddLogger(ILogger logger);
+        /// <param name="seconds">The time in seconds.</param>
+        /// <param name="attempts">How many attempts will be made before the request times out. An attempt count of 0 can be provided.</param>
+        /// <remarks>
+        /// <para>By defaults request will timeout in 30 seconds.</para>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        /// <exception cref="ArgumentException">Thrown when a value of 0 or less is provided.</exception>
+        void SetTimeout([NotNull] int seconds, [NotNull] int attempts);
 
         /// <summary>
-        /// When set, upon a timeout the <see cref="ApiHandler"/> will re-attempt the request. By Default this is disabled.
+        /// Sets the amount of times the request will be re-attempted before failing.
         /// </summary>
-        /// <param name="retryCount">How many times the <see cref="ApiHandler"/> will re-attempt the request.</param>
-        void SetRetryAttempts(int retryCount);
+        /// <param name="attempts">How many attempts will be made before the request times out.</param>
+        /// <remarks>By defaults requests will not be re-attempted.</remarks>
+        /// /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        /// /// <exception cref="ArgumentException">Thrown when a value is below 0.</exception>
+        void SetRetryAttempts([NotNull] int attempts);
 
-        /// <summary>
-        /// Overrides the default <see cref="IQueryFactory"/> with the supplied <see cref="IQueryFactory"/>.
-        /// </summary>
-        void UseQueryFactory(IQueryFactory queryFactory);
+        void AddLogger([NotNull] ILogger logger);
 
-        void AddAuthentication(IAuthentication authentication);
+        void UseQueryFactory([NotNull] IQueryFactory queryFactory);
 
-        /// <summary>
-        /// Overrides the default <see cref="ICredentials"/> used by the <see cref="ApiHandler"/>.
-        /// </summary>
-        /// <param name="credentials">The <see cref="ICredentials"/> to be used when making requests.</param>
-        void UseCredentials(ICredentials credentials);
+        void UseRouteFactory([NotNull] IRouteFactory routeFactory);
+
+        void UseSerializer([NotNull] ISerializer serializer);
+
+        void AddAuthentication([NotNull] IAuthentication authentication);
+
+        void UseCredentials([NotNull] ICredentials credentials);
 
         void AddBasicAuthentication(string username, string password);
 
