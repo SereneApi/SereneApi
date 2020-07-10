@@ -18,6 +18,8 @@ namespace SereneApi.Abstractions.Tests.Factories
 
             IApiOptionsBuilder apiOptionsBuilder = configuration.GetOptionsBuilder();
 
+            apiOptionsBuilder.UseSource("http://test.com");
+
             IApiOptions options = apiOptionsBuilder.BuildOptions();
 
             _queryFactory = options.Dependencies.GetDependency<IQueryFactory>();

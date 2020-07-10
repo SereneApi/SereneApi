@@ -13,7 +13,7 @@ namespace SereneApi.Extensions.DependencyInjection
         public const string ResourceKey = "Resource";
         public const string ResourcePathKey = "ResourcePath";
         public const string TimeoutKey = "Timeout";
-        public const string RetryCountKey = "RetryCount";
+        public const string RetryCountKey = "Retries";
 
         public const bool SourceIsRequired = true;
         public const bool ResourceIsRequired = false;

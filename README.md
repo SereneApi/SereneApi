@@ -1,5 +1,3 @@
-SereneApi.Home
-SereneApi.Home
 
 # What is SereneApi?
 
@@ -29,40 +27,3 @@ SereneApi removes this code clutter allowing for clean single line methods to in
 ## Special Thanks
 
 * Nuget Icons made by <a href="https://www.flaticon.com/authors/prosymbols" title="Prosymbols">Prosymbols</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
-What is SereneApi?
-SereneApi is intended to provide a straightforward way of consuming RESTful APIs requiring as little code & setup as possible whilst providing a powerful set of extensible tools.
-
-Why
-I found that creating Web Requests, Deserializing and Serializing become tedious and in some cases break DRY. It also has a tendency to clutter your code base.
-
-SereneApi removes this code clutter allowing for clean single line methods to interact with API resources. After using the Repository Pattern for many years, I was inspired to create SereneApi using a similar pattern.
-
-Current Releases
-SereneApi | Environment - Standard 2.1
-Adds SereneApi to your project.
-
-Build Status Nuget
-
-SereneApi.Abstractions | Environment - Standard 2.1 
-Contains abstracted and base components.
-
-Build Status Nuget
-
-SereneApi.Extensions.DependencyInjection | Environment - Core 3.1
-Extends SereneApi adding support for Dependency Injection.
-
-Build Status Nuget
-
-SereneApi.Extensions.Mocking | Environment - Standard 2.1
-Extends SereneApi adding support for mocking.
-
-Build Status Nuget
-
-SereneApi.Extensions.Newtonsoft | Environment - Standard 2.1
-Extends SereneApi adding Newtonsoft.Json for Json Deserialization/Serialization.
-
-Build Status Nuget
-
-Special Thanks
-Nuget Icons made by Prosymbols from www.flaticon.com
-Markdown 3388 bytes 197 words 29 lines Ln 15, Col 4HTML 1036 characters 164 words 18 paragraphs

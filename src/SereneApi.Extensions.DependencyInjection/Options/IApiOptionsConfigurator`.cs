@@ -22,7 +22,7 @@ namespace SereneApi.Extensions.DependencyInjection.Options
         /// Resource - <see cref="string"/> - Optional<br/>
         /// ResourcePath - <see cref="string"/> - Optional<br/>
         /// Timeout - <see cref="int"/> - Optional; Specified in seconds.<br/>
-        /// RetryAttempts - <see cref="int"/> - Optional; How many times a timed out request will be re-attempted.
+        /// Retries - <see cref="int"/> - Optional; How many times a timed out request will be re-attempted.
         /// </remarks>
         /// <exception cref="ArgumentException">Thrown when an invalid value is provided.</exception>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>

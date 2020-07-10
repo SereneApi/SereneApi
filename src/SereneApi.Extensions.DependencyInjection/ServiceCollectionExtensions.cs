@@ -124,7 +124,7 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <param name="factory">Configures the API Handler using the provided configuration.</param>
         /// <exception cref="ArgumentException">Thrown when the specified API has already been registered.</exception>
         /// <exception cref="ArgumentNullException">Thrown when a null value has been provided.</exception>
-        /// <remarks>By default uses an <see cref="ILoggerFactory"/> to create an <seealso cref="ILogger"/>.</remarks>
+        /// <remarks>By default an <see cref="ILoggerFactory"/> is added to the API to create an <seealso cref="ILogger"/>.</remarks>
         public static IApiOptionsExtensions RegisterApi<TApi, TApiHandler>([NotNull] this IServiceCollection services, [NotNull] Action<IApiOptionsConfigurator<TApi>> factory) where TApi : class where TApiHandler : class, IApiHandler, TApi
         {
             if(services == null)
@@ -170,7 +170,7 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <param name="factory">Configures the API Handler using the provided configuration.</param>
         /// <exception cref="ArgumentException">Thrown when the specified API has already been registered.</exception>
         /// <exception cref="ArgumentNullException">Thrown when a null value has been provided.</exception>
-        /// <remarks>By default uses an <see cref="ILoggerFactory"/> to create an <seealso cref="ILogger"/>.</remarks>
+        /// <remarks>By default an <see cref="ILoggerFactory"/> is added to the API to create an <seealso cref="ILogger"/>.</remarks>
         public static IApiOptionsExtensions RegisterApi<TApi, TApiHandler>(
             [NotNull] this IServiceCollection services,
             [NotNull] Action<IApiOptionsConfigurator<TApi>, IServiceProvider> factory)
