@@ -20,10 +20,10 @@ namespace SereneApi.Tests
         {
             ApiHandlerFactory factory = new ApiHandlerFactory();
 
-            factory.RegisterApiHandler<ICrudApi, CrudApiHandlerWrapper>(builder =>
+            factory.RegisterApi<ICrudApi, CrudApiHandlerWrapper>(builder =>
             {
                 builder.UseSource("http://localhost:8080", "Person");
-            }).WithMockResponses(builder =>
+            }).WithMockResponse(builder =>
             {
                 builder
                     .AddMockResponse(MockPersonDto.BenJerry)

@@ -1,10 +1,12 @@
 ﻿using DeltaWare.Dependencies;
 using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Response;
-using SereneApi.Abstractions.Serializers;
 using SereneApi.Extensions.Mocking.Dependencies;
+using SereneApi.Extensions.Mocking.Dependencies.Whitelist;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,48 +25,46 @@ namespace SereneApi.Extensions.Mocking.Response
         /// <inheritdoc cref="IMockResponse.Message"/>
         public string Message { get; }
 
-        /// <inheritdoc cref="IMockResponse.Serializer"/>
-        public ISerializer Serializer { get; }
-
-        public MockResponse(IDependencyProvider dependencies, Status status, string message, IApiRequestContent responseContent)
+        /// <summary>
+        /// Creates a new instance of <seealso cref="MockResponse"/>.
+        /// </summary>
+        /// <param name="dependencies">The dependencies available to the <see cref="MockResponse"/>.</param>
+        /// <param name="status">The status of the response.</param>
+        /// <param name="message">The message of the response.</param>
+        /// <param name="responseContent">,The content of the response.</param>
+        /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
+        public MockResponse([NotNull] IDependencyProvider dependencies, Status status, string message, IApiRequestContent responseContent)
         {
-            _dependencies = dependencies;
+            _dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
             _responseContent = responseContent;
 
             Message = message;
             Status = status;
-
-            Serializer = dependencies.GetDependency<ISerializer>();
         }
 
         /// <inheritdoc cref="IWhitelist.Validate"/>
-        public Validity Validate(object value)
+        public Validity Validate([NotNull] object value)
         {
+            if(value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
             List<IWhitelist> whitelistDependencies = _dependencies.GetDependencies<IWhitelist>();
 
             // If 0 or any whitelist items return true. True is returned.
 
-            foreach(IWhitelist whitelistDependency in whitelistDependencies)
-            {
-                Validity validity = whitelistDependency.Validate(value);
-
-                if(validity == Validity.NotApplicable)
-                {
-                    continue;
-                }
-
-                return validity;
-            }
-
-            return Validity.NotApplicable;
+            return whitelistDependencies
+                .Select(whitelistDependency => whitelistDependency.Validate(value))
+                .FirstOrDefault(validity => validity != Validity.NotApplicable);
         }
 
-        /// <inheritdoc cref="IMockResponse"/>
+        /// <inheritdoc cref="IMockResponse.GetResponseContentAsync"/>
         public async Task<IApiRequestContent> GetResponseContentAsync(CancellationToken cancellationToken = default)
         {
             if(_dependencies.TryGetDependency(out DelayedResponseDependency delay))
             {
-                await delay.DelayAsync(cancellationToken);
+                await delay.DelayResponseAsync(cancellationToken);
             }
 
             return _responseContent;

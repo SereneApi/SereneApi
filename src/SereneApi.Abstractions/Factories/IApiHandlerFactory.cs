@@ -10,6 +10,6 @@ namespace SereneApi.Abstractions.Factories
         /// <summary>
         /// Creates a new instance of the requested <see cref="ApiHandler"/> type.
         /// </summary>
-        TApiDefinition Build<TApiDefinition>() where TApiDefinition : class;
+        TApi Build<TApi>() where TApi : class;
     }
 }

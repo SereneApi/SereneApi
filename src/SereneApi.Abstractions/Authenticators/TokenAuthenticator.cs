@@ -11,9 +11,9 @@ namespace SereneApi.Abstractions.Authenticators
     {
         //private readonly TimerCallback _tokenRefresher;
 
-        private readonly Func<TApi, Task<IApiResponse<TDto>>> _apiCallFunction;
+        private readonly Func<TApi, Task<IApiResponse<TDto>>> _apiCall;
 
-        private readonly Func<TDto, TokenInfo> _getTokenFunction;
+        private readonly Func<TDto, TokenInfo> _extractTokenFunction;
 
         protected IDependencyProvider Dependencies { get; }
 
@@ -21,12 +21,12 @@ namespace SereneApi.Abstractions.Authenticators
 
         protected BearerAuthentication Authentication { get; private set; }
 
-        public TokenAuthenticator(IDependencyProvider dependencies, Func<TApi, Task<IApiResponse<TDto>>> apiCallFunction, Func<TDto, TokenInfo> getTokenInfo = null)
+        public TokenAuthenticator(IDependencyProvider dependencies, Func<TApi, Task<IApiResponse<TDto>>> apiCall, Func<TDto, TokenInfo> extractToken = null)
         {
             Dependencies = dependencies;
 
-            _apiCallFunction = apiCallFunction;
-            _getTokenFunction = getTokenInfo;
+            _apiCall = apiCall;
+            _extractTokenFunction = extractToken;
         }
 
         public virtual async Task<IAuthentication> AuthenticateAsync()
@@ -59,7 +59,7 @@ namespace SereneApi.Abstractions.Authenticators
 
         protected Task<IApiResponse<TDto>> GetTokenAsync(TApi handler)
         {
-            return _apiCallFunction.Invoke(handler);
+            return _apiCall.Invoke(handler);
         }
 
         protected void ProcessResponse(IApiResponse<TDto> response)
@@ -74,7 +74,7 @@ namespace SereneApi.Abstractions.Authenticators
                 throw new Exception(response.Message);
             }
 
-            TokenInfo tokenInfo = _getTokenFunction.Invoke(response.Result);
+            TokenInfo tokenInfo = _extractTokenFunction.Invoke(response.Result);
 
             if(tokenInfo == null)
             {

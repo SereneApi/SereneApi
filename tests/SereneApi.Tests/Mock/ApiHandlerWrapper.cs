@@ -1,7 +1,6 @@
 ﻿using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Request;
 using SereneApi.Abstractions.Response;
-using SereneApi.Request;
 using SereneApi.Tests.Interfaces;
 using System;
 using System.Linq.Expressions;

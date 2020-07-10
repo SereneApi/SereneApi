@@ -1,6 +1,4 @@
 ﻿using SereneApi.Abstractions.Response;
-using SereneApi.Response;
-using SereneApi.Types;
 using Shouldly;
 using System;
 using Xunit;
