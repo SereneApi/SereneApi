@@ -45,15 +45,5 @@ steps:
     nobuild: true
     versioningScheme: 'off'
 
-- task: NuGetAuthenticate@0
-  displayName: 'NuGet Authenticate'
-  inputs:
-    nuGetServiceConnections: 'NuGet'
-- task: NuGetCommand@2
-  displayName: 'NuGet Push'
-  inputs:
-    command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.snupkg'
-    nuGetFeedType: 'external'
-    versioningScheme: 'off'
-    allowPackageConflicts: true
+- sceipt: nuget push -ApiKey $(NuGet-ApiKey) $(Build.ArtifactStagingDirectory)/**/*.nupkg
+- sceipt: nuget push -ApiKey $(NuGet-ApiKey) $(Build.ArtifactStagingDirectory)/**/*.snupkg
