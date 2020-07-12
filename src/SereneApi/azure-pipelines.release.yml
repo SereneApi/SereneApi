@@ -45,5 +45,4 @@ steps:
     nobuild: true
     versioningScheme: 'off'
 
-- script: nuget push $(Build.ArtifactStagingDirectory)/**/*.nupkg -ApiKey $(Nuget-ApiKey) -NonInteractive -Source https://api.nuget.org/v3/index.json
-- script: nuget push $(Build.ArtifactStagingDirectory)/**/*.snupkg -ApiKey $(Nuget-ApiKey) -NonInteractive -Source https://api.nuget.org/v3/index.json
+- script: nuget push $(Build.ArtifactStagingDirectory)/**/*.nupkg -ApiKey $(Nuget-ApiKey) -NonInteractive -SkipDuplicate -Source https://api.nuget.org/v3/index.json
