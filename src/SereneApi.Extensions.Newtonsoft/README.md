@@ -5,7 +5,7 @@ Add the latest version of the NuGet package to your project.
 
 <br/>
 
-To add Newtonsoft call the following in your Startup.cs file. This will override the default *ISerializer* with the *NewtonsoftSerializer*.
+To add Newtonsoft, put the following code in your Startup.cs file. This will override the default *ISerializer* with the *NewtonsoftSerializer*.
 <br/>
 **Add Newtonsoft.Json as the default serializer**
 ```csharp
