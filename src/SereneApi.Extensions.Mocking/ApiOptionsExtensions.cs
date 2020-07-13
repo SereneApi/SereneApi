@@ -1,5 +1,4 @@
 ﻿using DeltaWare.Dependencies;
-using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Options;
 using SereneApi.Extensions.Mocking.Handlers;
 using SereneApi.Extensions.Mocking.Response;
@@ -26,7 +25,7 @@ namespace SereneApi.Extensions.Mocking
                 throw new ArgumentNullException(nameof(mockResponseBuilder));
             }
 
-            IDependencyCollection dependencies = GetDependencies(registrationExtensions);
+            IDependencyCollection dependencies = registrationExtensions.GetDependencyCollection();
 
             dependencies.AddScoped<HttpMessageHandler>(p =>
             {
@@ -45,16 +44,6 @@ namespace SereneApi.Extensions.Mocking
             });
 
             return registrationExtensions;
-        }
-
-        private static IDependencyCollection GetDependencies(IApiOptionsExtensions extensions)
-        {
-            if(extensions is ICoreOptions options)
-            {
-                return options.Dependencies;
-            }
-
-            throw new TypeAccessException($"Must be of type or inherit from {nameof(ICoreOptions)}");
         }
     }
 }

@@ -9,9 +9,9 @@ namespace SereneApi.Abstractions.Request
     public interface IApiRequest
     {
         /// <summary>
-        /// The endpoint used to make the request. This is applied after the source.
+        /// The address used to make the request. This is applied after the source.
         /// </summary>
-        Uri EndPoint { get; }
+        Uri Endpoint { get; }
 
         /// <summary>
         /// The <see cref="Method"/> used when performing the request.
@@ -19,7 +19,7 @@ namespace SereneApi.Abstractions.Request
         Method Method { get; }
 
         /// <summary>
-        /// The content contained in the body of the request.
+        /// The content contained within the body of the request.
         /// </summary>
         IApiRequestContent Content { get; }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Abstractions.Factories
 {
@@ -8,43 +9,51 @@ namespace SereneApi.Abstractions.Factories
     public interface IRouteFactory
     {
         /// <summary>
-        /// The Resource Path appended to the route.
+        /// The resource path appended to the route.
         /// </summary>
         public string ResourcePath { get; }
 
         /// <summary>
-        /// Supplies the Resource to be used in the route.
+        /// Specifies the resource to be used in the route.
         /// </summary>
-        /// <param name="resource"></param>
-        void AddResource(string resource);
+        /// <param name="resource">The resource to be used in the route.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        void AddResource([NotNull] string resource);
 
         /// <summary>
-        /// Supplies the Query to be appended to the end of the route.
+        /// Specifies the query to be appended to the end of the route.
         /// </summary>
-        /// <param name="querystring"></param>
-        void AddQuery(string querystring);
+        /// <param name="queryString">The query to be appended to the route.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        void AddQuery([NotNull] string queryString);
 
         /// <summary>
-        /// Supplies the parameters to be appended to the route.
-        /// A single parameter can be applied with ot without an End Point.
-        /// If more than one parameter is provided a formattable End Point is required.
+        /// Specifies the parameters to be appended to the route.
         /// </summary>
-        /// <param name="parameters"></param>
-        void AddParameters(params object[] parameters);
+        /// <param name="parameters">The parameters to be appended to the route.</param>
+        /// <remarks>
+        /// A single parameter can be applied with ot without an end point.
+        /// If more than one parameter is provided a formattable end point is required.
+        /// </remarks>
+        /// <exception cref="ArgumentException">Thrown when more than one parameter was provided without a formattable end point.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        void AddParameters([NotNull] params object[] parameters);
 
         /// <summary>
         /// Supplies the End Point to be appended to the route.
-        /// The End Point can be submitted as a formattable string.
-        /// If this is done parameters will be required.
         /// </summary>
-        /// <param name="endPoint"></param>
-        void AddEndPoint(string endPoint);
+        /// <param name="endpoint">The endpoint to be appended to the route.</param>
+        /// <remarks>
+        /// The end point can be a formattable string. If this is done parameters will be required.
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        void AddEndpoint([NotNull] string endpoint);
 
         /// <summary>
         /// The route will be built and returned as an <see cref="Uri"/>.
-        /// Once the route has been built the settings will be cleared.
         /// </summary>
-        Uri BuildRoute();
+        /// <param name="clearSettings">Clears the previous settings.</param>
+        Uri BuildRoute(bool clearSettings = true);
 
         /// <summary>
         /// Clears the provided values.

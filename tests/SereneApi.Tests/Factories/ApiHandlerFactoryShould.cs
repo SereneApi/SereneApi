@@ -16,19 +16,19 @@ namespace SereneApi.Tests.Factories
         [InlineData("http://localhost", "TestSource2/Extra1", "http://localhost/api/TestSource2/Extra1", "TestSource2/Extra1")]
         public void RegisterHandlerSourceResource(string source, string resource, string expectedSource, string expectedResource)
         {
-            ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
+            ApiFactory apiFactory = new ApiFactory();
 
-            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
+            apiFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
             {
                 o.UseSource(source, resource);
             });
 
-            using IApiHandlerWrapper apiHandlerWrapperWrapper = handlerFactory.Build<IApiHandlerWrapper>();
+            using IApiHandlerWrapper apiHandlerWrapperWrapper = apiFactory.Build<IApiHandlerWrapper>();
 
             apiHandlerWrapperWrapper.Connection.Source.ShouldBe(expectedSource);
             apiHandlerWrapperWrapper.Connection.Resource.ShouldBe(expectedResource);
 
-            handlerFactory.Dispose();
+            apiFactory.Dispose();
         }
 
         [Theory]
@@ -45,34 +45,34 @@ namespace SereneApi.Tests.Factories
         [InlineData("http://localhost/Path", "TestSource4", " ", "http://localhost/Path/api/TestSource4", "TestSource4")]
         public void RegisterHandlerSourceResourceAndPath(string source, string resource, string resourcePath, string expectedSource, string expectedResource)
         {
-            ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
+            ApiFactory apiFactory = new ApiFactory();
 
-            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
+            apiFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
             {
                 o.UseSource(source, resource, resourcePath);
             });
 
-            using IApiHandlerWrapper apiHandlerWrapperWrapper = handlerFactory.Build<IApiHandlerWrapper>();
+            using IApiHandlerWrapper apiHandlerWrapperWrapper = apiFactory.Build<IApiHandlerWrapper>();
 
             apiHandlerWrapperWrapper.Connection.Source.ShouldBe(expectedSource);
             apiHandlerWrapperWrapper.Connection.Resource.ShouldBe(expectedResource);
 
-            handlerFactory.Dispose();
+            apiFactory.Dispose();
         }
 
         [Fact]
         public void RegisterDuplicateHandlers()
         {
-            ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
+            ApiFactory apiFactory = new ApiFactory();
 
-            handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
+            apiFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
             {
                 o.UseSource("http://localhost", "Users");
             });
 
             Should.Throw<ArgumentException>(() =>
             {
-                handlerFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
+                apiFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
                 {
                     o.UseSource("http://localhost", "Users");
                 });
@@ -82,11 +82,11 @@ namespace SereneApi.Tests.Factories
         [Fact]
         public void BuildHandlerNoRegistration()
         {
-            using ApiHandlerFactory handlerFactory = new ApiHandlerFactory();
+            using ApiFactory apiFactory = new ApiFactory();
 
             Should.Throw<ArgumentException>(() =>
             {
-                handlerFactory.Build<IApiHandlerWrapper>();
+                apiFactory.Build<IApiHandlerWrapper>();
             });
         }
     }

@@ -4,6 +4,7 @@ using SereneApi.Abstractions.Authenticators;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Request.Content;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -11,15 +12,22 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Abstractions.Factories
 {
+    /// <inheritdoc cref="IClientFactory"/>
     internal class DefaultClientFactory: IClientFactory
     {
         private readonly IDependencyProvider _dependencies;
 
-        public DefaultClientFactory(IDependencyProvider dependencies)
+        /// <summary>
+        /// Creates a new instance of <see cref="DefaultClientFactory"/>.
+        /// </summary>
+        /// <param name="dependencies">The dependencies the <see cref="DefaultClientFactory"/> may use when creating clients.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        public DefaultClientFactory([NotNull] IDependencyProvider dependencies)
         {
-            _dependencies = dependencies;
+            _dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
         }
 
+        /// <inheritdoc cref="IClientFactory.BuildClientAsync"/>
         public async Task<HttpClient> BuildClientAsync()
         {
             bool handlerFound = _dependencies.TryGetDependency(out HttpMessageHandler messageHandler);

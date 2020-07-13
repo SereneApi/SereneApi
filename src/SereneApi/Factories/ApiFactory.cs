@@ -10,8 +10,8 @@ using System.Collections.Generic;
 
 namespace SereneApi.Factories
 {
-    /// <inheritdoc cref="IApiHandlerFactory"/>
-    public class ApiHandlerFactory: IApiHandlerFactory
+    /// <inheritdoc cref="IApiFactory"/>
+    public class ApiFactory: IApiFactory
     {
         private readonly Dictionary<Type, Type> _handlers = new Dictionary<Type, Type>();
 
@@ -19,12 +19,12 @@ namespace SereneApi.Factories
 
         private readonly ISereneApiConfiguration _configuration;
 
-        public ApiHandlerFactory()
+        public ApiFactory()
         {
             _configuration = SereneApiConfiguration.Default;
         }
 
-        public ApiHandlerFactory(ISereneApiConfiguration configuration)
+        public ApiFactory(ISereneApiConfiguration configuration)
         {
             _configuration = configuration;
         }
@@ -51,7 +51,7 @@ namespace SereneApi.Factories
         }
 
         /// <summary>
-        /// Registers an <see cref="ApiHandler"/> implementation to the <see cref="ApiHandlerFactory"/>.
+        /// Registers an <see cref="ApiHandler"/> implementation to the <see cref="ApiFactory"/>.
         /// The supplied <see cref="IApiOptionsConfigurator"/> will be used to build the <see cref="ApiHandler"/>.
         /// </summary>
         /// <param name="factory">The <see cref="IApiOptionsConfigurator"/> that will be used to build the <see cref="ApiHandler"/>.</param>
@@ -68,7 +68,7 @@ namespace SereneApi.Factories
 
             IApiOptionsBuilder configurator = _configuration.GetOptionsBuilder();
 
-            configurator.Dependencies.AddSingleton<IApiHandlerFactory>(() => this, Binding.Unbound);
+            configurator.Dependencies.AddSingleton<IApiFactory>(() => this, Binding.Unbound);
 
             factory.Invoke(configurator);
 

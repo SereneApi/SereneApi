@@ -32,7 +32,7 @@ namespace SereneApi.Abstractions.Serializers
         /// </summary>
         /// <param name="options">the options to be used for serialization and deserialization.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public DefaultSerializer(JsonSerializerOptions options)
+        public DefaultSerializer([NotNull] JsonSerializerOptions options)
         {
             _deserializerOptions = options ?? throw new ArgumentNullException(nameof(options));
             _serializerOptions = options;
@@ -44,7 +44,7 @@ namespace SereneApi.Abstractions.Serializers
         /// <param name="deserializerOptions">the options to be used for deserialization.</param>
         /// <param name="serializerOptions">the options to be used for serialization.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public DefaultSerializer(JsonSerializerOptions deserializerOptions, JsonSerializerOptions serializerOptions)
+        public DefaultSerializer([NotNull] JsonSerializerOptions deserializerOptions, [NotNull] JsonSerializerOptions serializerOptions)
         {
             _deserializerOptions = deserializerOptions ?? throw new ArgumentNullException(nameof(deserializerOptions));
             _serializerOptions = serializerOptions ?? throw new ArgumentNullException(nameof(serializerOptions));

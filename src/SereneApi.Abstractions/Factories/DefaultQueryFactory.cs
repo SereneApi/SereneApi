@@ -5,6 +5,7 @@ using SereneApi.Abstractions.Queries.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -28,20 +29,35 @@ namespace SereneApi.Abstractions.Factories
         /// <inheritdoc>
         ///     <cref>IQueryFactory.Build</cref>
         /// </inheritdoc>
-        public string Build<TQueryable>(TQueryable query)
+        public string Build<TQueryable>([NotNull] TQueryable query)
         {
+            if(query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+
             PropertyInfo[] queryProperties = typeof(TQueryable).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
             List<string> querySections = queryProperties.Select(p => ExtractQueryString(p, query)).Where(q => !string.IsNullOrWhiteSpace(q)).ToList();
 
-            return BuildQuerystring(querySections);
+            return BuildQueryString(querySections);
         }
 
         /// <inheritdoc>
         ///     <cref>IQueryFactory.Build</cref>
         /// </inheritdoc>
-        public string Build<TQueryable>(TQueryable query, Expression<Func<TQueryable, object>> selector)
+        public string Build<TQueryable>([NotNull] TQueryable query, [NotNull] Expression<Func<TQueryable, object>> selector)
         {
+            if(query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+
+            if(selector == null)
+            {
+                throw new ArgumentNullException(nameof(selector));
+            }
+
             List<string> querySections = new List<string>();
 
             if(!(selector.Body is NewExpression body))
@@ -68,11 +84,28 @@ namespace SereneApi.Abstractions.Factories
                 querySections.Add(queryString);
             }
 
-            return BuildQuerystring(querySections);
+            return BuildQueryString(querySections);
         }
 
-        private string ExtractQueryString<TQueryable>(PropertyInfo queryProperty, TQueryable query)
+        /// <summary>
+        /// Gets the query value from the provided property.
+        /// </summary>
+        /// <typeparam name="TQueryable">The type the value will be extracted from.</typeparam>
+        /// <param name="queryProperty">The property containing the specific value.</param>
+        /// <param name="query">The instantiated query that the value will be extracted from.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        private string ExtractQueryString<TQueryable>([NotNull] PropertyInfo queryProperty, [NotNull] TQueryable query)
         {
+            if(queryProperty == null)
+            {
+                throw new ArgumentNullException(nameof(queryProperty));
+            }
+
+            if(query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+
             string queryString = string.Empty;
 
             object queryValue = queryProperty.GetValue(query);
@@ -131,7 +164,7 @@ namespace SereneApi.Abstractions.Factories
             }
             else
             {
-                queryKey = key.Value;
+                queryKey = key.Key;
             }
 
             return BuildQuerySection(queryKey, queryString);
@@ -141,8 +174,14 @@ namespace SereneApi.Abstractions.Factories
         /// Builds the query string using the supplied array of strings.
         /// </summary>
         /// <param name="querySections">Each string index represents an element in the query.</param>
-        private static string BuildQuerystring(IReadOnlyList<string> querySections)
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        private static string BuildQueryString([NotNull] IReadOnlyList<string> querySections)
         {
+            if(querySections == null)
+            {
+                throw new ArgumentNullException(nameof(querySections));
+            }
+
             // No sections return empty string.
             if(querySections.Count == 0)
             {

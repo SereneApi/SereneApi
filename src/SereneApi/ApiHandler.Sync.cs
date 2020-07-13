@@ -66,7 +66,7 @@ namespace SereneApi
         {
             HttpResponseMessage responseMessage = null;
 
-            Uri endPoint = request.EndPoint;
+            Uri endpoint = request.Address;
 
             Method method = request.Method;
 
@@ -78,15 +78,15 @@ namespace SereneApi
                     {
                         return method switch
                         {
-                            Method.POST => await client.PostAsync(endPoint, null),
-                            Method.GET => await client.GetAsync(endPoint),
-                            Method.PUT => await client.PutAsync(endPoint, null),
-                            Method.PATCH => await client.PatchAsync(endPoint, null),
-                            Method.DELETE => await client.DeleteAsync(endPoint),
-                            _ => throw new ArgumentOutOfRangeException(nameof(endPoint), method,
+                            Method.POST => await client.PostAsync(endpoint, null),
+                            Method.GET => await client.GetAsync(endpoint),
+                            Method.PUT => await client.PutAsync(endpoint, null),
+                            Method.PATCH => await client.PatchAsync(endpoint, null),
+                            Method.DELETE => await client.DeleteAsync(endpoint),
+                            _ => throw new ArgumentOutOfRangeException(nameof(endpoint), method,
                                 "An incorrect Method Value was supplied.")
                         };
-                    }, endPoint);
+                    }, endpoint);
                 }
                 else
                 {
@@ -96,17 +96,17 @@ namespace SereneApi
                     {
                         return method switch
                         {
-                            Method.POST => await client.PostAsync(endPoint, content),
+                            Method.POST => await client.PostAsync(endpoint, content),
                             Method.GET => throw new ArgumentException(
                                 "Get cannot be used in conjunction with an InBody Request"),
-                            Method.PUT => await client.PutAsync(endPoint, content),
-                            Method.PATCH => await client.PatchAsync(endPoint, content),
+                            Method.PUT => await client.PutAsync(endpoint, content),
+                            Method.PATCH => await client.PatchAsync(endpoint, content),
                             Method.DELETE => throw new ArgumentException(
                                 "Delete cannot be used in conjunction with an InBody Request"),
                             _ => throw new ArgumentOutOfRangeException(nameof(method), method,
                                 "An incorrect Method Value was supplied.")
                         };
-                    }, endPoint);
+                    }, endpoint);
                 }
 
                 return ProcessResponse(responseMessage);
@@ -124,7 +124,7 @@ namespace SereneApi
             {
                 _logger?.LogError(exception,
                     "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
-                    method.ToString(), endPoint);
+                    method.ToString(), endpoint);
 
                 return ApiResponse.Failure(Status.None,
                     $"An Exception occured whilst performing a HTTP {method} Request",
@@ -140,7 +140,7 @@ namespace SereneApi
         {
             HttpResponseMessage responseMessage = null;
 
-            Uri endPoint = request.EndPoint;
+            Uri endpoint = request.Address;
 
             Method method = request.Method;
 
@@ -152,15 +152,15 @@ namespace SereneApi
                     {
                         return method switch
                         {
-                            Method.POST => await client.PostAsync(endPoint, null),
-                            Method.GET => await client.GetAsync(endPoint),
-                            Method.PUT => await client.PutAsync(endPoint, null),
-                            Method.PATCH => await client.PatchAsync(endPoint, null),
-                            Method.DELETE => await client.DeleteAsync(endPoint),
-                            _ => throw new ArgumentOutOfRangeException(nameof(endPoint), method,
+                            Method.POST => await client.PostAsync(endpoint, null),
+                            Method.GET => await client.GetAsync(endpoint),
+                            Method.PUT => await client.PutAsync(endpoint, null),
+                            Method.PATCH => await client.PatchAsync(endpoint, null),
+                            Method.DELETE => await client.DeleteAsync(endpoint),
+                            _ => throw new ArgumentOutOfRangeException(nameof(endpoint), method,
                                 "An incorrect Method Value was supplied.")
                         };
-                    }, endPoint);
+                    }, endpoint);
                 }
                 else
                 {
@@ -170,17 +170,17 @@ namespace SereneApi
                     {
                         return method switch
                         {
-                            Method.POST => await client.PostAsync(endPoint, content),
+                            Method.POST => await client.PostAsync(endpoint, content),
                             Method.GET => throw new ArgumentException(
                                 "Get cannot be used in conjunction with an InBody Request"),
-                            Method.PUT => await client.PutAsync(endPoint, content),
-                            Method.PATCH => await client.PatchAsync(endPoint, content),
+                            Method.PUT => await client.PutAsync(endpoint, content),
+                            Method.PATCH => await client.PatchAsync(endpoint, content),
                             Method.DELETE => throw new ArgumentException(
                                 "Delete cannot be used in conjunction with an InBody Request"),
                             _ => throw new ArgumentOutOfRangeException(nameof(method), method,
                                 "An incorrect Method Value was supplied.")
                         };
-                    }, endPoint);
+                    }, endpoint);
                 }
 
                 return ProcessResponse<TResponse>(responseMessage);
@@ -199,7 +199,7 @@ namespace SereneApi
             {
                 _logger?.LogError(exception,
                     "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
-                    method.ToString(), endPoint);
+                    method.ToString(), endpoint);
 
                 return ApiResponse<TResponse>.Failure(Status.None,
                     $"An Exception occured whilst performing a HTTP {method} Request",
@@ -257,10 +257,7 @@ namespace SereneApi
                 }
             } while(retryingRequest);
 
-            ExceptionHelper.RequestTimedOut(route, requestsAttempted);
-
-            // This is redundant as ExceptionHelper.TimedOut will throw an exception.
-            return null;
+            throw new TimeoutException($"The Request to \"{route}\" has Timed Out; Retry limit reached. Retired {requestsAttempted}");
         }
 
         #endregion

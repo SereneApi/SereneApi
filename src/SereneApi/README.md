@@ -73,20 +73,20 @@ An in Path Request is the most simple of the request types. It converts input pa
 * The first and most simple of the InPathRequests. It will convert the *paramter* to a string using the *ToString()* method and apply it to the end of the Url. Using the previous settings for out UserApi if the parameter was set to 42 the generated Url would be this.
 http://myservice:8080/api/User/42
 ```csharp
-Task<IApiResponse> InPathRequestAsync(Method method, object endPoint = null)
+Task<IApiResponse> InPathRequestAsync(Method method, object endpoint = null)
 ```
-* The second request makes the *endpontTemplate* parameter available which supports string formatting on multiple parameters. I cover EndPoint Template more here **TODO**.
+* The second request makes the *endpontTemplate* parameter available which supports string formatting on multiple parameters. I cover Endpoint Template more here **TODO**.
 >**See More:** [You can read more about string Formatting here](https://www.tutlane.com/tutorial/csharp/csharp-string-format-method).
 
 ```csharp
-Task<IApiResponse> InPathRequestAsync(Method method, string endPointTemplate, params object[] endPointParameters)
+Task<IApiResponse> InPathRequestAsync(Method method, string endpointTemplate, params object[] endpointParameters)
 ```
 * The final two requests below are the same as the above, however are slightly mutated to allow the \<TResponse> Type parameter which tells the **ApiHanlder** to deserialize the JSON contained in the body of the response.
 ```csharp
-Task<IApiResponse<TResponse>> InPathRequestAsync<TResponse>(Method method, object endPoint = null)
+Task<IApiResponse<TResponse>> InPathRequestAsync<TResponse>(Method method, object endpoint = null)
 ```
 ```csharp
-Task<IApiResponse<TResponse>> InPathRequestAsync<TResponse>(Method method, string endPointTemplate, params object[] endPointParameters)
+Task<IApiResponse<TResponse>> InPathRequestAsync<TResponse>(Method method, string endpointTemplate, params object[] endpointParameters)
 ```
 ### In Body Requests
 An in Body Request gives you all the basics of an In Path Request whilst allowing you to serialize the specified Type into JSON which is sent in the body of the request. There are four methods currently made available.
@@ -94,16 +94,16 @@ An in Body Request gives you all the basics of an In Path Request whilst allowin
 
 
 ```csharp
-Task<IApiResponse> InBodyRequestAsync<TContent>(Method method, TContent inBodyContent, object endPoint = null)
+Task<IApiResponse> InBodyRequestAsync<TContent>(Method method, TContent inBodyContent, object endpoint = null)
 ```
 ```csharp
-Task<IApiResponse> InBodyRequestAsync<TContent>(Method method, TContent inBodyContent, string endPointTemplate, params object[] endPointParameters)
+Task<IApiResponse> InBodyRequestAsync<TContent>(Method method, TContent inBodyContent, string endpointTemplate, params object[] endpointParameters)
 ```
 ```csharp
-Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(Method method, TContent inBodyContent, object endPoint = null)
+Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(Method method, TContent inBodyContent, object endpoint = null)
 ```
 ```csharp
-Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(Method method, TContent inBodyContent, string endPointTemplate, params object[] endPointParameters)
+Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(Method method, TContent inBodyContent, string endpointTemplate, params object[] endpointParameters)
 ```
 ### In Path Requests with Query
 The most advanced out of the three types of requests. Allowing custom queries from the supplied, whilst also offering built-in functionality to specify what properties are to be used for the query.
@@ -111,10 +111,10 @@ The most advanced out of the three types of requests. Allowing custom queries fr
 
 The main difference between the With Query Request and the In Path Request is the addition of the \<TQuery> Type parameter and the query expression. The query expression will provide a new object based on the selected properties, the new object will be used for query generation. If there is no query expression provided all of the properties available in content will be used in the query.
 ```csharp
-Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQuery>(Method method, TQuery queryContent, Expression<Func<TQuery, object>> query, object endPoint = null)
+Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQuery>(Method method, TQuery queryContent, Expression<Func<TQuery, object>> query, object endpoint = null)
 ```
 ```csharp
-Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQuery>(Method method, TQuery queryContent, Expression<Func<TQuery, object>> query, string endPointTemplate, params object[] endPointParameters)
+Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQuery>(Method method, TQuery queryContent, Expression<Func<TQuery, object>> query, string endpointTemplate, params object[] endpointParameters)
 ```
 ## CrudApiHandler
 

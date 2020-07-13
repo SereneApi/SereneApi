@@ -15,14 +15,21 @@ namespace SereneApi.Abstractions.Options
 {
     public class ApiOptionsBuilder: IApiOptionsBuilder
     {
+        /// <inheritdoc cref="ICoreOptions.Dependencies"/>
         public IDependencyCollection Dependencies { get; } = new DependencyCollection();
 
+        /// <summary>
+        /// Specifies the connection settings for the API.
+        /// </summary>
         protected ConnectionSettings ConnectionSettings { get; set; }
 
         /// <inheritdoc cref="IApiOptionsConfigurator.UseSource"/>
-        public void UseSource(string source, string resource = null, string resourcePath = null)
+        public void UseSource([NotNull] string baseAddress, string resource = null, string resourcePath = null)
         {
-            ExceptionHelper.EnsureParameterIsNotNull(source, nameof(source));
+            if (string.IsNullOrWhiteSpace(baseAddress))
+            {
+                throw new ArgumentNullException(nameof(baseAddress));
+            }
 
             using IDependencyProvider provider = Dependencies.BuildProvider();
 
@@ -36,18 +43,21 @@ namespace SereneApi.Abstractions.Options
                 }
             }
 
-            ConnectionSettings = new ConnectionSettings(source, resource, resourcePath)
+            ConnectionSettings = new ConnectionSettings(baseAddress, resource, resourcePath)
             {
                 Timeout = configuration.Timeout,
                 RetryAttempts = configuration.RetryCount
             };
         }
 
-        /// <inheritdoc>
-        ///     <cref>IApiHandlerOptionsBuilder.SetTimeoutPeriod</cref>
-        /// </inheritdoc>
+        /// <inheritdoc cref="IApiOptionsConfigurator.SetTimeout(int)"/>
         public void SetTimeout(int seconds)
         {
+            if (seconds <= 0)
+            {
+                throw new ArgumentException("A timeout value must be greater than 0.");
+            }
+
             if(ConnectionSettings == null)
             {
                 throw new MethodAccessException("Source information must be supplied fired.");
@@ -56,9 +66,14 @@ namespace SereneApi.Abstractions.Options
             ConnectionSettings.Timeout = seconds;
         }
 
-        /// <inheritdoc cref="IApiOptionsConfigurator.SetRetryAttempts"/>
+        /// <inheritdoc cref="IApiOptionsConfigurator.SetRetryAttempts(int)"/>
         public void SetRetryAttempts(int attemptCount)
         {
+            if(attemptCount < 0)
+            {
+                throw new ArgumentException("Retry attempts must be greater or equal to 0.");
+            }
+
             if(ConnectionSettings == null)
             {
                 throw new MethodAccessException("Source information must be supplied fired.");
@@ -70,29 +85,44 @@ namespace SereneApi.Abstractions.Options
         }
 
         /// <inheritdoc cref="IApiOptionsConfigurator.AddLogger"/>
-        public void AddLogger(ILogger logger)
+        public void AddLogger([NotNull] ILogger logger)
         {
+            if (logger == null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
+
             Dependencies.AddScoped(() => logger);
         }
 
         /// <inheritdoc cref="IApiOptionsConfigurator.UseQueryFactory"/>
-        public void UseQueryFactory(IQueryFactory queryFactory)
+        public void UseQueryFactory([NotNull] IQueryFactory queryFactory)
         {
+            if(queryFactory == null)
+            {
+                throw new ArgumentNullException(nameof(queryFactory));
+            }
+
             Dependencies.AddScoped(() => queryFactory);
         }
 
         /// <inheritdoc cref="IApiOptionsConfigurator.UseCredentials"/>
-        public void UseCredentials(ICredentials credentials)
+        public void UseCredentials([NotNull] ICredentials credentials)
         {
+            if(credentials == null)
+            {
+                throw new ArgumentNullException(nameof(credentials));
+            }
+
             Dependencies.AddScoped(() => credentials);
         }
 
         /// <inheritdoc cref="IApiOptionsConfigurator.AddAuthentication"/>
         public void AddAuthentication(IAuthentication authentication)
         {
-            if(Dependencies.HasDependency<IAuthentication>())
+            if(authentication == null)
             {
-                ExceptionHelper.MethodCannotBeCalledTwice();
+                throw new ArgumentNullException(nameof(authentication));
             }
 
             Dependencies.AddScoped(() => authentication);
@@ -101,9 +131,14 @@ namespace SereneApi.Abstractions.Options
         /// <inheritdoc cref="IApiOptionsConfigurator.AddBasicAuthentication"/>
         public void AddBasicAuthentication(string username, string password)
         {
-            if(Dependencies.HasDependency<IAuthentication>())
+            if(string.IsNullOrWhiteSpace(username))
             {
-                ExceptionHelper.MethodCannotBeCalledTwice();
+                throw new ArgumentNullException(nameof(username));
+            }
+
+            if(string.IsNullOrWhiteSpace(password))
+            {
+                throw new ArgumentNullException(nameof(password));
             }
 
             Dependencies.AddTransient<IAuthentication>(() => new BasicAuthentication(username, password));
@@ -112,17 +147,17 @@ namespace SereneApi.Abstractions.Options
         /// <inheritdoc cref="IApiOptionsConfigurator.AddBearerAuthentication"/>
         public void AddBearerAuthentication(string token)
         {
-            if(Dependencies.HasDependency<IAuthentication>())
+            if(string.IsNullOrWhiteSpace(token))
             {
-                ExceptionHelper.MethodCannotBeCalledTwice();
+                throw new ArgumentNullException(nameof(token));
             }
 
             Dependencies.AddTransient<IAuthentication>(() => new BearerAuthentication(token));
         }
 
-        public void AcceptContentType(ContentType content)
+        public void AcceptContentType(ContentType type)
         {
-            Dependencies.AddScoped(() => content);
+            Dependencies.AddScoped(() => type);
         }
 
         public IApiOptions BuildOptions()

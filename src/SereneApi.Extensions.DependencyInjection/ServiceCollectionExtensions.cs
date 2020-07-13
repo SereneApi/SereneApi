@@ -143,7 +143,7 @@ namespace SereneApi.Extensions.DependencyInjection
 
             if(services.Contains(service))
             {
-                throw new ArgumentException();
+                throw new ArgumentException($"The API {typeof(TApi).Name} has already been registered.");
             }
 
             services.Add(service);
@@ -192,7 +192,7 @@ namespace SereneApi.Extensions.DependencyInjection
 
             if(services.Contains(service))
             {
-                throw new ArgumentException();
+                throw new ArgumentException($"The API {typeof(TApi).Name} has already been registered.");
             }
 
             services.Add(service);

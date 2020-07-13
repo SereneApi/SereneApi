@@ -21,8 +21,8 @@ namespace SereneApi.Extensions.DependencyInjection.Authenticators
         /// </summary>
         /// <param name="dependencies">The dependencies that can be used.</param>
         /// <param name="callApi">Perform the authentication request.</param>
-        /// <param name="extractToken">Extract the token information from the response.</param>
-        public InjectedTokenAuthenticator([NotNull] IDependencyProvider dependencies, [NotNull] Func<TApi, Task<IApiResponse<TDto>>> apiCall, [NotNull] Func<TDto, TokenInfo> extractToken) : base(dependencies, apiCall, extractToken)
+        /// <param name="retrieveToken">Extract the token information from the response.</param>
+        public InjectedTokenAuthenticator([NotNull] IDependencyProvider dependencies, [NotNull] Func<TApi, Task<IApiResponse<TDto>>> apiCall, [NotNull] Func<TDto, TokenInfo> retrieveToken) : base(dependencies, apiCall, retrieveToken)
         {
         }
 
@@ -38,9 +38,9 @@ namespace SereneApi.Extensions.DependencyInjection.Authenticators
 
             TApi apiHandler = provider.GetRequiredService<TApi>();
 
-            IApiResponse<TDto> response = await GetTokenAsync(apiHandler);
+            IApiResponse<TDto> response = await PerformAuthenticationRequestAsync(apiHandler);
 
-            ProcessResponse(response);
+            RetrieveToken(response);
 
             return Authentication;
         }

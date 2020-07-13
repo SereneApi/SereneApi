@@ -2,8 +2,8 @@
 namespace SereneApi.Abstractions.Delegates
 {
     /// <summary>
-    /// Formats objects to strings
+    /// Formats objects to strings.
     /// </summary>
-    /// <param name="queryObject">Input Object to be formatted</param>
+    /// <param name="queryObject">The object to be formatted to a string.</param>
     public delegate string ObjectToStringFormatter(object queryObject);
 }
