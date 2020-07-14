@@ -1,7 +1,6 @@
 ﻿using DeltaWare.Dependencies;
 using SereneApi.Abstractions.Authentication;
 using SereneApi.Abstractions.Authenticators;
-using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Response;
 using SereneApi.Extensions.DependencyInjection.Authenticators;
@@ -44,16 +43,6 @@ namespace SereneApi.Extensions.DependencyInjection
             dependencies.AddSingleton<IAuthenticator>(p => new InjectedTokenAuthenticator<TApi, TDto>(p, callApi, extractToken));
 
             return extensions;
-        }
-
-        internal static IDependencyCollection GetDependencyCollection(this IApiOptionsExtensions extensions)
-        {
-            if(extensions is ICoreOptions options)
-            {
-                return options.Dependencies;
-            }
-
-            throw new InvalidCastException($"Must inherit from {nameof(ICoreOptions)}");
         }
     }
 }

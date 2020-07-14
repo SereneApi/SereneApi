@@ -10,12 +10,15 @@ using System.Net;
 
 namespace SereneApi.Abstractions.Options
 {
+    /// <summary>
+    /// Configures <see cref="IApiOptions"/>.
+    /// </summary>
     public interface IApiOptionsConfigurator
     {
         /// <summary>
         /// The source that requests will be made against.
         /// </summary>
-        /// <param name="source">The source of the host.</param>
+        /// <param name="baseAddress">The address of the host.</param>
         /// <param name="resource">The api resource.</param>
         /// <param name="resourcePath">The api resource path, appended before the resource.</param>
         /// <remarks>
@@ -23,15 +26,15 @@ namespace SereneApi.Abstractions.Options
         /// <para>If a resource is not provided it can be supplied when making requests by using the AgainstResource method.</para>
         /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        void UseSource([NotNull] string source, [AllowNull] string resource = null, [AllowNull] string resourcePath = null);
+        void UseSource([NotNull] string baseAddress, [AllowNull] string resource = null, [AllowNull] string resourcePath = null);
 
         /// <summary>
         /// Sets the timeout period.
         /// </summary>
         /// <param name="seconds">The time in seconds.</param>
         /// <remarks>By defaults request will timeout in 30 seconds.</remarks>
-        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         /// <exception cref="ArgumentException">Thrown when a value of 0 or less is provided.</exception>
+        /// <exception cref="MethodAccessException">Thrown when this is called prior to a source being provided.</exception>
         void SetTimeout([NotNull] int seconds);
 
         /// <summary>
@@ -42,35 +45,79 @@ namespace SereneApi.Abstractions.Options
         /// <remarks>
         /// <para>By defaults request will timeout in 30 seconds.</para>
         /// </remarks>
-        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         /// <exception cref="ArgumentException">Thrown when a value of 0 or less is provided.</exception>
-        void SetTimeout([NotNull] int seconds, [NotNull] int attempts);
+        /// <exception cref="MethodAccessException">Thrown when this is called prior to a source being provided.</exception>
+        void SetTimeout(int seconds, int attempts);
 
         /// <summary>
         /// Sets the amount of times the request will be re-attempted before failing.
         /// </summary>
         /// <param name="attempts">How many attempts will be made before the request times out.</param>
         /// <remarks>By defaults requests will not be re-attempted.</remarks>
-        /// /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        /// /// <exception cref="ArgumentException">Thrown when a value is below 0.</exception>
-        void SetRetryAttempts([NotNull] int attempts);
+        /// <exception cref="ArgumentException">Thrown when a value is below 0.</exception>
+        void SetRetryAttempts(int attempts);
 
-        void AddLogger([NotNull] ILogger logger);
+        /// <summary>
+        /// Specifies an <see cref="ILogger"/> to be used for logging.
+        /// </summary>
+        /// <param name="logger">The <see cref="ILogger"/> to be used for logging.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        void UseLogger([NotNull] ILogger logger);
 
+        /// <summary>
+        /// Specifies an <see cref="IQueryFactory"/> to be when building queries.
+        /// </summary>
+        /// <param name="queryFactory">The <see cref="IQueryFactory"/> to be used for building queries.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         void UseQueryFactory([NotNull] IQueryFactory queryFactory);
 
+        /// <summary>
+        /// Specifies an <see cref="IRouteFactory"/> to be when building routes.
+        /// </summary>
+        /// <param name="routeFactory">The <see cref="IRouteFactory"/> to be used for building routes.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         void UseRouteFactory([NotNull] IRouteFactory routeFactory);
 
+        /// <summary>
+        /// Specifies an <see cref="ISerializer"/> to be used for serializing requests and deserializing responses.
+        /// </summary>
+        /// <param name="serializer">The <see cref="ISerializer"/> to be used for serialization.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         void UseSerializer([NotNull] ISerializer serializer);
 
+        /// <summary>
+        /// Specifies an <see cref="IAuthentication"/> which will be used when authenticating.
+        /// </summary>
+        /// <param name="authentication">The <see cref="IAuthentication"/> to be for authentication.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         void AddAuthentication([NotNull] IAuthentication authentication);
 
+        /// <summary>
+        /// Specifies an <see cref="ICredentials"/> which will be used when authenticating.
+        /// </summary>
+        /// <param name="credentials">The <see cref="ICredentials"/> to be for authentication.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         void UseCredentials([NotNull] ICredentials credentials);
 
-        void AddBasicAuthentication(string username, string password);
+        /// <summary>
+        /// Adds basic authentication to used when making requests.
+        /// </summary>
+        /// <param name="username">The username to authenticate with.</param>
+        /// <param name="password">The password to authenticate with.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        void AddBasicAuthentication([NotNull] string username, [NotNull] string password);
 
-        void AddBearerAuthentication(string token);
+        /// <summary>
+        /// Adds bearer authentication to used when making requests.
+        /// </summary>
+        /// <param name="token">The token to authenticate with.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        void AddBearerAuthentication([NotNull] string token);
 
-        void AcceptContentType(ContentType content);
+        /// <summary>
+        /// The content must be of the specific type.
+        /// </summary>
+        /// <param name="type">The type the response must be if it is to be accepted.</param>
+        void AcceptContentType(ContentType type);
     }
 }

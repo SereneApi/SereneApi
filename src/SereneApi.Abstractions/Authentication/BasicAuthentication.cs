@@ -1,11 +1,11 @@
-﻿using SereneApi.Abstractions.Request;
-using System;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace SereneApi.Abstractions.Authentication
 {
     /// <summary>
-    /// Authenticates an <see cref="IApiRequest"/> using a username and password.
+    /// Authenticates an API request using Basic authentication with the specified Username and Password.
     /// </summary>
     public class BasicAuthentication: IAuthentication
     {
@@ -15,10 +15,25 @@ namespace SereneApi.Abstractions.Authentication
         /// <inheritdoc cref="IAuthentication.Parameter"/>
         public string Parameter { get; }
 
-        /// <param name="username">The Username to be used for authentication.</param>
-        /// <param name="password">The Password to be used for authentication.</param>
-        public BasicAuthentication(string username, string password)
+        /// <summary>
+        /// Creates a new instance of <see cref="BasicAuthentication"/>.
+        /// </summary>
+        /// <param name="username">The username to be authenticated with.</param>
+        /// <param name="password">The password to be authenticated with.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        /// <exception cref="EncoderFallbackException"></exception>
+        public BasicAuthentication([NotNull] string username, [NotNull] string password)
         {
+            if(string.IsNullOrWhiteSpace(username))
+            {
+                throw new ArgumentNullException(nameof(username));
+            }
+
+            if(string.IsNullOrWhiteSpace(password))
+            {
+                throw new ArgumentNullException(nameof(password));
+            }
+
             byte[] byteArray = Encoding.ASCII.GetBytes($"{username}:{password}");
 
             Parameter = Convert.ToBase64String(byteArray);

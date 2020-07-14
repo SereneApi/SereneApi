@@ -15,7 +15,7 @@ namespace SereneApi.Extensions.Newtonsoft
         /// </summary>
         public static ISereneApiExtensions AddNewtonsoft(this ISereneApiExtensions extensions)
         {
-            extensions.ExtendDependencyFactory(d => d.AddScoped<ISerializer>(() => new NewtonsoftSerializer()));
+            extensions.AddDependency(d => d.AddScoped<ISerializer>(() => new NewtonsoftSerializer()));
 
             return extensions;
         }
@@ -32,7 +32,7 @@ namespace SereneApi.Extensions.Newtonsoft
                 throw new ArgumentNullException(nameof(settings));
             }
 
-            extensions.ExtendDependencyFactory(d => d.AddScoped<ISerializer>(() => new NewtonsoftSerializer(settings)));
+            extensions.AddDependency(d => d.AddScoped<ISerializer>(() => new NewtonsoftSerializer(settings)));
 
             return extensions;
         }

@@ -18,7 +18,7 @@ namespace SereneApi.Tests
 
         public CrudApiHandlerShould()
         {
-            ApiHandlerFactory factory = new ApiHandlerFactory();
+            ApiFactory factory = new ApiFactory();
 
             factory.RegisterApi<ICrudApi, CrudApiHandlerWrapper>(builder =>
             {

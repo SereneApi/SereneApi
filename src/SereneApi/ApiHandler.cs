@@ -4,9 +4,9 @@ using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Response;
-using SereneApi.Extensions;
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 
 namespace SereneApi
@@ -19,26 +19,35 @@ namespace SereneApi
     {
         #region Variables
 
-        protected IDependencyProvider Dependencies { get; }
-
         private readonly ILogger _logger;
 
         #endregion
         #region Properties
 
+        /// <summary>
+        /// The dependencies that may be used by this API.
+        /// </summary>
+        protected IDependencyProvider Dependencies { get; }
+
+        /// <inheritdoc cref="IApiHandler.Connection"/>
         public IConnectionSettings Connection { get; }
 
         #endregion
         #region Constructors
 
         /// <summary>
-        /// Creates a new instance of the <see cref="ApiHandler"/>.
+        /// Creates a new instance of <see cref="ApiHandler"/>.
         /// </summary>
-        /// <param name="apiOptions">The <see cref="IApiOptions"/> the <see cref="ApiHandler"/> will use when making requests.</param>
-        protected ApiHandler(IApiOptions apiOptions)
+        /// <param name="options">The options to be used when making requests.</param>
+        protected ApiHandler([NotNull] IApiOptions options)
         {
-            Connection = apiOptions.Connection;
-            Dependencies = apiOptions.Dependencies;
+            if(options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            Connection = options.Connection;
+            Dependencies = options.Dependencies;
             Dependencies.TryGetDependency(out _logger);
 
             _logger?.LogTrace($"{GetType()} has been instantiated");
@@ -51,7 +60,7 @@ namespace SereneApi
         /// Processes the returned <see cref="HttpResponseMessage"/>
         /// </summary>
         /// <param name="responseMessage">The <see cref="HttpResponseMessage"/> to process</param>
-        private IApiResponse ProcessResponse(HttpResponseMessage responseMessage)
+        private IApiResponse ProcessResponse([AllowNull] HttpResponseMessage responseMessage)
         {
             if(responseMessage == null)
             {

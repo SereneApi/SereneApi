@@ -1,19 +1,17 @@
-﻿using SereneApi.Abstractions.Request;
-
-namespace SereneApi.Abstractions.Authentication
+﻿namespace SereneApi.Abstractions.Authentication
 {
     /// <summary>
-    /// Authenticates an <see cref="IApiRequest"/>
+    /// Authenticates an API request.
     /// </summary>
     public interface IAuthentication
     {
         /// <summary>
-        /// The Authentication Scheme.
+        /// Specifies the authentication scheme.
         /// </summary>
         string Scheme { get; }
 
         /// <summary>
-        /// The Authentication Parameter.
+        /// Specifies the authentication parameter.
         /// </summary>
         string Parameter { get; }
     }

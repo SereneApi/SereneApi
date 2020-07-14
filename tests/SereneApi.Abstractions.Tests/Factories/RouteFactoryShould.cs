@@ -35,7 +35,7 @@
 
 //            IRouteFactory routeFactory = new DefaultRouteFactory();
 
-//            routeFactory.AddEndPoint("{0}/Details/{1}");
+//            routeFactory.AddEndpoint("{0}/Details/{1}");
 //            routeFactory.AddParameters(10);
 
 //            #endregion
@@ -54,7 +54,7 @@
 
 //            IRouteFactory routeFactory = new DefaultRouteFactory();
 
-//            routeFactory.AddEndPoint("{0}/Details/{1}/{2}");
+//            routeFactory.AddEndpoint("{0}/Details/{1}/{2}");
 //            routeFactory.AddParameters(10, "John");
 
 //            #endregion
@@ -72,7 +72,7 @@
 //        [InlineData("api/", "Users/", "api/Users")]
 //        [InlineData("path/api", "Accounts/Details", "path/api/Accounts/Details")]
 //        [InlineData("path/api/", "Accounts/Details/", "path/api/Accounts/Details")]
-//        public void BuildResourceEndpoint(string resource, string endPoint, string expected)
+//        public void BuildResourceEndpoint(string resource, string endpoint, string expected)
 //        {
 //            #region Arrange
 
@@ -81,7 +81,7 @@
 //            IRouteFactory routeFactory = new DefaultRouteFactory();
 
 //            routeFactory.AddResource(resource);
-//            routeFactory.AddEndPoint(endPoint);
+//            routeFactory.AddEndpoint(endpoint);
 
 //            #endregion
 //            #region Act
@@ -101,7 +101,7 @@
 //        [InlineData("api/", "Users/", "Details/", "api/Users/Details")]
 //        [InlineData("path/api", "Accounts/Details", "Banking", "path/api/Accounts/Details/Banking")]
 //        [InlineData("path/api/", "Accounts/Details/", "Banking/", "path/api/Accounts/Details/Banking")]
-//        public void BuildResourcePathEndpoint(string resourcePath, string resource, string endPoint, string expected)
+//        public void BuildResourcePathEndpoint(string resourcePath, string resource, string endpoint, string expected)
 //        {
 //            #region Arrange
 
@@ -112,7 +112,7 @@
 //            IRouteFactory routeFactory = new DefaultRouteFactory(connection);
 
 //            routeFactory.AddResource(resource);
-//            routeFactory.AddEndPoint(endPoint);
+//            routeFactory.AddEndpoint(endpoint);
 
 //            #endregion
 //            #region Act
@@ -132,7 +132,7 @@
 //        [InlineData("Friends/{0}", 10, "Friends/10")]
 //        [InlineData("Friends", 10, "Friends/10")]
 //        [InlineData("", 10, "10")]
-//        public void BuildEndpointWithTemplateOneParameter(string endPoint, int parameter, string expected)
+//        public void BuildEndpointWithTemplateOneParameter(string endpoint, int parameter, string expected)
 //        {
 //            #region Arrange
 
@@ -143,7 +143,7 @@
 //            IRouteFactory routeFactory = new DefaultRouteFactory(connection);
 
 //            routeFactory.AddResource("Users");
-//            routeFactory.AddEndPoint(endPoint);
+//            routeFactory.AddEndpoint(endpoint);
 //            routeFactory.AddParameters(parameter);
 
 //            #endregion
@@ -162,7 +162,7 @@
 //        [Theory]
 //        [InlineData("{0}/Friends/{1}", 10, "John", "10/Friends/John")]
 //        [InlineData("{1}/Friends/{0}", 10, "Alfred", "Alfred/Friends/10")]
-//        public void BuildEndpointWithTemplateTwoParameter(string endPoint, int parameterA, string parameterB, string expected)
+//        public void BuildEndpointWithTemplateTwoParameter(string endpoint, int parameterA, string parameterB, string expected)
 //        {
 //            #region Arrange
 
@@ -173,7 +173,7 @@
 //            IRouteFactory routeFactory = new DefaultRouteFactory(connection);
 
 //            routeFactory.AddResource("Users");
-//            routeFactory.AddEndPoint(endPoint);
+//            routeFactory.AddEndpoint(endpoint);
 //            routeFactory.AddParameters(parameterA, parameterB);
 
 //            #endregion

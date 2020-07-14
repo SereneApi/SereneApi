@@ -10,7 +10,7 @@ namespace SereneApi.Tests.Mock
 {
     public class ApiHandlerWrapper: ApiHandler, IApiHandlerWrapper
     {
-        public ApiHandlerWrapper(IApiOptions apiOptions) : base(apiOptions)
+        public ApiHandlerWrapper(IApiOptions options) : base(options)
         {
         }
 

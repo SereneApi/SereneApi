@@ -1,16 +1,15 @@
 ﻿using SereneApi.Abstractions.Authentication;
-using SereneApi.Abstractions.Request;
 using System.Threading.Tasks;
 
 namespace SereneApi.Abstractions.Authenticators
 {
     /// <summary>
-    /// Authenticates an <see cref="IApiRequest"/>
+    /// Dynamically authenticates an API request.
     /// </summary>
     public interface IAuthenticator
     {
         /// <summary>
-        /// Authenticates asynchronously and returns an <see cref="IAuthentication"/> once authentication has been completed.
+        /// Authenticates a request asynchronously.
         /// </summary>
         Task<IAuthentication> AuthenticateAsync();
     }

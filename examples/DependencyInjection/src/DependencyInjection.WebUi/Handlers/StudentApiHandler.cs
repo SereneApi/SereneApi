@@ -14,7 +14,7 @@ namespace DependencyInjection.WebUi.Handlers
         // This is important for Dependency Injection to work!
         // The Handler interface must be set as the generic for IApiHandlerOptions.
         // This is required so AspNet gets the right options for the current handler.
-        public StudentApiHandler(IApiOptions<IStudentApi> apiOptions) : base(apiOptions)
+        public StudentApiHandler(IApiOptions<IStudentApi> options) : base(options)
         {
         }
 
@@ -23,7 +23,7 @@ namespace DependencyInjection.WebUi.Handlers
             // This GET request will use the students Id as a parameter for the request.
             // http://localhost:8080/api/Students/{studentId}
             return PerformRequestAsync<StudentDto>(Method.GET, r => r
-                .WithEndPoint(studentId));
+                .WithEndpoint(studentId));
         }
 
         public Task<IApiResponse<List<StudentDto>>> GetAllAsync()
@@ -38,7 +38,7 @@ namespace DependencyInjection.WebUi.Handlers
             // In this example, only the Given and Last name values will used for the query.
             // http://localhost:8080/api/Students?GivenName=value&LastName=value
             return PerformRequestAsync<List<StudentDto>>(Method.GET, r => r
-                .WithEndPoint("SearchBy/GivenAndLastName")
+                .WithEndpoint("SearchBy/GivenAndLastName")
                 .WithQuery(student, s => new { s.GivenName, s.LastName }));
         }
 
@@ -55,7 +55,7 @@ namespace DependencyInjection.WebUi.Handlers
             // Here we are using an Endpoint Template, allowing more complex APIs.
             // http://localhost:8080/api/Students/{studentId}/Classes
             return PerformRequestAsync<List<ClassDto>>(Method.GET, r => r
-                .WithEndPointTemplate("{0}/Classes", studentId));
+                .WithEndpointTemplate("{0}/Classes", studentId));
         }
     }
 }

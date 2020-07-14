@@ -1,9 +1,9 @@
 ﻿namespace SereneApi.Abstractions.Options
 {
     /// <summary>
-    /// The options used to create the <see cref="ApiHandler"/>.
+    /// The options for a specific API.
     /// </summary>
-    /// <remarks>This is required for <see cref="ApiHandler"/>s that will be instantiated with Dependency Injection.</remarks>
+    /// <typeparam name="TApi">The specific API these options are intended for.</typeparam>
     public interface IApiOptions<TApi>: IApiOptions where TApi : class
     {
     }

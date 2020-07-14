@@ -13,8 +13,8 @@ namespace SereneApi
         /// <summary>
         /// Instantiates a new Instance of the <see cref="CrudApiHandler{TResource,TIdentifier}"/>
         /// </summary>
-        /// <param name="apiOptions"></param>
-        protected CrudApiHandler(IApiOptions apiOptions) : base(apiOptions)
+        /// <param name="options"></param>
+        protected CrudApiHandler(IApiOptions options) : base(options)
         {
         }
 
@@ -22,7 +22,7 @@ namespace SereneApi
         public Task<IApiResponse<TResource>> GetAsync(TIdentifier identifier)
         {
             return PerformRequestAsync<TResource>(Method.GET, request => request
-                .WithEndPoint(identifier));
+                .WithEndpoint(identifier));
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.GetAllAsync"/>
@@ -42,7 +42,7 @@ namespace SereneApi
         public Task<IApiResponse> DeleteAsync(TIdentifier identifier)
         {
             return PerformRequestAsync(Method.DELETE, request => request
-                .WithEndPoint(identifier));
+                .WithEndpoint(identifier));
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.ReplaceAsync"/>

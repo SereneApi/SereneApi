@@ -1,15 +1,15 @@
-﻿using SereneApi.Abstractions.Options;
-using System;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Abstractions.Request
 {
-    public interface IRequest: IRequestEndPoint
+    public interface IRequest: IRequestEndpoint
     {
         /// <summary>
-        /// If no resource was provided in the <see cref="IApiOptions"/> to the <see cref="ApiHandler"/> it can be provided here.
+        /// The specific resource the request will be made against.
         /// </summary>
-        /// <param name="resource">The resource to make the request against.</param>
-        /// <exception cref="MethodAccessException">Thrown if this method is called when a resource was provided in the <see cref="IApiOptions"/>.</exception>
-        IRequestEndPoint AgainstResource(string resource);
+        /// <param name="resource">The API resource.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        IRequestEndpoint AgainstResource([NotNull] string resource);
     }
 }

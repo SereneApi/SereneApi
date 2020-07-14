@@ -38,7 +38,7 @@ namespace SereneApi.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(extractToken));
             }
 
-            extensions.ExtendDependencyFactory(d =>
+            extensions.AddDependency(d =>
                 d.AddSingleton<IAuthenticator>(p => new InjectedTokenAuthenticator<TApi, TDto>(p, callApi, extractToken)));
 
             return extensions;

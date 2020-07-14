@@ -35,7 +35,7 @@ namespace SereneApi.Abstractions.Request.Content
 
         public object GetContent()
         {
-            return new StringContent(Content, Encoding, MediaType.GetTypestring());
+            return new StringContent(Content, Encoding, MediaType.GetTypeString());
         }
 
         public override bool Equals(object obj)
