@@ -4,9 +4,8 @@ using SereneApi.Abstractions.Request;
 using SereneApi.Abstractions.Response;
 using SereneApi.Abstractions.Response.Content;
 using SereneApi.Abstractions.Serializers;
-using SereneApi.Extensions;
-using SereneApi.Helpers;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Net.Http;
 using System.Text.Json;
@@ -35,7 +34,7 @@ namespace SereneApi
 
             IApiRequest request = requestBuilder.GetRequest();
 
-            return BasePerformRequest(request);
+            return PerformRequest(request);
         }
 
         /// <summary>
@@ -56,17 +55,24 @@ namespace SereneApi
 
             IApiRequest request = requestBuilder.GetRequest();
 
-            return BasePerformRequest<TResponse>(request);
+            return PerformRequest<TResponse>(request);
         }
 
-        #endregion
-        #region Base Action Methods
-
-        protected virtual IApiResponse BasePerformRequest(IApiRequest request)
+        /// <summary>
+        /// Performs an API Request Synchronously.
+        /// </summary>
+        /// <param name="request">The request to be performed.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        protected virtual IApiResponse PerformRequest([NotNull] IApiRequest request)
         {
+            if(request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             HttpResponseMessage responseMessage = null;
 
-            Uri endpoint = request.Address;
+            Uri endpoint = request.Endpoint;
 
             Method method = request.Method;
 
@@ -136,11 +142,22 @@ namespace SereneApi
             }
         }
 
-        protected virtual IApiResponse<TResponse> BasePerformRequest<TResponse>(IApiRequest request)
+        /// <summary>
+        /// Performs an API Request Synchronously.
+        /// </summary>
+        /// <typeparam name="TResponse">The <see cref="Type"/> to be deserialized from the body of the response.</typeparam>
+        /// <param name="request">The request to be performed.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        protected virtual IApiResponse<TResponse> PerformRequest<TResponse>([NotNull] IApiRequest request)
         {
+            if(request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             HttpResponseMessage responseMessage = null;
 
-            Uri endpoint = request.Address;
+            Uri endpoint = request.Endpoint;
 
             Method method = request.Method;
 

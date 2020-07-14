@@ -9,7 +9,7 @@ namespace SereneApi.Abstractions.Handler
     public interface IApiHandler: IDisposable
     {
         /// <summary>
-        /// The connection that will be used to mke API requests.
+        /// The connection that will be used when performing API requests.
         /// </summary>
         IConnectionSettings Connection { get; }
     }

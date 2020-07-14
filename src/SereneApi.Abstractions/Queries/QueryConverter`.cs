@@ -14,7 +14,7 @@ namespace SereneApi.Abstractions.Queries
         /// <exception cref="ArgumentException">Thrown when an invalid type is provided.</exception>
         public string Convert([NotNull] object value)
         {
-            if (value == null)
+            if(value == null)
             {
                 throw new ArgumentNullException(nameof(value));
             }

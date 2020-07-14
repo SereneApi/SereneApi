@@ -4,9 +4,8 @@ using SereneApi.Abstractions.Request;
 using SereneApi.Abstractions.Response;
 using SereneApi.Abstractions.Response.Content;
 using SereneApi.Abstractions.Serializers;
-using SereneApi.Extensions;
-using SereneApi.Helpers;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Net.Http;
 using System.Text.Json;
@@ -24,7 +23,7 @@ namespace SereneApi
         /// </summary>
         /// <param name="method">The <see cref="Method"/> that will be used for the request.</param>
         /// <param name="factory">The <see cref="IRequest"/> that will be performed.</param>
-        protected Task<IApiResponse> PerformRequestAsync(Method method, Expression<Func<IRequest, IRequestCreated>> factory = null)
+        protected Task<IApiResponse> PerformRequestAsync(Method method, [AllowNull] Expression<Func<IRequest, IRequestCreated>> factory = null)
         {
             CheckIfDisposed();
 
@@ -37,7 +36,7 @@ namespace SereneApi
 
             IApiRequest required = requestBuilder.GetRequest();
 
-            return BasePerformRequestAsync(required);
+            return PerformRequestAsync(required);
         }
 
         /// <summary>
@@ -46,7 +45,7 @@ namespace SereneApi
         /// <param name="method">The <see cref="Method"/> that will be used for the request.</param>
         /// <param name="factory">The <see cref="IRequest"/> that will be performed.</param>
         /// <typeparam name="TResponse">The <see cref="Type"/> to be deserialized from the body of the response.</typeparam>
-        protected Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(Method method, Expression<Func<IRequest, IRequestCreated>> factory = null)
+        protected Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(Method method, [AllowNull] Expression<Func<IRequest, IRequestCreated>> factory = null)
         {
             CheckIfDisposed();
 
@@ -59,17 +58,24 @@ namespace SereneApi
 
             IApiRequest request = requestBuilder.GetRequest();
 
-            return BasePerformRequestAsync<TResponse>(request);
+            return PerformRequestAsync<TResponse>(request);
         }
 
-        #endregion
-        #region Base Action Methods
-
-        protected virtual async Task<IApiResponse> BasePerformRequestAsync(IApiRequest request)
+        /// <summary>
+        /// Performs an API Request Asynchronously.
+        /// </summary>
+        /// <param name="request">The request to be performed.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        protected virtual async Task<IApiResponse> PerformRequestAsync([NotNull] IApiRequest request)
         {
+            if(request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             HttpResponseMessage responseMessage = null;
 
-            Uri endpoint = request.Address;
+            Uri endpoint = request.Endpoint;
 
             Method method = request.Method;
 
@@ -139,11 +145,23 @@ namespace SereneApi
             }
         }
 
-        protected virtual async Task<IApiResponse<TResponse>> BasePerformRequestAsync<TResponse>(IApiRequest request)
+
+        /// <summary>
+        /// Performs an API Request Asynchronously.
+        /// </summary>
+        /// <typeparam name="TResponse">The <see cref="Type"/> to be deserialized from the body of the response.</typeparam>
+        /// <param name="request">The request to be performed.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        protected virtual async Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>([NotNull] IApiRequest request)
         {
+            if(request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             HttpResponseMessage responseMessage = null;
 
-            Uri endpoint = request.Address;
+            Uri endpoint = request.Endpoint;
 
             Method method = request.Method;
 

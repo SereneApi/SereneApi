@@ -21,7 +21,7 @@ namespace SereneApi.Abstractions.Queries.Attributes
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         public QueryKeyAttribute([NotNull] string key)
         {
-            if (string.IsNullOrWhiteSpace(key))
+            if(string.IsNullOrWhiteSpace(key))
             {
                 throw new ArgumentNullException(nameof(key));
             }

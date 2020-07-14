@@ -62,7 +62,7 @@ namespace SereneApi.Abstractions.Options
         /// </summary>
         /// <param name="logger">The <see cref="ILogger"/> to be used for logging.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        void AddLogger([NotNull] ILogger logger);
+        void UseLogger([NotNull] ILogger logger);
 
         /// <summary>
         /// Specifies an <see cref="IQueryFactory"/> to be when building queries.

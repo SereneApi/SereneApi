@@ -4,9 +4,9 @@ using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Options;
-using SereneApi.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Factories
 {
@@ -19,14 +19,21 @@ namespace SereneApi.Factories
 
         private readonly ISereneApiConfiguration _configuration;
 
+        /// <summary>
+        /// Creates a new instance of <see cref="ApiFactory"/>.
+        /// </summary>
         public ApiFactory()
         {
             _configuration = SereneApiConfiguration.Default;
         }
 
-        public ApiFactory(ISereneApiConfiguration configuration)
+        /// <summary>
+        /// Creates a new instance of <see cref="ApiFactory"/>.
+        /// </summary>
+        /// <param name="configuration">The default configuration that will be provided to all APIs.</param>
+        public ApiFactory([NotNull] ISereneApiConfiguration configuration)
         {
-            _configuration = configuration;
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
         /// <inheritdoc>
@@ -51,12 +58,20 @@ namespace SereneApi.Factories
         }
 
         /// <summary>
-        /// Registers an <see cref="ApiHandler"/> implementation to the <see cref="ApiFactory"/>.
-        /// The supplied <see cref="IApiOptionsConfigurator"/> will be used to build the <see cref="ApiHandler"/>.
+        /// Registers an API definition to an API handler allowing for Dependency Injection of the specified API.
         /// </summary>
-        /// <param name="factory">The <see cref="IApiOptionsConfigurator"/> that will be used to build the <see cref="ApiHandler"/>.</param>
-        public IApiOptionsExtensions RegisterApi<TApi, TApiHandler>(Action<IApiOptionsConfigurator> factory) where TApiHandler : IApiHandler, TApi
+        /// <typeparam name="TApi">The API to be associated to a Handler.</typeparam>
+        /// <typeparam name="TApiHandler">The Handler which will be configured and perform API calls.</typeparam>
+        /// <param name="factory">Configures the API Handler using the provided configuration.</param>
+        /// <exception cref="ArgumentException">Thrown when the specified API has already been registered.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when a null value has been provided.</exception>
+        public IApiOptionsExtensions RegisterApi<TApi, TApiHandler>([NotNull] Action<IApiOptionsConfigurator> factory) where TApiHandler : IApiHandler, TApi
         {
+            if(factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
             CheckIfDisposed();
 
             Type handlerType = typeof(TApi);
@@ -78,6 +93,11 @@ namespace SereneApi.Factories
             return new ApiOptionsExtensions(configurator.Dependencies);
         }
 
+        /// <summary>
+        /// Allows extensions to be implemented for the specified API.
+        /// </summary>
+        /// <typeparam name="TApi">The API that will be extended.</typeparam>
+        /// <exception cref="ArgumentNullException">Thrown if a null value is supplied.</exception>
         public IApiOptionsExtensions ExtendApi<TApi>() where TApi : class
         {
             CheckIfDisposed();
@@ -90,11 +110,20 @@ namespace SereneApi.Factories
             return new ApiOptionsExtensions(builder.Dependencies);
         }
 
-        public void ExtendApi<TApi>(Action<IApiOptionsExtensions> factory) where TApi : class
+        /// <summary>
+        /// Allows extensions to be implemented for the specified API.
+        /// </summary>
+        /// <typeparam name="TApi">The API that will be extended.</typeparam>
+        /// <param name="factory">Configures the API extensions.</param>
+        /// <exception cref="ArgumentNullException">Thrown if a null value is supplied.</exception>
+        public void ExtendApi<TApi>([NotNull] Action<IApiOptionsExtensions> factory) where TApi : class
         {
-            CheckIfDisposed();
+            if(factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
 
-            ExceptionHelper.EnsureParameterIsNotNull(factory, nameof(factory));
+            CheckIfDisposed();
 
             IApiOptionsExtensions extensions = ExtendApi<TApi>();
 

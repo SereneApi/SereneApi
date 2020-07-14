@@ -14,7 +14,7 @@ namespace DependencyInjection.WebUi.Handlers
         // This is important for Dependency Injection to work!
         // The Handler interface must be set as the generic for IApiHandlerOptions.
         // This is required so AspNet gets the right options for the current handler.
-        public StudentApiHandler(IApiOptions<IStudentApi> apiOptions) : base(apiOptions)
+        public StudentApiHandler(IApiOptions<IStudentApi> options) : base(options)
         {
         }
 

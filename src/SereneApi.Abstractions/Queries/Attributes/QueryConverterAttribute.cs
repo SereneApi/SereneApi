@@ -23,7 +23,7 @@ namespace SereneApi.Abstractions.Queries.Attributes
         /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
         public QueryConverterAttribute([NotNull] Type converter)
         {
-            if (converter == null)
+            if(converter == null)
             {
                 throw new ArgumentNullException(nameof(converter));
             }
@@ -33,7 +33,7 @@ namespace SereneApi.Abstractions.Queries.Attributes
                 throw new ArgumentException($"{converter.FullName} must be a class");
             }
 
-            if (!converter.GetInterfaces().Contains(typeof(IQueryConverter)))
+            if(!converter.GetInterfaces().Contains(typeof(IQueryConverter)))
             {
                 throw new ArgumentException($"{converter.FullName} must implement {nameof(IQueryConverter)}");
             }

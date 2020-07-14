@@ -11,7 +11,7 @@ namespace SereneApi.Abstractions.Response
         /// </summary>
         public static bool WasNotSuccessful([NotNull] this IApiResponse response)
         {
-            if (response == null)
+            if(response == null)
             {
                 throw new ArgumentNullException(nameof(response));
             }

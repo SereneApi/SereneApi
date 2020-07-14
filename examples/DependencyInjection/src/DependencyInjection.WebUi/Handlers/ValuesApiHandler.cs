@@ -9,7 +9,7 @@ namespace DependencyInjection.WebUi.Handlers
 {
     public class ValuesApiHandler: ApiHandler, IValuesApi
     {
-        public ValuesApiHandler(IApiOptions<IValuesApi> apiOptions) : base(apiOptions)
+        public ValuesApiHandler(IApiOptions<IValuesApi> options) : base(options)
         {
         }
 

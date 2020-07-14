@@ -5,7 +5,7 @@ namespace SereneApi.Tests.Mock
 {
     public class CrudApiHandlerWrapper: CrudApiHandler<MockPersonDto, long>, ICrudApi
     {
-        public CrudApiHandlerWrapper(IApiOptions apiOptions) : base(apiOptions)
+        public CrudApiHandlerWrapper(IApiOptions options) : base(options)
         {
         }
     }

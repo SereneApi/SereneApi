@@ -1,9 +1,8 @@
-﻿using SereneApi.Abstractions.Response;
-using System.Net;
+﻿using System.Net;
 
-namespace SereneApi.Extensions
+namespace SereneApi.Abstractions.Response
 {
-    internal static class HttpStatusCodeExtensions
+    public static class HttpStatusCodeExtensions
     {
         public static Status ToStatus(this HttpStatusCode source)
         {

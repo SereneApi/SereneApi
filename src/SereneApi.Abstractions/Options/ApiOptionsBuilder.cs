@@ -26,7 +26,7 @@ namespace SereneApi.Abstractions.Options
         /// <inheritdoc cref="IApiOptionsConfigurator.UseSource"/>
         public void UseSource([NotNull] string baseAddress, string resource = null, string resourcePath = null)
         {
-            if (string.IsNullOrWhiteSpace(baseAddress))
+            if(string.IsNullOrWhiteSpace(baseAddress))
             {
                 throw new ArgumentNullException(nameof(baseAddress));
             }
@@ -53,7 +53,7 @@ namespace SereneApi.Abstractions.Options
         /// <inheritdoc cref="IApiOptionsConfigurator.SetTimeout(int)"/>
         public void SetTimeout(int seconds)
         {
-            if (seconds <= 0)
+            if(seconds <= 0)
             {
                 throw new ArgumentException("A timeout value must be greater than 0.");
             }
@@ -84,10 +84,10 @@ namespace SereneApi.Abstractions.Options
             ConnectionSettings.RetryAttempts = attemptCount;
         }
 
-        /// <inheritdoc cref="IApiOptionsConfigurator.AddLogger"/>
-        public void AddLogger([NotNull] ILogger logger)
+        /// <inheritdoc cref="IApiOptionsConfigurator.UseLogger"/>
+        public void UseLogger([NotNull] ILogger logger)
         {
-            if (logger == null)
+            if(logger == null)
             {
                 throw new ArgumentNullException(nameof(logger));
             }
