@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace SereneApi.Abstractions.Factories
+namespace SereneApi.Abstractions.Routing
 {
     /// <summary>
     /// Builds a route using the supplied values.

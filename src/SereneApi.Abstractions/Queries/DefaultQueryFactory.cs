@@ -1,5 +1,4 @@
 ﻿using SereneApi.Abstractions.Delegates;
-using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Queries.Attributes;
 using SereneApi.Abstractions.Queries.Exceptions;
 using System;
@@ -11,7 +10,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
-namespace SereneApi.Abstractions.Factories
+namespace SereneApi.Abstractions.Queries
 {
     /// <inheritdoc cref="IQueryFactory"/>
     internal class DefaultQueryFactory: IQueryFactory

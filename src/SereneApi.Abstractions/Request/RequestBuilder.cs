@@ -1,7 +1,7 @@
 ﻿using DeltaWare.Dependencies;
-using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Request.Content;
+using SereneApi.Abstractions.Routing;
 using SereneApi.Abstractions.Serializers;
 using System;
 using System.Diagnostics.CodeAnalysis;

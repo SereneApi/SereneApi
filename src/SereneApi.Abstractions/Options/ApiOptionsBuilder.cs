@@ -2,10 +2,10 @@
 using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Authentication;
 using SereneApi.Abstractions.Configuration;
-using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Helpers;
 using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Request.Content;
+using SereneApi.Abstractions.Routing;
 using SereneApi.Abstractions.Serializers;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -13,6 +13,7 @@ using System.Net;
 
 namespace SereneApi.Abstractions.Options
 {
+    /// <inheritdoc cref="IApiOptionsConfigurator"/>
     public class ApiOptionsBuilder: IApiOptionsBuilder
     {
         /// <inheritdoc cref="ICoreOptions.Dependencies"/>
@@ -155,9 +156,39 @@ namespace SereneApi.Abstractions.Options
             Dependencies.AddTransient<IAuthentication>(() => new BearerAuthentication(token));
         }
 
+        /// <inheritdoc cref="IApiOptionsConfigurator.AcceptContentType"/>
         public void AcceptContentType(ContentType type)
         {
             Dependencies.AddScoped(() => type);
+        }
+
+        /// <inheritdoc cref="IApiOptionsConfigurator.SetTimeout(int,int)"/>
+        public void SetTimeout([NotNull] int seconds, [NotNull] int attempts)
+        {
+            ConnectionSettings.Timeout = seconds;
+            ConnectionSettings.RetryAttempts = attempts;
+        }
+
+        /// <inheritdoc cref="IApiOptionsConfigurator.UseRouteFactory"/>
+        public void UseRouteFactory([NotNull] IRouteFactory routeFactory)
+        {
+            if(routeFactory == null)
+            {
+                throw new ArgumentNullException(nameof(routeFactory));
+            }
+
+            Dependencies.AddScoped(() => routeFactory);
+        }
+
+        /// <inheritdoc cref="IApiOptionsConfigurator.UseSerializer"/>
+        public void UseSerializer([NotNull] ISerializer serializer)
+        {
+            if(serializer == null)
+            {
+                throw new ArgumentNullException(nameof(serializer));
+            }
+
+            Dependencies.AddScoped(() => serializer);
         }
 
         public IApiOptions BuildOptions()
@@ -193,21 +224,6 @@ namespace SereneApi.Abstractions.Options
             }
 
             _disposed = true;
-        }
-
-        public void SetTimeout([NotNull] int seconds, [NotNull] int attempts)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UseRouteFactory([NotNull] IRouteFactory routeFactory)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UseSerializer([NotNull] ISerializer serializer)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

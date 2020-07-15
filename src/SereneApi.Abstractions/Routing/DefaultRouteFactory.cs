@@ -5,7 +5,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-namespace SereneApi.Abstractions.Factories
+namespace SereneApi.Abstractions.Routing
 {
     /// <inheritdoc cref="IRouteFactory"/>
     internal class DefaultRouteFactory: IRouteFactory
