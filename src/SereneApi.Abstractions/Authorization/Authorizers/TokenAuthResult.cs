@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace SereneApi.Abstractions.Authentication
+namespace SereneApi.Abstractions.Authorisation.Authorizers
 {
     /// <summary>
     /// Specifies the token information, used for authentication and token refreshing.
     /// </summary>
-    public class TokenInfo
+    public class TokenAuthResult
     {
         /// <summary>
         /// Specifies the token to be used for authentication.
@@ -22,7 +22,7 @@ namespace SereneApi.Abstractions.Authentication
         /// <param name="expiryTime">The amount of time in seconds before the token expires.</param>
         /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
         /// <remarks>An expiry time of 0 specifies that the token does not expire.</remarks>
-        public TokenInfo([NotNull] string token, int expiryTime = 0)
+        public TokenAuthResult([NotNull] string token, int expiryTime = 0)
         {
             if(string.IsNullOrWhiteSpace(token))
             {

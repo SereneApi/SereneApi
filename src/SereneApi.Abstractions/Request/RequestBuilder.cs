@@ -2,7 +2,7 @@
 using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Routing;
-using SereneApi.Abstractions.Serializers;
+using SereneApi.Abstractions.Serialization;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;

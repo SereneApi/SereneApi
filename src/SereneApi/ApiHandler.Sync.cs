@@ -3,7 +3,7 @@ using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Request;
 using SereneApi.Abstractions.Response;
 using SereneApi.Abstractions.Response.Content;
-using SereneApi.Abstractions.Serializers;
+using SereneApi.Abstractions.Serialization;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;

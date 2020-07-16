@@ -1,7 +1,7 @@
 ﻿using DeltaWare.Dependencies;
 using Newtonsoft.Json;
 using SereneApi.Abstractions.Configuration;
-using SereneApi.Abstractions.Serializers;
+using SereneApi.Abstractions.Serialization;
 using SereneApi.Extensions.Newtonsoft.Serializers;
 using System;
 using System.Diagnostics.CodeAnalysis;

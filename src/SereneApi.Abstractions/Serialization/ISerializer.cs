@@ -4,7 +4,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
-namespace SereneApi.Abstractions.Serializers
+namespace SereneApi.Abstractions.Serialization
 {
     public interface ISerializer
     {

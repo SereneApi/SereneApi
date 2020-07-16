@@ -6,45 +6,45 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace SereneApi.Abstractions.Serializers
+namespace SereneApi.Abstractions.Serialization
 {
     /// <summary>
     /// The default <seealso cref="ISerializer"/>.
     /// </summary>
     /// <remarks>Uses System.Text.Json for Serialization.</remarks>
-    public class DefaultSerializer: ISerializer
+    public class DefaultJsonSerializer: ISerializer
     {
         private readonly JsonSerializerOptions _deserializerOptions;
 
         private readonly JsonSerializerOptions _serializerOptions;
 
         /// <summary>
-        /// Creates a new instance of <see cref="DefaultSerializer"/> using the default options.
+        /// Creates a new instance of <see cref="DefaultJsonSerializer"/> using the default options.
         /// </summary>
-        public DefaultSerializer()
+        public DefaultJsonSerializer()
         {
             _deserializerOptions = DefaultDeserializerOptions;
             _serializerOptions = DefaultSerializerOptions;
         }
 
         /// <summary>
-        /// Creates a new instance of <see cref="DefaultSerializer"/> using the specified options.
+        /// Creates a new instance of <see cref="DefaultJsonSerializer"/> using the specified options.
         /// </summary>
         /// <param name="options">the options to be used for serialization and deserialization.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public DefaultSerializer([NotNull] JsonSerializerOptions options)
+        public DefaultJsonSerializer([NotNull] JsonSerializerOptions options)
         {
             _deserializerOptions = options ?? throw new ArgumentNullException(nameof(options));
             _serializerOptions = options;
         }
 
         /// <summary>
-        /// Creates a new instance of <see cref="DefaultSerializer"/> using the specified options.
+        /// Creates a new instance of <see cref="DefaultJsonSerializer"/> using the specified options.
         /// </summary>
         /// <param name="deserializerOptions">the options to be used for deserialization.</param>
         /// <param name="serializerOptions">the options to be used for serialization.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public DefaultSerializer([NotNull] JsonSerializerOptions deserializerOptions, [NotNull] JsonSerializerOptions serializerOptions)
+        public DefaultJsonSerializer([NotNull] JsonSerializerOptions deserializerOptions, [NotNull] JsonSerializerOptions serializerOptions)
         {
             _deserializerOptions = deserializerOptions ?? throw new ArgumentNullException(nameof(deserializerOptions));
             _serializerOptions = serializerOptions ?? throw new ArgumentNullException(nameof(serializerOptions));
@@ -114,7 +114,7 @@ namespace SereneApi.Abstractions.Serializers
         }
 
         /// <summary>
-        /// The default options used for deserialization by <seealso cref="DefaultSerializer"/>.
+        /// The default options used for deserialization by <seealso cref="DefaultJsonSerializer"/>.
         /// </summary>
         public static JsonSerializerOptions DefaultDeserializerOptions = new JsonSerializerOptions
         {
@@ -122,7 +122,7 @@ namespace SereneApi.Abstractions.Serializers
         };
 
         /// <summary>
-        /// The default options used for serialization by <seealso cref="DefaultSerializer"/>.
+        /// The default options used for serialization by <seealso cref="DefaultJsonSerializer"/>.
         /// </summary>
         public static JsonSerializerOptions DefaultSerializerOptions = new JsonSerializerOptions
         {

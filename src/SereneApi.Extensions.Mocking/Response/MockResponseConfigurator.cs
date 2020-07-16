@@ -2,7 +2,7 @@
 using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Request;
 using SereneApi.Abstractions.Request.Content;
-using SereneApi.Abstractions.Serializers;
+using SereneApi.Abstractions.Serialization;
 using SereneApi.Extensions.Mocking.Dependencies;
 using SereneApi.Extensions.Mocking.Dependencies.Whitelist;
 using System;

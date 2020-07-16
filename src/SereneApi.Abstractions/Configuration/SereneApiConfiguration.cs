@@ -4,7 +4,7 @@ using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Routing;
-using SereneApi.Abstractions.Serializers;
+using SereneApi.Abstractions.Serialization;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
@@ -84,8 +84,8 @@ namespace SereneApi.Abstractions.Configuration
             {
                 SereneApiConfiguration configuration = new SereneApiConfiguration(dependencies =>
                 {
-                    dependencies.TryAddScoped<IQueryFactory>(() => new DefaultQueryFactory());
-                    dependencies.TryAddScoped<ISerializer>(() => new DefaultSerializer());
+                    dependencies.TryAddScoped<IQueryFactory>(() => new QueryFactory());
+                    dependencies.TryAddScoped<ISerializer>(() => new DefaultJsonSerializer());
                     dependencies.TryAddScoped(() => ContentType.Json);
                     dependencies.TryAddScoped(() => CredentialCache.DefaultCredentials);
                     dependencies.TryAddScoped<IRouteFactory>(p => new DefaultRouteFactory(p));

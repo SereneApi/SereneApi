@@ -1,4 +1,4 @@
-﻿using SereneApi.Abstractions.Authentication;
+﻿using SereneApi.Abstractions.Authorisation.Authorizers;
 using SereneApi.Abstractions.Response;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -21,6 +21,6 @@ namespace SereneApi.Abstractions.Options
         /// <param name="extractToken">Extract the token information from the response.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         IApiOptionsExtensions AddAuthenticator<TApi, TDto>([NotNull] Func<TApi, Task<IApiResponse<TDto>>> callApi,
-            [NotNull] Func<TDto, TokenInfo> extractToken) where TApi : class, IDisposable where TDto : class;
+            [NotNull] Func<TDto, TokenAuthResult> extractToken) where TApi : class, IDisposable where TDto : class;
     }
 }

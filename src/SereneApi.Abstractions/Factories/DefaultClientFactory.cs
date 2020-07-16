@@ -1,6 +1,6 @@
 ﻿using DeltaWare.Dependencies;
-using SereneApi.Abstractions.Authentication;
-using SereneApi.Abstractions.Authenticators;
+using SereneApi.Abstractions.Authorisation.Authorizers;
+using SereneApi.Abstractions.Authorization;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Request.Content;
 using System;
@@ -56,14 +56,14 @@ namespace SereneApi.Abstractions.Factories
             client.Timeout = TimeSpan.FromSeconds(connection.Timeout);
             client.DefaultRequestHeaders.Accept.Clear();
 
-            if(_dependencies.TryGetDependency(out IAuthenticator authenticator))
+            if(_dependencies.TryGetDependency(out IAuthorizer authenticator))
             {
-                IAuthentication authentication = await authenticator.AuthenticateAsync();
+                IAuthorization authorization = await authenticator.AuthorizeAsync();
 
                 client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);
+                    new AuthenticationHeaderValue(authorization.Scheme, authorization.Parameter);
             }
-            else if(_dependencies.TryGetDependency(out IAuthentication authentication))
+            else if(_dependencies.TryGetDependency(out IAuthorization authentication))
             {
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);

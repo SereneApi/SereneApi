@@ -2,27 +2,27 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
-namespace SereneApi.Abstractions.Authentication
+namespace SereneApi.Abstractions.Authorization.Types
 {
     /// <summary>
     /// Authenticates an API request using Basic authentication with the specified Username and Password.
     /// </summary>
-    public class BasicAuthentication: IAuthentication
+    public class BasicAuthorization: IAuthorization
     {
-        /// <inheritdoc cref="IAuthentication.Scheme"/>
+        /// <inheritdoc cref="IAuthorization.Scheme"/>
         public string Scheme { get; } = "Basic";
 
-        /// <inheritdoc cref="IAuthentication.Parameter"/>
+        /// <inheritdoc cref="IAuthorization.Parameter"/>
         public string Parameter { get; }
 
         /// <summary>
-        /// Creates a new instance of <see cref="BasicAuthentication"/>.
+        /// Creates a new instance of <see cref="BasicAuthorization"/>.
         /// </summary>
         /// <param name="username">The username to be authenticated with.</param>
         /// <param name="password">The password to be authenticated with.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         /// <exception cref="EncoderFallbackException"></exception>
-        public BasicAuthentication([NotNull] string username, [NotNull] string password)
+        public BasicAuthorization([NotNull] string username, [NotNull] string password)
         {
             if(string.IsNullOrWhiteSpace(username))
             {

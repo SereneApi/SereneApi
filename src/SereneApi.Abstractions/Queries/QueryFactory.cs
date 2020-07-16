@@ -1,5 +1,4 @@
-﻿using SereneApi.Abstractions.Delegates;
-using SereneApi.Abstractions.Queries.Attributes;
+﻿using SereneApi.Abstractions.Queries.Attributes;
 using SereneApi.Abstractions.Queries.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -13,16 +12,22 @@ using System.Text;
 namespace SereneApi.Abstractions.Queries
 {
     /// <inheritdoc cref="IQueryFactory"/>
-    internal class DefaultQueryFactory: IQueryFactory
+    public class QueryFactory: IQueryFactory
     {
         private readonly ObjectToStringFormatter _formatter;
 
         /// <summary>
-        /// Instantiates a new instance of the <see cref="DefaultQueryFactory"/> using the default built in <see cref="ObjectToStringFormatter"/>.
+        /// Instantiates a new instance of the <see cref="QueryFactory"/> using the default built in <see cref="ObjectToStringFormatter"/>.
         /// </summary>
-        public DefaultQueryFactory()
+        /// <param name="formatter">The default formatter, overridden by <see cref="QueryConverterAttribute"/>.</param>
+        public QueryFactory([AllowNull] ObjectToStringFormatter formatter = null)
         {
-            _formatter = DefaultQueryFormatter;
+            if(formatter == null)
+            {
+                _formatter = DefaultQueryFormatter;
+            }
+
+            _formatter = formatter;
         }
 
         /// <inheritdoc>

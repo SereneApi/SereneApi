@@ -1,25 +1,25 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace SereneApi.Abstractions.Authentication
+namespace SereneApi.Abstractions.Authorization.Types
 {
     /// <summary>
     /// Authenticates an API request using Bearer authentication.
     /// </summary>
-    public class BearerAuthentication: IAuthentication
+    public class BearerAuthorization: IAuthorization
     {
-        /// <inheritdoc cref="IAuthentication.Scheme"/>
+        /// <inheritdoc cref="IAuthorization.Scheme"/>
         public string Scheme { get; } = "Bearer";
 
-        /// <inheritdoc cref="IAuthentication.Parameter"/>
+        /// <inheritdoc cref="IAuthorization.Parameter"/>
         public string Parameter { get; }
 
         /// <summary>
-        /// Creates a new instance of <see cref="BearerAuthentication"/>.
+        /// Creates a new instance of <see cref="BearerAuthorization"/>.
         /// </summary>
         /// <param name="token">The token to be used for Bearer authentication.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public BearerAuthentication([NotNull] string token)
+        public BearerAuthorization([NotNull] string token)
         {
             if(string.IsNullOrWhiteSpace(token))
             {
