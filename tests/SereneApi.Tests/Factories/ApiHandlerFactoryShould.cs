@@ -18,7 +18,7 @@ namespace SereneApi.Tests.Factories
         {
             ApiFactory apiFactory = new ApiFactory();
 
-            apiFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
+            apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(o =>
             {
                 o.UseSource(source, resource);
             });
@@ -47,7 +47,7 @@ namespace SereneApi.Tests.Factories
         {
             ApiFactory apiFactory = new ApiFactory();
 
-            apiFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
+            apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(o =>
             {
                 o.UseSource(source, resource, resourcePath);
             });
@@ -65,14 +65,14 @@ namespace SereneApi.Tests.Factories
         {
             ApiFactory apiFactory = new ApiFactory();
 
-            apiFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
+            apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(o =>
             {
                 o.UseSource("http://localhost", "Users");
             });
 
             Should.Throw<ArgumentException>(() =>
             {
-                apiFactory.RegisterApi<IApiHandlerWrapper, ApiHandlerWrapper>(o =>
+                apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(o =>
                 {
                     o.UseSource("http://localhost", "Users");
                 });

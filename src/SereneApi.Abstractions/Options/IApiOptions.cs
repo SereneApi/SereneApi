@@ -1,5 +1,4 @@
-﻿using DeltaWare.Dependencies;
-using SereneApi.Abstractions.Configuration;
+﻿using SereneApi.Abstractions.Configuration;
 using System;
 
 namespace SereneApi.Abstractions.Options
@@ -9,10 +8,9 @@ namespace SereneApi.Abstractions.Options
     /// </summary>
     public interface IApiOptions: IDisposable
     {
-        /// <summary>
-        /// The dependencies that can be used when making an API request.
-        /// </summary>
-        IDependencyProvider Dependencies { get; }
+        TDependency RetrieveRequiredDependency<TDependency>();
+
+        bool RetrieveDependency<TDependency>(out TDependency dependency);
 
         /// <summary>
         /// The connect settings used when making an API request.

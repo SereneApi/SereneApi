@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
-using SereneApi.Abstractions.Authentication;
-using SereneApi.Abstractions.Factories;
+using SereneApi.Abstractions.Authorization;
 using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Request.Content;
-using SereneApi.Abstractions.Serializers;
+using SereneApi.Abstractions.Routing;
+using SereneApi.Abstractions.Serialization;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
@@ -86,11 +86,11 @@ namespace SereneApi.Abstractions.Options
         void UseSerializer([NotNull] ISerializer serializer);
 
         /// <summary>
-        /// Specifies an <see cref="IAuthentication"/> which will be used when authenticating.
+        /// Specifies an <see cref="IAuthorization"/> which will be used when authenticating.
         /// </summary>
-        /// <param name="authentication">The <see cref="IAuthentication"/> to be for authentication.</param>
+        /// <param name="authorization">The <see cref="IAuthorization"/> to be for authentication.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        void AddAuthentication([NotNull] IAuthentication authentication);
+        void AddAuthentication([NotNull] IAuthorization authorization);
 
         /// <summary>
         /// Specifies an <see cref="ICredentials"/> which will be used when authenticating.

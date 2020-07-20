@@ -8,7 +8,7 @@ namespace SereneApi.Abstractions.Configuration
     public interface IConnectionSettings
     {
         /// <summary>
-        /// The base address.
+        /// Specifies the Hosts address.
         /// </summary>
         Uri BaseAddress { get; }
 
@@ -18,23 +18,24 @@ namespace SereneApi.Abstractions.Configuration
         public string Source { get; }
 
         /// <summary>
-        /// The API resource that will be consumed.
+        /// Specifies the resource that will be consumed.
         /// </summary>
+        /// <remarks>This value is optional and can be overriden when making a request.</remarks>
         string Resource { get; }
 
         /// <summary>
-        /// The Path to the resource.
+        /// Specified the intermediate path between the base address and the resource.
         /// </summary>
         /// <remarks>Example: api/</remarks>
         string ResourcePath { get; }
 
         /// <summary>
-        /// The amount of time in seconds the connection will be kept alive.
+        /// Specifies the amount of time in seconds the connection will be kept alive before being timed-out.
         /// </summary>
         int Timeout { get; }
 
         /// <summary>
-        /// How many times the request will be re-attempted if it has timed out.
+        /// Specifies how many times the connection will be retried after it has timed-out.
         /// </summary>
         int RetryAttempts { get; }
     }

@@ -1,4 +1,4 @@
-﻿using DeltaWare.Dependencies;
+﻿using DeltaWare.Dependencies.Abstractions;
 using SereneApi.Abstractions.Configuration;
 using System;
 using System.Diagnostics;
@@ -10,10 +10,9 @@ namespace SereneApi.Abstractions.Options
     [DebuggerDisplay("Source: {Connection.Source}")]
     public class ApiOptions: IApiOptions
     {
-        #region Properties
+        private readonly IDependencyProvider _dependencies;
 
-        /// <inheritdoc cref="IApiOptions.Dependencies"/>
-        public IDependencyProvider Dependencies { get; }
+        #region Properties
 
         /// <inheritdoc cref="IApiOptions.Connection"/>
         public IConnectionSettings Connection { get; set; }
@@ -29,11 +28,24 @@ namespace SereneApi.Abstractions.Options
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         public ApiOptions([NotNull] IDependencyProvider dependencies, [NotNull] IConnectionSettings connection)
         {
-            Dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
+            _dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
             Connection = connection ?? throw new ArgumentNullException(nameof(connection));
         }
 
         #endregion
+
+        /// <inheritdoc cref="IApiOptions.RetrieveRequiredDependency{TDependency}"/>
+        public TDependency RetrieveRequiredDependency<TDependency>()
+        {
+            return _dependencies.GetDependency<TDependency>();
+        }
+
+        /// <inheritdoc cref="IApiOptions.RetrieveRequiredDependency{TDependency}"/>
+        public bool RetrieveDependency<TDependency>(out TDependency dependency)
+        {
+            return _dependencies.TryGetDependency(out dependency);
+        }
+
         #region IDisposable
 
         private volatile bool _disposed;
@@ -59,7 +71,7 @@ namespace SereneApi.Abstractions.Options
 
             if(disposing)
             {
-                Dependencies.Dispose();
+                _dependencies.Dispose();
             }
 
             _disposed = true;

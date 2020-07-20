@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Abstractions.Queries
 {
+    /// <inheritdoc cref="IQueryConverter{T}"/>
     public abstract class QueryConverter<T>: IQueryConverter<T>
     {
         /// <inheritdoc>

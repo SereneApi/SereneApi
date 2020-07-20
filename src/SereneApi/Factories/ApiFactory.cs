@@ -1,5 +1,4 @@
-﻿using DeltaWare.Dependencies;
-using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies.Abstractions;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Handler;
@@ -17,21 +16,21 @@ namespace SereneApi.Factories
 
         private readonly Dictionary<Type, IApiOptionsBuilder> _handlerOptions = new Dictionary<Type, IApiOptionsBuilder>();
 
-        private readonly ISereneApiConfiguration _configuration;
+        private readonly IDefaultApiConfiguration _configuration;
 
         /// <summary>
         /// Creates a new instance of <see cref="ApiFactory"/>.
         /// </summary>
         public ApiFactory()
         {
-            _configuration = SereneApiConfiguration.Default;
+            _configuration = DefaultApiConfiguration.Default;
         }
 
         /// <summary>
         /// Creates a new instance of <see cref="ApiFactory"/>.
         /// </summary>
         /// <param name="configuration">The default configuration that will be provided to all APIs.</param>
-        public ApiFactory([NotNull] ISereneApiConfiguration configuration)
+        public ApiFactory([NotNull] IDefaultApiConfiguration configuration)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
@@ -81,16 +80,16 @@ namespace SereneApi.Factories
                 throw new ArgumentException($"Cannot Register Multiple Instances of {nameof(TApi)}");
             }
 
-            IApiOptionsBuilder configurator = _configuration.GetOptionsBuilder();
+            IApiOptionsBuilder builder = _configuration.GetOptionsBuilder();
 
-            configurator.Dependencies.AddSingleton<IApiFactory>(() => this, Binding.Unbound);
+            builder.Dependencies.AddSingleton<IApiFactory>(() => this, Binding.Unbound);
 
-            factory.Invoke(configurator);
+            factory.Invoke(builder);
 
             _handlers.Add(handlerType, typeof(TApiHandler));
-            _handlerOptions.Add(handlerType, configurator);
+            _handlerOptions.Add(handlerType, builder);
 
-            return new ApiOptionsExtensions(configurator.Dependencies);
+            return (IApiOptionsExtensions)builder;
         }
 
         /// <summary>
@@ -107,7 +106,7 @@ namespace SereneApi.Factories
                 throw new ArgumentException($"Could not find any registered extensions to {typeof(TApi)}");
             }
 
-            return new ApiOptionsExtensions(builder.Dependencies);
+            return (IApiOptionsExtensions)builder;
         }
 
         /// <summary>
