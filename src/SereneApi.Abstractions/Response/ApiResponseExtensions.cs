@@ -1,15 +1,34 @@
 ﻿
+using System;
+using System.Diagnostics.CodeAnalysis;
+
 namespace SereneApi.Abstractions.Response
 {
     public static class ApiResponseExtensions
     {
-        public static bool WasNotSuccessful(this IApiResponse response)
+        /// <summary>
+        /// Specifies if the response was not successful.
+        /// </summary>
+        public static bool WasNotSuccessful([NotNull] this IApiResponse response)
         {
+            if(response == null)
+            {
+                throw new ArgumentNullException(nameof(response));
+            }
+
             return !response.WasSuccessful;
         }
 
-        public static bool HasNullResult<TResponse>(this IApiResponse<TResponse> response)
+        /// <summary>
+        /// Specifies if the response was not successful.
+        /// </summary>
+        public static bool HasNullResult<TResponse>([NotNull] this IApiResponse<TResponse> response)
         {
+            if(response == null)
+            {
+                throw new ArgumentNullException(nameof(response));
+            }
+
             return response.Result == null;
         }
     }

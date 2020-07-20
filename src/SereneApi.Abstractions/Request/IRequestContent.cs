@@ -1,5 +1,6 @@
 ﻿using SereneApi.Abstractions.Request.Content;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 
 namespace SereneApi.Abstractions.Request
@@ -7,28 +8,34 @@ namespace SereneApi.Abstractions.Request
     public interface IRequestContent: IRequestCreated
     {
         /// <summary>
-        /// Adds the supplied value into the body of the request.
+        /// Adds the specified content into the body of the request.
         /// </summary>
-        /// <typeparam name="TContent">The <see cref="Type"/> of the value to be added to the body of the request.</typeparam>
-        /// <param name="content">The content to be added to the body of the request.</param>
-        IRequestCreated WithInBodyContent<TContent>(TContent content);
-
-        IRequestCreated WithInBodyContent(IApiRequestContent content);
+        /// <typeparam name="TContent">The type of the content.</typeparam>
+        /// <param name="content">The content to be appended to the body of the request.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        IRequestCreated WithInBodyContent<TContent>([NotNull] TContent content);
 
         /// <summary>
-        /// Adds a query to the request using all public properties of the supplied value.
+        /// Adds the specified content into the body of the request.
         /// </summary>
-        /// <typeparam name="TQueryable">The <see cref="Type"/> of the <b>queryable</b>.</typeparam>
-        /// <param name="queryable">The <see cref="object"/> used to conclass the query.</param>
-        /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
-        IRequestCreated WithQuery<TQueryable>(TQueryable queryable);
+        /// <param name="content">The content to be appended to the body of the request.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        IRequestCreated WithInBodyContent([NotNull] IApiRequestContent content);
+
         /// <summary>
-        /// Adds a query to the request using the specified anonymous type to create the query.
+        /// The specified object is appended to the request as a query.
         /// </summary>
-        /// <typeparam name="TQueryable">The <see cref="Type"/> of the <b>queryable</b>.</typeparam>
-        /// <param name="queryable">The <see cref="object"/> used to conclass the query.</param>
-        /// <param name="queryExpression">The expression used to select what public properties of the type will be used to build the query.</param>
-        /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
-        IRequestCreated WithQuery<TQueryable>(TQueryable queryable, Expression<Func<TQueryable, object>> queryExpression);
+        /// <typeparam name="TQueryable">The query value type.</typeparam>
+        /// <param name="queryable">The value to be appended as a query.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        IRequestCreated WithQuery<TQueryable>([NotNull] TQueryable queryable);
+        /// <summary>
+        /// The specified object is appended to the request as a query.
+        /// </summary>
+        /// <typeparam name="TQueryable">The query value type.</typeparam>
+        /// <param name="queryable">The value to be appended as a query.</param>
+        /// <param name="queryExpression">Selects parts of the value to be used in the query.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        IRequestCreated WithQuery<TQueryable>([NotNull] TQueryable queryable, [NotNull] Expression<Func<TQueryable, object>> queryExpression);
     }
 }

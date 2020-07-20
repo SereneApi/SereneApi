@@ -3,17 +3,14 @@
 Add the latest version of the NuGet package to your project.
 >PM> Install-Package **SereneApi.Extensions.Newtonsoft**
 
-<br/>
-
 To add Newtonsoft, put the following code in your Startup.cs file. This will override the default *ISerializer* with the *NewtonsoftSerializer*.
-<br/>
-**Add Newtonsoft.Json as the default serializer**
+### Add Newtonsoft.Json as the default serializer
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
 	services.ConfigureSereneApi().AddNewtonsoft();
 ```
-**Add Newtonsoft.Json to a specific API**
+### Add Newtonsoft.Json to a specific API
 ```csharp
 RegisterApi<IFooApi, FooApiHandler>(builder =>
 {

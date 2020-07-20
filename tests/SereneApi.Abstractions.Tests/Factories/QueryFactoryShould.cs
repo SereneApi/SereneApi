@@ -14,7 +14,7 @@ namespace SereneApi.Abstractions.Tests.Factories
 
         public QueryFactoryShould()
         {
-            ISereneApiConfiguration configuration = SereneApiConfiguration.Default;
+            IDefaultApiConfiguration configuration = DefaultApiConfiguration.Default;
 
             IApiOptionsBuilder apiOptionsBuilder = configuration.GetOptionsBuilder();
 
@@ -22,7 +22,7 @@ namespace SereneApi.Abstractions.Tests.Factories
 
             IApiOptions options = apiOptionsBuilder.BuildOptions();
 
-            _queryFactory = options.Dependencies.GetDependency<IQueryFactory>();
+            _queryFactory = options.RetrieveRequiredDependency<IQueryFactory>();
         }
 
         [Fact]

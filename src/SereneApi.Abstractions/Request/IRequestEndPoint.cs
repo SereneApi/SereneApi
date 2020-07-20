@@ -1,31 +1,29 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Abstractions.Request
 {
-    public interface IRequestEndPoint: IRequestContent
+    public interface IRequestEndpoint: IRequestContent
     {
         /// <summary>
-        /// Adds the parameter to the request endpoint.
+        /// Provides a parameter in which the request will be made against.
         /// </summary>
-        /// <param name="parameter">The parameter to be added to the endpoint.</param>
-        /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
-        IRequestContent WithEndPoint(object parameter);
+        /// <param name="parameter">The parameter to be used as the endpoint.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        IRequestContent WithEndpoint([NotNull] object parameter);
         /// <summary>
-        /// Adds the parameter to the request endpoint.
+        /// Provides a parameter in which the request will be made against.
         /// </summary>
-        /// <param name="endPoint">The parameter to be added to the endpoint.</param>
-        /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
-        IRequestContent WithEndPoint(string endPoint);
-
+        /// <param name="endpoint">The endpoint of the request</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        IRequestContent WithEndpoint([NotNull] string endpoint);
         /// <summary>
-        /// Formats the template and adds it to the request endpoint.
-        /// If template is not formattable one parameter can be provided.
-        /// If a template is formattable multiple parameters can be supplied if the template support it.
+        /// Provides a formatted endpoint template which the request will be made against.
         /// </summary>
-        /// <param name="template">The template to be formatted.</param>
-        /// <param name="parameters">The values to be appended to the template.</param>
-        /// <exception cref="ArgumentNullException">Thrown if null values are provided.</exception>
-        /// <exception cref="FormatException">Thrown if supplied template is invalid.</exception>
-        IRequestContent WithEndPointTemplate(string template, params object[] parameters);
+        /// <param name="template">The endpoint template that will be formatted.</param>
+        /// <param name="parameters">The parameters that will be appended to the template.</param>
+        /// <exception cref="ArgumentException">Thrown when no parameters are provided.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        IRequestContent WithEndpointTemplate([NotNull] string template, [NotNull] params object[] parameters);
     }
 }

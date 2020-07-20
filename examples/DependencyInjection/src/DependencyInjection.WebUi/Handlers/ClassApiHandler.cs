@@ -11,7 +11,7 @@ namespace DependencyInjection.WebUi.Handlers
     // This will become apparent in the Class Page.
     public class ClassApiHandler: CrudApiHandler<ClassDto, long>, IClassApi
     {
-        public ClassApiHandler(IApiOptions<IClassApi> apiOptions) : base(apiOptions)
+        public ClassApiHandler(IApiOptions<IClassApi> options) : base(options)
         {
         }
     }

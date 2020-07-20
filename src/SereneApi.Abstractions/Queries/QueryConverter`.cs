@@ -1,13 +1,25 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Abstractions.Queries
 {
+    /// <inheritdoc cref="IQueryConverter{T}"/>
     public abstract class QueryConverter<T>: IQueryConverter<T>
     {
-        public abstract string Convert(T value);
+        /// <inheritdoc>
+        ///     <cref>IQueryConverter{T}.Convert</cref>
+        /// </inheritdoc>
+        public abstract string Convert([NotNull] T value);
 
-        public string Convert(object value)
+        /// <inheritdoc cref="IQueryConverter.Convert"/>
+        /// <exception cref="ArgumentException">Thrown when an invalid type is provided.</exception>
+        public string Convert([NotNull] object value)
         {
+            if(value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
             if(value is T queryValue)
             {
                 return Convert(queryValue);

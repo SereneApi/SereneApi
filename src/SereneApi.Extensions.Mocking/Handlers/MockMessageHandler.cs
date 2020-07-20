@@ -54,7 +54,7 @@ namespace SereneApi.Extensions.Mocking.Handlers
             InnerHandler = clientHandler ?? throw new ArgumentNullException(nameof(clientHandler));
         }
 
-        /// <exception cref="ArgumentException">Thrown if there is no <see cref="IMockResponse"/> for the request and no <see cref="HttpClientHandler"/> was provided.</exception>
+        /// <exception cref="NullReferenceException">Thrown if there is no <see cref="IMockResponse"/> for the request and no <see cref="HttpClientHandler"/> was provided.</exception>
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             if(request == null)
@@ -80,7 +80,7 @@ namespace SereneApi.Extensions.Mocking.Handlers
                 if(InnerHandler == null)
                 {
                     // No client was provided, so an error is thrown as no response was found.
-                    throw new ArgumentException($"No response was found for the {request.Method.ToMethod().ToString().ToUpper()} request to {request.RequestUri}");
+                    throw new NullReferenceException($"No response was found for the {request.Method.ToMethod().ToString().ToUpper()} request to {request.RequestUri}");
                 }
 
                 return await base.SendAsync(request, cancellationToken);

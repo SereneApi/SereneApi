@@ -1,9 +1,10 @@
-﻿using DeltaWare.Dependencies;
-using SereneApi.Abstractions.Authentication;
-using SereneApi.Abstractions.Authenticators;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Abstractions.Authorisation.Authorizers;
+using SereneApi.Abstractions.Authorization;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Request.Content;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -11,15 +12,22 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Abstractions.Factories
 {
+    /// <inheritdoc cref="IClientFactory"/>
     internal class DefaultClientFactory: IClientFactory
     {
         private readonly IDependencyProvider _dependencies;
 
-        public DefaultClientFactory(IDependencyProvider dependencies)
+        /// <summary>
+        /// Creates a new instance of <see cref="DefaultClientFactory"/>.
+        /// </summary>
+        /// <param name="dependencies">The dependencies the <see cref="DefaultClientFactory"/> may use when creating clients.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        public DefaultClientFactory([NotNull] IDependencyProvider dependencies)
         {
-            _dependencies = dependencies;
+            _dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
         }
 
+        /// <inheritdoc cref="IClientFactory.BuildClientAsync"/>
         public async Task<HttpClient> BuildClientAsync()
         {
             bool handlerFound = _dependencies.TryGetDependency(out HttpMessageHandler messageHandler);
@@ -48,14 +56,14 @@ namespace SereneApi.Abstractions.Factories
             client.Timeout = TimeSpan.FromSeconds(connection.Timeout);
             client.DefaultRequestHeaders.Accept.Clear();
 
-            if(_dependencies.TryGetDependency(out IAuthenticator authenticator))
+            if(_dependencies.TryGetDependency(out IAuthorizer authenticator))
             {
-                IAuthentication authentication = await authenticator.AuthenticateAsync();
+                IAuthorization authorization = await authenticator.AuthorizeAsync();
 
                 client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);
+                    new AuthenticationHeaderValue(authorization.Scheme, authorization.Parameter);
             }
-            else if(_dependencies.TryGetDependency(out IAuthentication authentication))
+            else if(_dependencies.TryGetDependency(out IAuthorization authentication))
             {
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);

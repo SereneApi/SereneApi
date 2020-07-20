@@ -1,10 +1,10 @@
-﻿using DeltaWare.Dependencies;
-using SereneApi.Abstractions.Factories;
-using SereneApi.Abstractions.Helpers;
+﻿using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Request.Content;
-using SereneApi.Abstractions.Serializers;
+using SereneApi.Abstractions.Routing;
+using SereneApi.Abstractions.Serialization;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 
 namespace SereneApi.Abstractions.Request
@@ -30,19 +30,30 @@ namespace SereneApi.Abstractions.Request
 
         private IApiRequestContent _requestContent;
 
-        private string _endPoint;
+        private string _endpoint;
 
-        private object[] _endPointParameters;
+        private object[] _endpointParameters;
 
         private string _query;
 
         private string _suppliedResource;
 
-        public RequestBuilder(IDependencyProvider dependencies, string resource = null)
+        /// <summary>
+        /// Creates a new instance of <see cref="RequestBuilder"/>.
+        /// </summary>
+        /// <param name="options">The options to be used for building requests.</param>
+        /// <param name="resource">The resource that the request is intended for.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        public RequestBuilder([NotNull] IApiOptions options, [AllowNull] string resource = null)
         {
-            _routeFactory = dependencies.GetDependency<IRouteFactory>();
-            _queryFactory = dependencies.GetDependency<IQueryFactory>();
-            _serializer = dependencies.GetDependency<ISerializer>();
+            if(options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            _routeFactory = options.RetrieveRequiredDependency<IRouteFactory>();
+            _queryFactory = options.RetrieveRequiredDependency<IQueryFactory>();
+            _serializer = options.RetrieveRequiredDependency<ISerializer>();
             _resource = resource;
         }
 
@@ -57,14 +68,9 @@ namespace SereneApi.Abstractions.Request
         }
 
         /// <inheritdoc cref="IRequest.AgainstResource"/>
-        public IRequestEndPoint AgainstResource(string resource)
+        public IRequestEndpoint AgainstResource([NotNull] string resource)
         {
-            if(_resource != null)
-            {
-                throw new MethodAccessException("This method can only be called if a Resource was not provided.");
-            }
-
-            _suppliedResource = resource;
+            _suppliedResource = resource ?? throw new ArgumentNullException(nameof(resource));
 
             return this;
         }
@@ -72,20 +78,21 @@ namespace SereneApi.Abstractions.Request
         /// <inheritdoc>
         ///     <cref>IRequestContent.WithInBodyContent</cref>
         /// </inheritdoc>
-        public IRequestCreated WithInBodyContent<TContent>(TContent content)
+        public IRequestCreated WithInBodyContent<TContent>([NotNull] TContent content)
         {
-            ExceptionHelper.EnsureParameterIsNotNull(content, nameof(content));
+            if(content == null)
+            {
+                throw new ArgumentNullException(nameof(content));
+            }
 
             _requestContent = _serializer.Serialize(content);
 
             return this;
         }
 
-        public IRequestCreated WithInBodyContent(IApiRequestContent content)
+        public IRequestCreated WithInBodyContent([NotNull] IApiRequestContent content)
         {
-            ExceptionHelper.EnsureParameterIsNotNull(content, nameof(content));
-
-            _requestContent = content;
+            _requestContent = content ?? throw new ArgumentNullException(nameof(content));
 
             return this;
         }
@@ -93,9 +100,12 @@ namespace SereneApi.Abstractions.Request
         /// <inheritdoc>
         ///     <cref>IRequestContent.WithQuery</cref>
         /// </inheritdoc>
-        public IRequestCreated WithQuery<TQueryable>(TQueryable queryable)
+        public IRequestCreated WithQuery<TQueryable>([NotNull] TQueryable queryable)
         {
-            ExceptionHelper.EnsureParameterIsNotNull(queryable, nameof(queryable));
+            if(queryable == null)
+            {
+                throw new ArgumentNullException(nameof(queryable));
+            }
 
             _query = _queryFactory.Build(queryable);
 
@@ -105,11 +115,17 @@ namespace SereneApi.Abstractions.Request
         /// <inheritdoc>
         ///     <cref>IRequestContent.WithQuery</cref>
         /// </inheritdoc>
-        public IRequestCreated WithQuery<TQueryable>(TQueryable queryable,
-            Expression<Func<TQueryable, object>> queryExpression)
+        public IRequestCreated WithQuery<TQueryable>([NotNull] TQueryable queryable, [NotNull] Expression<Func<TQueryable, object>> queryExpression)
         {
-            ExceptionHelper.EnsureParameterIsNotNull(queryable, nameof(queryable));
-            ExceptionHelper.EnsureParameterIsNotNull(queryExpression, nameof(queryExpression));
+            if(queryable == null)
+            {
+                throw new ArgumentNullException(nameof(queryable));
+            }
+
+            if(queryExpression == null)
+            {
+                throw new ArgumentNullException(nameof(queryExpression));
+            }
 
             _query = _queryFactory.Build(queryable, queryExpression);
 
@@ -117,37 +133,55 @@ namespace SereneApi.Abstractions.Request
         }
 
         /// <see>
-        ///     <cref>IRequestEndPoint.WithEndPoint</cref>
+        ///     <cref>IRequestEndpoint.WithEndpoint</cref>
         /// </see>
-        public IRequestContent WithEndPoint(object parameter)
+        public IRequestContent WithEndpoint([NotNull] object parameter)
         {
-            ExceptionHelper.EnsureParameterIsNotNull(parameter, nameof(parameter));
+            if(parameter == null)
+            {
+                throw new ArgumentNullException(nameof(parameter));
+            }
 
-            _endPoint = parameter.ToString();
+            _endpoint = parameter.ToString();
 
             return this;
         }
 
         /// <see>
-        ///     <cref>IRequestEndPoint.WithEndPoint</cref>
+        ///     <cref>IRequestEndpoint.WithEndpoint</cref>
         /// </see>
-        public IRequestContent WithEndPoint(string endPoint)
+        public IRequestContent WithEndpoint([NotNull] string endpoint)
         {
-            ExceptionHelper.EnsureParameterIsNotNull(endPoint, nameof(endPoint));
+            if(string.IsNullOrWhiteSpace(endpoint))
+            {
+                throw new ArgumentNullException(nameof(endpoint));
+            }
 
-            _endPoint = endPoint;
+            _endpoint = endpoint;
 
             return this;
         }
 
-        /// <see cref="IRequestEndPoint.WithEndPointTemplate"/>
-        public IRequestContent WithEndPointTemplate(string template, params object[] parameters)
+        /// <see cref="IRequestEndpoint.WithEndpointTemplate"/>
+        public IRequestContent WithEndpointTemplate([NotNull] string template, [NotNull] params object[] parameters)
         {
-            ExceptionHelper.EnsureParameterIsNotNull(template, nameof(template));
-            ExceptionHelper.EnsureArrayIsNotEmpty(parameters, nameof(parameters));
+            if(string.IsNullOrWhiteSpace(template))
+            {
+                throw new ArgumentNullException(nameof(template));
+            }
 
-            _endPoint = template;
-            _endPointParameters = parameters;
+            if(parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            if(parameters.Length <= 0)
+            {
+                throw new ArgumentException(nameof(parameters));
+            }
+
+            _endpoint = template;
+            _endpointParameters = parameters;
 
             return this;
         }
@@ -164,14 +198,14 @@ namespace SereneApi.Abstractions.Request
                 _routeFactory.AddResource(_suppliedResource);
             }
 
-            if(!string.IsNullOrWhiteSpace(_endPoint))
+            if(!string.IsNullOrWhiteSpace(_endpoint))
             {
-                _routeFactory.AddEndPoint(_endPoint);
+                _routeFactory.AddEndpoint(_endpoint);
             }
 
-            if(_endPointParameters != null)
+            if(_endpointParameters != null)
             {
-                _routeFactory.AddParameters(_endPointParameters);
+                _routeFactory.AddParameters(_endpointParameters);
             }
 
             if(!string.IsNullOrWhiteSpace(_query))
@@ -179,9 +213,9 @@ namespace SereneApi.Abstractions.Request
                 _routeFactory.AddQuery(_query);
             }
 
-            Uri endPoint = _routeFactory.BuildRoute();
+            Uri endpoint = _routeFactory.BuildRoute();
 
-            return new ApiRequest(_method, endPoint, _requestContent);
+            return new ApiRequest(_method, endpoint, _requestContent);
         }
     }
 }

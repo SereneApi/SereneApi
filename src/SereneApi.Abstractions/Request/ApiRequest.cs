@@ -1,5 +1,4 @@
-﻿using SereneApi.Abstractions.Helpers;
-using SereneApi.Abstractions.Request.Content;
+﻿using SereneApi.Abstractions.Request.Content;
 using System;
 
 namespace SereneApi.Abstractions.Request
@@ -7,8 +6,8 @@ namespace SereneApi.Abstractions.Request
     /// <inheritdoc cref="IApiRequest"/>
     public class ApiRequest: IApiRequest
     {
-        /// <inheritdoc cref="IApiRequest.EndPoint"/>
-        public Uri EndPoint { get; }
+        /// <inheritdoc cref="IApiRequest.Endpoint"/>
+        public Uri Endpoint { get; }
 
         /// <inheritdoc cref="IApiRequest.Method"/>
         public Method Method { get; }
@@ -20,15 +19,18 @@ namespace SereneApi.Abstractions.Request
         /// Creates a new instance of a <see cref="ApiRequest"/>.
         /// </summary>
         /// <param name="method">The <see cref="Method"/> used when performing the request.</param>
-        /// <param name="endPoint">The endpoint used to make the request. This is applied after the source.</param>
+        /// <param name="endpoint">The endpoint of the API. This is applied after the source.</param>
         /// <param name="content">The content contained in the body of the request.</param>
         /// <exception cref="ArgumentException">Thrown if an invalid method is provided.</exception>
-        public ApiRequest(Method method, Uri endPoint = null, IApiRequestContent content = null)
+        public ApiRequest(Method method, Uri endpoint = null, IApiRequestContent content = null)
         {
-            ExceptionHelper.EnsureCorrectMethod(method);
+            if(method == Method.NONE)
+            {
+                throw new ArgumentException("An invalid method was provided.");
+            }
 
             Method = method;
-            EndPoint = endPoint;
+            Endpoint = endpoint;
             Content = content;
         }
     }

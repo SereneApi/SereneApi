@@ -2,7 +2,7 @@
 using DeltaWare.Dependencies.Abstractions;
 using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Response;
-using SereneApi.Abstractions.Serializers;
+using SereneApi.Abstractions.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;

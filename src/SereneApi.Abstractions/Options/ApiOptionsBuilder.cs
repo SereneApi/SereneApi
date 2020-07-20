@@ -1,32 +1,42 @@
 ﻿using DeltaWare.Dependencies;
+using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.Logging;
-using SereneApi.Abstractions.Authentication;
+using SereneApi.Abstractions.Authorization;
+using SereneApi.Abstractions.Authorization.Types;
 using SereneApi.Abstractions.Configuration;
-using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Helpers;
 using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Request.Content;
-using SereneApi.Abstractions.Serializers;
+using SereneApi.Abstractions.Routing;
+using SereneApi.Abstractions.Serialization;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
 namespace SereneApi.Abstractions.Options
 {
-    public class ApiOptionsBuilder: IApiOptionsBuilder
+    /// <inheritdoc cref="IApiOptionsConfigurator"/>
+    public class ApiOptionsBuilder: IApiOptionsBuilder, IApiOptionsExtensions
     {
+        /// <inheritdoc cref="ICoreOptions.Dependencies"/>
         public IDependencyCollection Dependencies { get; } = new DependencyCollection();
 
+        /// <summary>
+        /// Specifies the connection settings for the API.
+        /// </summary>
         protected ConnectionSettings ConnectionSettings { get; set; }
 
         /// <inheritdoc cref="IApiOptionsConfigurator.UseSource"/>
-        public void UseSource(string source, string resource = null, string resourcePath = null)
+        public void UseSource([NotNull] string baseAddress, string resource = null, string resourcePath = null)
         {
-            ExceptionHelper.EnsureParameterIsNotNull(source, nameof(source));
+            if(string.IsNullOrWhiteSpace(baseAddress))
+            {
+                throw new ArgumentNullException(nameof(baseAddress));
+            }
 
             using IDependencyProvider provider = Dependencies.BuildProvider();
 
-            ISereneApiConfiguration configuration = provider.GetDependency<ISereneApiConfiguration>();
+            IDefaultApiConfiguration configuration = provider.GetDependency<IDefaultApiConfiguration>();
 
             if(string.IsNullOrWhiteSpace(resourcePath))
             {
@@ -36,18 +46,21 @@ namespace SereneApi.Abstractions.Options
                 }
             }
 
-            ConnectionSettings = new ConnectionSettings(source, resource, resourcePath)
+            ConnectionSettings = new ConnectionSettings(baseAddress, resource, resourcePath)
             {
                 Timeout = configuration.Timeout,
                 RetryAttempts = configuration.RetryCount
             };
         }
 
-        /// <inheritdoc>
-        ///     <cref>IApiHandlerOptionsBuilder.SetTimeoutPeriod</cref>
-        /// </inheritdoc>
+        /// <inheritdoc cref="IApiOptionsConfigurator.SetTimeout(int)"/>
         public void SetTimeout(int seconds)
         {
+            if(seconds <= 0)
+            {
+                throw new ArgumentException("A timeout value must be greater than 0.");
+            }
+
             if(ConnectionSettings == null)
             {
                 throw new MethodAccessException("Source information must be supplied fired.");
@@ -56,9 +69,14 @@ namespace SereneApi.Abstractions.Options
             ConnectionSettings.Timeout = seconds;
         }
 
-        /// <inheritdoc cref="IApiOptionsConfigurator.SetRetryAttempts"/>
+        /// <inheritdoc cref="IApiOptionsConfigurator.SetRetryAttempts(int)"/>
         public void SetRetryAttempts(int attemptCount)
         {
+            if(attemptCount < 0)
+            {
+                throw new ArgumentException("Retry attempts must be greater or equal to 0.");
+            }
+
             if(ConnectionSettings == null)
             {
                 throw new MethodAccessException("Source information must be supplied fired.");
@@ -69,60 +87,110 @@ namespace SereneApi.Abstractions.Options
             ConnectionSettings.RetryAttempts = attemptCount;
         }
 
-        /// <inheritdoc cref="IApiOptionsConfigurator.AddLogger"/>
-        public void AddLogger(ILogger logger)
+        /// <inheritdoc cref="IApiOptionsConfigurator.UseLogger"/>
+        public void UseLogger([NotNull] ILogger logger)
         {
+            if(logger == null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
+
             Dependencies.AddScoped(() => logger);
         }
 
         /// <inheritdoc cref="IApiOptionsConfigurator.UseQueryFactory"/>
-        public void UseQueryFactory(IQueryFactory queryFactory)
+        public void UseQueryFactory([NotNull] IQueryFactory queryFactory)
         {
+            if(queryFactory == null)
+            {
+                throw new ArgumentNullException(nameof(queryFactory));
+            }
+
             Dependencies.AddScoped(() => queryFactory);
         }
 
         /// <inheritdoc cref="IApiOptionsConfigurator.UseCredentials"/>
-        public void UseCredentials(ICredentials credentials)
+        public void UseCredentials([NotNull] ICredentials credentials)
         {
+            if(credentials == null)
+            {
+                throw new ArgumentNullException(nameof(credentials));
+            }
+
             Dependencies.AddScoped(() => credentials);
         }
 
         /// <inheritdoc cref="IApiOptionsConfigurator.AddAuthentication"/>
-        public void AddAuthentication(IAuthentication authentication)
+        public void AddAuthentication(IAuthorization authorization)
         {
-            if(Dependencies.HasDependency<IAuthentication>())
+            if(authorization == null)
             {
-                ExceptionHelper.MethodCannotBeCalledTwice();
+                throw new ArgumentNullException(nameof(authorization));
             }
 
-            Dependencies.AddScoped(() => authentication);
+            Dependencies.AddScoped(() => authorization);
         }
 
         /// <inheritdoc cref="IApiOptionsConfigurator.AddBasicAuthentication"/>
         public void AddBasicAuthentication(string username, string password)
         {
-            if(Dependencies.HasDependency<IAuthentication>())
+            if(string.IsNullOrWhiteSpace(username))
             {
-                ExceptionHelper.MethodCannotBeCalledTwice();
+                throw new ArgumentNullException(nameof(username));
             }
 
-            Dependencies.AddTransient<IAuthentication>(() => new BasicAuthentication(username, password));
+            if(string.IsNullOrWhiteSpace(password))
+            {
+                throw new ArgumentNullException(nameof(password));
+            }
+
+            Dependencies.AddTransient<IAuthorization>(() => new BasicAuthorization(username, password));
         }
 
         /// <inheritdoc cref="IApiOptionsConfigurator.AddBearerAuthentication"/>
         public void AddBearerAuthentication(string token)
         {
-            if(Dependencies.HasDependency<IAuthentication>())
+            if(string.IsNullOrWhiteSpace(token))
             {
-                ExceptionHelper.MethodCannotBeCalledTwice();
+                throw new ArgumentNullException(nameof(token));
             }
 
-            Dependencies.AddTransient<IAuthentication>(() => new BearerAuthentication(token));
+            Dependencies.AddTransient<IAuthorization>(() => new BearerAuthorization(token));
         }
 
-        public void AcceptContentType(ContentType content)
+        /// <inheritdoc cref="IApiOptionsConfigurator.AcceptContentType"/>
+        public void AcceptContentType(ContentType type)
         {
-            Dependencies.AddScoped(() => content);
+            Dependencies.AddScoped(() => type);
+        }
+
+        /// <inheritdoc cref="IApiOptionsConfigurator.SetTimeout(int,int)"/>
+        public void SetTimeout([NotNull] int seconds, [NotNull] int attempts)
+        {
+            ConnectionSettings.Timeout = seconds;
+            ConnectionSettings.RetryAttempts = attempts;
+        }
+
+        /// <inheritdoc cref="IApiOptionsConfigurator.UseRouteFactory"/>
+        public void UseRouteFactory([NotNull] IRouteFactory routeFactory)
+        {
+            if(routeFactory == null)
+            {
+                throw new ArgumentNullException(nameof(routeFactory));
+            }
+
+            Dependencies.AddScoped(() => routeFactory);
+        }
+
+        /// <inheritdoc cref="IApiOptionsConfigurator.UseSerializer"/>
+        public void UseSerializer([NotNull] ISerializer serializer)
+        {
+            if(serializer == null)
+            {
+                throw new ArgumentNullException(nameof(serializer));
+            }
+
+            Dependencies.AddScoped(() => serializer);
         }
 
         public IApiOptions BuildOptions()
@@ -158,21 +226,6 @@ namespace SereneApi.Abstractions.Options
             }
 
             _disposed = true;
-        }
-
-        public void SetTimeout([NotNull] int seconds, [NotNull] int attempts)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UseRouteFactory([NotNull] IRouteFactory routeFactory)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UseSerializer([NotNull] ISerializer serializer)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

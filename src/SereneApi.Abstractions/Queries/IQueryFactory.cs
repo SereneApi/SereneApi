@@ -1,26 +1,34 @@
-﻿using System;
+﻿using SereneApi.Abstractions.Queries.Attributes;
+using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 
 namespace SereneApi.Abstractions.Queries
 {
     /// <summary>
-    /// Builds a query string from the supplied object.
+    /// Builds a query string from the supplied values.
     /// </summary>
+    /// <remarks>
+    /// The <see cref="QueryKeyAttribute"/> can be used to set the queries key.<br/>
+    /// The <see cref="QueryConverterAttribute"/> can be used to specify how the query value will be converted.
+    /// </remarks>
     public interface IQueryFactory
     {
         /// <summary>
         /// Builds the query string using all public properties.
         /// </summary>
         /// <typeparam name="TQueryable">The type to be converted into the query.</typeparam>
-        /// <param name="query">The instantiated type that the query values will be retrieved from.</param>
-        string Build<TQueryable>(TQueryable query);
+        /// <param name="query">The instantiated type that the query values will be generated from.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        string Build<TQueryable>([NotNull] TQueryable query);
 
         /// <summary>
-        /// Builds the query string using the selected values selected in the anonymous type.
+        /// Builds the query string using the selected properties form the anonymous type.
         /// </summary>
         /// <typeparam name="TQueryable">The type to be converted into the query.</typeparam>
         /// <param name="query">The instantiated type that the selector will use to create the anonymous type.</param>
-        /// <param name="selector">An anonymous type will be provided selecting the desired properties from the supplied query type.</param>
-        string Build<TQueryable>(TQueryable query, Expression<Func<TQueryable, object>> selector);
+        /// <param name="selector">An anonymous type containing the desired properties to be appended to the query.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        string Build<TQueryable>([NotNull] TQueryable query, [NotNull] Expression<Func<TQueryable, object>> selector);
     }
 }

@@ -1,154 +1,184 @@
 ﻿# Getting Started
-First off, an ApiHandler will need to be implemented. In this example the **User** resource will be consumed. The naming convention can be seen below.
-* Api Definition: I**Resource**Api
->**Best Practices Tip:** ApiHandler Implementations should be located in a Handlers folder somewhere in the project.
+Add the latest version of the NuGet package to your project.
+>PM> Install-Package **SereneApi**
+## Index
+*	**[Implementation](#api-implementation)**
+*	**[Registration](#api-registration)**
+*	**[Instantiation](#api-instantiation)**
+*	**[BaseApiHandler](#baseapihandler)**
+*	**[CrudApiHandler](#crudapihandler)**
+## API Implementation
+The first step in implementing an API, is its definition. The definition is an interface representing all available actions that can be performed against an API.
+>**BEST PRACTICE:** API definitions should use the following naming convention 'I*Resource*Api'.
 
-**Implementing the UserApiHandler**
+Below is an example of an API intended for the resource 'Foo'. The API contains two actions, A GET that requires an ID and a CREATE that requires a *FooDto* object.
+>**BEST PRACTICE:** API methods should return an *IApiResponse*.
 ```csharp
-public class UserApiHandler : ApiHandler
+public interface IFooApi: IDisposable
 {
-	public UserApiHandler(IApiHandlerOptions options) : base(options)
+	Task<IApiResposne<FooDto>> GetAsync(long id);
+
+	Task<IApiResponse> CreateAsync(FooDto foo);
+}
+```
+After an API's definition has been created its associated handler needs to be implemented. The handler is the backbone of an API, performing all of the magic required for sending and receiving requests. This is where your request logic is located.
+>**SEE:** More details on requests can be seen [here](#baseapihandler).
+
+>**BEST PRACTICE:** Handler implementations should use the following naming convention '*Resource*ApiHandler'.
+
+>**BEST PRACTICE:** Handler implementations should be located in a *Handlers* folder contained in your project.
+
+```csharp
+public class FooApiHandler: BaseApiHandler, IFooApi
+{
+	public FooApiHandler(IApiOptions<IFooApi> options) : base(options)
 	{
 	}
 	
-	public Task<IApiResposne<UserDto>> GetAsync(long userId)
+	public Task<IApiResposne<FooDto>> GetAsync(long id)
 	{
-		return InPathRequestAsync<UserDto>(Method.Get, userId);
+		return PerformRequestAsync<FooDto>(Method.GET, r => r
+			.WithEndPoint(id));
 	}
 	
-	public Task<IApiResonse<UserDto>> CreateAsync(UserDto user)
+	public Task<IApiResonse> CreateAsync(FooDto foo)
 	{
-		return InBodyRequestAsync<UserDto, UserDto>(Method.Post, user)
+		return PerformRequestAsync(Method.POST, r => r
+			.AddInBodyContent(foo));
 	}
 }
 ```
-After the Api **Definition**[*interface*] has been created, it will need to be configured using the **ApiHandlerFactory**. The Factory configures, creates and handles the lifetime of its Handlers.
+There are a couple of things to take note of in the above example.
+*	*FooApiHandler* inherits the abstract class *BaseApiHandler*.
+*	*FooApiHandler* inherits the interface *IFooApi*.
+*	*FooApiHandler's* constructor contains a single parameter *IApiOptions* with the generic type set to *IFooApi*.
 
-**Using the ApiHandlerFactory**
+Once an API's definition and handler have been implemented it is now possible to register them.
+## API Registration
+API registering is important as it not only binds the API to the handler but it also allows configuration to be provided. API Registering can currently be done using one of two methods.
+
+### ApiFactory Method
 ```csharp
-using (ApiHandlerFactory handlerFactory = new ApiHandlerFactory())
+ApiFactory factory = new ApiFactory();
+
+factory.RegisterApi<IFooApi, FooApiHandler>(o => 
 {
-    handlerFactory.AddApiHandler<UserApiHandler>(o => 
-    { 
-	    o.UseSource("http://localhost:8080", "User");
-	    o.AddLogger(new Logger());
-    });
+	o.UseSource("http://www.somehost.com", "Foo");
+	o.UseLogger(myLogger);
+});
+```
+### Dependency Injection Method
+>**NOTE:** To use dependency injection  install *SereneApi.Extensions.DependencyInjection*
 
-    using (UserApiHandler userApi = handlerFactory.Build<UserApiHandler>())
-    {
-        IApiResponse<UserDto> userResponse = await userApi.GetAsync(42);
-
-        if (userResponse.WasSuccessful)
-        {
-            return userResponse.Result;
-        }
-    }
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+	services.RegisterApi<IFooApi, FooApiHandler>(b =>
+	{
+		o.UseSource("http://www.somehost.com", "Foo");
+	});
 }
 ```
-In the example above the UserApiHandler is being registered with the ApiHandlerFactory. Both the Source and Logger are being configured.
+Both of the above registrations will deliver the same configuration for Foo API.
+>**NOTE:** By default all APIs registered using dependency injection will receive an *ILogger* using *ILoggerFacgtory* if it is available.
+## API Instantiation
+After an API has been registered it's handler needs to be instantiated, this is where the *IApiOptions* parameter comes in. *IApiOptions* contains all of the API's configuration and dependencies as declared during registration. It is important to set your API definition as the generic type for *IApiOptions*.
+>**NOTE:** If an API's handler does not have *IApiOptions* configured correctly, it can either get the settings for a different handler or an exception may be thrown.
 
-After the Handler has been registered the Build method can be called. Which will create an instance of the specified handler type.
-> **NOTE:** The ApiHandlerFactory does not necessarily need to be immediately disposed of and can be configured elsewhere in the project.
+This process occurs behind the scenes but it still needs to be invoked.
 
-## ApiHandler
-
-The **ApiHandler** is a core a part of **SereneApi** and handles every single request. When inherited it offers a plethora of simple to use and yet powerful methods that should cover most, if not all use cases and is completely extensible. It also containing an extensive suite of logging. Covering all exceptions and messages.
->**Take Note:** No examples will be provided in this chapter. Review the Examples section to see it in action.
-### Methods
-The Method Enum informs the ApiHandler what **RESTful** method will be used for the request. Below are the methods made available.
+### Invoking with ApiFactory
+Invocation with *ApiFactory* can be done with either the class or the interface, in the example below the interface will be used because it does not expose the registration methods.
+When an API is required, call the *Build\<TApi>()* method. This provides an instantiated instance of TApi.
+>**NOTE:** The instance of TApi needs to be disposed.
 ```csharp
-public enum Method
+public class FooService
 {
-	Post,
-	Get,
-	Put,
-	Patch,
-	Delete
+	private readonly IApiFactory _factory;
+
+	public void DoStuff(long id)
+	{
+		IApiResponse<FooDto> response;
+
+		using (IFooApi fooApi = _factory.Build<IFooApi>())
+		{
+			response = fooApi.GetAsync(id);
+		}
+
+		// Do stuff on response here.
+	}
 }
 ```
-### In Path Requests
-An in Path Request is the most simple of the request types. It converts input parameters into a Url which will be used to consume an API resource, whilst also desalinizing the response into the specified Type if one was supplied. There are four methods currently made available.
->**Take Note:** In Path Requests support all 5 Methods. Post, Get, Put, Patch and Delete.
+### Invoking with Dependency Injection
+Invocation with Dependency Injection is easy and straightforward. Add your API's implementation interface to the constructor of your class and DI will handle the rest.
+>**NOTE:** The API should not be disposed of as this is handled by DI.
+```csharp
+public class FooService
+{
+	private readonly IFooApi _fooApi;
 
-* The first and most simple of the InPathRequests. It will convert the *paramter* to a string using the *ToString()* method and apply it to the end of the Url. Using the previous settings for out UserApi if the parameter was set to 42 the generated Url would be this.
-http://myservice:8080/api/User/42
-```csharp
-Task<IApiResponse> InPathRequestAsync(Method method, object endPoint = null)
-```
-* The second request makes the *endpontTemplate* parameter available which supports string formatting on multiple parameters. I cover EndPoint Template more here **TODO**.
->**See More:** [You can read more about string Formatting here](https://www.tutlane.com/tutorial/csharp/csharp-string-format-method).
+	public FooService(IFooService fooApi)
+	{
+		_fooApi = fooApi;
+	}
 
-```csharp
-Task<IApiResponse> InPathRequestAsync(Method method, string endPointTemplate, params object[] endPointParameters)
+	public void DoStuff(long id)
+	{
+		IApiResponse<FooDto> response = fooApi.GetAsync(id);
+		
+		// Do stuff on response here.
+	}
+}
 ```
-* The final two requests below are the same as the above, however are slightly mutated to allow the \<TResponse> Type parameter which tells the **ApiHanlder** to deserialize the JSON contained in the body of the response.
-```csharp
-Task<IApiResponse<TResponse>> InPathRequestAsync<TResponse>(Method method, object endPoint = null)
-```
-```csharp
-Task<IApiResponse<TResponse>> InPathRequestAsync<TResponse>(Method method, string endPointTemplate, params object[] endPointParameters)
-```
-### In Body Requests
-An in Body Request gives you all the basics of an In Path Request whilst allowing you to serialize the specified Type into JSON which is sent in the body of the request. There are four methods currently made available.
->**Take Note:** In Body Requests only support 3 out of the 5 Methods. Post, Put and Patch. Get and Delete will throw an **ArgumentException**
 
+## BaseApiHandler
+Inheriting the base class *BaseApiHandler* gives access to several protected methods for performing requests.
+```csharp
+PerformRequest();
+PerformRequestAsync();
+PerformRequest<TResponse>();
+PerformRequestAsync<TResponse>();
+```
+Each of the methods listed above share the same parameters. The first parameter is the *Method* in which the request will be performed. The methods are the standard array of REST methods.
+* **POST** - *Submits an entity to the specified resource.*
+* **GET** - *Requests a representation of the specified resource.*
+* **PUT** - *Replaces all current representations of the target resource.*
+* **PATCH** - *Applies partial modifications to a resource.*
+* **DELETE** - *Deletes the specified resource.*
 
-```csharp
-Task<IApiResponse> InBodyRequestAsync<TContent>(Method method, TContent inBodyContent, object endPoint = null)
-```
-```csharp
-Task<IApiResponse> InBodyRequestAsync<TContent>(Method method, TContent inBodyContent, string endPointTemplate, params object[] endPointParameters)
-```
-```csharp
-Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(Method method, TContent inBodyContent, object endPoint = null)
-```
-```csharp
-Task<IApiResponse<TResponse>> InBodyRequestAsync<TContent, TResponse>(Method method, TContent inBodyContent, string endPointTemplate, params object[] endPointParameters)
-```
-### In Path Requests with Query
-The most advanced out of the three types of requests. Allowing custom queries from the supplied, whilst also offering built-in functionality to specify what properties are to be used for the query.
->**Take Note:** In Path Requests with Queries supports all 5 Methods. Post, Get, Put, Patch and Delete.
+The second parameter is the request factory, this parameter is entirely optional. It contains multiple methods that are required to be called in a specific order.
+* **AgainstResource**
+	Specifies or overrides the resource that the request is intended for. If the resource was provided during configuration this method is not necessary.
+* **WithEndpoint**
+	Specifies the endpoint for the request, it is applied after the resource.
+* **WithEndpointTemplate**
+	Specifies the endpoint for the request, is is applied after the resource. Two parameters must be provided, a format-table string and an array of objects that will be formatted to the string.
+* **WithInBodyContent\<TContent>**
+	Specifies the content to be sent in the body of the request.
+	>**NOTE**: This method can only be used in conjunction with *POST*, *PUT* and *PATCH*.
 
-The main difference between the With Query Request and the In Path Request is the addition of the \<TQuery> Type parameter and the query expression. The query expression will provide a new object based on the selected properties, the new object will be used for query generation. If there is no query expression provided all of the properties available in content will be used in the query.
-```csharp
-Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQuery>(Method method, TQuery queryContent, Expression<Func<TQuery, object>> query, object endPoint = null)
-```
-```csharp
-Task<IApiResponse<TResponse>> InPathRequestWithQueryAsync<TResponse, TQuery>(Method method, TQuery queryContent, Expression<Func<TQuery, object>> query, string endPointTemplate, params object[] endPointParameters)
-```
+* **WithQuery\<TQuery>**
+	Specifies the query to be added to the end of the requests Uri. Has a secondary optional parameter allowing specific properties to be selected.
+
+A variant of *PerformRequest* is available. This method takes an *IApiRequest* as its sole parameter, enabling pre-configured or custom requests to be provided.
 ## CrudApiHandler
-
-Introducing zero code CRUD, included in Serene API is a class called **CrudApiHandler<TResource, TIdentifier>** and when inherited, offers all the basics of CRUD with zero effort required.
-
-Here is an example of implementing the CrudApiHandler using our favorite UserDto.
+When *CrudApiHandler* is inherited, it provides pre-implemented CRUD API methods. To implement *CrudApiHandler* you are required to provided two generic parameters.
+*	**TResource**
+		Specifies the type that defines the APIs resource, this resource will be retrieved and provided by the API.
+*	**TIdentifier**
+		Specifies the identifier type used by the API to identify the resource.
+	>**NOTE:** Must be  value type.
 ```csharp
-public IUserApi : ICrudApiHandler<UserDto, long>
+public interfacxe IBarApi: ICrudApi<BarDto, long>
 {
 }
-
-public UserApiHandler : CrudApiHandler<UserDto, long>, IUserApi
+```
+```csharp
+public class BarApiHandler: CrudApiHandler<BarDto, long>, IBarApi
 {
-	public UserApiHandler(IApiOptions options) : base(options)
+	public BarApiHandler(IApiOptions<IBarApi> options) : base(options)
 	{
 	}
 }
 ```
-And that's it, seriously that is all that is needed to implement a basic CRUD API consumer. Here is what it offers.
-```csharp
-	IApiResponse<UserDto> response = await userApi.GetAsync(171);
-```
-```csharp
-	IApiResponse<List<UserDto>> response = await userApi.GetAllAsync();
-```
-```csharp
-	IApiResponse<UserDto> response = await userApi.CreateAsync(new UserDto());
-```
-```csharp
-	IApiResponse<UserDto> response = await userApi.DeleteAsync(171);
-```
-```csharp
-	IApiResponse<UserDto> response = await userApi.ReplaceAsync(new UserDto());
-```
-```csharp
-	IApiResponse<UserDto> response = await userApi.UpdateAsync(new UserDto());
-```
+After *CrudApiHandler* has been implemented the following methods will become available *GetAsync*, *CreateAsync*, *DeleteAsync*, *ReplaceAsync*, *UpdateAsync*.

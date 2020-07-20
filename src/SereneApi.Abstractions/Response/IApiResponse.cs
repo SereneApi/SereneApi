@@ -8,7 +8,7 @@ namespace SereneApi.Abstractions.Response
     public interface IApiResponse
     {
         /// <summary>
-        /// The status received from the API.
+        /// Specifies the status received.
         /// </summary>
         Status Status { get; }
 

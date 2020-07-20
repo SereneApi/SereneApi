@@ -1,5 +1,4 @@
-﻿using DeltaWare.Dependencies;
-using SereneApi.Abstractions.Configuration;
+﻿using DeltaWare.Dependencies.Abstractions;
 using SereneApi.Abstractions.Options;
 using SereneApi.Extensions.Mocking.Handlers;
 using SereneApi.Extensions.Mocking.Response;
@@ -19,16 +18,19 @@ namespace SereneApi.Extensions.Mocking
         /// <param name="enableOutgoingRequests">If set to true, any request that does not have an associated <see cref="IMockResponse"/> will be processed normally.
         /// If set to false, if a request does not have an associated <see cref="IMockResponse"/> an <see cref="ArgumentException"/> will be thrown.</param>
         /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
-        public static IApiOptionsExtensions WithMockResponse(this IApiOptionsExtensions registrationExtensions, [NotNull] Action<IMockResponsesBuilder> mockResponseBuilder, bool enableOutgoingRequests = false)
+        public static IApiOptionsExtensions WithMockResponse(this IApiOptionsExtensions extensions, [NotNull] Action<IMockResponsesBuilder> mockResponseBuilder, bool enableOutgoingRequests = false)
         {
             if(mockResponseBuilder == null)
             {
                 throw new ArgumentNullException(nameof(mockResponseBuilder));
             }
 
-            IDependencyCollection dependencies = GetDependencies(registrationExtensions);
+            if(!(extensions is ICoreOptions options))
+            {
+                throw new InvalidCastException($"Base type must inherit {nameof(ICoreOptions)}");
+            }
 
-            dependencies.AddScoped<HttpMessageHandler>(p =>
+            options.Dependencies.AddScoped<HttpMessageHandler>(p =>
             {
                 MockResponsesBuilder mockResponsesBuilder = new MockResponsesBuilder(p);
 
@@ -44,17 +46,7 @@ namespace SereneApi.Extensions.Mocking
                 return new MockMessageHandler(mockResponses);
             });
 
-            return registrationExtensions;
-        }
-
-        private static IDependencyCollection GetDependencies(IApiOptionsExtensions extensions)
-        {
-            if(extensions is ICoreOptions options)
-            {
-                return options.Dependencies;
-            }
-
-            throw new TypeAccessException($"Must be of type or inherit from {nameof(ICoreOptions)}");
+            return extensions;
         }
     }
 }

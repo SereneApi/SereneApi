@@ -1,8 +1,8 @@
-using DeltaWare.Dependencies;
+using DeltaWare.Dependencies.Abstractions;
 using Newtonsoft.Json;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Options;
-using SereneApi.Abstractions.Serializers;
+using SereneApi.Abstractions.Serialization;
 using SereneApi.Extensions.Newtonsoft.Serializers;
 using Shouldly;
 using System;
@@ -15,11 +15,11 @@ namespace SereneApi.Extensions.Newtonsoft.Tests
         [Fact]
         public void AddSuccessfully()
         {
-            ISereneApiConfiguration configuration = new SereneApiConfiguration();
+            IDefaultApiConfiguration configuration = new DefaultApiConfiguration();
 
-            ISereneApiExtensions extensions = configuration.GetExtensions();
+            IDefaultApiConfigurationExtensions configurationExtensions = configuration.GetExtensions();
 
-            Should.NotThrow(() => extensions.AddNewtonsoft());
+            Should.NotThrow(() => configurationExtensions.AddNewtonsoft());
 
             IApiOptionsBuilder options = configuration.GetOptionsBuilder();
 
@@ -33,16 +33,16 @@ namespace SereneApi.Extensions.Newtonsoft.Tests
         [Fact]
         public void AddWithSettingsSuccessfully()
         {
-            ISereneApiConfiguration configuration = new SereneApiConfiguration();
+            IDefaultApiConfiguration configuration = new DefaultApiConfiguration();
 
-            ISereneApiExtensions extensions = configuration.GetExtensions();
+            IDefaultApiConfigurationExtensions configurationExtensions = configuration.GetExtensions();
 
             JsonSerializerSettings settings = new JsonSerializerSettings
             {
                 DateFormatString = "TEST"
             };
 
-            Should.NotThrow(() => extensions.AddNewtonsoft(settings));
+            Should.NotThrow(() => configurationExtensions.AddNewtonsoft(settings));
 
             IApiOptionsBuilder options = configuration.GetOptionsBuilder();
 
@@ -59,11 +59,11 @@ namespace SereneApi.Extensions.Newtonsoft.Tests
         [Fact]
         public void AddWithSettingsBuilderSuccessfully()
         {
-            ISereneApiConfiguration configuration = new SereneApiConfiguration();
+            IDefaultApiConfiguration configuration = new DefaultApiConfiguration();
 
-            ISereneApiExtensions extensions = configuration.GetExtensions();
+            IDefaultApiConfigurationExtensions configurationExtensions = configuration.GetExtensions();
 
-            Should.NotThrow(() => extensions.AddNewtonsoft(s => s.DateFormatString = "TEST"));
+            Should.NotThrow(() => configurationExtensions.AddNewtonsoft(s => s.DateFormatString = "TEST"));
 
             IApiOptionsBuilder options = configuration.GetOptionsBuilder();
 
@@ -80,25 +80,25 @@ namespace SereneApi.Extensions.Newtonsoft.Tests
         [Fact]
         public void ThrowArgumentNullException_Settings()
         {
-            ISereneApiConfiguration configuration = new SereneApiConfiguration();
+            IDefaultApiConfiguration configuration = new DefaultApiConfiguration();
 
-            ISereneApiExtensions extensions = configuration.GetExtensions();
+            IDefaultApiConfigurationExtensions configurationExtensions = configuration.GetExtensions();
 
             JsonSerializerSettings settings = null;
 
-            Should.Throw<ArgumentNullException>(() => extensions.AddNewtonsoft(settings));
+            Should.Throw<ArgumentNullException>(() => configurationExtensions.AddNewtonsoft(settings));
         }
 
         [Fact]
         public void ThrowArgumentNullException_Builder()
         {
-            ISereneApiConfiguration configuration = new SereneApiConfiguration();
+            IDefaultApiConfiguration configuration = new DefaultApiConfiguration();
 
-            ISereneApiExtensions extensions = configuration.GetExtensions();
+            IDefaultApiConfigurationExtensions configurationExtensions = configuration.GetExtensions();
 
             Action<JsonSerializerSettings> builder = null;
 
-            Should.Throw<ArgumentNullException>(() => extensions.AddNewtonsoft(builder));
+            Should.Throw<ArgumentNullException>(() => configurationExtensions.AddNewtonsoft(builder));
         }
     }
 }

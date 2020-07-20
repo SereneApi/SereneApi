@@ -32,7 +32,7 @@ namespace DependencyInjection.WebUi
 
             // Add an ApiHandler to the services collection, this enables dependency injection.
             // You are required to supply an interface for the definition and a class inheriting form ApiHandler and the interface as the definition.
-            services.RegisterApi<IStudentApi, StudentApiHandler>(builder =>
+            services.RegisterApi<IStudentApi, StudentBaseApiHandler>(builder =>
             {
                 // Under appsettings.conf, there is an array called ApiConfig.
                 // Inside that array is another array called "Student" as you can see below we are getting that.
@@ -46,7 +46,7 @@ namespace DependencyInjection.WebUi
                 builder.UseSource("http://localhost:52279", "Class");
             });
 
-            services.RegisterApi<IValuesApi, ValuesApiHandler>((builder, p) =>
+            services.RegisterApi<IValuesApi, ValuesBaseApiHandler>((builder, p) =>
             {
                 builder.UseSource("http://localhost:52279", "Values");
             });

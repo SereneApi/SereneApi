@@ -7,24 +7,23 @@ This is achieved by adding mock responses to the specified API. It is possible t
 Add the latest version of the NuGet package to your project.
 >PM> Install-Package **SereneApi.Extensions.Mocking**
 
-<br/>
-
 Once the package is installed only one  new method will become available, *WithMockResponse*. This method extends *RegisterApi* and *ExtendApi*.
 > **NOTE:** Calling *WithMockResponse* more than once will result in the preceding responses to be overwritten.
 
 <br/>
 
-**Add Mock Responses During Registration**
+### Add Mock Responses During Registration
 ```csharp
-RegisterApi<IFooApi, IFooApiHandler>().WithMockResponse();
+.RegisterApi<IFooApi, IFooApiHandler>().WithMockResponse();
 ```
-**Add Mock Responses Post Registration**
+### Add Mock Responses Post Registration
 This is useful for adding the mock responses to test projects as it can be called after the API has been registered.
 ```csharp
-ExtendApi<IFooApi>().WithMockResponse();
+.ExtendApi<IFooApi>().WithMockResponse();
 ```
+>**BEST PRACTICE:** Using the *ExtendApi* method is prefered as it can be easily added or removed.
 ## Building a Mock Response
-Inside the *WithMockResponse* method are two parameters. The mock response factory and a boolean value specifying if outgoing requests are enabled. 
+Inside the *WithMockResponse* method are two parameters. The mock response factory and a boolean value specifying if outgoing requests are enabled by default this is set to false. 
 >**NOTE:** If outgoing requests are not enabled, an *ArgumentException* will be thrown if no associated mock response can be found. If enabled and no mock response can be found it will perform a request against the API.
 
 The mock response factory is what creates the mock responses. Multiple mock responses can be added with varying degrees of response data. Mock response are found using a weight system, the response with the highest weight is used or if there are multiple matching weights the response supplied first will be used.
@@ -35,18 +34,18 @@ A mock response can return a Status and/or in body Content. This can be used to 
 A mock response's filters can have multiple values provided - Method, URL and Content. Only one value in each filter is required to match for the weight to be incremented. If none match the value is skipped.
 >**NOTE:** Filters are applied in the following order: Method, URL, Content.
 
-Using the *ResponseIsDelayed* method allows the mock response to be delayed by implementing aritfical latency. This is intended to allow for more complex development and testing options.
+Using the *ResponseIsDelayed* method allows the mock response to be delayed by implementing artificial latency. This is intended to allow for more complex development and testing options.
 ```csharp
 .WithMockResponse(r =>
 {
 	r.AddMockResponse(new Bar())
 		// Responds to ALL GET requests.
 		.ResponseToRequestsWith(Method.GET);
-	r.AddMockResponse(Status.Ok, "Your Custom Message")
+	r.AddMockResponse(Status.Ok, "A new bar has been added")
 		.ResponseIsDelayed(20, 2)
-		// Response to POST requests to http://localhost/api/resource/ that contain the specified Bar object.
+		// Response to POST requests to http://localhost/api/bar/ that contain the specified Bar object.
 		.RespondsToRequestsWith(Method.POST)
-		.RespondsToRequestsWith("http://localhost/api/resource/")
+		.RespondsToRequestsWith("http://localhost/api/bar/")
 		.ResponseToRequestWith(new Bar());
 }, bool allowOutGoingRequests);
 ```
