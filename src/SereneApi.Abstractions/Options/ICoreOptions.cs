@@ -1,4 +1,4 @@
-﻿using DeltaWare.Dependencies;
+﻿using DeltaWare.Dependencies.Abstractions;
 
 namespace SereneApi.Abstractions.Options
 {

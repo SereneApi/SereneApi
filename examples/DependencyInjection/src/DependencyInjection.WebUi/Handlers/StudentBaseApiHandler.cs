@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace DependencyInjection.WebUi.Handlers
 {
-    public class StudentApiHandler: ApiHandler, IStudentApi
+    public class StudentBaseApiHandler: BaseApiHandler, IStudentApi
     {
         // This is important for Dependency Injection to work!
         // The Handler interface must be set as the generic for IApiHandlerOptions.
         // This is required so AspNet gets the right options for the current handler.
-        public StudentApiHandler(IApiOptions<IStudentApi> options) : base(options)
+        public StudentBaseApiHandler(IApiOptions<IStudentApi> options) : base(options)
         {
         }
 

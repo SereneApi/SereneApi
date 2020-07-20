@@ -1,4 +1,4 @@
-﻿using DeltaWare.Dependencies;
+﻿using DeltaWare.Dependencies.Abstractions;
 using Newtonsoft.Json;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Serialization;
@@ -8,16 +8,16 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Extensions.Newtonsoft
 {
-    public static class SereneApiExtensionsExtensions
+    public static class DefaultApiExtensionsExtensions
     {
         /// <summary>
         /// Adds <seealso cref="NewtonsoftSerializer"/> as the default <see cref="ISerializer"/>.
         /// </summary>
-        public static ISereneApiExtensions AddNewtonsoft(this ISereneApiExtensions extensions)
+        public static IDefaultApiConfigurationExtensions AddNewtonsoft(this IDefaultApiConfigurationExtensions configurationExtensions)
         {
-            extensions.AddDependency(d => d.AddScoped<ISerializer>(() => new NewtonsoftSerializer()));
+            configurationExtensions.AddDependencies(d => d.AddScoped<ISerializer>(() => new NewtonsoftSerializer()));
 
-            return extensions;
+            return configurationExtensions;
         }
 
         /// <summary>
@@ -25,16 +25,16 @@ namespace SereneApi.Extensions.Newtonsoft
         /// </summary>
         /// <param name="settings">The settings to be used by <see cref="NewtonsoftSerializer"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public static ISereneApiExtensions AddNewtonsoft(this ISereneApiExtensions extensions, [NotNull] JsonSerializerSettings settings)
+        public static IDefaultApiConfigurationExtensions AddNewtonsoft(this IDefaultApiConfigurationExtensions configurationExtensions, [NotNull] JsonSerializerSettings settings)
         {
             if(settings == null)
             {
                 throw new ArgumentNullException(nameof(settings));
             }
 
-            extensions.AddDependency(d => d.AddScoped<ISerializer>(() => new NewtonsoftSerializer(settings)));
+            configurationExtensions.AddDependencies(d => d.AddScoped<ISerializer>(() => new NewtonsoftSerializer(settings)));
 
-            return extensions;
+            return configurationExtensions;
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace SereneApi.Extensions.Newtonsoft
         /// </summary>
         /// <param name="factory">Builds to the settings to be used by <seealso cref="NewtonsoftSerializer"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public static ISereneApiExtensions AddNewtonsoft(this ISereneApiExtensions extensions, [NotNull] Action<JsonSerializerSettings> factory)
+        public static IDefaultApiConfigurationExtensions AddNewtonsoft(this IDefaultApiConfigurationExtensions configurationExtensions, [NotNull] Action<JsonSerializerSettings> factory)
         {
             if(factory == null)
             {
@@ -53,7 +53,7 @@ namespace SereneApi.Extensions.Newtonsoft
 
             factory.Invoke(settings);
 
-            return AddNewtonsoft(extensions, settings);
+            return AddNewtonsoft(configurationExtensions, settings);
         }
     }
 }

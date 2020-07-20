@@ -5,13 +5,13 @@ namespace SereneApi.Abstractions.Queries.Exceptions
     /// <summary>
     /// Thrown when a query requires a specific property to be provided.
     /// </summary>
-    public class QueryRequiredException: Exception
+    public class RequiredQueryElementException: Exception
     {
         /// <summary>
-        /// Creates a new instance of <see cref="QueryRequiredException"/>.
+        /// Creates a new instance of <see cref="RequiredQueryElementException"/>.
         /// </summary>
         /// <param name="propertyName">The property name.</param>
-        public QueryRequiredException(string propertyName) : base($"{propertyName} must be provided as it is a required part of the query", new ArgumentNullException(propertyName))
+        public RequiredQueryElementException(string propertyName) : base($"{propertyName} must be provided as it is a required part of the query", new ArgumentNullException(propertyName))
         {
         }
     }

@@ -1,4 +1,4 @@
-﻿using DeltaWare.Dependencies;
+﻿using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using SereneApi.Abstractions.Authorisation.Authorizers;
 using SereneApi.Abstractions.Authorization;
@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 namespace SereneApi.Extensions.DependencyInjection.Authorizers
 {
     /// <summary>
-    /// Gets the authentication API using Dependency Injection.
+    /// Gets the specified authorization API using Dependency Injection.
     /// </summary>
-    /// <typeparam name="TApi">The API that will be making the authentication request.</typeparam>
+    /// <typeparam name="TApi">The API that will be making the authorization request.</typeparam>
     /// <typeparam name="TDto">The DTO returned by the authentication API.</typeparam>
     internal class InjectedTokenAuthorizer<TApi, TDto>: TokenAuthorizer<TApi, TDto> where TApi : class, IDisposable where TDto : class
     {
@@ -20,7 +20,7 @@ namespace SereneApi.Extensions.DependencyInjection.Authorizers
         /// Creates a new instance of <see cref="InjectedTokenAuthorizer{TApi,TDto}"/>.
         /// </summary>
         /// <param name="dependencies">The dependencies that can be used.</param>
-        /// <param name="callApi">Perform the authentication request.</param>
+        /// <param name="callApi">Perform the authorization request.</param>
         /// <param name="retrieveToken">Extract the token information from the response.</param>
         public InjectedTokenAuthorizer([NotNull] IDependencyProvider dependencies, [NotNull] Func<TApi, Task<IApiResponse<TDto>>> apiCall, [NotNull] Func<TDto, TokenAuthResult> retrieveToken) : base(dependencies, apiCall, retrieveToken)
         {

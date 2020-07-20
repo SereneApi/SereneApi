@@ -1,4 +1,4 @@
-﻿using DeltaWare.Dependencies;
+﻿using DeltaWare.Dependencies.Abstractions;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Queries;
@@ -11,45 +11,45 @@ using System.Net;
 
 namespace SereneApi.Abstractions.Configuration
 {
-    /// <inheritdoc cref="ISereneApiConfiguration"/>.
-    public class SereneApiConfiguration: ISereneApiConfiguration, ISereneApiConfigurationBuilder
+    /// <inheritdoc cref="IDefaultApiConfiguration"/>.
+    public class DefaultApiConfiguration: IDefaultApiConfiguration, IDefaultApiConfigurationBuilder
     {
         private Action<IDependencyCollection> _dependencyFactory;
 
-        /// <inheritdoc cref="ISereneApiConfiguration.ResourcePath"/>
+        /// <inheritdoc cref="IDefaultApiConfiguration.ResourcePath"/>
         /// <remarks>Default: api/</remarks>
         public string ResourcePath { get; set; } = "api/";
 
-        /// <inheritdoc cref="ISereneApiConfiguration.Timeout"/>
+        /// <inheritdoc cref="IDefaultApiConfiguration.Timeout"/>
         /// <remarks>Default: 30</remarks>
         public int Timeout { get; set; } = 30;
 
-        /// <inheritdoc cref="ISereneApiConfiguration.RetryCount"/>
+        /// <inheritdoc cref="IDefaultApiConfiguration.RetryCount"/>
         /// <remarks>Default: 0</remarks>
         public int RetryCount { get; set; } = 0;
 
         /// <summary>
-        /// Builds a new instance of <see cref="SereneApiConfiguration"/>
+        /// Builds a new instance of <see cref="DefaultApiConfiguration"/>
         /// </summary>
-        public SereneApiConfiguration([AllowNull] Action<IDependencyCollection> dependencyFactory = null)
+        public DefaultApiConfiguration([AllowNull] Action<IDependencyCollection> dependencyFactory = null)
         {
             _dependencyFactory = dependencyFactory;
         }
 
-        /// <inheritdoc cref="ISereneApiConfigurationBuilder.OverrideDependencies"/>
+        /// <inheritdoc cref="IDefaultApiConfigurationBuilder.OverrideDependencies"/>
         public void OverrideDependencies(Action<IDependencyCollection> factory)
         {
             _dependencyFactory = factory ?? throw new ArgumentNullException(nameof(factory));
-            _dependencyFactory += dependencies => dependencies.TryAddTransient<ISereneApiConfiguration>(() => this);
+            _dependencyFactory += dependencies => dependencies.TryAddTransient<IDefaultApiConfiguration>(() => this);
         }
 
-        /// <inheritdoc cref="ISereneApiConfigurationBuilder.AddDependencies"/>
+        /// <inheritdoc cref="IDefaultApiConfigurationBuilder.AddDependencies"/>
         public void AddDependencies(Action<IDependencyCollection> factory)
         {
             _dependencyFactory += factory ?? throw new ArgumentNullException(nameof(factory)); ;
         }
 
-        /// <inheritdoc cref="ISereneApiConfiguration.GetOptionsBuilder"/>
+        /// <inheritdoc cref="IDefaultApiConfiguration.GetOptionsBuilder"/>
         public IApiOptionsBuilder GetOptionsBuilder()
         {
             ApiOptionsBuilder builder = new ApiOptionsBuilder();
@@ -59,7 +59,7 @@ namespace SereneApi.Abstractions.Configuration
             return builder;
         }
 
-        /// <inheritdoc cref="ISereneApiConfiguration.GetOptionsBuilder{TBuilder}"/>
+        /// <inheritdoc cref="IDefaultApiConfiguration.GetOptionsBuilder{TBuilder}"/>
         public TBuilder GetOptionsBuilder<TBuilder>() where TBuilder : IApiOptionsBuilder, new()
         {
             TBuilder builder = new TBuilder();
@@ -69,20 +69,20 @@ namespace SereneApi.Abstractions.Configuration
             return builder;
         }
 
-        /// <inheritdoc cref="ISereneApiConfiguration.GetExtensions"/>
-        public ISereneApiExtensions GetExtensions()
+        /// <inheritdoc cref="IDefaultApiConfiguration.GetExtensions"/>
+        public IDefaultApiConfigurationExtensions GetExtensions()
         {
-            return new SereneApiExtensions(this);
+            return this;
         }
 
         /// <summary>
-        /// The default <see cref="ISereneApiConfiguration"/>.
+        /// The default <see cref="IDefaultApiConfiguration"/>.
         /// </summary>
-        public static ISereneApiConfiguration Default
+        public static IDefaultApiConfiguration Default
         {
             get
             {
-                SereneApiConfiguration configuration = new SereneApiConfiguration(dependencies =>
+                DefaultApiConfiguration configuration = new DefaultApiConfiguration(dependencies =>
                 {
                     dependencies.TryAddScoped<IQueryFactory>(() => new QueryFactory());
                     dependencies.TryAddScoped<ISerializer>(() => new DefaultJsonSerializer());
@@ -92,7 +92,7 @@ namespace SereneApi.Abstractions.Configuration
                     dependencies.TryAddScoped<IClientFactory>(p => new DefaultClientFactory(p));
                 });
 
-                configuration.AddDependencies(dependencies => dependencies.TryAddTransient<ISereneApiConfiguration>(() => configuration));
+                configuration.AddDependencies(dependencies => dependencies.TryAddTransient<IDefaultApiConfiguration>(() => configuration));
 
                 return configuration;
             }

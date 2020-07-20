@@ -1,4 +1,4 @@
-﻿using DeltaWare.Dependencies;
+﻿using DeltaWare.Dependencies.Abstractions;
 using SereneApi.Abstractions.Authorisation.Authorizers;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Response;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Extensions.DependencyInjection
 {
-    public static class SereneApiExtensionsExtensions
+    public static class DefaultApiExtensionsExtensions
     {
         /// <summary>
         /// Adds an authentication API. Before a request is made it will be authenticated.
@@ -20,11 +20,11 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <param name="callApi">Perform the authentication request.</param>
         /// <param name="extractToken">Extract the token information from the response.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public static ISereneApiExtensions AddDIAuthenticator<TApi, TDto>([NotNull] this ISereneApiExtensions extensions, [NotNull] Func<TApi, Task<IApiResponse<TDto>>> callApi, [NotNull] Func<TDto, TokenAuthResult> extractToken) where TApi : class, IDisposable where TDto : class
+        public static IDefaultApiConfigurationExtensions AddDIAuthenticator<TApi, TDto>([NotNull] this IDefaultApiConfigurationExtensions configurationExtensions, [NotNull] Func<TApi, Task<IApiResponse<TDto>>> callApi, [NotNull] Func<TDto, TokenAuthResult> extractToken) where TApi : class, IDisposable where TDto : class
         {
-            if(extensions == null)
+            if(configurationExtensions == null)
             {
-                throw new ArgumentNullException(nameof(extensions));
+                throw new ArgumentNullException(nameof(configurationExtensions));
             }
 
             if(callApi == null)
@@ -37,10 +37,10 @@ namespace SereneApi.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(extractToken));
             }
 
-            extensions.AddDependency(d =>
+            configurationExtensions.AddDependencies(d =>
                 d.AddSingleton<IAuthorizer>(p => new InjectedTokenAuthorizer<TApi, TDto>(p, callApi, extractToken)));
 
-            return extensions;
+            return configurationExtensions;
         }
 
 

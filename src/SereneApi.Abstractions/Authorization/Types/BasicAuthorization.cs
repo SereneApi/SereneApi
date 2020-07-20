@@ -5,7 +5,7 @@ using System.Text;
 namespace SereneApi.Abstractions.Authorization.Types
 {
     /// <summary>
-    /// Authenticates an API request using Basic authentication with the specified Username and Password.
+    /// Authorizes an API request using Basic authorization with the specified Username and Password.
     /// </summary>
     public class BasicAuthorization: IAuthorization
     {
@@ -18,8 +18,8 @@ namespace SereneApi.Abstractions.Authorization.Types
         /// <summary>
         /// Creates a new instance of <see cref="BasicAuthorization"/>.
         /// </summary>
-        /// <param name="username">The username to be authenticated with.</param>
-        /// <param name="password">The password to be authenticated with.</param>
+        /// <param name="username">The username to be authorized with.</param>
+        /// <param name="password">The password to be authorized with.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         /// <exception cref="EncoderFallbackException"></exception>
         public BasicAuthorization([NotNull] string username, [NotNull] string password)

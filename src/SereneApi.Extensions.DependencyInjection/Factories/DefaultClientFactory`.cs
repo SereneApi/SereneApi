@@ -1,4 +1,4 @@
-﻿using DeltaWare.Dependencies;
+﻿using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using SereneApi.Abstractions.Authorisation.Authorizers;
 using SereneApi.Abstractions.Authorization;
@@ -18,23 +18,23 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
     /// Configures the API to use <see cref="IHttpClientFactory"/>.
     /// </summary>
     /// <typeparam name="TApi">The API that will be using <see cref="IHttpClientFactory"/>.</typeparam>
-    internal class ClientFactory<TApi>: IClientFactory
+    internal class DefaultClientFactory<TApi>: IClientFactory
     {
         private readonly IDependencyProvider _dependencies;
 
         private readonly string _handlerName;
 
         /// <summary>
-        /// Specifies if the <see cref="ClientFactory{TApi}"/> has been configured.
+        /// Specifies if the <see cref="DefaultClientFactory{TApi}"/> has been configured.
         /// </summary>
         public bool IsConfigured { get; private set; }
 
         /// <summary>
-        /// Creates a new instance of <see cref="ClientFactory{TApi}"/>.
+        /// Creates a new instance of <see cref="DefaultClientFactory{TApi}"/>.
         /// </summary>
         /// <param name="dependencies">The dependencies that can be used.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public ClientFactory([NotNull] IDependencyProvider dependencies)
+        public DefaultClientFactory([NotNull] IDependencyProvider dependencies)
         {
             _dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
             _handlerName = GenerateClientName();
@@ -56,7 +56,7 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
         }
 
         /// <summary>
-        /// Configures the <see cref="ClientFactory{TApi}"/>.
+        /// Configures the <see cref="DefaultClientFactory{TApi}"/>.
         /// </summary>
         /// <exception cref="ArgumentException">Thrown when an invalid value is provided.</exception>
         public void Configure()

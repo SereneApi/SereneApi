@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Tests.Mock
 {
-    public class ApiHandlerWrapper: ApiHandler, IApiHandlerWrapper
+    public class BaseApiHandlerWrapper: BaseApiHandler, IApiHandlerWrapper
     {
-        public ApiHandlerWrapper(IApiOptions options) : base(options)
+        public BaseApiHandlerWrapper(IApiOptions options) : base(options)
         {
         }
 

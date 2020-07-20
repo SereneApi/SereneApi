@@ -1,17 +1,17 @@
 ﻿namespace SereneApi.Abstractions.Authorization
 {
     /// <summary>
-    /// Authenticates an API request.
+    /// Authorizes an API request.
     /// </summary>
     public interface IAuthorization
     {
         /// <summary>
-        /// Specifies the authentication scheme.
+        /// Specifies the authorization scheme.
         /// </summary>
         string Scheme { get; }
 
         /// <summary>
-        /// Specifies the authentication parameter.
+        /// Specifies the authorization parameter.
         /// </summary>
         string Parameter { get; }
     }

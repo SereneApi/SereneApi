@@ -22,12 +22,7 @@ namespace SereneApi.Abstractions.Queries
         /// <param name="formatter">The default formatter, overridden by <see cref="QueryConverterAttribute"/>.</param>
         public QueryFactory([AllowNull] ObjectToStringFormatter formatter = null)
         {
-            if(formatter == null)
-            {
-                _formatter = DefaultQueryFormatter;
-            }
-
-            _formatter = formatter;
+            _formatter = formatter ?? DefaultQueryFormatter;
         }
 
         /// <inheritdoc>
@@ -143,7 +138,7 @@ namespace SereneApi.Abstractions.Queries
                 {
                     if(required)
                     {
-                        throw new QueryRequiredException(queryProperty.Name);
+                        throw new RequiredQueryElementException(queryProperty.Name);
                     }
 
                     queryString = string.Empty;

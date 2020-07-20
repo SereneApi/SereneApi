@@ -1,4 +1,4 @@
-﻿using DeltaWare.Dependencies;
+﻿using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.Configuration;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Helpers;
@@ -30,20 +30,20 @@ namespace SereneApi.Extensions.DependencyInjection.Options
 
             using IDependencyProvider provider = Dependencies.BuildProvider();
 
-            ISereneApiConfiguration sereneApiConfiguration = provider.GetDependency<ISereneApiConfiguration>();
+            IDefaultApiConfiguration defaultApiConfiguration = provider.GetDependency<IDefaultApiConfiguration>();
 
             if(string.IsNullOrWhiteSpace(resourcePath))
             {
                 if(resourcePath != string.Empty)
                 {
-                    resourcePath = sereneApiConfiguration.ResourcePath;
+                    resourcePath = defaultApiConfiguration.ResourcePath;
                 }
             }
 
             ConnectionSettings = new ConnectionSettings(source, resource, resourcePath)
             {
-                Timeout = sereneApiConfiguration.Timeout,
-                RetryAttempts = sereneApiConfiguration.RetryCount
+                Timeout = defaultApiConfiguration.Timeout,
+                RetryAttempts = defaultApiConfiguration.RetryCount
             };
 
             #region Timeout

@@ -4,12 +4,12 @@ using System.Diagnostics.CodeAnalysis;
 namespace SereneApi.Abstractions.Authorisation.Authorizers
 {
     /// <summary>
-    /// Specifies the token information, used for authentication and token refreshing.
+    /// Specifies the token information, used for authorization and token refreshing.
     /// </summary>
     public class TokenAuthResult
     {
         /// <summary>
-        /// Specifies the token to be used for authentication.
+        /// Specifies the token to be used for authorization.
         /// </summary>
         public string Token { get; }
 
@@ -18,7 +18,7 @@ namespace SereneApi.Abstractions.Authorisation.Authorizers
         /// </summary>
         public int ExpiryTime { get; }
 
-        /// <param name="token">The token to be used for authentication.</param>
+        /// <param name="token">The token to be used for authorization.</param>
         /// <param name="expiryTime">The amount of time in seconds before the token expires.</param>
         /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
         /// <remarks>An expiry time of 0 specifies that the token does not expire.</remarks>

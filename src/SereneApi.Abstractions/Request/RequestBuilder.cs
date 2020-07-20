@@ -1,4 +1,4 @@
-﻿using DeltaWare.Dependencies;
+﻿using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Routing;
@@ -38,11 +38,22 @@ namespace SereneApi.Abstractions.Request
 
         private string _suppliedResource;
 
-        public RequestBuilder(IDependencyProvider dependencies, string resource = null)
+        /// <summary>
+        /// Creates a new instance of <see cref="RequestBuilder"/>.
+        /// </summary>
+        /// <param name="options">The options to be used for building requests.</param>
+        /// <param name="resource">The resource that the request is intended for.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        public RequestBuilder([NotNull] IApiOptions options, [AllowNull] string resource = null)
         {
-            _routeFactory = dependencies.GetDependency<IRouteFactory>();
-            _queryFactory = dependencies.GetDependency<IQueryFactory>();
-            _serializer = dependencies.GetDependency<ISerializer>();
+            if(options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            _routeFactory = options.RetrieveRequiredDependency<IRouteFactory>();
+            _queryFactory = options.RetrieveRequiredDependency<IQueryFactory>();
+            _serializer = options.RetrieveRequiredDependency<ISerializer>();
             _resource = resource;
         }
 

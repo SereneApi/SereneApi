@@ -1,13 +1,13 @@
-﻿using DeltaWare.Dependencies;
+﻿using DeltaWare.Dependencies.Abstractions;
 using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Abstractions.Configuration
 {
     /// <summary>
-    /// Configures <see cref="ISereneApiConfiguration"/>.
+    /// Configures <see cref="IDefaultApiConfiguration"/>.
     /// </summary>
-    public interface ISereneApiConfigurationBuilder
+    public interface IDefaultApiConfigurationBuilder
     {
         /// <summary>
         /// Specifies the default resource path if it has not been provided.
@@ -30,12 +30,5 @@ namespace SereneApi.Abstractions.Configuration
         /// <param name="factory">Builds the dependencies.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         void OverrideDependencies([NotNull] Action<IDependencyCollection> factory);
-
-        /// <summary>
-        /// Adds the specified dependencies.
-        /// </summary>
-        /// <param name="factory">Builds the dependencies.</param>
-        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        void AddDependencies([NotNull] Action<IDependencyCollection> factory);
     }
 }

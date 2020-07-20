@@ -1,4 +1,5 @@
 ﻿using DeltaWare.Dependencies;
+using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Authorization;
 using SereneApi.Abstractions.Authorization.Types;
@@ -15,7 +16,7 @@ using System.Net;
 namespace SereneApi.Abstractions.Options
 {
     /// <inheritdoc cref="IApiOptionsConfigurator"/>
-    public class ApiOptionsBuilder: IApiOptionsBuilder
+    public class ApiOptionsBuilder: IApiOptionsBuilder, IApiOptionsExtensions
     {
         /// <inheritdoc cref="ICoreOptions.Dependencies"/>
         public IDependencyCollection Dependencies { get; } = new DependencyCollection();
@@ -35,7 +36,7 @@ namespace SereneApi.Abstractions.Options
 
             using IDependencyProvider provider = Dependencies.BuildProvider();
 
-            ISereneApiConfiguration configuration = provider.GetDependency<ISereneApiConfiguration>();
+            IDefaultApiConfiguration configuration = provider.GetDependency<IDefaultApiConfiguration>();
 
             if(string.IsNullOrWhiteSpace(resourcePath))
             {

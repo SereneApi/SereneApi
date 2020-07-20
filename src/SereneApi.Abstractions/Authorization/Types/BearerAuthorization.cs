@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace SereneApi.Abstractions.Authorization.Types
 {
     /// <summary>
-    /// Authenticates an API request using Bearer authentication.
+    /// Authorizes an API request using Bearer authorization.
     /// </summary>
     public class BearerAuthorization: IAuthorization
     {
@@ -17,7 +17,7 @@ namespace SereneApi.Abstractions.Authorization.Types
         /// <summary>
         /// Creates a new instance of <see cref="BearerAuthorization"/>.
         /// </summary>
-        /// <param name="token">The token to be used for Bearer authentication.</param>
+        /// <param name="token">The token to be used for Bearer authorization.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         public BearerAuthorization([NotNull] string token)
         {

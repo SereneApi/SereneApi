@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace SereneApi.Abstractions.Queries
 {
     /// <summary>
-    /// Converts an object into a string to be used when building queries.
+    /// Converts an object into a query string.
     /// </summary>
     public interface IQueryConverter
     {

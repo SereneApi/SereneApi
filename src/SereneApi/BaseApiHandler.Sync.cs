@@ -13,60 +13,57 @@ using System.Threading.Tasks;
 
 namespace SereneApi
 {
-    // Async Implementation
-    public abstract partial class ApiHandler
+    public abstract partial class BaseApiHandler
     {
         #region Perform Methods
 
         /// <summary>
-        /// Performs an API Request Asynchronously.
+        /// Performs an API Request Synchronously.
         /// </summary>
         /// <param name="method">The <see cref="Method"/> that will be used for the request.</param>
         /// <param name="factory">The <see cref="IRequest"/> that will be performed.</param>
-        protected Task<IApiResponse> PerformRequestAsync(Method method, [AllowNull] Expression<Func<IRequest, IRequestCreated>> factory = null)
+        protected IApiResponse PerformRequest(Method method, Expression<Func<IRequest, IRequestCreated>> factory = null)
         {
             CheckIfDisposed();
 
-            RequestBuilder requestBuilder = new RequestBuilder(Dependencies, Connection.Resource);
+            RequestBuilder requestBuilder = new RequestBuilder(Options, Connection.Resource);
 
             requestBuilder.UsingMethod(method);
 
-            // The request is optional, so a null check is applied.
-            factory?.Compile().Invoke(requestBuilder);
-
-            IApiRequest required = requestBuilder.GetRequest();
-
-            return PerformRequestAsync(required);
-        }
-
-        /// <summary>
-        /// Performs an API Request Asynchronously.
-        /// </summary>
-        /// <param name="method">The <see cref="Method"/> that will be used for the request.</param>
-        /// <param name="factory">The <see cref="IRequest"/> that will be performed.</param>
-        /// <typeparam name="TResponse">The <see cref="Type"/> to be deserialized from the body of the response.</typeparam>
-        protected Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(Method method, [AllowNull] Expression<Func<IRequest, IRequestCreated>> factory = null)
-        {
-            CheckIfDisposed();
-
-            RequestBuilder requestBuilder = new RequestBuilder(Dependencies, Connection.Resource);
-
-            requestBuilder.UsingMethod(method);
-
-            // The request is optional, so a null check is applied.
             factory?.Compile().Invoke(requestBuilder);
 
             IApiRequest request = requestBuilder.GetRequest();
 
-            return PerformRequestAsync<TResponse>(request);
+            return PerformRequest(request);
         }
 
         /// <summary>
-        /// Performs an API Request Asynchronously.
+        /// Performs an API Request Synchronously.
+        /// </summary>
+        /// <param name="method">The <see cref="Method"/> that will be used for the request.</param>
+        /// <param name="factory">The <see cref="IRequest"/> that will be performed.</param>
+        /// <typeparam name="TResponse">The <see cref="Type"/> to be deserialized from the body of the response.</typeparam>
+        protected IApiResponse<TResponse> PerformRequest<TResponse>(Method method, Expression<Func<IRequest, IRequestCreated>> factory = null)
+        {
+            CheckIfDisposed();
+
+            RequestBuilder requestBuilder = new RequestBuilder(Options, Connection.Resource);
+
+            requestBuilder.UsingMethod(method);
+
+            factory?.Compile().Invoke(requestBuilder);
+
+            IApiRequest request = requestBuilder.GetRequest();
+
+            return PerformRequest<TResponse>(request);
+        }
+
+        /// <summary>
+        /// Performs an API Request Synchronously.
         /// </summary>
         /// <param name="request">The request to be performed.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        protected virtual async Task<IApiResponse> PerformRequestAsync([NotNull] IApiRequest request)
+        protected virtual IApiResponse PerformRequest([NotNull] IApiRequest request)
         {
             if(request == null)
             {
@@ -83,7 +80,7 @@ namespace SereneApi
             {
                 if(request.Content == null)
                 {
-                    responseMessage = await RetryRequestAsync(async client =>
+                    responseMessage = RetryRequest(async client =>
                     {
                         return method switch
                         {
@@ -101,7 +98,7 @@ namespace SereneApi
                 {
                     HttpContent content = (HttpContent)request.Content.GetContent();
 
-                    responseMessage = await RetryRequestAsync(async client =>
+                    responseMessage = RetryRequest(async client =>
                     {
                         return method switch
                         {
@@ -145,14 +142,13 @@ namespace SereneApi
             }
         }
 
-
         /// <summary>
-        /// Performs an API Request Asynchronously.
+        /// Performs an API Request Synchronously.
         /// </summary>
         /// <typeparam name="TResponse">The <see cref="Type"/> to be deserialized from the body of the response.</typeparam>
         /// <param name="request">The request to be performed.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        protected virtual async Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>([NotNull] IApiRequest request)
+        protected virtual IApiResponse<TResponse> PerformRequest<TResponse>([NotNull] IApiRequest request)
         {
             if(request == null)
             {
@@ -169,7 +165,7 @@ namespace SereneApi
             {
                 if(request.Content == null)
                 {
-                    responseMessage = await RetryRequestAsync(async client =>
+                    responseMessage = RetryRequest(async client =>
                     {
                         return method switch
                         {
@@ -187,7 +183,7 @@ namespace SereneApi
                 {
                     HttpContent content = (HttpContent)request.Content.GetContent();
 
-                    responseMessage = await RetryRequestAsync(async client =>
+                    responseMessage = RetryRequest(async client =>
                     {
                         return method switch
                         {
@@ -204,7 +200,7 @@ namespace SereneApi
                     }, endpoint);
                 }
 
-                return await ProcessResponseAsync<TResponse>(responseMessage);
+                return ProcessResponse<TResponse>(responseMessage);
             }
             catch(ArgumentException)
             {
@@ -238,21 +234,24 @@ namespace SereneApi
         /// <param name="requestAction">The request to be performed.</param>
         /// <param name="route">The route to be inserted into the log.</param>
         /// <returns></returns>
-        private async Task<HttpResponseMessage> RetryRequestAsync(Func<HttpClient, Task<HttpResponseMessage>> requestAction, Uri route)
+        private HttpResponseMessage RetryRequest(Func<HttpClient, Task<HttpResponseMessage>> requestAction, Uri route)
         {
             bool retryingRequest;
             int requestsAttempted = 0;
 
             do
             {
-
                 try
                 {
-                    IClientFactory clientFactory = Dependencies.GetDependency<IClientFactory>();
+                    IClientFactory clientFactory = Options.RetrieveRequiredDependency<IClientFactory>();
 
-                    using HttpClient client = await clientFactory.BuildClientAsync();
+                    using HttpClient client = clientFactory.BuildClientAsync().Result;
 
-                    HttpResponseMessage responseMessage = await requestAction.Invoke(client);
+                    // Using Task.Result bubbles the exception up to the caller.
+                    // This means the Try Catch inside of RetryRequest does not catch the TaskCanceledException.
+                    // The Try Catch in this method IS REQUIRED for the retry to functionality to work.
+                    // To get around this, Task.GetAwaiter().GetResult() is necessary.
+                    HttpResponseMessage responseMessage = requestAction.Invoke(client).GetAwaiter().GetResult();
 
                     return responseMessage;
                 }
@@ -286,7 +285,7 @@ namespace SereneApi
         /// </summary>
         /// <typeparam name="TResponse">The type to be deserialized from the response</typeparam>
         /// <param name="responseMessage">The <see cref="HttpResponseMessage"/> to process</param>
-        private async Task<IApiResponse<TResponse>> ProcessResponseAsync<TResponse>(HttpResponseMessage responseMessage)
+        private IApiResponse<TResponse> ProcessResponse<TResponse>(HttpResponseMessage responseMessage)
         {
             if(responseMessage == null)
             {
@@ -297,7 +296,7 @@ namespace SereneApi
 
             Status status = responseMessage.StatusCode.ToStatus();
 
-            if(!status.IsSuccessCode())
+            if(!responseMessage.IsSuccessStatusCode)
             {
                 _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}", responseMessage.StatusCode, responseMessage.ReasonPhrase);
 
@@ -313,9 +312,9 @@ namespace SereneApi
 
             try
             {
-                ISerializer serializer = Dependencies.GetDependency<ISerializer>();
+                ISerializer serializer = Options.RetrieveRequiredDependency<ISerializer>();
 
-                TResponse response = await serializer.DeserializeAsync<TResponse>(new HttpContentResponse(responseMessage.Content));
+                TResponse response = serializer.Deserialize<TResponse>(new HttpContentResponse(responseMessage.Content));
 
                 return ApiResponse<TResponse>.Success(status, response);
             }

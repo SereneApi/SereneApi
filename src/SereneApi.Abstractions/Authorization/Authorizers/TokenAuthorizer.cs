@@ -1,4 +1,4 @@
-﻿using DeltaWare.Dependencies;
+﻿using DeltaWare.Dependencies.Abstractions;
 using SereneApi.Abstractions.Authorization;
 using SereneApi.Abstractions.Authorization.Types;
 using SereneApi.Abstractions.Factories;
@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 namespace SereneApi.Abstractions.Authorisation.Authorizers
 {
     /// <summary>
-    /// Authenticates using the specified API call returning a <see cref="BearerAuthorization"/> result.
+    /// Authorizes using the specified API call returning a <see cref="BearerAuthorization"/> result.
     /// </summary>
-    /// <typeparam name="TApi">The API that will be used to authenticate with.</typeparam>
+    /// <typeparam name="TApi">The API that will be used to authorize with.</typeparam>
     /// <typeparam name="TDto">The method in which the token will be retrieved.</typeparam>
     public class TokenAuthorizer<TApi, TDto>: IAuthorizer where TApi : class, IDisposable where TDto : class
     {
@@ -23,7 +23,7 @@ namespace SereneApi.Abstractions.Authorisation.Authorizers
         private readonly Func<TDto, TokenAuthResult> _extractTokenFunction;
 
         /// <summary>
-        /// The dependencies that can be used to authenticate with.
+        /// The dependencies that can be used to authorize with.
         /// </summary>
         protected IDependencyProvider Dependencies { get; }
 
@@ -32,16 +32,16 @@ namespace SereneApi.Abstractions.Authorisation.Authorizers
         /// </summary>
         protected int TokenExpiryTime { get; private set; }
 
-        /// <summary>
-        /// The authentication result.
+        /// <summary> 
+        /// The authorization result.
         /// </summary>
         protected BearerAuthorization Authorization { get; private set; }
 
         /// <summary>
         /// Creates a new instance of <seealso cref="TokenAuthorizer{TApi,TDto}"/>.
         /// </summary>
-        /// <param name="dependencies">The dependencies the <see cref="TokenAuthorizer{TApi,TDto}"/> can use to authenticate with.</param>
-        /// <param name="apiCall">The API call to authenticate with.</param>
+        /// <param name="dependencies">The dependencies the <see cref="TokenAuthorizer{TApi,TDto}"/> can use to authorize with.</param>
+        /// <param name="apiCall">The API call to authorize with.</param>
         /// <param name="retrieveToken">The method in which the token will be retrieved.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         public TokenAuthorizer([NotNull] IDependencyProvider dependencies, [NotNull] Func<TApi, Task<IApiResponse<TDto>>> apiCall, [NotNull] Func<TDto, TokenAuthResult> retrieveToken = null)
@@ -53,9 +53,9 @@ namespace SereneApi.Abstractions.Authorisation.Authorizers
         }
 
         /// <summary>
-        /// Performs the specified authentication request, retrieving the <seealso cref="TokenAuthResult"/>.
+        /// Performs the specified authorization request, retrieving the <seealso cref="TokenAuthResult"/>.
         /// </summary>
-        /// <returns>The authentication result as a <see cref="BearerAuthorization"/>.</returns>
+        /// <returns>The authorization result as a <see cref="BearerAuthorization"/>.</returns>
         /// <exception cref="NullReferenceException">Thrown we no response was received.</exception>
         public virtual async Task<IAuthorization> AuthorizeAsync()
         {
