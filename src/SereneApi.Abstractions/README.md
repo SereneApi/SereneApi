@@ -6,8 +6,8 @@ Add the latest version of the NuGet package to your project.
 	*	**[Authorization Types](#authorization-types)**
 	*	**[Authorizers](#authorizers)**
 *	**[Configuration](#configuration)**
-	*	**[Connection Settings](#connection-settings)**
-	*	**[Default Configuration](#default-configuration)**
+	*	**[Connection Settings](#connectionsettings)**
+	*	**[Default Configuration](#defaultconfiguration)**
 *	**[Factories](#factories)**
 *	**[Handler](#handler)**
 	*	**[IApiHandler](#iapihandler)**
@@ -25,8 +25,8 @@ Contains all of the elements used in authorization. It is possible to implement 
 
 ### IAuthorization
 The *IAuthorization* interface is the primary method for authorization, excluding authentication using *ICredentials*. *IAuthorization* has two properties which are used to generate the 'authorization' header.
-*	**Scheme** - Specifies the authorization scheme.
-*	**Parameter** - Specifies the authorization parameter.
+*	**Scheme** - *Specifies the authorization scheme*.
+*	**Parameter** - *Specifies the authorization parameter*.
 
 It is possible to implement a custom *IAuthorization* type to extend the authorization methods.
 >**BEST PRACTICE:** All implementations of *IAuthorization* should follow the naming convention **Type**Authorization. Where type is *Bearer* or *Basic* etc.
@@ -48,42 +48,34 @@ Each type of authorization gets it's name from the method it uses to authorize. 
 When *IAuthorization.AuthorizeAsync* is called in the example above it performs an API call using *IAuthenticationApi*. This returns a *TokenDto* which contains information used to generate a *BearerAuthorization* value. It also provides an expiry time that specifies how long until the token expires. *AuthenticateAsync* only calls the API if no token is present or the token has expired. This demonstrates the power of *IAuthorizer* as it can provided seamless back-end authorization with very little code required.
 >**NOTE:** *IAuthorize.AuthorizeAsync* should only be called before authorizing or creating the HTTP request.
 >
->**BEST PRACTICE:** When implementing *IAuthorize* it should only authorize when there is no authorization present or if the previous authorization has expired.
->This is due to the fact that authorizing every time could degrade application performance, especially if authorizing with an external API.
+>**BEST PRACTICE:** When implementing *IAuthorize* it should only authorize when there is no authorization present or if the previous authorization has expired. This is due to the fact that authorizing every time could degrade application performance, especially if authorizing with an external API.
 >
 >**SEE:** *[TokenAuthorizer](https://github.com/armorall171/SereneApi/blob/master/src/SereneApi.Abstractions/Authorization/Authorizers/TokenAuthorizer.cs)* and *[InjectedTokenAuthorizer](https://github.com/armorall171/SereneApi/blob/master/src/SereneApi.Extensions.DependencyInjection/Authorizers/InjectedTokenAuthorizer.cs)* for more details on *IAuthorize* implementation. 
 ## Configuration
 Contains all of the elements used for configuration. It is possible to implement the interfaces in this namespace to extend the functionality of configuration.
-### Connection Settings
+### ConnectionSettings
 *IConnectionSettings* contains all of the information required for making requests against an API. 
 
-*	**Base Address** | *Required*
-	Specifies the hosts address.
+*	**BaseAddress** | *Required*<br/>Specifies the hosts address.
 	
-*	**Resource** | *Optional*
-	Specifies the resource that will be consumed.
+*	**Resource** | *Optional*<br/>Specifies the resource that will be consumed.
 	>**NOTE:** This value can be provided or overridden using the *AgainstResource* method when performing a request.
 	
-* **Resource Path** | *Optional*
-	Specified the intermediate path between the base address and the resource.
+* **ResourcePath** | *Optional*<br/>Specified the intermediate path between the base address and the resource.
 	>**DEFAULT:** "api/";
 
-* **Timeout** | *Optional*
-	Specifies the amount of time in seconds the connection will be kept alive before being timed-out.
+* **Timeout** | *Optional*<br/>Specifies the amount of time in seconds the connection will be kept alive before being timed-out.
 	>**DEFAULT:** 30 seconds;
 	
-* **Retry Attempts** | *Optional*
-	Specifies how many times the connection will be retried after it has timed-out.
-### Default Configuration
+* **RetryAttempts** | *Optional*<br/>Specifies how many times the connection will be retried after it has timed-out.
+### DefaultConfiguration
 *IDefaultApiConfiguration* specifies default configuration for all APIs. The configuration is already configured out of the box, but it is possible to override these values. This allows global configuration and dependency extension to be applied easily. The following default configuration can be used.
 *	**Resource Path**
 *	**Timeout**
 *	**Retry Attempts**
 *	**Dependencies**
-	*	**Add Dependency**
-		> Adds a single dependency to the collection, this is handy for adding single new dependencies or overriding an existing.
-	*	**Override Dependencies**
-	This overrides all dependencies with the supplied dependencies.
+	*	**Add Dependency**<br/>Adds a single dependency to the collection, this is handy for adding single new dependencies or overriding an existing.
+	*	**Override Dependencies**<br/>This overrides all dependencies with the supplied dependencies.
 		>**NOTE:** This will override all default dependencies. Use with *caution*.
 
 These values can be overridden using the *ConfigureSereneApi* method.
@@ -107,10 +99,8 @@ Contains abstrations for API handlers.
 The *IApiHandler* interface needs to be implemented to use any of the *RegisterApi* methods. The interface is only required for the handler implementation.
 ### ICrudApi
 When Inherited; provides the necessary methods for implementing a CRUD API consumer. This interface has two generic parameters that must be provided.
-*	**TResource**
-		Specifies the type that defines the APIs resource, this resource will be retrieved and provided by the API.
-*	**TIdentifier**
-		Specifies the identifier type used by the API to identify the resource.
+*	**TResource**<br/>	Specifies the type that defines the APIs resource, this resource will be retrieved and provided by the API.
+*	**TIdentifier**<br/> Specifies the identifier type used by the API to identify the resource.
 	>**NOTE** Must be  struct type value.
 
 The interface defines the following methods.
@@ -128,6 +118,7 @@ Contains abstractions and components used for creating and submitting
 API options. It is possible to override or extend functionality submitted to an API handler using this namespace.
 
 ### IApiOptions
+Contains options and dependencies that can be used by an API's handler. Options will contain dependencies base on the supplied dependencies added with *IApiOptionsConfigurator* and *IApiOptionsExtensions*.
 ### IApiOptionsBuilder
 Defines the build options method. This interface exists to create separation between building and configuration of options. Both *IApiOptionsConfigurator* and *IApiOptionsBuilder* should both be inherited together.
 >**SEE:** *[ApiOptionsBuilder](https://github.com/armorall171/SereneApi/blob/master/src/SereneApi.Abstractions/Options/ApiOptionsBuilder.cs)* for more details on implementation.
@@ -181,20 +172,16 @@ Converts the specified type into a query string before being appended to the end
 The query key will be based off of the property name unless otherwise overridden by *QueryKeyAttribute*.
 
 The queries value is based off of a default delegate that is supplied in the constructor. A custom delegate can be provided, but it is recommended to use *QueryConverterAttribute*.
-*	**RequiredAttribute**
-		The specific property must be provided.
+*	**RequiredAttribute**<br/>The specific property must be provided.
 	>**NOTE:** *RequiredQueryElementException* will be thrown if the value was not provided.
-*	**QueryKeyAttribute**
-		The specific string value will be used as the key.
-*	**QueryConverterAttribute**
-	The specific converter will be used to convert the property value to a string. The converter must implement *QueryConverter* where the generic parameter is the type to be converted.
+	
+*	**QueryKeyAttribute**<br/>The specific string value will be used as the key.
+*	**QueryConverterAttribute**<br/>The specific converter will be used to convert the property value to a string. The converter must implement *QueryConverter* where the generic parameter is the type to be converted.
 	>**NOTE:** It is possible to implement a custom converter using 
 	*IQueryConverter*.
 	
-* **MinLengthAttribute**
-	Specifies the minimum length of the query value. Applied after conversion, if value is not provided this will not be checked.
-* **MaxLengthAttribute**
-	Specifies the maximum length of the query value. Applies after conversion, if value is not provided this will not be checked.
+* **MinLengthAttribute**<br/>Specifies the minimum length of the query value. Applied after conversion, if value is not provided this will not be checked.
+* **MaxLengthAttribute**<br/>Specifies the maximum length of the query value. Applies after conversion, if value is not provided this will not be checked.
 
 ### Attribute Examples
 ```csharp
@@ -213,14 +200,21 @@ public class FooDto
 {
 	[Required]
 	[QueryKey("foo_id")]
-	public long Id{ get; set; }
+	public long Id { get; set; }
 
 	// Key will be 'FooDate'
 	[QueryConverter(typeof(Rfc3339QueryConverter))]
-	public DateTime FooDate{ get; set; }
+	public DateTime FooDate { get; set; }
 }
 ```
 ## Request
 ## Response
 ## Routing
+Contains abstracted components used for generating request routes.
 ## Serialization
+Contains abstracted components used for serializing requests and responses.
+
+### ISerializer
+*ISerializer* defines two methods, *Serialize* and *Deserialize*. Both with an asynchronous and synchronous variant. The content within the bodies of requests and responses is processed using this interface.
+
+By default *DefaultJsonSerializer* is used, it is possible to configure settings for both serialization and deserialization.  

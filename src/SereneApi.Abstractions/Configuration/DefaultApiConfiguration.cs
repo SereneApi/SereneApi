@@ -43,10 +43,10 @@ namespace SereneApi.Abstractions.Configuration
             _dependencyFactory += dependencies => dependencies.TryAddTransient<IDefaultApiConfiguration>(() => this);
         }
 
-        /// <inheritdoc cref="IDefaultApiConfigurationBuilder.AddDependencies"/>
+        /// <inheritdoc cref="IDefaultApiConfigurationExtensions.AddDependencies"/>
         public void AddDependencies(Action<IDependencyCollection> factory)
         {
-            _dependencyFactory += factory ?? throw new ArgumentNullException(nameof(factory)); ;
+            _dependencyFactory += factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         /// <inheritdoc cref="IDefaultApiConfiguration.GetOptionsBuilder"/>

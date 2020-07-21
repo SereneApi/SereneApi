@@ -62,7 +62,7 @@ namespace SereneApi.Abstractions.Serialization
 
             string contentString = content.GetContentString();
 
-            return System.Text.Json.JsonSerializer.Deserialize<TObject>(contentString, _deserializerOptions);
+            return JsonSerializer.Deserialize<TObject>(contentString, _deserializerOptions);
         }
 
         /// <inheritdoc>
