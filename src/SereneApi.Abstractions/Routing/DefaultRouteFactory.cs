@@ -168,9 +168,9 @@ namespace SereneApi.Abstractions.Routing
             // This should not need to be done, but if it is not done a format that only support 1 parameter but is supplied more than 1 parameter will not fail.
             int expectedFormatLength = endpointTemplate.Length - templateParameters.Length * 3;
 
-            for(int i = 0; i < templateParameters.Length; i++)
+            foreach(object parameter in templateParameters)
             {
-                expectedFormatLength += templateParameters[i].ToString().Length;
+                expectedFormatLength += parameter.ToString().Length;
             }
 
             #endregion

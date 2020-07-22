@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace DependencyInjection
+namespace DependencyInjection.Service
 {
     public class Program
     {

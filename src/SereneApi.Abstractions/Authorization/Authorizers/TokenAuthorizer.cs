@@ -1,5 +1,4 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Abstractions.Authorization;
 using SereneApi.Abstractions.Authorization.Types;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Response;
@@ -7,7 +6,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
-namespace SereneApi.Abstractions.Authorisation.Authorizers
+namespace SereneApi.Abstractions.Authorization.Authorizers
 {
     /// <summary>
     /// Authorizes using the specified API call returning a <see cref="BearerAuthorization"/> result.

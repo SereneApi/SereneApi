@@ -1,7 +1,6 @@
-﻿using SereneApi.Abstractions.Authorization;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
-namespace SereneApi.Abstractions.Authorisation.Authorizers
+namespace SereneApi.Abstractions.Authorization.Authorizers
 {
     /// <summary>
     /// Dynamically authorizes an API request.
