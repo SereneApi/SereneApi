@@ -44,7 +44,7 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
         /// <exception cref="MethodAccessException">Thrown when this method is called before the Configure method.</exception>
         public Task<HttpClient> BuildClientAsync()
         {
-            if (!IsConfigured)
+            if(!IsConfigured)
             {
                 throw new MethodAccessException("ClientFactory must be configured before this method can be called.");
             }

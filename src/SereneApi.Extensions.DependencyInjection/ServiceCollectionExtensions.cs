@@ -235,10 +235,11 @@ namespace SereneApi.Extensions.DependencyInjection
             factory.Invoke(builder);
 
             builder.Dependencies.AddSingleton(() => services, Binding.Unbound);
-            builder.Dependencies.AddScoped<IServiceProvider>(p => p.GetDependency<IServiceCollection>().BuildServiceProvider());
+            builder.Dependencies.AddTransient<IServiceProvider>(p => p.GetDependency<IServiceCollection>().BuildServiceProvider());
             builder.Dependencies.AddScoped<ILogger>(p =>
             {
-                IServiceProvider serviceProvider = p.GetDependency<IServiceProvider>();
+                IServiceProvider serviceProvider = (ServiceProvider)p.GetDependency<IServiceProvider>();
+
                 ILoggerFactory loggerFactory = serviceProvider.GetService<ILoggerFactory>();
 
                 return loggerFactory?.CreateLogger<TApi>();
@@ -292,10 +293,11 @@ namespace SereneApi.Extensions.DependencyInjection
             factory.Invoke(builder, provider);
 
             builder.Dependencies.AddSingleton(() => services, Binding.Unbound);
-            builder.Dependencies.AddScoped<IServiceProvider>(p => p.GetDependency<IServiceCollection>().BuildServiceProvider());
+            builder.Dependencies.AddTransient<IServiceProvider>(p => p.GetDependency<IServiceCollection>().BuildServiceProvider());
             builder.Dependencies.AddScoped<ILogger>(p =>
             {
-                IServiceProvider serviceProvider = p.GetDependency<IServiceProvider>();
+                IServiceProvider serviceProvider = (ServiceProvider)p.GetDependency<IServiceProvider>();
+
                 ILoggerFactory loggerFactory = serviceProvider.GetService<ILoggerFactory>();
 
                 return loggerFactory?.CreateLogger<TApi>();
