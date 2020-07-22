@@ -26,11 +26,11 @@ namespace SereneApi.Abstractions.Request.Content
             MediaType = MediaType.Json;
         }
 
-        public JsonContent(string content, Encoding encoding, MediaType mediaTypeType)
+        public JsonContent(string content, Encoding encoding, MediaType mediaType)
         {
             Content = content;
             Encoding = encoding;
-            MediaType = mediaTypeType;
+            MediaType = mediaType;
         }
 
         public object GetContent()
