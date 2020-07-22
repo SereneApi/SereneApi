@@ -72,11 +72,6 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
                 throw new NullReferenceException("No response was received.");
             }
 
-            TokenAuthResult token = RetrieveToken(response);
-
-            TokenExpiryTime = token.ExpiryTime;
-            Authorization = new BearerAuthorization(token.Token);
-
             return Authorization;
         }
 
@@ -95,7 +90,7 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
 
             if(api == null)
             {
-                throw new NullReferenceException($"Could not find any registered instances of {typeof(TApi).Name}");
+                throw new NullReferenceException($"Could not find any registered instances of {typeof(TApi).Name} in the ApiHandler");
             }
 
             return api;
@@ -116,7 +111,7 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
         /// <param name="response">The response to retrieve the token from.</param>
         /// <exception cref="Exception">Thrown when the response was not successful.</exception>
         /// <exception cref="NullReferenceException">Thrown when a null token is provided.</exception>
-        protected virtual TokenAuthResult RetrieveToken(IApiResponse<TDto> response)
+        protected virtual void RetrieveToken(IApiResponse<TDto> response)
         {
             if(!response.WasSuccessful || response.HasNullResult())
             {
@@ -135,7 +130,8 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
                 throw new NullReferenceException("No token was retrieved.");
             }
 
-            return token;
+            TokenExpiryTime = token.ExpiryTime;
+            Authorization = new BearerAuthorization(token.Token);
         }
     }
 }
