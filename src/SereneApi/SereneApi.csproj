@@ -13,14 +13,14 @@
     <Product>SereneApi</Product>
     <PackageProjectUrl>https://github.com/armorall171/SereneApi#what-is-serene-api</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.1.0.1</Version>
+    <Version>1.1.0.2</Version>
     <NeutralLanguage>en-AU</NeutralLanguage>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
     <PackageIcon>nuget_logo.png</PackageIcon>
     <PackageId>SereneApi</PackageId>
-    <PackageReleaseNotes>* UPDATED - SereneApi.Abstractions</PackageReleaseNotes>
+    <PackageReleaseNotes>UPDATED - SereneApi.Abstractions</PackageReleaseNotes>
       <IncludeSymbols>true</IncludeSymbols>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
