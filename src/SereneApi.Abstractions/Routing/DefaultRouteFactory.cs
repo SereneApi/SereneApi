@@ -73,7 +73,7 @@ namespace SereneApi.Abstractions.Routing
         /// <inheritdoc cref="IRouteFactory.AddQuery"/>
         public void AddQuery([NotNull] string queryString)
         {
-            if(string.IsNullOrWhiteSpace(_query))
+            if(string.IsNullOrWhiteSpace(queryString))
             {
                 throw new ArgumentNullException(nameof(queryString));
             }

@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.1.0.0</Version>
+    <Version>1.1.0.1</Version>
     <Authors>Bradley Clarke</Authors>
     <Company>DeltaWare</Company>
     <Product>SereneApi</Product>
@@ -20,7 +20,9 @@
     <RepositoryType>GIT</RepositoryType>
     <PackageTags>API; REST; RESTful; DI; DependencyInjection; AspNet; Extensions</PackageTags>
     <NeutralLanguage>en-AU</NeutralLanguage>
-    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageReleaseNotes>* FIX - Issue where ServiceProvider was being built before an HttpClient was being added to the ServiceCollection. Resolution was to change IServiceProvider to a Transient Instance.
+
+* UPDATED - SereneApi.Abstractions</PackageReleaseNotes>
     <PackageId>SereneApi.Extensions.DependencyInjection</PackageId>
     <AssemblyName>DeltaWare.SereneApi.Extensions.DependencyInjection</AssemblyName>
       <IncludeSymbols>true</IncludeSymbols>
