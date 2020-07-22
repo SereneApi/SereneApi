@@ -21,12 +21,10 @@ public interface IFooApi: IDisposable
 	Task<IApiResponse> CreateAsync(FooDto foo);
 }
 ```
-After an API's definition has been created its associated handler needs to be implemented. The handler is the backbone of an API, performing all of the magic required for sending and receiving requests. This is where your request logic is located.
+After an API's definition has been created, its associated handler needs to be implemented. The handler is the backbone of an API, performing all the magic required for sending and receiving requests. This is where your request logic is located.
 >**SEE:** More details on requests can be seen [here](#baseapihandler).
-
->**BEST PRACTICE:** Handler implementations should use the following naming convention '*Resource*ApiHandler'.
-
->**BEST PRACTICE:** Handler implementations should be located in a *Handlers* folder contained in your project.
+>
+>**BEST PRACTICE:** Handler implementations should use the following naming convention '*Resource*ApiHandler' and be located in a *Handlers* folder contained in your project.
 
 ```csharp
 public class FooApiHandler: BaseApiHandler, IFooApi
@@ -68,6 +66,7 @@ factory.RegisterApi<IFooApi, FooApiHandler>(o =>
 });
 ```
 ### Dependency Injection Method
+By default all APIs registered using dependency injection will receive an *ILogger* using *ILoggerFacgtory* if it is available.
 >**NOTE:** To use dependency injection  install *SereneApi.Extensions.DependencyInjection*
 
 ```csharp
@@ -80,17 +79,14 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 Both of the above registrations will deliver the same configuration for Foo API.
->**NOTE:** By default all APIs registered using dependency injection will receive an *ILogger* using *ILoggerFacgtory* if it is available.
 ## API Instantiation
-After an API has been registered it's handler needs to be instantiated, this is where the *IApiOptions* parameter comes in. *IApiOptions* contains all of the API's configuration and dependencies as declared during registration. It is important to set your API definition as the generic type for *IApiOptions*.
->**NOTE:** If an API's handler does not have *IApiOptions* configured correctly, it can either get the settings for a different handler or an exception may be thrown.
-
-This process occurs behind the scenes but it still needs to be invoked.
+After an API has been registered its handler needs to be instantiated, this is where the *IApiOptions* parameter comes in. *IApiOptions* contains all the API's configuration and dependencies as declared during registration. This process occurs behind the scenes but it still needs to be invoked. It is important to set your API definition as the generic type parameter for *IApiOptions*.
+>**NOTE:** If an API's handler does not have *IApiOptions* configured correctly, it can either get the settings for a different handler.
 
 ### Invoking with ApiFactory
 Invocation with *ApiFactory* can be done with either the class or the interface, in the example below the interface will be used because it does not expose the registration methods.
 When an API is required, call the *Build\<TApi>()* method. This provides an instantiated instance of TApi.
->**NOTE:** The instance of TApi needs to be disposed.
+>**NOTE:** The instance of TApi needs to implement IDisposable.
 ```csharp
 public class FooService
 {
@@ -110,8 +106,8 @@ public class FooService
 }
 ```
 ### Invoking with Dependency Injection
-Invocation with Dependency Injection is easy and straightforward. Add your API's implementation interface to the constructor of your class and DI will handle the rest.
->**NOTE:** The API should not be disposed of as this is handled by DI.
+Invocation with Dependency Injection is easy and straightforward. Add your APIs implementation interface to the constructor of your class and DI will handle the rest.
+>**NOTE:** The API should not be disposed of as this is handled by dependency injection.
 ```csharp
 public class FooService
 {
@@ -140,11 +136,11 @@ PerformRequest<TResponse>();
 PerformRequestAsync<TResponse>();
 ```
 Each of the methods listed above share the same parameters. The first parameter is the *Method* in which the request will be performed. The methods are the standard array of REST methods.
-* **POST** - *Submits an entity to the specified resource.*
-* **GET** - *Requests a representation of the specified resource.*
-* **PUT** - *Replaces all current representations of the target resource.*
-* **PATCH** - *Applies partial modifications to a resource.*
-* **DELETE** - *Deletes the specified resource.*
+* **POST** — *Submits an entity to the specified resource.*
+* **GET** — *Requests a representation of the specified resource.*
+* **PUT** — *Replaces all current representations of the target resource.*
+* **PATCH** — *Applies partial modifications to a resource.*
+* **DELETE** — *Deletes the specified resource.*
 
 The second parameter is the request factory, this parameter is entirely optional. It contains multiple methods that are required to be called in a specific order.
 * **AgainstResource**
@@ -152,13 +148,13 @@ The second parameter is the request factory, this parameter is entirely optional
 * **WithEndpoint**
 	Specifies the endpoint for the request, it is applied after the resource.
 * **WithEndpointTemplate**
-	Specifies the endpoint for the request, is is applied after the resource. Two parameters must be provided, a format-table string and an array of objects that will be formatted to the string.
+	Specifies the endpoint for the request, is applied after the resource. Two parameters must be provided, a format-table string and an array of objects that will be formatted to the string.
 * **WithInBodyContent\<TContent>**
 	Specifies the content to be sent in the body of the request.
 	>**NOTE**: This method can only be used in conjunction with *POST*, *PUT* and *PATCH*.
 
 * **WithQuery\<TQuery>**
-	Specifies the query to be added to the end of the requests Uri. Has a secondary optional parameter allowing specific properties to be selected.
+	Specifies the query to be added to the end of the requests URI. Has a secondary optional parameter allowing specific properties to be selected.
 
 A variant of *PerformRequest* is available. This method takes an *IApiRequest* as its sole parameter, enabling pre-configured or custom requests to be provided.
 ## CrudApiHandler
@@ -169,7 +165,7 @@ When *CrudApiHandler* is inherited, it provides pre-implemented CRUD API methods
 		Specifies the identifier type used by the API to identify the resource.
 	>**NOTE:** Must be  value type.
 ```csharp
-public interfacxe IBarApi: ICrudApi<BarDto, long>
+public interface IBarApi: ICrudApi<BarDto, long>
 {
 }
 ```

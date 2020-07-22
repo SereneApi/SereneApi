@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
-namespace DependencyInjection
+namespace DependencyInjection.Service
 {
     public class Startup
     {

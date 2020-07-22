@@ -116,7 +116,7 @@ namespace SereneApi.Abstractions.Queries
 
             if(requiredAttribute != null)
             {
-                requiredAttribute?.Validate(queryValue, queryProperty.Name);
+                requiredAttribute.Validate(queryValue, queryProperty.Name);
 
                 required = true;
             }

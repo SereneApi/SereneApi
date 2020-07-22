@@ -13,7 +13,7 @@ namespace DependencyInjection.Service.Controllers
         }
 
         [HttpGet("string/{value}")]
-        public string Getstring(string value)
+        public string GetString(string value)
         {
             return value;
         }

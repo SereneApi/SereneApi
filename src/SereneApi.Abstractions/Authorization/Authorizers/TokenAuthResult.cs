@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace SereneApi.Abstractions.Authorisation.Authorizers
+namespace SereneApi.Abstractions.Authorization.Authorizers
 {
     /// <summary>
     /// Specifies the token information, used for authorization and token refreshing.

@@ -1,7 +1,7 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
-using SereneApi.Abstractions.Authorisation.Authorizers;
 using SereneApi.Abstractions.Authorization;
+using SereneApi.Abstractions.Authorization.Authorizers;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Request.Content;
@@ -41,8 +41,14 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
         }
 
         /// <inheritdoc cref="IClientFactory.BuildClientAsync"/>
+        /// <exception cref="MethodAccessException">Thrown when this method is called before the Configure method.</exception>
         public Task<HttpClient> BuildClientAsync()
         {
+            if (!IsConfigured)
+            {
+                throw new MethodAccessException("ClientFactory must be configured before this method can be called.");
+            }
+
             return Task.Factory.StartNew(() =>
             {
                 IServiceProvider provider = _dependencies.GetDependency<IServiceProvider>();

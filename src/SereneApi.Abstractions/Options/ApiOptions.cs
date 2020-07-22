@@ -50,11 +50,6 @@ namespace SereneApi.Abstractions.Options
 
         private volatile bool _disposed;
 
-        internal bool IsDisposed()
-        {
-            return _disposed;
-        }
-
         public void Dispose()
         {
             Dispose(true);
