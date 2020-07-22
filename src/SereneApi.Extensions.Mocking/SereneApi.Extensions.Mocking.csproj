@@ -11,8 +11,8 @@
     <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageIcon>nuget_logo.png</PackageIcon>
-    <PackageProjectUrl>https://github.com/armorall171/SereneApi#what-is-serene-api</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/armorall171/SereneApi</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/DeltaWareAU/SereneApi#what-is-serene-api</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/DeltaWareAU/SereneApi</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
     <PackageTags>API; REST; RESTful; Mock; Mocking; Extensions</PackageTags>
     <NeutralLanguage>English (Australia)</NeutralLanguage>

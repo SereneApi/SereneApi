@@ -14,9 +14,9 @@
     </Description>
     <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-    <PackageProjectUrl>https://github.com/armorall171/SereneApi#what-is-serene-api</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/DeltaWareAU/SereneApi#what-is-serene-api</PackageProjectUrl>
     <PackageIcon>nuget_logo.png</PackageIcon>
-    <RepositoryUrl>https://github.com/armorall171/SereneApi</RepositoryUrl>
+    <RepositoryUrl>https://github.com/DeltaWareAU/SereneApi</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
     <PackageTags>API; REST; RESTful; DI; DependencyInjection; AspNet; Extensions</PackageTags>
     <NeutralLanguage>en-AU</NeutralLanguage>

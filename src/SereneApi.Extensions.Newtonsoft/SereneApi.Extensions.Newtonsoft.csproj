@@ -10,7 +10,7 @@
     <Version>1.1.0.1</Version>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageIcon>nuget_logo.png</PackageIcon>
-    <RepositoryUrl>https://github.com/armorall171/SereneApi</RepositoryUrl>
+    <RepositoryUrl>https://github.com/DeltaWareAU/SereneApi</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
     <PackageTags>API; REST; RESTful; Extensions; Newtonsoft</PackageTags>
     <NeutralLanguage>en-AU</NeutralLanguage>

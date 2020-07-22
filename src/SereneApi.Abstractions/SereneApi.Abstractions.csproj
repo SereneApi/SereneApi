@@ -4,14 +4,14 @@
 	  <TargetFramework>netstandard2.1</TargetFramework>
 	  <AssemblyName>DeltaWare.SereneApi.Abstractions</AssemblyName>
 	  <RootNamespace>SereneApi.Abstractions</RootNamespace>
-	  <RepositoryUrl>https://github.com/armorall171/SereneApi</RepositoryUrl>
+	  <RepositoryUrl>https://github.com/DeltaWareAU/SereneApi</RepositoryUrl>
 	  <RepositoryType>GIT</RepositoryType>
 	  <PackageTags>API; REST; RESTful; Abstraction</PackageTags>
 	  <Description>Serene API is a small library intended to provide a straightforward way of consuming RESTful APIs requiring as little code &amp; setup as possible whilst providing a powerful set of tools.</Description>
 	  <Authors>Bradley Clarke</Authors>
 	  <Company>DeltaWare</Company>
 	  <Product>SereneApi</Product>
-	  <PackageProjectUrl>https://github.com/armorall171/SereneApi#what-is-serene-api</PackageProjectUrl>
+	  <PackageProjectUrl>https://github.com/DeltaWareAU/SereneApi#what-is-serene-api</PackageProjectUrl>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	  <Version>1.1.0.1</Version>
 	  <NeutralLanguage>en-AU</NeutralLanguage>
