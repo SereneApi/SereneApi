@@ -119,13 +119,13 @@ namespace SereneApi.Tests
         {
             IApiResponse<List<MockPersonDto>> response = await _crudApiHandler.GetAllAsync();
 
-            response.Result.Count.ShouldBe(MockPersonDto.All.Count);
+            response.Data.Count.ShouldBe(MockPersonDto.All.Count);
             response.Message.ShouldBeNull();
             response.Exception.ShouldBeNull();
             response.HasException.ShouldBe(false);
             response.WasSuccessful.ShouldBe(true);
 
-            List<MockPersonDto> results = response.Result;
+            List<MockPersonDto> results = response.Data;
 
             for(int i = 0; i < results.Count; i++)
             {

@@ -21,13 +21,13 @@ namespace SereneApi.Abstractions.Response
         /// <inheritdoc cref="IApiResponse.Exception"/>
         public Exception Exception { get; }
 
-        /// <inheritdoc cref="IApiResponse{TResult}.Result"/>
-        public TResult Result { get; }
+        /// <inheritdoc cref="IApiResponse{TEntity}.Data"/>
+        public TResult Data { get; }
 
         private ApiResponse(Status status, [AllowNull] TResult result)
         {
             WasSuccessful = true;
-            Result = result;
+            Data = result;
             Message = null;
             Status = status;
             Exception = null;
@@ -36,7 +36,7 @@ namespace SereneApi.Abstractions.Response
         private ApiResponse(Status status, [AllowNull] string message, [AllowNull] Exception exception = null)
         {
             WasSuccessful = false;
-            Result = default;
+            Data = default;
             Message = message;
             Status = status;
             Exception = exception;

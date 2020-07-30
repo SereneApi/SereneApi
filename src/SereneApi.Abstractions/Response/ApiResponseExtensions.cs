@@ -29,7 +29,7 @@ namespace SereneApi.Abstractions.Response
                 throw new ArgumentNullException(nameof(response));
             }
 
-            return response.Result == null;
+            return response.Data == null;
         }
     }
 }

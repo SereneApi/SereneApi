@@ -4,17 +4,17 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.1.0.2</Version>
-    <Authors>Bradley Clarke</Authors>
+    <Version>1.1.0.3</Version>
+    <Authors>DeltaWare</Authors>
     <Company>DeltaWare</Company>
     <Product>SereneApi</Product>
     <Description>Serene API is a small library intended to provide a straightforward way of consuming RESTful APIs requiring as little code &amp; setup as possible whilst providing a powerful set of tools.
 
         SereneApi.Extensions.DependencyInjection adds support for AspNet DI and Configuration.
     </Description>
-    <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
+    <Copyright>Copyright (c) 2020 DeltaWare</Copyright>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-    <PackageProjectUrl>https://github.com/DeltaWareAU/SereneApi#what-is-serene-api</PackageProjectUrl>
+    <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
     <PackageIcon>nuget_logo.png</PackageIcon>
     <RepositoryUrl>https://github.com/DeltaWareAU/SereneApi</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
