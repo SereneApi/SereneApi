@@ -123,7 +123,7 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
                 throw new Exception(response.Message);
             }
 
-            TokenAuthResult token = _extractTokenFunction.Invoke(response.Result);
+            TokenAuthResult token = _extractTokenFunction.Invoke(response.Data);
 
             if(token == null)
             {

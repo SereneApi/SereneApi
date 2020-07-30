@@ -30,5 +30,12 @@ namespace SereneApi.Abstractions.Configuration
         /// <param name="factory">Builds the dependencies.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         void OverrideDependencies([NotNull] Action<IDependencyCollection> factory);
+
+        /// <summary>
+        /// Adds the specified dependencies.
+        /// </summary>
+        /// <param name="factory">Builds the dependencies.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        void AddDependencies([NotNull] Action<IDependencyCollection> factory);
     }
 }

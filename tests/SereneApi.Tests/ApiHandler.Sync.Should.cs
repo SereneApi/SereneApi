@@ -161,7 +161,7 @@ namespace SereneApi.Tests
             response.Exception.ShouldBeNull();
             response.Status.ShouldBe(Status.Ok);
 
-            MockPersonDto person = response.Result;
+            MockPersonDto person = response.Data;
 
             person.Age.ShouldBe(MockPersonDto.JohnSmith.Age);
             person.BirthDate.ShouldBe(MockPersonDto.JohnSmith.BirthDate);
@@ -269,7 +269,7 @@ namespace SereneApi.Tests
             response.Exception.ShouldBeNull();
             response.Status.ShouldBe(Status.Ok);
 
-            MockPersonDto person = response.Result;
+            MockPersonDto person = response.Data;
 
             person.Age.ShouldBe(MockPersonDto.JohnSmith.Age);
             person.BirthDate.ShouldBe(MockPersonDto.JohnSmith.BirthDate);
@@ -380,7 +380,7 @@ namespace SereneApi.Tests
             response.Message.ShouldBe(message);
             response.Exception.ShouldBeNull();
             response.Status.ShouldBe(status);
-            response.Result.ShouldBeNull();
+            response.Data.ShouldBeNull();
 
             #endregion
         }
@@ -489,7 +489,7 @@ namespace SereneApi.Tests
             response.Message.ShouldBe(message);
             response.Exception.ShouldBeNull();
             response.Status.ShouldBe(status);
-            response.Result.ShouldBeNull();
+            response.Data.ShouldBeNull();
 
             #endregion
         }
@@ -601,7 +601,7 @@ namespace SereneApi.Tests
             response.Message.ShouldBe("The Request Timed Out; Retry limit reached");
             response.Exception.ShouldBeOfType<TimeoutException>();
             response.Status.ShouldBe(Status.None);
-            response.Result.ShouldBeNull();
+            response.Data.ShouldBeNull();
 
             #endregion
         }
@@ -709,7 +709,7 @@ namespace SereneApi.Tests
             response.Exception.ShouldBeNull();
             response.Status.ShouldBe(Status.Ok);
 
-            MockPersonDto person = response.Result;
+            MockPersonDto person = response.Data;
 
             person.Age.ShouldBe(MockPersonDto.JohnSmith.Age);
             person.BirthDate.ShouldBe(MockPersonDto.JohnSmith.BirthDate);
@@ -820,7 +820,7 @@ namespace SereneApi.Tests
             response.Exception.ShouldBeNull();
             response.Status.ShouldBe(Status.Ok);
 
-            MockPersonDto person = response.Result;
+            MockPersonDto person = response.Data;
 
             person.Age.ShouldBe(MockPersonDto.JohnSmith.Age);
             person.BirthDate.ShouldBe(MockPersonDto.JohnSmith.BirthDate);

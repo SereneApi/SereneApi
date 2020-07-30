@@ -34,7 +34,7 @@ namespace SereneApi.Tests.Types
             response.Exception.ShouldBeNull();
             response.Message.ShouldBeNull();
             response.Status.ShouldBe(status);
-            response.Result.ShouldBe(resultString);
+            response.Data.ShouldBe(resultString);
         }
 
         [Theory]
@@ -69,7 +69,7 @@ namespace SereneApi.Tests.Types
             response.Exception.ShouldBeNull();
             response.Message.ShouldBe(message);
             response.Status.ShouldBe(status);
-            response.Result.ShouldBeNull();
+            response.Data.ShouldBeNull();
         }
 
         [Fact]
@@ -102,7 +102,7 @@ namespace SereneApi.Tests.Types
             response.Exception.ShouldBe(argumentException);
             response.Message.ShouldBe(message);
             response.Status.ShouldBe(status);
-            response.Result.ShouldBeNull();
+            response.Data.ShouldBeNull();
         }
     }
 }
