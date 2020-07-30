@@ -15,7 +15,7 @@
     <PackageTags>API; REST; RESTful; Extensions; Newtonsoft</PackageTags>
     <NeutralLanguage>en-AU</NeutralLanguage>
     <Copyright>Copyright (c) 2020 DeltaWare</Copyright>
-    <Description>Adds Newtonsoft.Json to support to SereneApi</Description>
+    <Description>SereneApi is a .NET Library that introduces an intuitive way of consuming your REST APIs while combining a robust set of extensible tools. This package adds support for Newtonsoft.Json</Description>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <IncludeSymbols>true</IncludeSymbols>
