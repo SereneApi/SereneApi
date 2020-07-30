@@ -6,7 +6,7 @@
 	  <RootNamespace>SereneApi.Abstractions</RootNamespace>
 	  <RepositoryUrl>https://github.com/DeltaWareAU/SereneApi</RepositoryUrl>
 	  <RepositoryType>GIT</RepositoryType>
-	  <PackageTags>API; REST; RESTful; Abstraction</PackageTags>
+	  <PackageTags>REST; RESTful; Abstractions</PackageTags>
 	  <Description>SereneApi is a .NET Library that introduces an intuitive way of consuming your REST APIs while combining a robust set of extensible tools.</Description>
 	  <Authors>DeltaWare</Authors>
 	  <Company>DeltaWare</Company>

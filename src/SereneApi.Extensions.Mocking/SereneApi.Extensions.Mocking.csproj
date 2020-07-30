@@ -14,7 +14,7 @@
     <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
     <RepositoryUrl>https://github.com/DeltaWareAU/SereneApi</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
-    <PackageTags>API; REST; RESTful; Mock; Mocking; Extensions</PackageTags>
+    <PackageTags>REST; RESTful; Mock; Mocking; Extensions</PackageTags>
     <NeutralLanguage>English (Australia)</NeutralLanguage>
     <Description>SereneApi is a .NET Library that introduces an intuitive way of consuming your REST APIs while combining a robust set of extensible tools. This package adds support for creating API Mock Responses to specific Requests allowing for easy testing in both unit tests and whilst developting.
 

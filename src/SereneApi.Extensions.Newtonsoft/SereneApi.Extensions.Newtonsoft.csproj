@@ -12,7 +12,7 @@
     <PackageIcon>nuget_logo.png</PackageIcon>
     <RepositoryUrl>https://github.com/DeltaWareAU/SereneApi</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
-    <PackageTags>API; REST; RESTful; Extensions; Newtonsoft</PackageTags>
+    <PackageTags>REST; RESTful; Extensions; Newtonsoft; Json; Serialization</PackageTags>
     <NeutralLanguage>en-AU</NeutralLanguage>
     <Copyright>Copyright (c) 2020 DeltaWare</Copyright>
     <Description>SereneApi is a .NET Library that introduces an intuitive way of consuming your REST APIs while combining a robust set of extensible tools. This package adds support for Newtonsoft.Json</Description>
