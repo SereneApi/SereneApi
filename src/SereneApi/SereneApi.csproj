@@ -6,14 +6,14 @@
     <RootNamespace>SereneApi</RootNamespace>
     <RepositoryUrl>https://github.com/DeltaWareAU/SereneApi.git</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
-    <PackageTags>REST; Client; Wrapper; RESTful</PackageTags>
+    <PackageTags>REST; Client; Wrapper; RESTful; Consumer</PackageTags>
     <Description>Serene API is a small library intended to provide a straightforward way of consuming RESTful APIs requiring as little code &amp; setup as possible whilst providing a powerful set of tools.</Description>
     <Authors>DeltaWare</Authors>
     <Company>DeltaWare</Company>
     <Product>SereneApi</Product>
     <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.1.0.3</Version>
+    <Version>1.1.0.4</Version>
     <NeutralLanguage>en-AU</NeutralLanguage>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>

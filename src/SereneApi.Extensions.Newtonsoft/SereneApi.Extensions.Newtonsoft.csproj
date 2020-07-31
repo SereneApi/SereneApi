@@ -7,7 +7,7 @@
     <Authors>DeltaWare</Authors>
     <Company>DeltaWare</Company>
     <Product>SereneApi</Product>
-    <Version>1.1.0.3</Version>
+    <Version>1.1.0.4</Version>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageIcon>nuget_logo.png</PackageIcon>
     <RepositoryUrl>https://github.com/DeltaWareAU/SereneApi</RepositoryUrl>
@@ -20,7 +20,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <IncludeSymbols>true</IncludeSymbols>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-      <PackageReleaseNotes>UPDATED - SereneApi.Abstractions</PackageReleaseNotes>
+      <PackageReleaseNotes>UPDATED - Package Information</PackageReleaseNotes>
       <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
   </PropertyGroup>
 
