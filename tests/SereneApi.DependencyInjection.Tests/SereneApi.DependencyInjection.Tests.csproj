@@ -24,8 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\examples\DependencyInjection\src\DependencyInjection.WebUi\DependencyInjection.WebUi.csproj" />
     <ProjectReference Include="..\..\src\SereneApi.Extensions.DependencyInjection\SereneApi.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\src\SereneApi.Extensions.Mocking\SereneApi.Extensions.Mocking.csproj" />
+    <ProjectReference Include="..\..\src\SereneApi\SereneApi.csproj" />
   </ItemGroup>
 
 </Project>
