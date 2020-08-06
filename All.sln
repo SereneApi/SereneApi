@@ -40,7 +40,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.AspNetCore", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Extensions.Newtonsoft.Tests", "tests\SereneApi.Extensions.Newtonsoft.Tests\SereneApi.Extensions.Newtonsoft.Tests.csproj", "{5737E8F2-1FF3-4570-B2A3-2473860DD679}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SereneApi.Abstractions.Tests", "tests\SereneApi.Abstractions.Tests\SereneApi.Abstractions.Tests.csproj", "{886C5DA1-0696-4222-AA72-D0480F265CFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Abstractions.Tests", "tests\SereneApi.Abstractions.Tests\SereneApi.Abstractions.Tests.csproj", "{886C5DA1-0696-4222-AA72-D0480F265CFE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Benchmarks", "Benchmarks", "{B184BCCE-56C1-4428-873A-1F564F00DA98}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
