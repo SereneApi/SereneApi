@@ -10,6 +10,7 @@ using SereneApi.Extensions.DependencyInjection.Factories;
 using SereneApi.Extensions.DependencyInjection.Options;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace SereneApi.Extensions.DependencyInjection
 {
@@ -236,14 +237,19 @@ namespace SereneApi.Extensions.DependencyInjection
 
             builder.Dependencies.AddSingleton(() => services, Binding.Unbound);
             builder.Dependencies.AddTransient<IServiceProvider>(p => p.GetDependency<IServiceCollection>().BuildServiceProvider());
-            builder.Dependencies.AddScoped<ILogger>(p =>
+
+            if(services.Any(x => x.ServiceType == typeof(ILoggerFactory)))
             {
-                IServiceProvider serviceProvider = (ServiceProvider)p.GetDependency<IServiceProvider>();
+                builder.Dependencies.TryAddScoped<ILogger>(p =>
+                {
+                    IServiceProvider serviceProvider = (ServiceProvider)p.GetDependency<IServiceProvider>();
 
-                ILoggerFactory loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+                    ILoggerFactory loggerFactory = serviceProvider.GetService<ILoggerFactory>();
 
-                return loggerFactory?.CreateLogger<TApi>();
-            });
+                    return loggerFactory?.CreateLogger<TApi>();
+                });
+            }
+
             builder.Dependencies.AddScoped<IClientFactory>(p =>
             {
                 DefaultClientFactory<TApi> defaultClientFactory = new DefaultClientFactory<TApi>(p);
@@ -294,14 +300,19 @@ namespace SereneApi.Extensions.DependencyInjection
 
             builder.Dependencies.AddSingleton(() => services, Binding.Unbound);
             builder.Dependencies.AddTransient<IServiceProvider>(p => p.GetDependency<IServiceCollection>().BuildServiceProvider());
-            builder.Dependencies.AddScoped<ILogger>(p =>
+
+            if(services.Any(x => x.ServiceType == typeof(ILoggerFactory)))
             {
-                IServiceProvider serviceProvider = (ServiceProvider)p.GetDependency<IServiceProvider>();
+                builder.Dependencies.TryAddScoped<ILogger>(p =>
+                {
+                    IServiceProvider serviceProvider = (ServiceProvider)p.GetDependency<IServiceProvider>();
 
-                ILoggerFactory loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+                    ILoggerFactory loggerFactory = serviceProvider.GetService<ILoggerFactory>();
 
-                return loggerFactory?.CreateLogger<TApi>();
-            });
+                    return loggerFactory?.CreateLogger<TApi>();
+                });
+            }
+
             builder.Dependencies.AddScoped<IClientFactory>(p =>
             {
                 DefaultClientFactory<TApi> defaultClientFactory = new DefaultClientFactory<TApi>(p);

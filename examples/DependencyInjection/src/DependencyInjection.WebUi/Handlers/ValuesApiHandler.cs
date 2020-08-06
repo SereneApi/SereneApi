@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace DependencyInjection.WebUi.Handlers
 {
-    public class ValuesBaseApiHandler: BaseApiHandler, IValuesApi
+    public class ValuesApiHandler: BaseApiHandler, IValuesApi
     {
-        public ValuesBaseApiHandler(IApiOptions<IValuesApi> options) : base(options)
+        public ValuesApiHandler(IApiOptions<IValuesApi> options) : base(options)
         {
         }
 
