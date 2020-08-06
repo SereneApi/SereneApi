@@ -238,7 +238,7 @@ namespace SereneApi.Extensions.DependencyInjection
             builder.Dependencies.AddSingleton(() => services, Binding.Unbound);
             builder.Dependencies.AddTransient<IServiceProvider>(p => p.GetDependency<IServiceCollection>().BuildServiceProvider());
 
-            if (services.Any(x => x.ServiceType == typeof(ILoggerFactory)))
+            if(services.Any(x => x.ServiceType == typeof(ILoggerFactory)))
             {
                 builder.Dependencies.TryAddScoped<ILogger>(p =>
                 {
@@ -301,11 +301,11 @@ namespace SereneApi.Extensions.DependencyInjection
             builder.Dependencies.AddSingleton(() => services, Binding.Unbound);
             builder.Dependencies.AddTransient<IServiceProvider>(p => p.GetDependency<IServiceCollection>().BuildServiceProvider());
 
-            if (services.Any(x => x.ServiceType == typeof(ILoggerFactory)))
+            if(services.Any(x => x.ServiceType == typeof(ILoggerFactory)))
             {
                 builder.Dependencies.TryAddScoped<ILogger>(p =>
                 {
-                    IServiceProvider serviceProvider = (ServiceProvider) p.GetDependency<IServiceProvider>();
+                    IServiceProvider serviceProvider = (ServiceProvider)p.GetDependency<IServiceProvider>();
 
                     ILoggerFactory loggerFactory = serviceProvider.GetService<ILoggerFactory>();
 
