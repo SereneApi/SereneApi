@@ -2,7 +2,7 @@
 
 # Overview
 
-SereneApi is a C# Library that introduces a new and intuitive way of consuming REST APIs while combining a robust set of extensible tools.
+SereneApi is intended to provide a straightforward way of consuming **RESTful** APIs requiring as little code & setup as possible whilst providing a powerful set of extensible tools.
 
 **Why?**
 I found that creating Web Requests, then needing to Deserialize/Serialize usually became tedious and in some cases even break DRY.
@@ -24,8 +24,8 @@ After using the repository patter for many years. I decided to try fiddling with
 |**SereneApi**|![Azure DevOps tests](https://img.shields.io/azure-devops/tests/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/14?style=for-the-badge)|![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/14?style=for-the-badge)|
 |**SereneApi.Abstractions**|![Azure DevOps tests](https://img.shields.io/azure-devops/tests/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/13?style=for-the-badge)|![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/13?style=for-the-badge)|
 |**SereneApi.Extensions.DependencyInjection**|![Azure DevOps tests](https://img.shields.io/azure-devops/tests/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/15?style=for-the-badge)|![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/15?style=for-the-badge)|
-|**SereneApi.Extensions.Mocking**|![Azure DevOps tests](https://img.shields.io/azure-devops/tests/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/15?style=for-the-badge)|![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/15?style=for-the-badge)|
-|**SereneApi.Extensions.Newtonsoft**|![Azure DevOps tests](https://img.shields.io/azure-devops/tests/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/16?style=for-the-badge)|![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/16?style=for-the-badge)|
+|**SereneApi.Extensions.Mocking**|![Azure DevOps tests](https://img.shields.io/azure-devops/tests/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/16?style=for-the-badge)|![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/16?style=for-the-badge)|
+|**SereneApi.Extensions.Newtonsoft**|![Azure DevOps tests](https://img.shields.io/azure-devops/tests/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/17?style=for-the-badge)|![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/17?style=for-the-badge)|
 ## Special Thanks
 
 * Nuget Icons made by <a href="https://www.flaticon.com/authors/prosymbols" title="Prosymbols">Prosymbols</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
