@@ -1,7 +1,7 @@
 ﻿using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Options;
 
-namespace SereneApi.DependencyInjection.Tests
+namespace SereneApi.Extensions.DependencyInjection.Tests
 {
     public interface ITestApi: IApiHandler
     {

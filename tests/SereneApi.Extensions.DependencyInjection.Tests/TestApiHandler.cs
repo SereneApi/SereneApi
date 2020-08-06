@@ -1,6 +1,6 @@
 ﻿using SereneApi.Abstractions.Options;
 
-namespace SereneApi.DependencyInjection.Tests
+namespace SereneApi.Extensions.DependencyInjection.Tests
 {
     public class TestApiHandler: BaseApiHandler, ITestApi
     {

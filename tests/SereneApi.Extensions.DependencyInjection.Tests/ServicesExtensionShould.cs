@@ -1,13 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using SereneApi.Extensions.DependencyInjection;
-using Shouldly;
-using System;
+﻿using System;
 using DeltaWare.Dependencies.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Options;
+using Shouldly;
 using Xunit;
 
-namespace SereneApi.DependencyInjection.Tests
+namespace SereneApi.Extensions.DependencyInjection.Tests
 {
     public class ServicesExtensionShould
     {
