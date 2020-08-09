@@ -305,7 +305,7 @@ namespace SereneApi.Extensions.DependencyInjection
             {
                 builder.Dependencies.TryAddScoped<ILogger>(p =>
                 {
-                    IServiceProvider serviceProvider = (ServiceProvider)p.GetDependency<IServiceProvider>();
+                    IServiceProvider serviceProvider = p.GetDependency<IServiceProvider>();
 
                     ILoggerFactory loggerFactory = serviceProvider.GetService<ILoggerFactory>();
 

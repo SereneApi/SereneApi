@@ -116,7 +116,7 @@
         /// <summary>
         /// 501
         /// </summary>
-        NotImplemented = 500,
+        NotImplemented = 501,
 
         #endregion
     }
