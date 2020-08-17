@@ -78,7 +78,7 @@ namespace SereneApi.Abstractions.Request
         /// <inheritdoc>
         ///     <cref>IRequestContent.WithInBodyContent</cref>
         /// </inheritdoc>
-        public IRequestCreated WithInBodyContent<TContent>([NotNull] TContent content)
+        public IRequestCreated AddInBodyContent<TContent>([NotNull] TContent content)
         {
             if(content == null)
             {
@@ -90,7 +90,7 @@ namespace SereneApi.Abstractions.Request
             return this;
         }
 
-        public IRequestCreated WithInBodyContent([NotNull] IApiRequestContent content)
+        public IRequestCreated AddInBodyContent([NotNull] IApiRequestContent content)
         {
             _requestContent = content ?? throw new ArgumentNullException(nameof(content));
 

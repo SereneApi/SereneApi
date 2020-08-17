@@ -47,7 +47,7 @@ namespace DependencyInjection.WebUi.Handlers
             // The StudentDto value will be passed to JSON and sent in the body of the request
             // http://localhost:8080/api/Students
             return PerformRequestAsync(Method.POST, r => r
-                .WithInBodyContent(student));
+                .AddInBodyContent(student));
         }
 
         public Task<IApiResponse<List<ClassDto>>> GetStudentClassesAsync(long studentId)
