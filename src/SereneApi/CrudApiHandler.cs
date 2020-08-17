@@ -42,7 +42,7 @@ namespace SereneApi
             }
 
             return PerformRequestAsync<TResource>(Method.POST, request => request
-                .WithInBodyContent(resource));
+                .AddInBodyContent(resource));
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.DeleteAsync"/>
@@ -61,7 +61,7 @@ namespace SereneApi
             }
 
             return PerformRequestAsync<TResource>(Method.PUT, request => request
-                .WithInBodyContent(resource));
+                .AddInBodyContent(resource));
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.UpdateAsync"/>
@@ -73,7 +73,7 @@ namespace SereneApi
             }
 
             return PerformRequestAsync<TResource>(Method.PATCH, request => request
-                .WithInBodyContent(resource));
+                .AddInBodyContent(resource));
         }
     }
 }

@@ -20,7 +20,7 @@
 	  <Copyright>Copyright (c) 2020 DeltaWare</Copyright>
 	  <PackageIcon>nuget_logo.png</PackageIcon>
 	  <PackageId>SereneApi.Abstractions</PackageId>
-	  <PackageReleaseNotes>UPDATED - Package Information</PackageReleaseNotes>
+	  <PackageReleaseNotes>RENAMED - WithInBodyContent method to AddInBodyContent</PackageReleaseNotes>
       <IncludeSymbols>true</IncludeSymbols>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
