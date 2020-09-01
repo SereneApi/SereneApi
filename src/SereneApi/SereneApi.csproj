@@ -13,7 +13,7 @@
     <Product>SereneApi</Product>
     <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.1.0.4</Version>
+    <Version>1.1.0.5</Version>
     <NeutralLanguage>en-AU</NeutralLanguage>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
@@ -21,9 +21,11 @@
     <PackageIcon>nuget_logo.png</PackageIcon>
     <PackageId>SereneApi</PackageId>
     <PackageReleaseNotes>IMPROVED - Logging
+
 UPDATED - SereneApi.Abstractions</PackageReleaseNotes>
       <IncludeSymbols>true</IncludeSymbols>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+      <AssemblyVersion>1.1.0.5</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

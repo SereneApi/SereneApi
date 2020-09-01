@@ -34,15 +34,14 @@ namespace SereneApi.Extensions.DependencyInjection.Authorizers
                 return Authorization;
             }
 
+            return await RetrieveTokenAsync(false);
+        }
+
+        protected override TApi GetApi()
+        {
             IServiceProvider provider = Dependencies.GetDependency<IServiceProvider>();
 
-            TApi apiHandler = provider.GetRequiredService<TApi>();
-
-            IApiResponse<TDto> response = await PerformAuthenticationRequestAsync(apiHandler);
-
-            RetrieveToken(response);
-
-            return Authorization;
+            return provider.GetRequiredService<TApi>();
         }
     }
 }
