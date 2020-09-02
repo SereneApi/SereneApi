@@ -289,7 +289,7 @@ namespace SereneApi.Tests
         {
             #region Arrange
 
-            const string message = "Exception occured whilst getting.";
+            const string message = "Exception occurred whilst getting.";
             const Status status = Status.InternalServerError;
 
             string finalSource = $"{source}/api/{resource}";
@@ -342,7 +342,7 @@ namespace SereneApi.Tests
         {
             #region Arrange
 
-            const string message = "Exception occured whilst getting.";
+            const string message = "Exception occurred whilst getting.";
             const Status status = Status.InternalServerError;
 
             string finalSource = $"{source}/api/{resource}";
@@ -392,7 +392,7 @@ namespace SereneApi.Tests
         {
             #region Arrange
 
-            const string message = "Exception occured whilst getting.";
+            const string message = "Exception occurred whilst getting.";
             const Status status = Status.InternalServerError;
 
             string finalSource = $"{source}/api/{resource}";
@@ -446,7 +446,7 @@ namespace SereneApi.Tests
         {
             #region Arrange
 
-            const string message = "Exception occured whilst getting.";
+            const string message = "Exception occurred whilst getting.";
             const Status status = Status.InternalServerError;
 
             string finalSource = $"{source}/api/{resource}";

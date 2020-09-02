@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.1.0.5</Version>
+    <Version>1.1.0.6</Version>
     <Authors>DeltaWare</Authors>
     <Company>DeltaWare</Company>
     <Product>SereneApi</Product>
@@ -18,7 +18,9 @@
     <RepositoryType>GIT</RepositoryType>
     <PackageTags>REST; RESTful; DI; DependencyInjection; AspNet; Extensions</PackageTags>
     <NeutralLanguage>en-AU</NeutralLanguage>
-    <PackageReleaseNotes>FIXED - Exception when invoking an API that had been Registering when no ILoggerFactory had been Added to IServiceCollection.</PackageReleaseNotes>
+    <PackageReleaseNotes>FIXED - Issue where InjectedTokenAuthorizer was not refreshing an expired token.
+
+UPDATED - SereneApi.Abstractions</PackageReleaseNotes>
     <PackageId>SereneApi.Extensions.DependencyInjection</PackageId>
     <AssemblyName>DeltaWare.SereneApi.Extensions.DependencyInjection</AssemblyName>
       <IncludeSymbols>true</IncludeSymbols>
@@ -27,9 +29,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.5" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.5" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.5" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.5" />
   </ItemGroup>
 
