@@ -80,6 +80,8 @@ namespace SereneApi
             {
                 if(request.Content == null)
                 {
+                    _logger?.LogTrace("Performing a {httpMethod} request against {RequestRoute}", method.ToString(), endpoint);
+
                     responseMessage = RetryRequest(async client =>
                     {
                         return method switch
@@ -89,6 +91,7 @@ namespace SereneApi
                             Method.PUT => await client.PutAsync(endpoint, null),
                             Method.PATCH => await client.PatchAsync(endpoint, null),
                             Method.DELETE => await client.DeleteAsync(endpoint),
+                            Method.NONE => throw new ArgumentException("None is not a valid method for a request."),
                             _ => throw new ArgumentOutOfRangeException(nameof(endpoint), method,
                                 "An incorrect Method Value was supplied.")
                         };
@@ -96,6 +99,8 @@ namespace SereneApi
                 }
                 else
                 {
+                    _logger?.LogTrace("Performing a {httpMethod} request with in body content against {RequestRoute}", method.ToString(), endpoint);
+
                     HttpContent content = (HttpContent)request.Content.GetContent();
 
                     responseMessage = RetryRequest(async client =>
@@ -109,36 +114,59 @@ namespace SereneApi
                             Method.PATCH => await client.PatchAsync(endpoint, content),
                             Method.DELETE => throw new ArgumentException(
                                 "Delete cannot be used in conjunction with an InBody Request"),
+                            Method.NONE => throw new ArgumentException("None is not a valid method for a request."),
                             _ => throw new ArgumentOutOfRangeException(nameof(method), method,
                                 "An incorrect Method Value was supplied.")
                         };
                     }, endpoint);
                 }
 
+                _logger?.LogTrace("The {httpMethod} request against {RequestRoute} completed successfully.", method.ToString(), endpoint);
+
                 return ProcessResponse(responseMessage);
             }
-            catch(ArgumentException)
+            catch(ArgumentException exception)
             {
-                // An incorrect Method value was supplied. So we want this exception to bubble up to the caller.
-                throw;
+                if(method == Method.GET || method == Method.DELETE || method == Method.NONE)
+                {
+                    _logger?.LogWarning("An invalid method [{httpMethod}] was provided.", method.ToString());
+
+                    // An incorrect Method value was supplied. So we want this exception to bubble up to the caller.
+                    throw;
+                }
+
+                _logger?.LogError(exception,
+                    "An Exception occurred whilst performing a HTTP {httpMethod} Request to {RequestRoute}",
+                    method.ToString(), endpoint);
+
+                return ApiResponse.Failure(Status.None,
+                    $"An Exception occurred whilst performing a HTTP {method} Request",
+                    exception);
             }
-            catch(TimeoutException timeoutException)
+            catch(TimeoutException exception)
             {
-                return ApiResponse.Failure(Status.None, "The Request Timed Out; Retry limit reached", timeoutException);
+                _logger?.LogWarning(exception, "The Request Timed Out; Retry limit reach");
+
+                return ApiResponse.Failure(Status.None, "The Request Timed Out; Retry limit reached", exception);
             }
             catch(Exception exception)
             {
                 _logger?.LogError(exception,
-                    "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
+                    "An Exception occurred whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
                     method.ToString(), endpoint);
 
                 return ApiResponse.Failure(Status.None,
-                    $"An Exception occured whilst performing a HTTP {method} Request",
+                    $"An Exception occurred whilst performing a HTTP {method} Request",
                     exception);
             }
             finally
             {
-                responseMessage?.Dispose();
+                if(responseMessage != null)
+                {
+                    _logger?.LogDebug("Disposing response for the HTTP {httpMethod} Request to {RequestRoute}", method.ToString(), endpoint);
+
+                    responseMessage.Dispose();
+                }
             }
         }
 
@@ -165,6 +193,8 @@ namespace SereneApi
             {
                 if(request.Content == null)
                 {
+                    _logger?.LogTrace("Performing a {httpMethod} request against {RequestRoute}", method.ToString(), endpoint);
+
                     responseMessage = RetryRequest(async client =>
                     {
                         return method switch
@@ -174,6 +204,7 @@ namespace SereneApi
                             Method.PUT => await client.PutAsync(endpoint, null),
                             Method.PATCH => await client.PatchAsync(endpoint, null),
                             Method.DELETE => await client.DeleteAsync(endpoint),
+                            Method.NONE => throw new ArgumentException("None is not a valid method for a request."),
                             _ => throw new ArgumentOutOfRangeException(nameof(endpoint), method,
                                 "An incorrect Method Value was supplied.")
                         };
@@ -181,6 +212,8 @@ namespace SereneApi
                 }
                 else
                 {
+                    _logger?.LogTrace("Performing a {httpMethod} request with in body content against {RequestRoute}", method.ToString(), endpoint);
+
                     HttpContent content = (HttpContent)request.Content.GetContent();
 
                     responseMessage = RetryRequest(async client =>
@@ -194,37 +227,59 @@ namespace SereneApi
                             Method.PATCH => await client.PatchAsync(endpoint, content),
                             Method.DELETE => throw new ArgumentException(
                                 "Delete cannot be used in conjunction with an InBody Request"),
+                            Method.NONE => throw new ArgumentException("None is not a valid method for a request."),
                             _ => throw new ArgumentOutOfRangeException(nameof(method), method,
                                 "An incorrect Method Value was supplied.")
                         };
                     }, endpoint);
                 }
 
+                _logger?.LogTrace("The {httpMethod} request against {RequestRoute} completed successfully.", method.ToString(), endpoint);
+
                 return ProcessResponse<TResponse>(responseMessage);
             }
-            catch(ArgumentException)
+            catch(ArgumentException exception)
             {
-                // An incorrect Method value was supplied. So we want this exception to bubble up to the caller.
-                throw;
+                if(method == Method.GET || method == Method.DELETE || method == Method.NONE)
+                {
+                    _logger?.LogWarning("An invalid method [{httpMethod}] was provided.", method.ToString());
+
+                    // An incorrect Method value was supplied. So we want this exception to bubble up to the caller.
+                    throw;
+                }
+
+                _logger?.LogError(exception,
+                    "An Exception occurred whilst performing a HTTP {httpMethod} Request to {RequestRoute}",
+                    method.ToString(), endpoint);
+
+                return ApiResponse<TResponse>.Failure(Status.None,
+                    $"An Exception occurred whilst performing a HTTP {method} Request",
+                    exception);
             }
-            catch(TimeoutException timeoutException)
+            catch(TimeoutException exception)
             {
-                return ApiResponse<TResponse>.Failure(Status.None, "The Request Timed Out; Retry limit reached",
-                    timeoutException);
+                _logger?.LogWarning(exception, "The Request Timed Out; Retry limit reach");
+
+                return ApiResponse<TResponse>.Failure(Status.None, "The Request Timed Out; Retry limit reached", exception);
             }
             catch(Exception exception)
             {
                 _logger?.LogError(exception,
-                    "An Exception occured whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
+                    "An Exception occurred whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
                     method.ToString(), endpoint);
 
                 return ApiResponse<TResponse>.Failure(Status.None,
-                    $"An Exception occured whilst performing a HTTP {method} Request",
+                    $"An Exception occurred whilst performing a HTTP {method} Request",
                     exception);
             }
             finally
             {
-                responseMessage?.Dispose();
+                if(responseMessage != null)
+                {
+                    _logger?.LogDebug("Disposing response for the HTTP {httpMethod} Request to {RequestRoute}", method.ToString(), endpoint);
+
+                    responseMessage.Dispose();
+                }
             }
         }
 
@@ -326,9 +381,9 @@ namespace SereneApi
             }
             catch(Exception exception)
             {
-                _logger?.LogError(exception, "An Exception occured whilst processing the response.");
+                _logger?.LogError(exception, "An Exception occurred whilst processing the response.");
 
-                return ApiResponse<TResponse>.Failure(status, "An Exception occured whilst processing the response.", exception);
+                return ApiResponse<TResponse>.Failure(status, "An Exception occurred whilst processing the response.", exception);
             }
         }
 

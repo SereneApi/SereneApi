@@ -4,6 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Tests", "tests\SereneApi.Tests\SereneApi.Tests.csproj", "{A5838144-4692-4D5C-A534-C1737C924A4B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4FB9E00D-43FB-41AF-8703-F06F24D8666A} = {4FB9E00D-43FB-41AF-8703-F06F24D8666A}
+		{18E5FD44-C306-49AD-8B38-99F303B51375} = {18E5FD44-C306-49AD-8B38-99F303B51375}
+		{6EF8F6A6-5A51-4B6D-97E9-F6376CAD070D} = {6EF8F6A6-5A51-4B6D-97E9-F6376CAD070D}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi", "src\SereneApi\SereneApi.csproj", "{AD315370-6A83-41FF-BB62-1B920B9572D3}"
 EndProject
