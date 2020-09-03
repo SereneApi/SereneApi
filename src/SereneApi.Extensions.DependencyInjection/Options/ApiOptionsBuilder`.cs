@@ -9,17 +9,17 @@ using System.Diagnostics.CodeAnalysis;
 namespace SereneApi.Extensions.DependencyInjection.Options
 {
     /// <inheritdoc cref="IApiOptionsConfigurator{TApi}"/>
-    internal class ApiApiOptionsBuilder<TApi>: ApiOptionsBuilder, IApiOptionsBuilder<TApi>, IApiOptionsConfigurator<TApi> where TApi : class
+    internal class ApiOptionsBuilder<TApi>: ApiOptionsBuilder, IApiOptionsBuilder<TApi>, IApiOptionsConfigurator<TApi> where TApi : class
     {
-        /// <inheritdoc cref="IApiOptionsConfigurator{TApi}.UseConfiguration"/>
-        public void UseConfiguration([NotNull] IConfiguration configuration)
+        /// <inheritdoc cref="IApiOptionsConfigurator{TApi}.AddConfiguration(Microsoft.Extensions.Configuration.IConfiguration)"/>
+        public void AddConfiguration([NotNull] IConfiguration configuration)
         {
             if(configuration == null)
             {
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            if(Dependencies.HasDependency<IConnectionSettings>())
+            if(Dependencies.HasDependency<IConnectionConfiguration>())
             {
                 throw new MethodAccessException("This method cannot be called twice");
             }
@@ -40,7 +40,7 @@ namespace SereneApi.Extensions.DependencyInjection.Options
                 }
             }
 
-            ConnectionSettings = new ConnectionSettings(source, resource, resourcePath)
+            ConnectionConfiguration = new ConnectionConfiguration(source, resource, resourcePath)
             {
                 Timeout = defaultApiConfiguration.Timeout,
                 RetryAttempts = defaultApiConfiguration.RetryCount
@@ -59,7 +59,7 @@ namespace SereneApi.Extensions.DependencyInjection.Options
 
                 if(timeout != default)
                 {
-                    ConnectionSettings.Timeout = timeout;
+                    ConnectionConfiguration.Timeout = timeout;
                 }
             }
 
@@ -80,7 +80,7 @@ namespace SereneApi.Extensions.DependencyInjection.Options
 
             Rules.ValidateRetryAttempts(retryCount);
 
-            ConnectionSettings.RetryAttempts = retryCount;
+            ConnectionConfiguration.RetryAttempts = retryCount;
 
             #endregion
         }
@@ -88,9 +88,9 @@ namespace SereneApi.Extensions.DependencyInjection.Options
         /// <inheritdoc cref="IApiOptionsBuilder{TApi}.BuildOptions"/>
         public new IApiOptions<TApi> BuildOptions()
         {
-            Dependencies.AddScoped<IConnectionSettings>(() => ConnectionSettings);
+            Dependencies.AddScoped<IConnectionConfiguration>(() => ConnectionConfiguration);
 
-            IApiOptions<TApi> apiOptions = new ApiOptions<TApi>(Dependencies.BuildProvider(), ConnectionSettings);
+            IApiOptions<TApi> apiOptions = new ApiOptions<TApi>(Dependencies.BuildProvider(), ConnectionConfiguration);
 
             return apiOptions;
         }

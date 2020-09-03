@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Authorization;
+using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Routing;
@@ -15,6 +16,14 @@ namespace SereneApi.Abstractions.Options
     /// </summary>
     public interface IApiOptionsConfigurator
     {
+        /// <summary>
+        /// Adds the APIs connection information using the provided <see cref="IConnectionConfiguration"/>.
+        /// </summary>
+        /// <param name="configuration">The configuration that will be used for communication with the API.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        /// <exception cref="MethodAccessException">Thrown when the method is called twice.</exception>
+        void AddConfiguration([NotNull] IConnectionConfiguration configuration);
+
         /// <summary>
         /// The source that requests will be made against.
         /// </summary>

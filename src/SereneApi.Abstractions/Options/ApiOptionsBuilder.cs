@@ -24,7 +24,67 @@ namespace SereneApi.Abstractions.Options
         /// <summary>
         /// Specifies the connection settings for the API.
         /// </summary>
-        protected ConnectionSettings ConnectionSettings { get; set; }
+        protected ConnectionConfiguration ConnectionConfiguration { get; set; }
+
+        /// <inheritdoc cref="IApiOptionsConfigurator.AddConfiguration"/>
+        public void AddConfiguration([NotNull] IConnectionConfiguration configuration)
+        {
+            if(configuration == null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
+
+            using IDependencyProvider provider = Dependencies.BuildProvider();
+
+            IDefaultApiConfiguration defaultApiConfiguration = provider.GetDependency<IDefaultApiConfiguration>();
+
+            string resourcePath = configuration.ResourcePath;
+
+            if(string.IsNullOrWhiteSpace(resourcePath))
+            {
+                if(resourcePath != string.Empty)
+                {
+                    resourcePath = defaultApiConfiguration.ResourcePath;
+                }
+            }
+
+            ConnectionConfiguration connection =
+                new ConnectionConfiguration(configuration.BaseAddress, configuration.Resource, resourcePath)
+                {
+                    Timeout = defaultApiConfiguration.Timeout,
+                    RetryAttempts = defaultApiConfiguration.RetryCount
+                };
+
+            #region Timeout
+
+            int timeout = configuration.Timeout;
+
+            if(timeout < 0)
+            {
+                throw new ArgumentException("The Timeout value must be greater than 0");
+            }
+
+            if(timeout != default)
+            {
+                connection.Timeout = timeout;
+            }
+
+            #endregion
+            #region Retry Count
+
+            int retryCount = configuration.RetryAttempts;
+
+            if(retryCount != default)
+            {
+                Rules.ValidateRetryAttempts(retryCount);
+
+                connection.RetryAttempts = retryCount;
+            }
+
+            #endregion
+
+            ConnectionConfiguration = connection;
+        }
 
         /// <inheritdoc cref="IApiOptionsConfigurator.UseSource"/>
         public void UseSource([NotNull] string baseAddress, string resource = null, string resourcePath = null)
@@ -46,7 +106,7 @@ namespace SereneApi.Abstractions.Options
                 }
             }
 
-            ConnectionSettings = new ConnectionSettings(baseAddress, resource, resourcePath)
+            ConnectionConfiguration = new ConnectionConfiguration(baseAddress, resource, resourcePath)
             {
                 Timeout = configuration.Timeout,
                 RetryAttempts = configuration.RetryCount
@@ -61,12 +121,12 @@ namespace SereneApi.Abstractions.Options
                 throw new ArgumentException("A timeout value must be greater than 0.");
             }
 
-            if(ConnectionSettings == null)
+            if(ConnectionConfiguration == null)
             {
                 throw new MethodAccessException("Source information must be supplied fired.");
             }
 
-            ConnectionSettings.Timeout = seconds;
+            ConnectionConfiguration.Timeout = seconds;
         }
 
         /// <inheritdoc cref="IApiOptionsConfigurator.SetRetryAttempts(int)"/>
@@ -77,14 +137,14 @@ namespace SereneApi.Abstractions.Options
                 throw new ArgumentException("Retry attempts must be greater or equal to 0.");
             }
 
-            if(ConnectionSettings == null)
+            if(ConnectionConfiguration == null)
             {
                 throw new MethodAccessException("Source information must be supplied fired.");
             }
 
             Rules.ValidateRetryAttempts(attemptCount);
 
-            ConnectionSettings.RetryAttempts = attemptCount;
+            ConnectionConfiguration.RetryAttempts = attemptCount;
         }
 
         /// <inheritdoc cref="IApiOptionsConfigurator.UseLogger"/>
@@ -167,8 +227,8 @@ namespace SereneApi.Abstractions.Options
         /// <inheritdoc cref="IApiOptionsConfigurator.SetTimeout(int,int)"/>
         public void SetTimeout([NotNull] int seconds, [NotNull] int attempts)
         {
-            ConnectionSettings.Timeout = seconds;
-            ConnectionSettings.RetryAttempts = attempts;
+            ConnectionConfiguration.Timeout = seconds;
+            ConnectionConfiguration.RetryAttempts = attempts;
         }
 
         /// <inheritdoc cref="IApiOptionsConfigurator.UseRouteFactory"/>
@@ -195,9 +255,9 @@ namespace SereneApi.Abstractions.Options
 
         public IApiOptions BuildOptions()
         {
-            Dependencies.AddScoped<IConnectionSettings>(() => ConnectionSettings);
+            Dependencies.AddScoped<IConnectionConfiguration>(() => ConnectionConfiguration);
 
-            IApiOptions apiOptions = new ApiOptions(Dependencies.BuildProvider(), ConnectionSettings);
+            IApiOptions apiOptions = new ApiOptions(Dependencies.BuildProvider(), ConnectionConfiguration);
 
             return apiOptions;
         }
