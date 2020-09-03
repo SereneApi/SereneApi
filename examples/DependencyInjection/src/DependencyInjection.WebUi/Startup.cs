@@ -43,12 +43,12 @@ namespace DependencyInjection.WebUi
             services.RegisterApi<IClassApi, ClassApiHandler>((builder, provider) =>
             {
                 // Instead of using appsettings. You can also manually specify the source information.
-                builder.UseSource("http://localhost:52279", "Class");
+                builder.SetSource("http://localhost:52279", "Class");
             });
 
             services.RegisterApi<IValuesApi, ValuesApiHandler>((builder, p) =>
             {
-                builder.UseSource("http://localhost:52279", "Values");
+                builder.SetSource("http://localhost:52279", "Values");
             });
 
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebUi", Version = "v1" }));

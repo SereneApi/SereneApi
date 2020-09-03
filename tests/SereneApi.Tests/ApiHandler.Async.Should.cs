@@ -28,7 +28,7 @@ namespace SereneApi.Tests
             using ApiFactory apiFactory = new ApiFactory();
 
             apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(
-                    o => o.UseSource(source, resource))
+                    o => o.SetSource(source, resource))
                 .WithMockResponse(r =>
                 {
                     r.AddMockResponse(MockPersonDto.All)
@@ -80,7 +80,7 @@ namespace SereneApi.Tests
             using ApiFactory apiFactory = new ApiFactory();
 
             apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(
-                o => o.UseSource(source, resource));
+                o => o.SetSource(source, resource));
 
             apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
@@ -130,7 +130,7 @@ namespace SereneApi.Tests
             using ApiFactory apiFactory = new ApiFactory();
 
             apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(
-                o => o.UseSource(source, resource));
+                o => o.SetSource(source, resource));
 
             apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
@@ -183,7 +183,7 @@ namespace SereneApi.Tests
 
             apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(o =>
             {
-                o.UseSource(source, resource);
+                o.SetSource(source, resource);
                 o.SetTimeout(timeoutSeconds);
                 o.SetRetryAttempts(retryCount);
             });
@@ -234,7 +234,7 @@ namespace SereneApi.Tests
 
             apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(o =>
             {
-                o.UseSource(source, resource);
+                o.SetSource(source, resource);
                 o.SetTimeout(timeoutSeconds);
                 o.SetRetryAttempts(retryCount);
             });
@@ -298,7 +298,7 @@ namespace SereneApi.Tests
             using ApiFactory apiFactory = new ApiFactory();
 
             apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(
-                o => o.UseSource(source, resource));
+                o => o.SetSource(source, resource));
 
             apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
@@ -351,7 +351,7 @@ namespace SereneApi.Tests
             using ApiFactory apiFactory = new ApiFactory();
 
             apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(
-                o => o.UseSource(source, resource));
+                o => o.SetSource(source, resource));
 
             apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
@@ -402,7 +402,7 @@ namespace SereneApi.Tests
 
             apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(o =>
             {
-                o.UseSource(source, resource);
+                o.SetSource(source, resource);
                 o.SetTimeout(timeoutSeconds);
                 o.SetRetryAttempts(retryCount);
             });
@@ -456,7 +456,7 @@ namespace SereneApi.Tests
 
             apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(o =>
             {
-                o.UseSource(source, resource);
+                o.SetSource(source, resource);
                 o.SetTimeout(timeoutSeconds);
                 o.SetRetryAttempts(retryCount);
             });
@@ -508,7 +508,7 @@ namespace SereneApi.Tests
 
             apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(o =>
             {
-                o.UseSource(source, resource);
+                o.SetSource(source, resource);
                 o.SetTimeout(timeoutSeconds);
 
                 if(retryCount > 0)
@@ -563,7 +563,7 @@ namespace SereneApi.Tests
 
             apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(o =>
             {
-                o.UseSource(source, resource);
+                o.SetSource(source, resource);
                 o.SetTimeout(timeoutSeconds);
 
                 if(retryCount > 0)
@@ -626,7 +626,7 @@ namespace SereneApi.Tests
             using ApiFactory apiFactory = new ApiFactory();
 
             apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(
-                o => o.UseSource(source));
+                o => o.SetSource(source));
 
             apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
@@ -678,7 +678,7 @@ namespace SereneApi.Tests
             using ApiFactory apiFactory = new ApiFactory();
 
             apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(
-                o => o.UseSource(source));
+                o => o.SetSource(source));
 
             apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
@@ -738,7 +738,7 @@ namespace SereneApi.Tests
             using ApiFactory apiFactory = new ApiFactory();
 
             apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(
-                o => o.UseSource(source, resource));
+                o => o.SetSource(source, resource));
 
             apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
@@ -789,7 +789,7 @@ namespace SereneApi.Tests
             using ApiFactory apiFactory = new ApiFactory();
 
             apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(
-                o => o.UseSource(source, resource));
+                o => o.SetSource(source, resource));
 
             apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {

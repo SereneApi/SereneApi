@@ -35,7 +35,7 @@ namespace SereneApi.Abstractions.Options
         /// <para>If a resource is not provided it can be supplied when making requests by using the AgainstResource method.</para>
         /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        void UseSource([NotNull] string baseAddress, [AllowNull] string resource = null, [AllowNull] string resourcePath = null);
+        void SetSource([NotNull] string baseAddress, [AllowNull] string resource = null, [AllowNull] string resourcePath = null);
 
         /// <summary>
         /// Sets the timeout period.
@@ -106,7 +106,7 @@ namespace SereneApi.Abstractions.Options
         /// </summary>
         /// <param name="credentials">The <see cref="ICredentials"/> to be for authentication.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        void UseCredentials([NotNull] ICredentials credentials);
+        void AddCredentials([NotNull] ICredentials credentials);
 
         /// <summary>
         /// Adds basic authentication to used when making requests.

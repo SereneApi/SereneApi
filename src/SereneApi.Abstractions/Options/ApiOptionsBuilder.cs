@@ -86,8 +86,8 @@ namespace SereneApi.Abstractions.Options
             ConnectionConfiguration = connection;
         }
 
-        /// <inheritdoc cref="IApiOptionsConfigurator.UseSource"/>
-        public void UseSource([NotNull] string baseAddress, string resource = null, string resourcePath = null)
+        /// <inheritdoc cref="IApiOptionsConfigurator.SetSource"/>
+        public void SetSource([NotNull] string baseAddress, string resource = null, string resourcePath = null)
         {
             if(string.IsNullOrWhiteSpace(baseAddress))
             {
@@ -169,8 +169,8 @@ namespace SereneApi.Abstractions.Options
             Dependencies.AddScoped(() => queryFactory);
         }
 
-        /// <inheritdoc cref="IApiOptionsConfigurator.UseCredentials"/>
-        public void UseCredentials([NotNull] ICredentials credentials)
+        /// <inheritdoc cref="IApiOptionsConfigurator.AddCredentials"/>
+        public void AddCredentials([NotNull] ICredentials credentials)
         {
             if(credentials == null)
             {

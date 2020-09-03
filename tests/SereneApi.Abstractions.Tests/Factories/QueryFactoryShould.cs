@@ -18,7 +18,7 @@ namespace SereneApi.Abstractions.Tests.Factories
 
             IApiOptionsBuilder apiOptionsBuilder = configuration.GetOptionsBuilder();
 
-            apiOptionsBuilder.UseSource("http://test.com");
+            apiOptionsBuilder.SetSource("http://test.com");
 
             IApiOptions options = apiOptionsBuilder.BuildOptions();
 

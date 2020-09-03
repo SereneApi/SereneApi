@@ -17,7 +17,7 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
 
             serviceCollection.RegisterApi<ITestApi, TestApiHandler>(b =>
             {
-                b.UseSource("http://localhost/", "Test");
+                b.SetSource("http://localhost/", "Test");
             });
 
             IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
@@ -47,7 +47,7 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
 
             serviceCollection.RegisterApi<ITestApi, TestApiHandler>(b =>
             {
-                b.UseSource("http://localhost/", "Test");
+                b.SetSource("http://localhost/", "Test");
                 b.SetTimeout(60, 2);
             });
 
@@ -80,7 +80,7 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
 
             serviceCollection.RegisterApi<ITestApi, TestApiHandler>(b =>
             {
-                b.UseSource("http://localhost/", "Test");
+                b.SetSource("http://localhost/", "Test");
             });
 
             ((ICoreOptions)serviceCollection.ExtendApi<ITestApi>()).Dependencies
@@ -115,7 +115,7 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
 
             serviceCollection.RegisterApi<ITestApi, TestApiHandler>(b =>
             {
-                b.UseSource("http://localhost/", "Test");
+                b.SetSource("http://localhost/", "Test");
             });
 
             serviceCollection.ExtendApi<ITestApi>(r =>
