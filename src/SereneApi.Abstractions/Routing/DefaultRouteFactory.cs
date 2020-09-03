@@ -33,7 +33,7 @@ namespace SereneApi.Abstractions.Routing
         /// Instantiates a new instance of <see cref="DefaultRouteFactory"/>.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public DefaultRouteFactory(IConnectionSettings connection)
+        public DefaultRouteFactory(IConnectionConfiguration connection)
         {
             if(connection == null)
             {
@@ -54,7 +54,7 @@ namespace SereneApi.Abstractions.Routing
                 throw new ArgumentNullException(nameof(provider));
             }
 
-            ResourcePath = provider.GetDependency<IConnectionSettings>().ResourcePath;
+            ResourcePath = provider.GetDependency<IConnectionConfiguration>().ResourcePath;
         }
 
         #endregion

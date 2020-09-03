@@ -33,7 +33,7 @@ namespace SereneApi
         protected IApiOptions Options { get; }
 
         /// <inheritdoc cref="IApiHandler.Connection"/>
-        public IConnectionSettings Connection { get; }
+        public IConnectionConfiguration Connection { get; }
 
         #endregion
         #region Constructors
