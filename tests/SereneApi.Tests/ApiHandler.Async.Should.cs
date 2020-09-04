@@ -752,7 +752,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.PerformRequestAsync(Method.GET, r => r.WithEndpoint(endpoint)));
+            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.PerformRequestAsync(Method.GET, r => r.WithEndPoint(endpoint)));
 
             #endregion
             #region Assert
@@ -803,7 +803,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.PerformRequestAsync<MockPersonDto>(Method.GET, r => r.WithEndpoint(endpoint)));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.PerformRequestAsync<MockPersonDto>(Method.GET, r => r.WithEndPoint(endpoint)));
 
             #endregion
             #region Assert
