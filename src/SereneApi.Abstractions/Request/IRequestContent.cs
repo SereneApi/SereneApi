@@ -13,14 +13,14 @@ namespace SereneApi.Abstractions.Request
         /// <typeparam name="TContent">The type of the content.</typeparam>
         /// <param name="content">The content to be appended to the body of the request.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        IRequestCreated WithInBodyContent<TContent>([NotNull] TContent content);
+        IRequestCreated AddInBodyContent<TContent>([NotNull] TContent content);
 
         /// <summary>
         /// Adds the specified content into the body of the request.
         /// </summary>
         /// <param name="content">The content to be appended to the body of the request.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        IRequestCreated WithInBodyContent([NotNull] IApiRequestContent content);
+        IRequestCreated AddInBodyContent([NotNull] IApiRequestContent content);
 
         /// <summary>
         /// The specified object is appended to the request as a query.

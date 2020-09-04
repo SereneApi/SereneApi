@@ -76,7 +76,7 @@ namespace SereneApi.Extensions.DependencyInjection.Factories
 
             services.AddHttpClient(_handlerName, client =>
             {
-                IConnectionSettings connection = _dependencies.GetDependency<IConnectionSettings>();
+                IConnectionConfiguration connection = _dependencies.GetDependency<IConnectionConfiguration>();
 
                 if(connection.Timeout == default || connection.Timeout < 0)
                 {

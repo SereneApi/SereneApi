@@ -3,9 +3,9 @@
 namespace SereneApi.Abstractions.Configuration
 {
     /// <summary>
-    /// The settings used to communicate with an API.
+    /// The configuration used to communicate with an API.
     /// </summary>
-    public interface IConnectionSettings
+    public interface IConnectionConfiguration
     {
         /// <summary>
         /// Specifies the Hosts address.

@@ -24,7 +24,7 @@ namespace SereneApi
         public virtual Task<IApiResponse<TResource>> GetAsync(TIdentifier identifier)
         {
             return PerformRequestAsync<TResource>(Method.GET, request => request
-                .WithEndpoint(identifier));
+                .WithParameter(identifier));
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.GetAllAsync"/>
@@ -42,14 +42,14 @@ namespace SereneApi
             }
 
             return PerformRequestAsync<TResource>(Method.POST, request => request
-                .WithInBodyContent(resource));
+                .AddInBodyContent(resource));
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.DeleteAsync"/>
         public virtual Task<IApiResponse> DeleteAsync(TIdentifier identifier)
         {
             return PerformRequestAsync(Method.DELETE, request => request
-                .WithEndpoint(identifier));
+                .WithParameter(identifier));
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.ReplaceAsync"/>
@@ -61,7 +61,7 @@ namespace SereneApi
             }
 
             return PerformRequestAsync<TResource>(Method.PUT, request => request
-                .WithInBodyContent(resource));
+                .AddInBodyContent(resource));
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.UpdateAsync"/>
@@ -73,7 +73,7 @@ namespace SereneApi
             }
 
             return PerformRequestAsync<TResource>(Method.PATCH, request => request
-                .WithInBodyContent(resource));
+                .AddInBodyContent(resource));
         }
     }
 }

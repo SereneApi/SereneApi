@@ -45,7 +45,7 @@ namespace SereneApi.Abstractions.Factories
             // If a handle was found, the handler is not disposed of as the Dependency Collection has ownership.
             HttpClient client = new HttpClient(messageHandler, !handlerFound);
 
-            IConnectionSettings connection = _dependencies.GetDependency<IConnectionSettings>();
+            IConnectionConfiguration connection = _dependencies.GetDependency<IConnectionConfiguration>();
 
             if(connection.Timeout == default || connection.Timeout < 0)
             {
