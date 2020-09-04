@@ -13,7 +13,7 @@ namespace SereneApi.Extensions.DependencyInjection.Options
     public interface IApiOptionsConfigurator<TApi>: IApiOptionsConfigurator where TApi : class
     {
         /// <summary>
-        /// Gets the APIs connection information from the provided <see cref="IConfiguration"/>.
+        /// Adds the APIs connection information from the provided <see cref="IConfiguration"/>.
         /// </summary>
         /// <param name="configuration">The <see cref="IConfiguration"/> that the source information will be retrieved from.</param>
         /// <remarks>
@@ -28,6 +28,6 @@ namespace SereneApi.Extensions.DependencyInjection.Options
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         /// <exception cref="MethodAccessException">Thrown when the method is called twice.</exception>
         /// <exception cref="KeyNotFoundException">Thrown when the specified value cannot be found and requited is set to true.</exception>
-        void UseConfiguration([NotNull] IConfiguration configuration);
+        void AddConfiguration([NotNull] IConfiguration configuration);
     }
 }

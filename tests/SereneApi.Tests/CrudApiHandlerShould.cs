@@ -22,7 +22,7 @@ namespace SereneApi.Tests
 
             factory.RegisterApi<ICrudApi, CrudApiHandlerWrapper>(builder =>
             {
-                builder.UseSource("http://localhost:8080", "Person");
+                builder.SetSource("http://localhost:8080", "Person");
             }).WithMockResponse(builder =>
             {
                 builder

@@ -9,7 +9,7 @@ namespace SereneApi.Tests.Interfaces
 {
     public interface IApiHandlerWrapper: IDisposable
     {
-        IConnectionSettings Connection { get; }
+        IConnectionConfiguration Connection { get; }
 
         IApiResponse PerformRequest(Method method, Expression<Func<IRequest, IRequestCreated>> factory = null);
 

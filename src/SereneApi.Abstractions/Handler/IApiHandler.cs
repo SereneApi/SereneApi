@@ -11,6 +11,6 @@ namespace SereneApi.Abstractions.Handler
         /// <summary>
         /// The connection that will be used when performing API requests.
         /// </summary>
-        IConnectionSettings Connection { get; }
+        IConnectionConfiguration Connection { get; }
     }
 }

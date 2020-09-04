@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.1.0.6</Version>
+    <Version>1.1.1.0</Version>
     <Authors>DeltaWare</Authors>
     <Company>DeltaWare</Company>
     <Product>SereneApi</Product>
@@ -18,7 +18,9 @@
     <RepositoryType>GIT</RepositoryType>
     <PackageTags>REST; RESTful; DI; DependencyInjection; AspNet; Extensions</PackageTags>
     <NeutralLanguage>en-AU</NeutralLanguage>
-    <PackageReleaseNotes>FIXED - Issue where InjectedTokenAuthorizer was not refreshing an expired token.
+    <PackageReleaseNotes>ADDED - GetApiConfig("ApiConfig", "CommonApiSource") this removes the need for you to repeat source entries if the API is contacting the same host.
+
+REWORKED - GetApiConfig, this method is now returning an IConnectionConfiguration instead of IConfiguration. This will not change any previous configuration.
 
 UPDATED - SereneApi.Abstractions</PackageReleaseNotes>
     <PackageId>SereneApi.Extensions.DependencyInjection</PackageId>

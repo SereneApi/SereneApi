@@ -148,7 +148,7 @@ namespace SereneApi.Extensions.DependencyInjection
 
             IDefaultApiConfiguration configuration = provider.GetRequiredService<IDefaultApiConfiguration>();
 
-            ApiApiOptionsBuilder<TApi> builder = configuration.GetOptionsBuilder<ApiApiOptionsBuilder<TApi>>();
+            ApiOptionsBuilder<TApi> builder = configuration.GetOptionsBuilder<ApiOptionsBuilder<TApi>>();
 
             services.Add(new ServiceDescriptor(typeof(IApiOptionsConfigurator<TApi>),
                 p => CreateApiHandlerOptionsBuilder(factory, builder, services), ServiceLifetime.Singleton));
@@ -197,7 +197,7 @@ namespace SereneApi.Extensions.DependencyInjection
 
             IDefaultApiConfiguration configuration = provider.GetRequiredService<IDefaultApiConfiguration>();
 
-            ApiApiOptionsBuilder<TApi> builder = configuration.GetOptionsBuilder<ApiApiOptionsBuilder<TApi>>();
+            ApiOptionsBuilder<TApi> builder = configuration.GetOptionsBuilder<ApiOptionsBuilder<TApi>>();
 
             services.TryAdd(new ServiceDescriptor(typeof(IApiOptionsConfigurator<TApi>),
                 p => CreateApiHandlerOptionsBuilder(factory, builder, services, p), ServiceLifetime.Singleton));
@@ -216,7 +216,7 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <param name="builder">Used to invoke the factory.</param>
         /// <param name="services">Injected into the <see cref="IDependencyCollection"/> for <see cref="IApiOptions"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is supplied.</exception>
-        private static IApiOptionsConfigurator<TApi> CreateApiHandlerOptionsBuilder<TApi>([NotNull] Action<IApiOptionsConfigurator<TApi>> factory, [NotNull] ApiApiOptionsBuilder<TApi> builder, [NotNull] IServiceCollection services) where TApi : class
+        private static IApiOptionsConfigurator<TApi> CreateApiHandlerOptionsBuilder<TApi>([NotNull] Action<IApiOptionsConfigurator<TApi>> factory, [NotNull] ApiOptionsBuilder<TApi> builder, [NotNull] IServiceCollection services) where TApi : class
         {
             if(factory == null)
             {
@@ -274,7 +274,7 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <param name="services">Injected into the <see cref="IDependencyCollection"/> for <see cref="IApiOptions"/>.</param>
         /// <param name="provider">Used to invoke the factory.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is supplied.</exception>
-        private static IApiOptionsConfigurator<TApi> CreateApiHandlerOptionsBuilder<TApi>([NotNull] Action<IApiOptionsConfigurator<TApi>, IServiceProvider> factory, [NotNull] ApiApiOptionsBuilder<TApi> builder, [NotNull] IServiceCollection services, [NotNull] IServiceProvider provider) where TApi : class
+        private static IApiOptionsConfigurator<TApi> CreateApiHandlerOptionsBuilder<TApi>([NotNull] Action<IApiOptionsConfigurator<TApi>, IServiceProvider> factory, [NotNull] ApiOptionsBuilder<TApi> builder, [NotNull] IServiceCollection services, [NotNull] IServiceProvider provider) where TApi : class
         {
             if(factory == null)
             {
@@ -341,7 +341,7 @@ namespace SereneApi.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(provider));
             }
 
-            ApiApiOptionsBuilder<TApi> builder = (ApiApiOptionsBuilder<TApi>)provider.GetRequiredService<IApiOptionsConfigurator<TApi>>();
+            ApiOptionsBuilder<TApi> builder = (ApiOptionsBuilder<TApi>)provider.GetRequiredService<IApiOptionsConfigurator<TApi>>();
 
             return builder.BuildOptions();
         }

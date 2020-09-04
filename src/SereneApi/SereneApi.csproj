@@ -6,23 +6,21 @@
     <RootNamespace>SereneApi</RootNamespace>
     <RepositoryUrl>https://github.com/DeltaWareAU/SereneApi.git</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
-    <PackageTags>REST; Client; Wrapper; RESTful; Consumer</PackageTags>
+    <PackageTags>REST; Client; Wrapper; RESTful; Consumer; Fluent; Fluent API</PackageTags>
     <Description>Serene API is a small library intended to provide a straightforward way of consuming RESTful APIs requiring as little code &amp; setup as possible whilst providing a powerful set of tools.</Description>
     <Authors>DeltaWare</Authors>
     <Company>DeltaWare</Company>
     <Product>SereneApi</Product>
     <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.1.0.5</Version>
+    <Version>1.1.1.0</Version>
     <NeutralLanguage>en-AU</NeutralLanguage>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Copyright>Copyright (c) 2020 DeltaWare</Copyright>
     <PackageIcon>nuget_logo.png</PackageIcon>
     <PackageId>SereneApi</PackageId>
-    <PackageReleaseNotes>IMPROVED - Logging
-
-UPDATED - SereneApi.Abstractions</PackageReleaseNotes>
+    <PackageReleaseNotes>UPDATED - SereneApi.Abstractions</PackageReleaseNotes>
       <IncludeSymbols>true</IncludeSymbols>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
       <AssemblyVersion>1.1.0.5</AssemblyVersion>

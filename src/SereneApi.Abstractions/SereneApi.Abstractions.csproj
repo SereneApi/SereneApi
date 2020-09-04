@@ -6,21 +6,28 @@
 	  <RootNamespace>SereneApi.Abstractions</RootNamespace>
 	  <RepositoryUrl>https://github.com/SereneApi/SereneApi</RepositoryUrl>
 	  <RepositoryType>GIT</RepositoryType>
-	  <PackageTags>REST; Client; Wrapper; RESTful; Consumer; Abstractions</PackageTags>
+	  <PackageTags>REST; Client; Wrapper; RESTful; Consumer; Abstractions; Fluent; Fluent API</PackageTags>
 	  <Description>SereneApi is a .NET Library that introduces an intuitive way of consuming your REST APIs while combining a robust set of extensible tools.</Description>
 	  <Authors>DeltaWare</Authors>
 	  <Company>DeltaWare</Company>
 	  <Product>SereneApi</Product>
 	  <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <Version>1.1.0.5</Version>
+	  <Version>1.1.1.0</Version>
 	  <NeutralLanguage>en-AU</NeutralLanguage>
 	  <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 	  <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	  <Copyright>Copyright (c) 2020 DeltaWare</Copyright>
 	  <PackageIcon>nuget_logo.png</PackageIcon>
 	  <PackageId>SereneApi.Abstractions</PackageId>
-	  <PackageReleaseNotes>FIXED - Issue where TokenAuthorizer was not refreshing an expired token.</PackageReleaseNotes>
+	  <PackageReleaseNotes>ADDED - AddConfiguration to enable configuration with IConnectionConfiguration
+
+RENAMED - IConnectionSettings to IConnectionConfiguration
+RENAMED - UseSource to SetSource
+RENAMED - UseCredentials to AddCredentials
+RENAMED - WithInBodyContent to AddInBodyContent
+
+IMPROVED - Request building, WithEndPointTemplate has been replaced, Now WithEndPoint.WithParameters must be used.</PackageReleaseNotes>
       <IncludeSymbols>true</IncludeSymbols>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>

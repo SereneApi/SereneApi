@@ -4,7 +4,9 @@ using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Routing;
 using SereneApi.Abstractions.Serialization;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace SereneApi.Abstractions.Request
@@ -12,7 +14,7 @@ namespace SereneApi.Abstractions.Request
     /// <summary>
     ///  Builds an <see cref="IApiRequest"/> based on the supplied values.
     /// </summary>
-    public class RequestBuilder: IRequest
+    public class RequestBuilder: IRequest, IRequestEndPointParams
     {
         #region Readonly Variables
 
@@ -78,7 +80,7 @@ namespace SereneApi.Abstractions.Request
         /// <inheritdoc>
         ///     <cref>IRequestContent.WithInBodyContent</cref>
         /// </inheritdoc>
-        public IRequestCreated WithInBodyContent<TContent>([NotNull] TContent content)
+        public IRequestCreated AddInBodyContent<TContent>([NotNull] TContent content)
         {
             if(content == null)
             {
@@ -90,7 +92,7 @@ namespace SereneApi.Abstractions.Request
             return this;
         }
 
-        public IRequestCreated WithInBodyContent([NotNull] IApiRequestContent content)
+        public IRequestCreated AddInBodyContent([NotNull] IApiRequestContent content)
         {
             _requestContent = content ?? throw new ArgumentNullException(nameof(content));
 
@@ -135,7 +137,7 @@ namespace SereneApi.Abstractions.Request
         /// <see>
         ///     <cref>IRequestEndpoint.WithEndpoint</cref>
         /// </see>
-        public IRequestContent WithEndpoint([NotNull] object parameter)
+        public IRequestContent WithParameter([NotNull] object parameter)
         {
             if(parameter == null)
             {
@@ -150,7 +152,7 @@ namespace SereneApi.Abstractions.Request
         /// <see>
         ///     <cref>IRequestEndpoint.WithEndpoint</cref>
         /// </see>
-        public IRequestContent WithEndpoint([NotNull] string endpoint)
+        public IRequestEndPointParams WithEndPoint([NotNull] string endpoint)
         {
             if(string.IsNullOrWhiteSpace(endpoint))
             {
@@ -162,14 +164,9 @@ namespace SereneApi.Abstractions.Request
             return this;
         }
 
-        /// <see cref="IRequestEndpoint.WithEndpointTemplate"/>
-        public IRequestContent WithEndpointTemplate([NotNull] string template, [NotNull] params object[] parameters)
+        /// <inheritdoc cref="IRequestEndPointParams.WithParameters(object[])"/>
+        public IRequestContent WithParameters(params object[] parameters)
         {
-            if(string.IsNullOrWhiteSpace(template))
-            {
-                throw new ArgumentNullException(nameof(template));
-            }
-
             if(parameters == null)
             {
                 throw new ArgumentNullException(nameof(parameters));
@@ -180,8 +177,37 @@ namespace SereneApi.Abstractions.Request
                 throw new ArgumentException(nameof(parameters));
             }
 
-            _endpoint = template;
+            if(string.IsNullOrWhiteSpace(_endpoint))
+            {
+                throw new MethodAccessException("An EndPoint must be specified before parameters can be added.");
+            }
+
             _endpointParameters = parameters;
+
+            return this;
+        }
+
+        /// <inheritdoc cref="IRequestEndPointParams.WithParameters(IList{object})"/>
+        public IRequestContent WithParameters(IList<object> parameters)
+        {
+            if(parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            object[] parameterArray = parameters.ToArray();
+
+            if(parameterArray.Length <= 0)
+            {
+                throw new ArgumentException(nameof(parameters));
+            }
+
+            if(string.IsNullOrWhiteSpace(_endpoint))
+            {
+                throw new MethodAccessException("An EndPoint must be specified before parameters can be added.");
+            }
+
+            _endpointParameters = parameterArray;
 
             return this;
         }

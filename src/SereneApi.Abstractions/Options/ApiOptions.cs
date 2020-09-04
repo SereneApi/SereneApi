@@ -15,7 +15,7 @@ namespace SereneApi.Abstractions.Options
         #region Properties
 
         /// <inheritdoc cref="IApiOptions.Connection"/>
-        public IConnectionSettings Connection { get; set; }
+        public IConnectionConfiguration Connection { get; set; }
 
         #endregion
         #region Constructors
@@ -24,9 +24,9 @@ namespace SereneApi.Abstractions.Options
         /// Creates a new instance of <see cref="ApiOptions"/>
         /// </summary>
         /// <param name="dependencies">The dependencies that can be used when making an API request.</param>
-        /// <param name="connection">The <see cref="IConnectionSettings"/> used to make requests to the API.</param>
+        /// <param name="connection">The <see cref="IConnectionConfiguration"/> used to make requests to the API.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public ApiOptions([NotNull] IDependencyProvider dependencies, [NotNull] IConnectionSettings connection)
+        public ApiOptions([NotNull] IDependencyProvider dependencies, [NotNull] IConnectionConfiguration connection)
         {
             _dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
             Connection = connection ?? throw new ArgumentNullException(nameof(connection));
