@@ -39,6 +39,8 @@ namespace SereneApi.Abstractions.Events
                 {
                     listeners.Add(listener);
                 }
+
+                // TODO: Should an error be thrown here or just absorbed?
             }
             else
             {
@@ -61,6 +63,8 @@ namespace SereneApi.Abstractions.Events
             {
                 listeners.Remove(listener);
             }
+
+            // TODO: Should an error be thrown here or just absorbed?
         }
     }
 }

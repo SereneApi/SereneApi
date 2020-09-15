@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Request;
+using SereneApi.Abstractions.Request.Events;
 using SereneApi.Abstractions.Response;
+using SereneApi.Extensions;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
@@ -69,6 +71,8 @@ namespace SereneApi
             {
                 throw new ArgumentNullException(nameof(request));
             }
+
+            _eventManager?.PublishAsync(new RequestEvent(this, request)).FireAndForget();
 
             HttpResponseMessage responseMessage = null;
 
@@ -182,6 +186,8 @@ namespace SereneApi
             {
                 throw new ArgumentNullException(nameof(request));
             }
+
+            _eventManager?.PublishAsync(new RequestEvent(this, request)).FireAndForget();
 
             HttpResponseMessage responseMessage = null;
 

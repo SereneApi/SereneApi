@@ -1,10 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Events;
 using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Response;
 using SereneApi.Abstractions.Response.Content;
+using SereneApi.Abstractions.Response.Events;
 using SereneApi.Abstractions.Serialization;
+using SereneApi.Extensions;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -23,6 +26,8 @@ namespace SereneApi
         #region Variables
 
         private readonly ILogger _logger;
+
+        private readonly IEventManager _eventManager;
 
         #endregion
         #region Properties
@@ -53,8 +58,8 @@ namespace SereneApi
             Connection = options.Connection;
 
             Options = options;
-
             Options.RetrieveDependency(out _logger);
+            Options.RetrieveDependency(out _eventManager);
 
             _logger?.LogTrace($"{GetType()} has been instantiated");
         }
@@ -75,20 +80,92 @@ namespace SereneApi
                 return ApiResponse.Failure(Status.None, "Received an Empty Http Response");
             }
 
+            IApiResponse response;
+
             Status status = responseMessage.StatusCode.ToStatus();
 
             if(status.IsSuccessCode())
             {
                 _logger?.LogTrace("The request received a successful response.");
 
-                return ApiResponse.Success(status);
+                response = ApiResponse.Success(status);
+            }
+            else
+            {
+                _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}", responseMessage.StatusCode, responseMessage.ReasonPhrase);
+
+                response = ApiResponse.Failure(status, responseMessage.ReasonPhrase);
             }
 
-            _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}", responseMessage.StatusCode, responseMessage.ReasonPhrase);
+            _eventManager?.PublishAsync(new ResponseEvent(this, response)).FireAndForget();
 
-            return ApiResponse.Failure(status, responseMessage.ReasonPhrase);
+            return response;
         }
 
+        /// <summary>
+        /// Processes the returned <see cref="HttpResponseMessage"/> deserializing the contained <see cref="TResponse"/>
+        /// </summary>
+        /// <typeparam name="TResponse">The type to be deserialized from the response</typeparam>
+        /// <param name="responseMessage">The <see cref="HttpResponseMessage"/> to process</param>
+        private IApiResponse<TResponse> ProcessResponse<TResponse>(HttpResponseMessage responseMessage)
+        {
+            if(responseMessage == null)
+            {
+                _logger?.LogWarning("Received an Empty Http Response");
+
+                return ApiResponse<TResponse>.Failure(Status.None, "Received an Empty Http Response");
+            }
+
+            IApiResponse<TResponse> response;
+
+            Status status = responseMessage.StatusCode.ToStatus();
+
+            if(!responseMessage.IsSuccessStatusCode)
+            {
+                _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}", responseMessage.StatusCode, responseMessage.ReasonPhrase);
+
+                response = ApiResponse<TResponse>.Failure(status, responseMessage.ReasonPhrase);
+            }
+            else
+            {
+                if(responseMessage.Content == null)
+                {
+                    _logger.LogWarning("No content was received in the response.");
+
+                    response = ApiResponse<TResponse>.Failure(status, "No content was received in the response.");
+                }
+                else
+                {
+                    try
+                    {
+                        ISerializer serializer = Options.RetrieveRequiredDependency<ISerializer>();
+
+                        TResponse responseData =
+                            serializer.Deserialize<TResponse>(new HttpContentResponse(responseMessage.Content));
+
+                        response = ApiResponse<TResponse>.Success(status, responseData);
+                    }
+                    catch(JsonException jsonException)
+                    {
+                        _logger?.LogError(jsonException, "Could not deserialize the returned value");
+
+                        response = ApiResponse<TResponse>.Failure(status, "Could not deserialize returned value.",
+                            jsonException);
+                    }
+                    catch(Exception exception)
+                    {
+                        _logger?.LogError(exception, "An Exception occurred whilst processing the response.");
+
+                        response = ApiResponse<TResponse>.Failure(status,
+                            "An Exception occurred whilst processing the response.", exception);
+                    }
+                }
+            }
+
+            _eventManager?.PublishAsync(new ResponseEvent(this, response)).FireAndForget();
+
+            return response;
+        }
 
         /// <summary>
         /// Processes the returned <see cref="HttpResponseMessage"/> deserializing the contained <see cref="TResponse"/>
@@ -104,44 +181,58 @@ namespace SereneApi
                 return ApiResponse<TResponse>.Failure(Status.None, "Received an Empty Http Response");
             }
 
+            IApiResponse<TResponse> response;
+
             Status status = responseMessage.StatusCode.ToStatus();
 
             if(!status.IsSuccessCode())
             {
-                _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}", responseMessage.StatusCode, responseMessage.ReasonPhrase);
+                _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}",
+                    responseMessage.StatusCode, responseMessage.ReasonPhrase);
 
-                return ApiResponse<TResponse>.Failure(status, responseMessage.ReasonPhrase);
+                response = ApiResponse<TResponse>.Failure(status, responseMessage.ReasonPhrase);
             }
-
-            _logger?.LogTrace("The request received a successful response.");
-
-            if(responseMessage.Content == null)
+            else
             {
-                _logger.LogWarning("No content was received in the response.");
+                _logger?.LogTrace("The request received a successful response.");
 
-                return ApiResponse<TResponse>.Failure(status, "No content was received in the response.");
+                if(responseMessage.Content == null)
+                {
+                    _logger.LogWarning("No content was received in the response.");
+
+                    response = ApiResponse<TResponse>.Failure(status, "No content was received in the response.");
+                }
+                else
+                {
+                    try
+                    {
+                        ISerializer serializer = Options.RetrieveRequiredDependency<ISerializer>();
+
+                        TResponse responseData = await serializer
+                            .DeserializeAsync<TResponse>(new HttpContentResponse(responseMessage.Content));
+
+                        response = ApiResponse<TResponse>.Success(status, responseData);
+                    }
+                    catch(JsonException jsonException)
+                    {
+                        _logger?.LogError(jsonException, "Could not deserialize the returned value");
+
+                        response = ApiResponse<TResponse>
+                            .Failure(status, "Could not deserialize returned value.", jsonException);
+                    }
+                    catch(Exception exception)
+                    {
+                        _logger?.LogError(exception, "An Exception occurred whilst processing the response.");
+
+                        response = ApiResponse<TResponse>
+                            .Failure(status, "An Exception occurred whilst processing the response.", exception);
+                    }
+                }
             }
 
-            try
-            {
-                ISerializer serializer = Options.RetrieveRequiredDependency<ISerializer>();
+            _eventManager?.PublishAsync(new ResponseEvent(this, response)).FireAndForget();
 
-                TResponse response = await serializer.DeserializeAsync<TResponse>(new HttpContentResponse(responseMessage.Content));
-
-                return ApiResponse<TResponse>.Success(status, response);
-            }
-            catch(JsonException jsonException)
-            {
-                _logger?.LogError(jsonException, "Could not deserialize the returned value");
-
-                return ApiResponse<TResponse>.Failure(status, "Could not deserialize returned value.", jsonException);
-            }
-            catch(Exception exception)
-            {
-                _logger?.LogError(exception, "An Exception occurred whilst processing the response.");
-
-                return ApiResponse<TResponse>.Failure(status, "An Exception occurred whilst processing the response.", exception);
-            }
+            return response;
         }
 
         #endregion

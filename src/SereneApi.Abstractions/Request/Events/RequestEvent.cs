@@ -1,14 +1,18 @@
 ﻿using SereneApi.Abstractions.Events;
+using SereneApi.Abstractions.Handler;
 using System;
 
 namespace SereneApi.Abstractions.Request.Events
 {
-    public class RequestEvent: IEventListener<IRequest>
+    public class RequestEvent: IEventListener<IApiHandler, IApiRequest>
     {
-        public IRequest Value { get; }
+        public IApiHandler Reference { get; }
 
-        public RequestEvent(IRequest value)
+        public IApiRequest Value { get; }
+
+        public RequestEvent(IApiHandler reference, IApiRequest value)
         {
+            Reference = reference;
             Value = value;
 
             EventTime = DateTime.Now;

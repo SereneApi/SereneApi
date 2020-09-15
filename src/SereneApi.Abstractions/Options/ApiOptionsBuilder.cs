@@ -12,6 +12,7 @@ using SereneApi.Abstractions.Serialization;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
+using SereneApi.Abstractions.Events;
 
 namespace SereneApi.Abstractions.Options
 {
@@ -222,6 +223,12 @@ namespace SereneApi.Abstractions.Options
         public void AcceptContentType(ContentType type)
         {
             Dependencies.AddScoped(() => type);
+        }
+
+        /// <inheritdoc cref="IApiOptionsConfigurator.AddEventManager"/>
+        public void AddEventManager([AllowNull] IEventManager eventManager = null)
+        {
+            Dependencies.AddSingleton(() => eventManager ?? new EventManager());
         }
 
         /// <inheritdoc cref="IApiOptionsConfigurator.SetTimeout(int,int)"/>

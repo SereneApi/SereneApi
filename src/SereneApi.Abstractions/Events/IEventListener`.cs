@@ -1,7 +1,9 @@
 ﻿namespace SereneApi.Abstractions.Events
 {
-    public interface IEventListener<out T>: IEventListener
+    public interface IEventListener<out TRef, out TVal>: IEventListener
     {
-        T Value { get; }
+        TRef Reference { get; }
+
+        TVal Value { get; }
     }
 }

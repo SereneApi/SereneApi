@@ -8,6 +8,7 @@ using SereneApi.Abstractions.Serialization;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
+using SereneApi.Abstractions.Events;
 
 namespace SereneApi.Abstractions.Options
 {
@@ -128,5 +129,11 @@ namespace SereneApi.Abstractions.Options
         /// </summary>
         /// <param name="type">The type the response must be if it is to be accepted.</param>
         void AcceptContentType(ContentType type);
+
+        /// <summary>
+        /// Adds an EventManger to the API enabling events.
+        /// </summary>
+        /// <param name="eventManager">Overrides the default <see cref="IEventManager"/>.</param>
+        void AddEventManager([AllowNull]IEventManager eventManager = null);
     }
 }
