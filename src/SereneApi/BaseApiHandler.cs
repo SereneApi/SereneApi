@@ -4,7 +4,6 @@ using SereneApi.Abstractions.Events;
 using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Response;
-using SereneApi.Abstractions.Response.Content;
 using SereneApi.Abstractions.Response.Events;
 using SereneApi.Abstractions.Serialization;
 using SereneApi.Extensions;
@@ -61,7 +60,7 @@ namespace SereneApi
             Options.RetrieveDependency(out _logger);
             Options.RetrieveDependency(out _eventManager);
 
-            _logger?.LogTrace($"{GetType()} has been instantiated");
+            _logger?.LogInformation($"{GetType()} has been instantiated");
         }
 
         #endregion
@@ -86,7 +85,7 @@ namespace SereneApi
 
             if(status.IsSuccessCode())
             {
-                _logger?.LogTrace("The request received a successful response.");
+                _logger?.LogInformation("The request received a successful response.");
 
                 response = ApiResponse.Success(status);
             }
@@ -94,7 +93,7 @@ namespace SereneApi
             {
                 _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}", responseMessage.StatusCode, responseMessage.ReasonPhrase);
 
-                response = ApiResponse.Failure(status, responseMessage.ReasonPhrase);
+                response = ProcessFailedRequest(status, responseMessage.Content);
             }
 
             _eventManager?.PublishAsync(new ResponseEvent(this, response)).FireAndForget();
@@ -124,7 +123,7 @@ namespace SereneApi
             {
                 _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}", responseMessage.StatusCode, responseMessage.ReasonPhrase);
 
-                response = ApiResponse<TResponse>.Failure(status, responseMessage.ReasonPhrase);
+                response = ProcessFailedRequest<TResponse>(status, responseMessage.Content);
             }
             else
             {
@@ -141,7 +140,7 @@ namespace SereneApi
                         ISerializer serializer = Options.RetrieveRequiredDependency<ISerializer>();
 
                         TResponse responseData =
-                            serializer.Deserialize<TResponse>(new HttpContentResponse(responseMessage.Content));
+                            serializer.Deserialize<TResponse>(responseMessage.Content);
 
                         response = ApiResponse<TResponse>.Success(status, responseData);
                     }
@@ -190,11 +189,11 @@ namespace SereneApi
                 _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}",
                     responseMessage.StatusCode, responseMessage.ReasonPhrase);
 
-                response = ApiResponse<TResponse>.Failure(status, responseMessage.ReasonPhrase);
+                response = ProcessFailedRequest<TResponse>(status, responseMessage.Content);
             }
             else
             {
-                _logger?.LogTrace("The request received a successful response.");
+                _logger?.LogInformation("The request received a successful response.");
 
                 if(responseMessage.Content == null)
                 {
@@ -209,7 +208,7 @@ namespace SereneApi
                         ISerializer serializer = Options.RetrieveRequiredDependency<ISerializer>();
 
                         TResponse responseData = await serializer
-                            .DeserializeAsync<TResponse>(new HttpContentResponse(responseMessage.Content));
+                            .DeserializeAsync<TResponse>(responseMessage.Content);
 
                         response = ApiResponse<TResponse>.Success(status, responseData);
                     }
@@ -235,6 +234,70 @@ namespace SereneApi
             return response;
         }
 
+        private IApiResponse ProcessFailedRequest(Status status, [AllowNull] HttpContent content)
+        {
+            if(content == null)
+            {
+                return ApiResponse.Failure(status, string.Empty);
+            }
+
+            if(!Options.RetrieveDependency(out ISerializer serializer))
+            {
+                _logger?.LogWarning("Could not retrieve ISerializer dependency.");
+
+                return ApiResponse.Failure(status, string.Empty);
+            }
+
+            _logger?.LogInformation("Endpoint returned in body content for failed request, attempting deserialization.");
+
+            try
+            {
+                HttpError httpError = serializer.Deserialize<HttpError>(content);
+
+                _logger?.LogInformation("Deserialization completed successfully.");
+
+                return ApiResponse.Failure(status, httpError.Message);
+            }
+            catch(Exception exception)
+            {
+                _logger?.LogWarning(exception, "Could not deserialize in body content.");
+            }
+
+            return ApiResponse.Failure(status, string.Empty);
+        }
+
+        private IApiResponse<TResponse> ProcessFailedRequest<TResponse>(Status status, [AllowNull] HttpContent content)
+        {
+            if(content == null)
+            {
+                return ApiResponse<TResponse>.Failure(status, string.Empty);
+            }
+
+            if(!Options.RetrieveDependency(out ISerializer serializer))
+            {
+                _logger?.LogWarning("Could not retrieve ISerializer dependency.");
+
+                return ApiResponse<TResponse>.Failure(status, string.Empty);
+            }
+
+            _logger?.LogInformation("Endpoint returned in body content for failed request, attempting deserialization.");
+
+            try
+            {
+                HttpError httpError = serializer.Deserialize<HttpError>(content);
+
+                _logger?.LogInformation("Deserialization completed successfully.");
+
+                return ApiResponse<TResponse>.Failure(status, httpError.Message);
+            }
+            catch(Exception exception)
+            {
+                _logger?.LogWarning(exception, "Could not deserialize in body content.");
+            }
+
+            return ApiResponse<TResponse>.Failure(status, string.Empty);
+        }
+
         #endregion
         #region IDisposable
 
@@ -256,7 +319,7 @@ namespace SereneApi
         /// </summary>
         public void Dispose()
         {
-            _logger?.LogTrace($"{GetType()} is being disposed");
+            _logger?.LogInformation($"{GetType()} is being disposed");
 
             Dispose(true);
 
@@ -282,5 +345,10 @@ namespace SereneApi
         }
 
         #endregion
+
+        private string GetRequestRoute(Uri endpoint)
+        {
+            return $"{Options.Connection.BaseAddress}{endpoint}";
+        }
     }
 }

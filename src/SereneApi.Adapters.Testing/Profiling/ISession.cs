@@ -2,11 +2,13 @@
 
 namespace SereneApi.Adapters.Testing.Profiling
 {
-    public interface IApiProfile
+    public interface ISession
     {
         /// <summary>
-        /// All requests made against the specific API.
+        /// All requests made during the session.
         /// </summary>
         IReadOnlyList<IRequestProfile> Requests { get; }
+
+        IApiProfile<TApi> ByApi<TApi>();
     }
 }

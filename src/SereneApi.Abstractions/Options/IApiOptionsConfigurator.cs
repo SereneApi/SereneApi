@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Authorization;
 using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Events;
 using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Routing;
@@ -8,7 +9,6 @@ using SereneApi.Abstractions.Serialization;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using SereneApi.Abstractions.Events;
 
 namespace SereneApi.Abstractions.Options
 {
@@ -134,6 +134,6 @@ namespace SereneApi.Abstractions.Options
         /// Adds an EventManger to the API enabling events.
         /// </summary>
         /// <param name="eventManager">Overrides the default <see cref="IEventManager"/>.</param>
-        void AddEventManager([AllowNull]IEventManager eventManager = null);
+        void AddEventManager([AllowNull] IEventManager eventManager = null);
     }
 }

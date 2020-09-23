@@ -9,6 +9,11 @@ namespace SereneApi.Abstractions.Request
     public interface IApiRequest
     {
         /// <summary>
+        /// The Identity of the request.
+        /// </summary>
+        Guid Identity { get; }
+
+        /// <summary>
         /// The address used to make the request. This is applied after the source.
         /// </summary>
         Uri Endpoint { get; }

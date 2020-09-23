@@ -2,10 +2,10 @@
 
 namespace SereneApi.Adapters.Testing.Profiling
 {
-    public interface IApiProfile
+    public interface IEndpointProfile
     {
         /// <summary>
-        /// All requests made against the specific API.
+        /// All requests made against the specific endpoint.
         /// </summary>
         IReadOnlyList<IRequestProfile> Requests { get; }
     }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Authorization;
 using SereneApi.Abstractions.Authorization.Types;
 using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Events;
 using SereneApi.Abstractions.Helpers;
 using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Request.Content;
@@ -12,7 +13,6 @@ using SereneApi.Abstractions.Serialization;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using SereneApi.Abstractions.Events;
 
 namespace SereneApi.Abstractions.Options
 {

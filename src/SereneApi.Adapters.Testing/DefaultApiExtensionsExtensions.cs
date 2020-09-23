@@ -1,20 +1,18 @@
-﻿using System;
-using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies.Abstractions;
 using SereneApi.Abstractions.Configuration;
-using SereneApi.Abstractions.Serialization;
 using SereneApi.Adapters.Testing.Profiling;
 
 namespace SereneApi.Adapters.Testing
 {
     public static class DefaultApiExtensionsExtensions
     {
-        private static IApiProfiler _apiProfiler;
+        private static IProfiler _profiler;
 
         public static IDefaultApiConfigurationExtensions AddTestingAdapter(this IDefaultApiConfigurationExtensions extensions)
         {
-            _apiProfiler ??= new ApiProfiler();
+            _profiler ??= new Profiler();
 
-            extensions.AddDependencies(d => d.AddSingleton(() => _apiProfiler));
+            extensions.AddDependencies(d => d.AddSingleton(() => _profiler));
 
             return extensions;
         }

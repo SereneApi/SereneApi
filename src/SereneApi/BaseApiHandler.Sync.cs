@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using SereneApi.Abstractions.Events;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Request;
 using SereneApi.Abstractions.Request.Events;
@@ -81,7 +82,7 @@ namespace SereneApi
             {
                 if(request.Content == null)
                 {
-                    _logger?.LogTrace("Performing a {httpMethod} request against {RequestRoute}", method.ToString(), endpoint);
+                    _logger?.LogInformation("Performing a {httpMethod} request against {RequestRoute}", method.ToString(), GetRequestRoute(endpoint));
 
                     responseMessage = RetryRequest(async client =>
                     {
@@ -100,7 +101,7 @@ namespace SereneApi
                 }
                 else
                 {
-                    _logger?.LogTrace("Performing a {httpMethod} request with in body content against {RequestRoute}", method.ToString(), endpoint);
+                    _logger?.LogInformation("Performing a {httpMethod} request with in body content against {RequestRoute}", method.ToString(), GetRequestRoute(endpoint));
 
                     HttpContent content = (HttpContent)request.Content.GetContent();
 
@@ -122,7 +123,7 @@ namespace SereneApi
                     }, endpoint);
                 }
 
-                _logger?.LogTrace("The {httpMethod} request against {RequestRoute} completed successfully.", method.ToString(), endpoint);
+                _logger?.LogInformation("The {httpMethod} request against {RequestRoute} completed successfully.", method.ToString(), GetRequestRoute(endpoint));
 
                 return ProcessResponse(responseMessage);
             }
@@ -138,7 +139,7 @@ namespace SereneApi
 
                 _logger?.LogError(exception,
                     "An Exception occurred whilst performing a HTTP {httpMethod} Request to {RequestRoute}",
-                    method.ToString(), endpoint);
+                    method.ToString(), GetRequestRoute(endpoint));
 
                 return ApiResponse.Failure(Status.None,
                     $"An Exception occurred whilst performing a HTTP {method} Request",
@@ -154,7 +155,7 @@ namespace SereneApi
             {
                 _logger?.LogError(exception,
                     "An Exception occurred whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
-                    method.ToString(), endpoint);
+                    method.ToString(), GetRequestRoute(endpoint));
 
                 return ApiResponse.Failure(Status.None,
                     $"An Exception occurred whilst performing a HTTP {method} Request",
@@ -164,7 +165,7 @@ namespace SereneApi
             {
                 if(responseMessage != null)
                 {
-                    _logger?.LogDebug("Disposing response for the HTTP {httpMethod} Request to {RequestRoute}", method.ToString(), endpoint);
+                    _logger?.LogInformation("Disposing response for the HTTP {httpMethod} Request to {RequestRoute}", method.ToString(), GetRequestRoute(endpoint));
 
                     responseMessage.Dispose();
                 }
@@ -196,7 +197,7 @@ namespace SereneApi
             {
                 if(request.Content == null)
                 {
-                    _logger?.LogTrace("Performing a {httpMethod} request against {RequestRoute}", method.ToString(), endpoint);
+                    _logger?.LogInformation("Performing a {httpMethod} request against {RequestRoute}", method.ToString(), GetRequestRoute(endpoint));
 
                     responseMessage = RetryRequest(async client =>
                     {
@@ -215,7 +216,7 @@ namespace SereneApi
                 }
                 else
                 {
-                    _logger?.LogTrace("Performing a {httpMethod} request with in body content against {RequestRoute}", method.ToString(), endpoint);
+                    _logger?.LogInformation("Performing a {httpMethod} request with in body content against {RequestRoute}", method.ToString(), GetRequestRoute(endpoint));
 
                     HttpContent content = (HttpContent)request.Content.GetContent();
 
@@ -237,7 +238,7 @@ namespace SereneApi
                     }, endpoint);
                 }
 
-                _logger?.LogTrace("The {httpMethod} request against {RequestRoute} completed successfully.", method.ToString(), endpoint);
+                _logger?.LogInformation("The {httpMethod} request against {RequestRoute} completed successfully.", method.ToString(), GetRequestRoute(endpoint));
 
                 return ProcessResponse<TResponse>(responseMessage);
             }
@@ -253,7 +254,7 @@ namespace SereneApi
 
                 _logger?.LogError(exception,
                     "An Exception occurred whilst performing a HTTP {httpMethod} Request to {RequestRoute}",
-                    method.ToString(), endpoint);
+                    method.ToString(), GetRequestRoute(endpoint));
 
                 return ApiResponse<TResponse>.Failure(Status.None,
                     $"An Exception occurred whilst performing a HTTP {method} Request",
@@ -269,7 +270,7 @@ namespace SereneApi
             {
                 _logger?.LogError(exception,
                     "An Exception occurred whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
-                    method.ToString(), endpoint);
+                    method.ToString(), GetRequestRoute(endpoint));
 
                 return ApiResponse<TResponse>.Failure(Status.None,
                     $"An Exception occurred whilst performing a HTTP {method} Request",
@@ -279,7 +280,7 @@ namespace SereneApi
             {
                 if(responseMessage != null)
                 {
-                    _logger?.LogDebug("Disposing response for the HTTP {httpMethod} Request to {RequestRoute}", method.ToString(), endpoint);
+                    _logger?.LogInformation("Disposing response for the HTTP {httpMethod} Request to {RequestRoute}", method.ToString(), GetRequestRoute(endpoint));
 
                     responseMessage.Dispose();
                 }
@@ -290,9 +291,9 @@ namespace SereneApi
         /// Retries the request to the specified retry count.
         /// </summary>
         /// <param name="requestAction">The request to be performed.</param>
-        /// <param name="route">The route to be inserted into the log.</param>
+        /// <param name="endpoint">The route to be inserted into the log.</param>
         /// <returns></returns>
-        private HttpResponseMessage RetryRequest(Func<HttpClient, Task<HttpResponseMessage>> requestAction, Uri route)
+        private HttpResponseMessage RetryRequest(Func<HttpClient, Task<HttpResponseMessage>> requestAction, Uri endpoint)
         {
             bool retryingRequest;
             int requestsAttempted = 0;
@@ -319,20 +320,22 @@ namespace SereneApi
 
                     if(Connection.RetryAttempts == 0 || requestsAttempted == Connection.RetryAttempts)
                     {
-                        _logger?.LogError(canceledException, "The Request to \"{RequestRoute}\" has Timed Out; Retry limit reached. Retired {count}", route, requestsAttempted);
+                        _logger?.LogError(canceledException, "The Request to \"{RequestRoute}\" has Timed Out; Retry limit reached. Retired {count}", GetRequestRoute(endpoint), requestsAttempted);
 
                         retryingRequest = false;
                     }
                     else
                     {
-                        _logger?.LogWarning("Request to \"{RequestRoute}\" has Timed out, retrying. Attempts Remaining {count}", route, Connection.RetryAttempts - requestsAttempted);
+                        _logger?.LogWarning("Request to \"{RequestRoute}\" has Timed out, retrying. Attempts Remaining {count}", GetRequestRoute(endpoint), Connection.RetryAttempts - requestsAttempted);
+
+                        _eventManager?.PublishAsync(new RetryEvent(this, requestsAttempted)).FireAndForget();
 
                         retryingRequest = true;
                     }
                 }
             } while(retryingRequest);
 
-            throw new TimeoutException($"The Request to \"{route}\" has Timed Out; Retry limit reached. Retired {requestsAttempted}");
+            throw new TimeoutException($"The Request to \"{GetRequestRoute(endpoint)}\" has Timed Out; Retry limit reached. Retired {requestsAttempted}");
         }
 
         #endregion
