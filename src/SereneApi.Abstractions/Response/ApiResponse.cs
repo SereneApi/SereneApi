@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using SereneApi.Abstractions.Request;
 
 namespace SereneApi.Abstractions.Response
 {
     /// <inheritdoc cref="IApiResponse"/>
     public class ApiResponse: IApiResponse
     {
+        /// <inheritdoc cref="IApiResponse.IApiRequest"/>
+        public IApiRequest Request { get; }
+
         /// <inheritdoc cref="IApiResponse.Status"/>
         public Status Status { get; }
 
@@ -21,24 +25,26 @@ namespace SereneApi.Abstractions.Response
         /// <inheritdoc cref="IApiResponse.Exception"/>
         public Exception Exception { get; }
 
-        private ApiResponse(Status status)
+        private ApiResponse([NotNull] IApiRequest request, Status status)
         {
+            Request = request ?? throw new ArgumentNullException(nameof(request));
             WasSuccessful = true;
             Message = null;
             Status = status;
             Exception = null;
         }
 
-        private ApiResponse(Status status, [AllowNull] string message, [AllowNull] Exception exception = null)
+        private ApiResponse([NotNull] IApiRequest request, Status status, [AllowNull] string message, [AllowNull] Exception exception = null)
         {
+            Request = request ?? throw new ArgumentNullException(nameof(request));
             WasSuccessful = false;
             Message = message;
             Status = status;
             Exception = exception;
         }
 
-        public static IApiResponse Success(Status status) => new ApiResponse(status);
+        public static IApiResponse Success([NotNull] IApiRequest request, Status status) => new ApiResponse(request, status);
 
-        public static IApiResponse Failure(Status status, [AllowNull] string message, [AllowNull] Exception exception = null) => new ApiResponse(status, message, exception);
+        public static IApiResponse Failure([NotNull] IApiRequest request, Status status, [AllowNull] string message, [AllowNull] Exception exception = null) => new ApiResponse(request, status, message, exception);
     }
 }
