@@ -3,6 +3,7 @@ using SereneApi.Abstractions.Request.Events;
 using SereneApi.Abstractions.Response.Events;
 using System;
 using System.Threading;
+using SereneApi.Adapters.Testing.Profiling.Request;
 
 namespace SereneApi.Adapters.Testing.Profiling
 {
@@ -15,7 +16,7 @@ namespace SereneApi.Adapters.Testing.Profiling
 
         private readonly IEventRelay _eventRelay;
 
-        private Session _currentSession;
+        private Session _session;
 
         /// <inheritdoc cref="IProfiler.IsActive"/>
         public bool IsActive => _isLocked;
@@ -30,11 +31,11 @@ namespace SereneApi.Adapters.Testing.Profiling
         {
             Monitor.Enter(_lock, ref _isLocked);
 
-            _currentSession = new Session();
-
             _eventRelay.Subscribe<RetryEvent>(OnRetryEvent);
             _eventRelay.Subscribe<RequestEvent>(OnRequestEvent);
             _eventRelay.Subscribe<ResponseEvent>(OnResponseEvent);
+
+            _session = new Session();
         }
 
         /// <inheritdoc cref="IProfiler.EndSession"/>
@@ -51,22 +52,27 @@ namespace SereneApi.Adapters.Testing.Profiling
 
             Monitor.Exit(_lock);
 
-            return _currentSession;
+            return new Session();
         }
 
         private void OnRetryEvent(RetryEvent retryEvent)
         {
-
+            _session[retryEvent.Value].RetryAttempts++;
         }
 
         private void OnRequestEvent(RequestEvent requestEvent)
         {
-
+            RequestProfile request = new RequestProfile(requestEvent.Value, requestEvent.Reference.GetType())
+            {
+                Sent = requestEvent.EventTime
+            };
+            
+            _session.AddRequest(request);
         }
 
         private void OnResponseEvent(ResponseEvent responseEvent)
         {
-
+            _session[responseEvent.Value.Request.Identity].Response = responseEvent.Value;
         }
     }
 }

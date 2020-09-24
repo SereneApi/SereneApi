@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using SereneApi.Adapters.Testing.Profiling.Api;
+using SereneApi.Adapters.Testing.Profiling.Request;
 
 namespace SereneApi.Adapters.Testing.Profiling
 {

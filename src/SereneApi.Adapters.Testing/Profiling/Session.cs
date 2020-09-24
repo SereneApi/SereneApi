@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using SereneApi.Adapters.Testing.Profiling.Api;
+using SereneApi.Adapters.Testing.Profiling.Request;
 
 namespace SereneApi.Adapters.Testing.Profiling
 {
     internal class Session: ISession
     {
-        private readonly List<IRequestProfile> _requests = new List<IRequestProfile>();
+        private readonly List<RequestProfile> _requests = new List<RequestProfile>();
+
+        public RequestProfile this[Guid identity] => _requests.Single(r => r.Identity == identity);
 
         public IReadOnlyList<IRequestProfile> Requests => _requests;
 
@@ -14,9 +19,9 @@ namespace SereneApi.Adapters.Testing.Profiling
             throw new NotImplementedException();
         }
 
-        public void AddRequest(IRequestProfile requestProfile)
+        public void AddRequest(RequestProfile request)
         {
-            _requests.Add(requestProfile);
+            _requests.Add(request);
         }
     }
 }
