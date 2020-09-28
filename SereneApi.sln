@@ -30,7 +30,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Extensions.Depend
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Extensions.Newtonsoft.Tests", "tests\SereneApi.Extensions.Newtonsoft.Tests\SereneApi.Extensions.Newtonsoft.Tests.csproj", "{C0E3129B-7FE5-4E75-B6FC-E32EBB1C2323}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Adapters.Testing", "src\SereneApi.Adapters.Testing\SereneApi.Adapters.Testing.csproj", "{13BB88A1-ADAE-4908-AB86-19209CF067D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Adapters.Profiling", "src\SereneApi.Adapters.Profiling\SereneApi.Adapters.Profiling.csproj", "{2A59171B-C85F-46F0-B47D-C6252EDDCDD4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,10 +74,10 @@ Global
 		{C0E3129B-7FE5-4E75-B6FC-E32EBB1C2323}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0E3129B-7FE5-4E75-B6FC-E32EBB1C2323}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0E3129B-7FE5-4E75-B6FC-E32EBB1C2323}.Release|Any CPU.Build.0 = Release|Any CPU
-		{13BB88A1-ADAE-4908-AB86-19209CF067D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{13BB88A1-ADAE-4908-AB86-19209CF067D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{13BB88A1-ADAE-4908-AB86-19209CF067D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{13BB88A1-ADAE-4908-AB86-19209CF067D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A59171B-C85F-46F0-B47D-C6252EDDCDD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A59171B-C85F-46F0-B47D-C6252EDDCDD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A59171B-C85F-46F0-B47D-C6252EDDCDD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A59171B-C85F-46F0-B47D-C6252EDDCDD4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

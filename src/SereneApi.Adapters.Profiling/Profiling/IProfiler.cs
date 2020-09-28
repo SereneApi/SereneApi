@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SereneApi.Adapters.Testing.Profiling
+namespace SereneApi.Adapters.Profiling.Profiling
 {
     public interface IProfiler
     {

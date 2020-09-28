@@ -1,13 +1,13 @@
 ﻿using SereneApi.Abstractions.Events;
 using SereneApi.Abstractions.Request.Events;
 using SereneApi.Abstractions.Response.Events;
-using SereneApi.Adapters.Testing.Profiling.Request;
+using SereneApi.Adapters.Profiling.Profiling.Request;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-namespace SereneApi.Adapters.Testing.Profiling
+namespace SereneApi.Adapters.Profiling.Profiling
 {
     /// <inheritdoc cref="IProfiler"/>
     internal class Profiler: IProfiler

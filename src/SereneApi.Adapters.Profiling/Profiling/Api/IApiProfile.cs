@@ -1,15 +1,15 @@
-﻿using SereneApi.Adapters.Testing.Profiling.Request;
+﻿using SereneApi.Adapters.Profiling.Profiling.Request;
 using System;
 using System.Collections.Generic;
 
-namespace SereneApi.Adapters.Testing.Profiling.Api
+namespace SereneApi.Adapters.Profiling.Profiling.Api
 {
-    public interface IEndpointProfile
+    public interface IApiProfile
     {
         IRequestProfile this[Guid identity] { get; }
 
         /// <summary>
-        /// All requests made against the specific endpoint.
+        /// All requests made against the specific API.
         /// </summary>
         IReadOnlyList<IRequestProfile> Requests { get; }
     }

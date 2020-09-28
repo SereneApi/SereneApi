@@ -1,9 +1,9 @@
-﻿using SereneApi.Adapters.Testing.Profiling.Api;
-using SereneApi.Adapters.Testing.Profiling.Request;
+﻿using SereneApi.Adapters.Profiling.Profiling.Api;
+using SereneApi.Adapters.Profiling.Profiling.Request;
 using System;
 using System.Collections.Generic;
 
-namespace SereneApi.Adapters.Testing.Profiling
+namespace SereneApi.Adapters.Profiling.Profiling
 {
     public interface ISession
     {

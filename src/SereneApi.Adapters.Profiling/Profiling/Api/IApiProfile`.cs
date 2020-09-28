@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SereneApi.Adapters.Testing.Profiling.Api
+namespace SereneApi.Adapters.Profiling.Profiling.Api
 {
     public interface IApiProfile<TApi>: IApiProfile
     {

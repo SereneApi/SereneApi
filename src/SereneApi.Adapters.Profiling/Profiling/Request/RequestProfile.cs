@@ -3,7 +3,7 @@ using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Response;
 using System;
 
-namespace SereneApi.Adapters.Testing.Profiling.Request
+namespace SereneApi.Adapters.Profiling.Profiling.Request
 {
     internal class RequestProfile: IRequestProfile
     {

@@ -1,11 +1,11 @@
-﻿using SereneApi.Adapters.Testing.Profiling.Api;
-using SereneApi.Adapters.Testing.Profiling.Request;
+﻿using SereneApi.Adapters.Profiling.Profiling.Api;
+using SereneApi.Adapters.Profiling.Profiling.Request;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-namespace SereneApi.Adapters.Testing.Profiling
+namespace SereneApi.Adapters.Profiling.Profiling
 {
     internal class Session: ISession
     {

@@ -1,11 +1,11 @@
 ﻿using SereneApi.Abstractions.Configuration;
-using SereneApi.Adapters.Testing.Profiling;
+using SereneApi.Adapters.Profiling.Profiling;
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace SereneApi.Adapters.Testing
+namespace SereneApi.Adapters.Profiling
 {
-    public static class TestingAdapter
+    public static class ProfileAdapter
     {
         private static IProfiler _profiler;
 
@@ -63,7 +63,7 @@ namespace SereneApi.Adapters.Testing
             }
 
             if(adapter.EventRelay == null)
-            {
+            {   
                 throw new ArgumentNullException(nameof(adapter.EventRelay));
             }
 

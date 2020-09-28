@@ -2,7 +2,7 @@
 using SereneApi.Abstractions.Response;
 using System;
 
-namespace SereneApi.Adapters.Testing.Profiling.Request
+namespace SereneApi.Adapters.Profiling.Profiling.Request
 {
     public interface IRequestProfile: IApiRequest
     {

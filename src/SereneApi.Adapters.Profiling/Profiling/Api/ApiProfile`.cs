@@ -1,10 +1,10 @@
-﻿using SereneApi.Adapters.Testing.Profiling.Request;
+﻿using SereneApi.Adapters.Profiling.Profiling.Request;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-namespace SereneApi.Adapters.Testing.Profiling.Api
+namespace SereneApi.Adapters.Profiling.Profiling.Api
 {
     internal class ApiProfile<TApi>: IApiProfile<TApi>
     {
