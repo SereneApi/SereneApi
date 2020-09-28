@@ -22,8 +22,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Extensions.Depend
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Abstractions", "src\SereneApi.Abstractions\SereneApi.Abstractions.csproj", "{BAFA73E8-6747-48C3-935C-5D8AB56B0FBE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.AspNetCore", "src\SereneApi.AspNetCore\SereneApi.AspNetCore.csproj", "{B95AFF9B-DCA4-4699-B6C9-8F7C856E6DA6}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Extensions.Newtonsoft", "src\SereneApi.Extensions.Newtonsoft\SereneApi.Extensions.Newtonsoft.csproj", "{07E7ACE8-A925-496A-A7C4-623549372217}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Abstractions.Tests", "tests\SereneApi.Abstractions.Tests\SereneApi.Abstractions.Tests.csproj", "{778B7EE9-8F7A-4256-AD0F-FE0C63BFE245}"
@@ -32,7 +30,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Extensions.Depend
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Extensions.Newtonsoft.Tests", "tests\SereneApi.Extensions.Newtonsoft.Tests\SereneApi.Extensions.Newtonsoft.Tests.csproj", "{C0E3129B-7FE5-4E75-B6FC-E32EBB1C2323}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SereneApi.Adapters.Testing", "src\SereneApi.Adapters.Testing\SereneApi.Adapters.Testing.csproj", "{13BB88A1-ADAE-4908-AB86-19209CF067D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Adapters.Testing", "src\SereneApi.Adapters.Testing\SereneApi.Adapters.Testing.csproj", "{13BB88A1-ADAE-4908-AB86-19209CF067D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,10 +58,6 @@ Global
 		{BAFA73E8-6747-48C3-935C-5D8AB56B0FBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAFA73E8-6747-48C3-935C-5D8AB56B0FBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAFA73E8-6747-48C3-935C-5D8AB56B0FBE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B95AFF9B-DCA4-4699-B6C9-8F7C856E6DA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B95AFF9B-DCA4-4699-B6C9-8F7C856E6DA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B95AFF9B-DCA4-4699-B6C9-8F7C856E6DA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B95AFF9B-DCA4-4699-B6C9-8F7C856E6DA6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{07E7ACE8-A925-496A-A7C4-623549372217}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{07E7ACE8-A925-496A-A7C4-623549372217}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07E7ACE8-A925-496A-A7C4-623549372217}.Release|Any CPU.ActiveCfg = Release|Any CPU

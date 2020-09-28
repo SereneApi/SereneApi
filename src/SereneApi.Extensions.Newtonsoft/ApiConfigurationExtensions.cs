@@ -8,7 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Extensions.Newtonsoft
 {
-    public static class DefaultApiExtensionsExtensions
+    public static class ApiConfigurationExtensions
     {
         /// <summary>
         /// Adds <seealso cref="NewtonsoftSerializer"/> as the default <see cref="ISerializer"/>.

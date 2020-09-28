@@ -1,6 +1,7 @@
 ﻿using SereneApi.Adapters.Testing.Profiling.Request;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace SereneApi.Adapters.Testing.Profiling.Api
@@ -11,9 +12,14 @@ namespace SereneApi.Adapters.Testing.Profiling.Api
 
         public IReadOnlyList<IRequestProfile> Requests { get; }
 
-        public ApiProfile(IReadOnlyList<IRequestProfile> requests)
+        /// <summary>
+        /// Creates a new instance of an Api's statistics profile.
+        /// </summary>
+        /// <param name="requests">The requests made with the specific API.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        public ApiProfile([NotNull] IReadOnlyList<IRequestProfile> requests)
         {
-            Requests = requests;
+            Requests = requests ?? throw new ArgumentNullException(nameof(requests));
         }
 
         public IEndpointProfile ByEndpoint(Func<TApi, string> endpointName)

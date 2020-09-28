@@ -2,6 +2,7 @@
 using SereneApi.Adapters.Testing.Profiling.Request;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace SereneApi.Adapters.Testing.Profiling
@@ -12,9 +13,14 @@ namespace SereneApi.Adapters.Testing.Profiling
 
         public IReadOnlyList<IRequestProfile> Requests { get; }
 
-        public Session(IReadOnlyList<IRequestProfile> requests)
+        /// <summary>
+        /// Creates a new instance of <see cref="Session"/>.
+        /// </summary>
+        /// <param name="requests">The requests captured during the lifetime of the session.</param>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        public Session([NotNull] IReadOnlyList<IRequestProfile> requests)
         {
-            Requests = requests;
+            Requests = requests ?? throw new ArgumentNullException(nameof(requests));
         }
 
         public IApiProfile<TApi> ByApi<TApi>()

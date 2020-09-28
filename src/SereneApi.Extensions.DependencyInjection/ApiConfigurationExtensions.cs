@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Extensions.DependencyInjection
 {
-    public static class DefaultApiExtensionsExtensions
+    public static class ApiConfigurationExtensions
     {
         /// <summary>
         /// Adds an authentication API. Before a request is made it will be authenticated.

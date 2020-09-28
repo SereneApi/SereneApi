@@ -1,5 +1,4 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Abstractions.Events;
 using System;
 using System.Diagnostics.CodeAnalysis;
 
@@ -8,16 +7,8 @@ namespace SereneApi.Abstractions.Configuration
     /// <summary>
     /// Extends <see cref="IApiConfiguration"/>.
     /// </summary>
-    public interface IApiConfigurationExtensions
+    public interface IApiConfigurationExtensions: IApiAdapter
     {
-        /// <summary>
-        /// Subscribe and UnSubscribe events.
-        /// </summary>
-        /// <remarks>If null, EnableEvents should be called.</remarks>
-        IEventRelay EventRelay { get; }
-
-        void EnableEvents([AllowNull] IEventManager eventManagerOverride = null);
-
         /// <summary>
         /// Adds the specified dependencies.
         /// </summary>

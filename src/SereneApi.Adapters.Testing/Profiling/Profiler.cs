@@ -6,23 +6,18 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading;
 
 namespace SereneApi.Adapters.Testing.Profiling
 {
     /// <inheritdoc cref="IProfiler"/>
     internal class Profiler: IProfiler
     {
-        private bool _isLocked;
-
-        private readonly object _lock = new object();
-
         private readonly IEventRelay _eventRelay;
 
         private readonly Dictionary<Guid, RequestProfile> _requestProfiles = new Dictionary<Guid, RequestProfile>();
 
         /// <inheritdoc cref="IProfiler.HasActiveSession"/>
-        public bool HasActiveSession => _isLocked;
+        public bool HasActiveSession { get; private set; }
 
         public Profiler([NotNull] IEventRelay eventRelay)
         {
@@ -32,7 +27,13 @@ namespace SereneApi.Adapters.Testing.Profiling
         /// <inheritdoc cref="IProfiler.StartSession"/>
         public void StartSession()
         {
-            Monitor.Enter(_lock, ref _isLocked);
+            if(HasActiveSession)
+            {
+                // Seriously don't like this, but as it stands, this should never be thrown.    
+                throw new MethodAccessException();
+            }
+
+            HasActiveSession = true;
 
             _requestProfiles.Clear();
 
@@ -44,7 +45,7 @@ namespace SereneApi.Adapters.Testing.Profiling
         /// <inheritdoc cref="IProfiler.EndSession"/>
         public ISession EndSession()
         {
-            if(!_isLocked)
+            if(!HasActiveSession)
             {
                 throw new MethodAccessException("StartSession must be call first.");
             }
@@ -53,7 +54,7 @@ namespace SereneApi.Adapters.Testing.Profiling
             _eventRelay.UnSubscribe<RequestEvent>(OnRequestEvent);
             _eventRelay.UnSubscribe<ResponseEvent>(OnResponseEvent);
 
-            Monitor.Exit(_lock);
+            HasActiveSession = false;
 
             return new Session(_requestProfiles.Values.ToList());
         }

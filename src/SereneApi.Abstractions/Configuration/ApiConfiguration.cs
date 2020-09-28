@@ -15,11 +15,7 @@ namespace SereneApi.Abstractions.Configuration
     /// <inheritdoc cref="IApiConfiguration"/>.
     public class ApiConfiguration: IApiConfiguration, IApiConfigurationBuilder
     {
-        /// <summary>
-        /// Keep an Instance of EventManager within the ApiConfiguration.
-        /// This is done so all APIs built from the same default configuration will share the same event manager.
-        /// </summary>
-        private IEventManager _eventManager;
+        private readonly IEventManager _eventManager = new EventManager();
 
         private Action<IDependencyCollection> _dependencyFactory;
 
@@ -49,24 +45,12 @@ namespace SereneApi.Abstractions.Configuration
         public void OverrideDependencies(Action<IDependencyCollection> factory)
         {
             _dependencyFactory = factory ?? throw new ArgumentNullException(nameof(factory));
-            _dependencyFactory += dependencies => dependencies.TryAddTransient<IApiConfiguration>(() => this);
         }
 
         /// <inheritdoc cref="IApiConfigurationExtensions.AddDependencies"/>
         public void AddDependencies(Action<IDependencyCollection> factory)
         {
             _dependencyFactory += factory ?? throw new ArgumentNullException(nameof(factory));
-        }
-
-        public void EnableEvents([AllowNull] IEventManager eventManagerOverride = null)
-        {
-            if(_eventManager != null && eventManagerOverride != null)
-            {
-                throw new MethodAccessException("An EventManager has already been added.");
-            }
-
-            // If EventManager is unassigned, assign either the override or create a new instance.
-            _eventManager ??= eventManagerOverride ?? new EventManager();
         }
 
         /// <inheritdoc cref="IApiConfiguration.GetOptionsBuilder"/>
@@ -76,10 +60,8 @@ namespace SereneApi.Abstractions.Configuration
 
             _dependencyFactory.Invoke(builder.Dependencies);
 
-            if(_eventManager != null)
-            {
-                builder.Dependencies.AddTransient(() => _eventManager, Binding.Unbound);
-            }
+            builder.Dependencies.TryAddTransient(() => this);
+            builder.Dependencies.TryAddTransient(() => _eventManager);
 
             return builder;
         }
@@ -91,10 +73,8 @@ namespace SereneApi.Abstractions.Configuration
 
             _dependencyFactory.Invoke(builder.Dependencies);
 
-            if(_eventManager != null)
-            {
-                builder.Dependencies.AddTransient(() => _eventManager, Binding.Unbound);
-            }
+            builder.Dependencies.TryAddTransient(() => this);
+            builder.Dependencies.TryAddTransient(() => _eventManager);
 
             return builder;
         }
@@ -121,8 +101,6 @@ namespace SereneApi.Abstractions.Configuration
                     dependencies.TryAddScoped<IRouteFactory>(p => new DefaultRouteFactory(p));
                     dependencies.TryAddScoped<IClientFactory>(p => new DefaultClientFactory(p));
                 });
-
-                configuration.AddDependencies(dependencies => dependencies.TryAddTransient<IApiConfiguration>(() => configuration));
 
                 return configuration;
             }

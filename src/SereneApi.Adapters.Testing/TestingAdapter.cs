@@ -12,37 +12,49 @@ namespace SereneApi.Adapters.Testing
         /// <summary>
         /// Specifies if a profiling session is currently in progress.
         /// </summary>
-        private static bool HasActiveSession => _profiler.IsActive;
+        private static bool HasActiveSession => _profiler.HasActiveSession;
 
         /// <summary>
         /// Starts a profiling session.
         /// </summary>
         /// <remarks>Only one session can be run at a time.</remarks>
+        /// <exception cref="MethodAccessException">Thrown when the testing adapter has not been initialized.</exception>
+        /// <exception cref="MethodAccessException">Thrown when a session is already in progress.</exception>
         public static void StartSession()
         {
+            if(_profiler == null)
+            {
+                throw new MethodAccessException("TestingAdapter must be initiate first.");
+            }
+
             _profiler.StartSession();
         }
 
         /// <summary>
         /// Ends the profiling session returning the session statistics.
         /// </summary>
-        /// <exception cref="MethodAccessException">Thrown if a session was not already started.</exception>
+        /// <exception cref="MethodAccessException">Thrown when the testing adapter has not been initialized.</exception>
+        /// <exception cref="MethodAccessException">Thrown when a session was not in progress.</exception>
         public static ISession EndSession()
         {
+            if(_profiler == null)
+            {
+                throw new MethodAccessException("TestingAdapter must be initiate first.");
+            }
+
             return _profiler.EndSession();
         }
 
         /// <summary>
-        /// Adds a profiling adapter to all APIs.
+        /// Initiates a profiling adapter to all APIs.
         /// </summary>
-        /// <param name="extensions"></param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         /// <exception cref="MethodAccessException">Thrown when this method is called more than once.</exception>
-        public static IApiConfigurationExtensions AddProfilingAdapter([NotNull] this IApiConfigurationExtensions extensions)
+        public static IApiAdapter InitiateProfilingAdapter([NotNull] this IApiAdapter adapter)
         {
-            if(extensions == null)
+            if(adapter == null)
             {
-                throw new ArgumentNullException(nameof(extensions));
+                throw new ArgumentNullException(nameof(adapter));
             }
 
             if(_profiler != null)
@@ -50,14 +62,14 @@ namespace SereneApi.Adapters.Testing
                 throw new MethodAccessException("Method cannot be called twice.");
             }
 
-            if(extensions.EventRelay == null)
+            if(adapter.EventRelay == null)
             {
-                extensions.EnableEvents();
+                throw new ArgumentNullException(nameof(adapter.EventRelay));
             }
 
-            _profiler = new Profiler(extensions.EventRelay);
+            _profiler = new Profiler(adapter.EventRelay);
 
-            return extensions;
+            return adapter;
         }
     }
 }

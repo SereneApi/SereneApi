@@ -7,7 +7,7 @@ namespace SereneApi.Adapters.Testing.Profiling
         /// <summary>
         /// Specifies if a profiling session is currently in progress.
         /// </summary>
-        bool IsActive { get; }
+        public bool HasActiveSession { get; }
 
         /// <summary>
         /// Starts a profiling session.

@@ -71,6 +71,32 @@ namespace SereneApi.Extensions.DependencyInjection
         }
 
         /// <summary>
+        /// Gets an instance of <see cref="IApiAdapter"/>, this is used to collect information encompassing ApiCommon.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        /// <remarks>Should be called after ConfigureApiCommon if any configuration is required.</remarks>
+        public static void ConfigureApiAdapters([NotNull] this IServiceCollection services, [NotNull] Action<IApiAdapter> configurator)
+        {
+            if(services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            if(configurator == null)
+            {
+                throw new ArgumentNullException(nameof(configurator));
+            }
+
+            services.TryAddSingleton(ApiConfiguration.Default);
+
+            using ServiceProvider provider = services.BuildServiceProvider();
+
+            IApiAdapter apiAdapter = provider.GetRequiredService<IApiConfiguration>();
+
+            configurator.Invoke(apiAdapter);
+        }
+
+        /// <summary>
         /// Allows extensions to be implemented for the specified API.
         /// </summary>
         /// <typeparam name="TApi">The API that will be extended.</typeparam>

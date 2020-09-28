@@ -1,5 +1,4 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Abstractions.Events;
 using System;
 using System.Diagnostics.CodeAnalysis;
 
@@ -38,7 +37,5 @@ namespace SereneApi.Abstractions.Configuration
         /// <param name="factory">Builds the dependencies.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         void AddDependencies([NotNull] Action<IDependencyCollection> factory);
-
-        void EnableEvents([AllowNull] IEventManager eventManagerOverride = null);
     }
 }

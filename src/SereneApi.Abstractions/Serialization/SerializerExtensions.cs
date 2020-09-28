@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Abstractions.Serialization
 {
-    public static class SerializationExtensions
+    public static class SerializerExtensions
     {
         public static TResponse Deserialize<TResponse>([NotNull] this ISerializer serializer, [NotNull] HttpContent content)
         {
