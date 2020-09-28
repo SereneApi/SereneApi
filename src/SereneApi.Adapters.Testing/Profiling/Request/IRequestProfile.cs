@@ -1,21 +1,17 @@
-﻿using System;
-using SereneApi.Abstractions.Request;
+﻿using SereneApi.Abstractions.Request;
 using SereneApi.Abstractions.Response;
+using System;
 
 namespace SereneApi.Adapters.Testing.Profiling.Request
 {
-    public interface IRequestProfile
+    public interface IRequestProfile: IApiRequest
     {
-        Type SourceApi { get; }
-
-        Guid Identity { get; }
+        Type Source { get; }
 
         /// <summary>
         /// Specifies the duration of a request.
         /// </summary>
         TimeSpan RequestDuration { get; }
-
-        IApiRequest Request { get; }
 
         IApiResponse Response { get; }
 

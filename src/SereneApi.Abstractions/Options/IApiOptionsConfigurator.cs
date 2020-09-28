@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Authorization;
 using SereneApi.Abstractions.Configuration;
-using SereneApi.Abstractions.Events;
 using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Routing;
@@ -129,11 +128,5 @@ namespace SereneApi.Abstractions.Options
         /// </summary>
         /// <param name="type">The type the response must be if it is to be accepted.</param>
         void AcceptContentType(ContentType type);
-
-        /// <summary>
-        /// Adds an EventManger to the API enabling events.
-        /// </summary>
-        /// <param name="eventManager">Overrides the default <see cref="IEventManager"/>.</param>
-        void AddEventManager([AllowNull] IEventManager eventManager = null);
     }
 }

@@ -1,27 +1,27 @@
-﻿using System;
+﻿using SereneApi.Adapters.Testing.Profiling.Api;
+using SereneApi.Adapters.Testing.Profiling.Request;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using SereneApi.Adapters.Testing.Profiling.Api;
-using SereneApi.Adapters.Testing.Profiling.Request;
 
 namespace SereneApi.Adapters.Testing.Profiling
 {
     internal class Session: ISession
     {
-        private readonly List<RequestProfile> _requests = new List<RequestProfile>();
+        public IRequestProfile this[Guid identity] => Requests.Single(r => r.Identity == identity);
 
-        public RequestProfile this[Guid identity] => _requests.Single(r => r.Identity == identity);
+        public IReadOnlyList<IRequestProfile> Requests { get; }
 
-        public IReadOnlyList<IRequestProfile> Requests => _requests;
+        public Session(IReadOnlyList<IRequestProfile> requests)
+        {
+            Requests = requests;
+        }
 
         public IApiProfile<TApi> ByApi<TApi>()
         {
-            throw new NotImplementedException();
-        }
+            List<IRequestProfile> requests = Requests.Where(r => r.Source == typeof(TApi)).ToList();
 
-        public void AddRequest(RequestProfile request)
-        {
-            _requests.Add(request);
+            return new ApiProfile<TApi>(requests);
         }
     }
 }

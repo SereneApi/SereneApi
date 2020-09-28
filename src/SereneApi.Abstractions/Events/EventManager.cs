@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,8 +10,13 @@ namespace SereneApi.Abstractions.Events
     {
         private readonly Dictionary<Type, List<object>> _events = new Dictionary<Type, List<object>>();
 
-        public void Publish<TEvent>(TEvent sender) where TEvent : IEventListener
+        public void Publish<TEvent>([NotNull] TEvent sender) where TEvent : IEventListener
         {
+            if(sender == null)
+            {
+                throw new ArgumentNullException(nameof(sender));
+            }
+
             Type eventType = typeof(TEvent);
 
             if(!_events.TryGetValue(eventType, out List<object> listeners) || listeners.Count <= 0)
@@ -24,13 +30,18 @@ namespace SereneApi.Abstractions.Events
             }
         }
 
-        public Task PublishAsync<TEvent>(TEvent sender) where TEvent : IEventListener
+        public Task PublishAsync<TEvent>([NotNull] TEvent sender) where TEvent : IEventListener
         {
             return Task.Factory.StartNew(() => Publish(sender));
         }
 
-        public void Subscribe<TEvent>(Action<TEvent> listener) where TEvent : IEventListener
+        public void Subscribe<TEvent>([NotNull] Action<TEvent> listener) where TEvent : IEventListener
         {
+            if(listener == null)
+            {
+                throw new ArgumentNullException(nameof(listener));
+            }
+
             Type eventType = typeof(TEvent);
 
             if(_events.TryGetValue(eventType, out List<object> listeners))
@@ -39,8 +50,6 @@ namespace SereneApi.Abstractions.Events
                 {
                     listeners.Add(listener);
                 }
-
-                // TODO: Should an error be thrown here or just absorbed?
             }
             else
             {
@@ -50,8 +59,13 @@ namespace SereneApi.Abstractions.Events
             }
         }
 
-        public void UnSubscribe<TEvent>(Action<TEvent> listener) where TEvent : IEventListener
+        public void UnSubscribe<TEvent>([NotNull] Action<TEvent> listener) where TEvent : IEventListener
         {
+            if(listener == null)
+            {
+                throw new ArgumentNullException(nameof(listener));
+            }
+
             Type eventType = typeof(TEvent);
 
             if(!_events.TryGetValue(eventType, out List<object> listeners))
@@ -63,8 +77,6 @@ namespace SereneApi.Abstractions.Events
             {
                 listeners.Remove(listener);
             }
-
-            // TODO: Should an error be thrown here or just absorbed?
         }
     }
 }

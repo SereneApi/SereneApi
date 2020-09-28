@@ -1,9 +1,12 @@
 ﻿using SereneApi.Abstractions.Events;
 using SereneApi.Abstractions.Request.Events;
 using SereneApi.Abstractions.Response.Events;
-using System;
-using System.Threading;
 using SereneApi.Adapters.Testing.Profiling.Request;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Threading;
 
 namespace SereneApi.Adapters.Testing.Profiling
 {
@@ -16,12 +19,12 @@ namespace SereneApi.Adapters.Testing.Profiling
 
         private readonly IEventRelay _eventRelay;
 
-        private Session _session;
+        private readonly Dictionary<Guid, RequestProfile> _requestProfiles = new Dictionary<Guid, RequestProfile>();
 
-        /// <inheritdoc cref="IProfiler.IsActive"/>
-        public bool IsActive => _isLocked;
+        /// <inheritdoc cref="IProfiler.HasActiveSession"/>
+        public bool HasActiveSession => _isLocked;
 
-        public Profiler(IEventRelay eventRelay)
+        public Profiler([NotNull] IEventRelay eventRelay)
         {
             _eventRelay = eventRelay ?? throw new ArgumentNullException(nameof(eventRelay));
         }
@@ -31,11 +34,11 @@ namespace SereneApi.Adapters.Testing.Profiling
         {
             Monitor.Enter(_lock, ref _isLocked);
 
+            _requestProfiles.Clear();
+
             _eventRelay.Subscribe<RetryEvent>(OnRetryEvent);
             _eventRelay.Subscribe<RequestEvent>(OnRequestEvent);
             _eventRelay.Subscribe<ResponseEvent>(OnResponseEvent);
-
-            _session = new Session();
         }
 
         /// <inheritdoc cref="IProfiler.EndSession"/>
@@ -52,12 +55,12 @@ namespace SereneApi.Adapters.Testing.Profiling
 
             Monitor.Exit(_lock);
 
-            return new Session();
+            return new Session(_requestProfiles.Values.ToList());
         }
 
         private void OnRetryEvent(RetryEvent retryEvent)
         {
-            _session[retryEvent.Value].RetryAttempts++;
+            _requestProfiles[retryEvent.Value].RetryAttempts++;
         }
 
         private void OnRequestEvent(RequestEvent requestEvent)
@@ -66,13 +69,16 @@ namespace SereneApi.Adapters.Testing.Profiling
             {
                 Sent = requestEvent.EventTime
             };
-            
-            _session.AddRequest(request);
+
+            _requestProfiles.Add(request.Identity, request);
         }
 
         private void OnResponseEvent(ResponseEvent responseEvent)
         {
-            _session[responseEvent.Value.Request.Identity].Response = responseEvent.Value;
+            RequestProfile profile = _requestProfiles[responseEvent.Value.Request.Identity];
+
+            profile.Response = responseEvent.Value;
+            profile.Received = responseEvent.EventTime;
         }
     }
 }

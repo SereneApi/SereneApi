@@ -1,6 +1,6 @@
-﻿using System;
+﻿using SereneApi.Abstractions.Request;
+using System;
 using System.Diagnostics.CodeAnalysis;
-using SereneApi.Abstractions.Request;
 
 namespace SereneApi.Abstractions.Response
 {

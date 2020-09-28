@@ -3,6 +3,7 @@ using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Events;
 using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Options;
+using SereneApi.Abstractions.Request;
 using SereneApi.Abstractions.Response;
 using SereneApi.Abstractions.Response.Events;
 using SereneApi.Abstractions.Serialization;
@@ -13,7 +14,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using SereneApi.Abstractions.Request;
 
 namespace SereneApi
 {
@@ -73,7 +73,7 @@ namespace SereneApi
         /// <param name="responseMessage">The <see cref="HttpResponseMessage"/> to process</param>
         private IApiResponse ProcessResponse([NotNull] IApiRequest request, [AllowNull] HttpResponseMessage responseMessage)
         {
-            if (request == null)
+            if(request == null)
             {
                 throw new ArgumentNullException(nameof(request));
             }
@@ -114,7 +114,7 @@ namespace SereneApi
         /// <param name="responseMessage">The <see cref="HttpResponseMessage"/> to process</param>
         private IApiResponse<TResponse> ProcessResponse<TResponse>([NotNull] IApiRequest request, HttpResponseMessage responseMessage)
         {
-            if (request == null)
+            if(request == null)
             {
                 throw new ArgumentNullException(nameof(request));
             }
@@ -184,7 +184,7 @@ namespace SereneApi
         /// <param name="responseMessage">The <see cref="HttpResponseMessage"/> to process</param>
         private async Task<IApiResponse<TResponse>> ProcessResponseAsync<TResponse>([NotNull] IApiRequest request, HttpResponseMessage responseMessage)
         {
-            if (request == null)
+            if(request == null)
             {
                 throw new ArgumentNullException(nameof(request));
             }
@@ -282,9 +282,9 @@ namespace SereneApi
             return ApiResponse.Failure(request, status, string.Empty);
         }
 
-        private IApiResponse<TResponse> ProcessFailedRequest<TResponse>([NotNull]IApiRequest request, Status status, [AllowNull] HttpContent content)
+        private IApiResponse<TResponse> ProcessFailedRequest<TResponse>([NotNull] IApiRequest request, Status status, [AllowNull] HttpContent content)
         {
-            if (request == null)
+            if(request == null)
             {
                 throw new ArgumentNullException(nameof(request));
             }

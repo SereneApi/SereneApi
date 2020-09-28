@@ -9,6 +9,6 @@ namespace SereneApi.Adapters.Testing.Profiling.Api
         /// </summary>
         /// <param name="nameof">The nameof the Method used to interact with the Endpoint.</param>
         /// <example>ByEndpoint(e => nameof(e.GetFooAsync));</example>
-        IEndpointProfile ByEndpoint(Func<TApi, string> nameof);
+        IEndpointProfile ByEndpoint(Func<TApi, string> endpointName);
     }
 }

@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Authorization;
 using SereneApi.Abstractions.Authorization.Types;
 using SereneApi.Abstractions.Configuration;
-using SereneApi.Abstractions.Events;
 using SereneApi.Abstractions.Helpers;
 using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Request.Content;
@@ -37,7 +36,7 @@ namespace SereneApi.Abstractions.Options
 
             using IDependencyProvider provider = Dependencies.BuildProvider();
 
-            IDefaultApiConfiguration defaultApiConfiguration = provider.GetDependency<IDefaultApiConfiguration>();
+            IApiConfiguration apiConfiguration = provider.GetDependency<IApiConfiguration>();
 
             string resourcePath = configuration.ResourcePath;
 
@@ -45,15 +44,15 @@ namespace SereneApi.Abstractions.Options
             {
                 if(resourcePath != string.Empty)
                 {
-                    resourcePath = defaultApiConfiguration.ResourcePath;
+                    resourcePath = apiConfiguration.ResourcePath;
                 }
             }
 
             ConnectionConfiguration connection =
                 new ConnectionConfiguration(configuration.BaseAddress, configuration.Resource, resourcePath)
                 {
-                    Timeout = defaultApiConfiguration.Timeout,
-                    RetryAttempts = defaultApiConfiguration.RetryCount
+                    Timeout = apiConfiguration.Timeout,
+                    RetryAttempts = apiConfiguration.RetryCount
                 };
 
             #region Timeout
@@ -97,7 +96,7 @@ namespace SereneApi.Abstractions.Options
 
             using IDependencyProvider provider = Dependencies.BuildProvider();
 
-            IDefaultApiConfiguration configuration = provider.GetDependency<IDefaultApiConfiguration>();
+            IApiConfiguration configuration = provider.GetDependency<IApiConfiguration>();
 
             if(string.IsNullOrWhiteSpace(resourcePath))
             {
@@ -223,12 +222,6 @@ namespace SereneApi.Abstractions.Options
         public void AcceptContentType(ContentType type)
         {
             Dependencies.AddScoped(() => type);
-        }
-
-        /// <inheritdoc cref="IApiOptionsConfigurator.AddEventManager"/>
-        public void AddEventManager([AllowNull] IEventManager eventManager = null)
-        {
-            Dependencies.AddSingleton(() => eventManager ?? new EventManager());
         }
 
         /// <inheritdoc cref="IApiOptionsConfigurator.SetTimeout(int,int)"/>

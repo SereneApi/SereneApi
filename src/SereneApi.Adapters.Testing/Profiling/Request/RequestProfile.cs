@@ -1,31 +1,40 @@
-﻿using System;
-using SereneApi.Abstractions.Request;
+﻿using SereneApi.Abstractions.Request;
+using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Response;
+using System;
 
 namespace SereneApi.Adapters.Testing.Profiling.Request
 {
     internal class RequestProfile: IRequestProfile
     {
-        public Type SourceApi { get; }
+        public Type Source { get; }
 
-        public Guid Identity => Request.Identity;
+        public Guid Identity { get; }
 
-        public TimeSpan RequestDuration { get; set; }
+        public Uri Endpoint { get; }
 
-        public IApiRequest Request { get; }
+        public Method Method { get; }
+
+        public IApiRequestContent Content { get; }
 
         public IApiResponse Response { get; set; }
 
-        public int RetryAttempts { get; set; }
+        public int RetryAttempts { get; set; } = 0;
 
         public DateTime Sent { get; set; }
 
         public DateTime Received { get; set; }
 
+        public TimeSpan RequestDuration => Sent.Subtract(Received);
+
         public RequestProfile(IApiRequest request, Type sourceApi)
         {
-            Request = request;
-            SourceApi = sourceApi;
+            Identity = request.Identity;
+            Endpoint = request.Endpoint;
+            Method = request.Method;
+            Content = request.Content;
+
+            Source = sourceApi;
         }
     }
 }

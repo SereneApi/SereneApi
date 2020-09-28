@@ -1,6 +1,6 @@
 ﻿using SereneApi.Abstractions.Handler;
-using System;
 using SereneApi.Abstractions.Request;
+using System;
 
 namespace SereneApi.Abstractions.Events
 {
