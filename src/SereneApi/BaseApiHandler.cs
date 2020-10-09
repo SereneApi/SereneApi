@@ -5,6 +5,7 @@ using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Request;
 using SereneApi.Abstractions.Response;
+using SereneApi.Abstractions.Response.Content;
 using SereneApi.Abstractions.Response.Events;
 using SereneApi.Abstractions.Serialization;
 using SereneApi.Extensions;

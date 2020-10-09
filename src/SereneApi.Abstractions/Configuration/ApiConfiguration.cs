@@ -60,7 +60,7 @@ namespace SereneApi.Abstractions.Configuration
 
             _dependencyFactory.Invoke(builder.Dependencies);
 
-            builder.Dependencies.TryAddTransient(() => this);
+            builder.Dependencies.TryAddTransient<IApiConfiguration>(() => this);
             builder.Dependencies.TryAddTransient(() => _eventManager);
 
             return builder;
@@ -73,7 +73,7 @@ namespace SereneApi.Abstractions.Configuration
 
             _dependencyFactory.Invoke(builder.Dependencies);
 
-            builder.Dependencies.TryAddTransient(() => this);
+            builder.Dependencies.TryAddTransient<IApiConfiguration>(() => this);
             builder.Dependencies.TryAddTransient(() => _eventManager);
 
             return builder;

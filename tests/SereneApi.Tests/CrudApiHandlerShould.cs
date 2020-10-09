@@ -1,6 +1,7 @@
 ﻿using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Request;
 using SereneApi.Abstractions.Response;
+using SereneApi.Abstractions.Response.Content;
 using SereneApi.Extensions.Mocking;
 using SereneApi.Factories;
 using SereneApi.Tests.Interfaces;
@@ -46,7 +47,7 @@ namespace SereneApi.Tests
                     .RespondsToRequestsWith("http://localhost:8080/api/Person/0");
 
                 builder
-                    .AddMockResponse(Status.NotFound, "Could not find a Person with an Id of 2")
+                    .AddMockResponse(new DefaultFailureResponse("Could not find a Person with an Id of 2"), Status.NotFound)
                     .RespondsToRequestsWith(Method.DELETE)
                     .RespondsToRequestsWith("http://localhost:8080/api/Person/2");
 
@@ -57,7 +58,7 @@ namespace SereneApi.Tests
                     .RespondsToRequestsWith(MockPersonDto.BenJerry);
 
                 builder
-                    .AddMockResponse(Status.BadRequest, "This person has already been added.")
+                    .AddMockResponse(new DefaultFailureResponse("This person has already been added."), Status.BadRequest)
                     .RespondsToRequestsWith(Method.POST)
                     .RespondsToRequestsWith("http://localhost:8080/api/Person")
                     .RespondsToRequestsWith(MockPersonDto.JohnSmith);
@@ -75,7 +76,7 @@ namespace SereneApi.Tests
                     .RespondsToRequestsWith(MockPersonDto.BenJerry);
 
                 builder
-                    .AddMockResponse(Status.NotFound, "Could not find the specified user")
+                    .AddMockResponse(new DefaultFailureResponse("Could not find the specified user"), Status.NotFound)
                     .RespondsToRequestsWith(Method.PATCH)
                     .RespondsToRequestsWith("http://localhost:8080/api/Person")
                     .RespondsToRequestsWith(MockPersonDto.JohnSmith);
