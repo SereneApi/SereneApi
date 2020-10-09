@@ -10,9 +10,8 @@ namespace SereneApi.Extensions.Mocking.Response
         /// Adds a <see cref="IMockResponse"/>.
         /// </summary>
         /// <param name="status">The <see cref="Status"/> to be returned by the mock response.</param>
-        /// <param name="message">The message to be returned by the mock response. Optional</param>
         /// <exception cref="ArgumentException">Thrown when the params are empty.</exception>
-        IMockResponseConfigurator AddMockResponse([NotNull] Status status, [AllowNull] string message = null);
+        IMockResponseConfigurator AddMockResponse([NotNull] Status status);
         /// <summary>
         /// Adds a <see cref="IMockResponse"/>.
         /// </summary>

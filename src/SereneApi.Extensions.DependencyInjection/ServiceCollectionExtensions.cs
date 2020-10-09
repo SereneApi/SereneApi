@@ -71,10 +71,10 @@ namespace SereneApi.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Gets an instance of <see cref="IApiAdapter"/>, this is used to collect information encompassing ApiCommon.
+        /// Gets an instance of <see cref="IApiAdapter"/>, this is used to collect information encompassing SereneApi.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        /// <remarks>Should be called after ConfigureApiCommon if any configuration is required.</remarks>
+        /// <remarks>Should be called after ConfigureSereneApi if any configuration is required.</remarks>
         public static void ConfigureApiAdapters([NotNull] this IServiceCollection services, [NotNull] Action<IApiAdapter> configurator)
         {
             if(services == null)

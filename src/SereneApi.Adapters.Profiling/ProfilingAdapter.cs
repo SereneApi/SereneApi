@@ -1,11 +1,14 @@
 ﻿using SereneApi.Abstractions.Configuration;
-using SereneApi.Adapters.Profiling.Profiling;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 
 namespace SereneApi.Adapters.Profiling
 {
-    public static class ProfileAdapter
+    /// <summary>
+    /// After being initiated, will profile API usage once a session has been started. 
+    /// </summary>
+    public static class ProfilingAdapter
     {
         private static IProfiler _profiler;
 
@@ -13,6 +16,34 @@ namespace SereneApi.Adapters.Profiling
         /// Specifies if a profiling session is currently in progress.
         /// </summary>
         private static bool HasActiveSession => _profiler.HasActiveSession;
+
+        public static ISession Profile([NotNull] Action action)
+        {
+            if(action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            StartSession();
+
+            action.Invoke();
+
+            return EndSession();
+        }
+
+        public static async Task<ISession> ProfileAsync([NotNull] Func<Task> action)
+        {
+            if(action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            StartSession();
+
+            await action.Invoke();
+
+            return EndSession();
+        }
 
         /// <summary>
         /// Starts a profiling session.
@@ -50,7 +81,7 @@ namespace SereneApi.Adapters.Profiling
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         /// <exception cref="MethodAccessException">Thrown when this method is called more than once.</exception>
-        public static IApiAdapter InitiateProfilingAdapter([NotNull] this IApiAdapter adapter)
+        public static IApiAdapter Initiate([NotNull] IApiAdapter adapter)
         {
             if(adapter == null)
             {
@@ -63,13 +94,23 @@ namespace SereneApi.Adapters.Profiling
             }
 
             if(adapter.EventRelay == null)
-            {   
+            {
                 throw new ArgumentNullException(nameof(adapter.EventRelay));
             }
 
             _profiler = new Profiler(adapter.EventRelay);
 
             return adapter;
+        }
+
+        /// <summary>
+        /// Initiates a profiling adapter to all APIs.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
+        /// <exception cref="MethodAccessException">Thrown when this method is called more than once.</exception>
+        public static IApiAdapter InitiateProfilingAdapter([NotNull] this IApiAdapter adapter)
+        {
+            return Initiate(adapter);
         }
     }
 }

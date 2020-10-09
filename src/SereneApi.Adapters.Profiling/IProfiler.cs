@@ -1,7 +1,10 @@
 ﻿using System;
 
-namespace SereneApi.Adapters.Profiling.Profiling
+namespace SereneApi.Adapters.Profiling
 {
+    /// <summary>
+    /// Profiles APIs collecting statics.
+    /// </summary>
     public interface IProfiler
     {
         /// <summary>

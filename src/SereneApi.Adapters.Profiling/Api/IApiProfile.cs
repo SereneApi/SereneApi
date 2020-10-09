@@ -1,13 +1,13 @@
-﻿using SereneApi.Adapters.Profiling.Profiling.Request;
-using System;
+﻿using SereneApi.Adapters.Profiling.Request;
 using System.Collections.Generic;
 
-namespace SereneApi.Adapters.Profiling.Profiling.Api
+namespace SereneApi.Adapters.Profiling.Api
 {
+    /// <summary>
+    /// Contains all statistics related to a specific API.
+    /// </summary>
     public interface IApiProfile
     {
-        IRequestProfile this[Guid identity] { get; }
-
         /// <summary>
         /// All requests made against the specific API.
         /// </summary>

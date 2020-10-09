@@ -2,9 +2,11 @@
 using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Response;
 using System;
+using System.Diagnostics;
 
-namespace SereneApi.Adapters.Profiling.Profiling.Request
+namespace SereneApi.Adapters.Profiling.Request
 {
+    [DebuggerDisplay("{Method} | {Endpoint}")]
     internal class RequestProfile: IRequestProfile
     {
         public Type Source { get; }
@@ -25,7 +27,7 @@ namespace SereneApi.Adapters.Profiling.Profiling.Request
 
         public DateTime Received { get; set; }
 
-        public TimeSpan RequestDuration => Sent.Subtract(Received);
+        public TimeSpan RequestDuration => Received.Subtract(Sent);
 
         public RequestProfile(IApiRequest request, Type sourceApi)
         {

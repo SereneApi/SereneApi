@@ -1,17 +1,20 @@
 ﻿using SereneApi.Abstractions.Events;
 using SereneApi.Abstractions.Request.Events;
 using SereneApi.Abstractions.Response.Events;
-using SereneApi.Adapters.Profiling.Profiling.Request;
+using SereneApi.Adapters.Profiling.Request;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-namespace SereneApi.Adapters.Profiling.Profiling
+namespace SereneApi.Adapters.Profiling
 {
     /// <inheritdoc cref="IProfiler"/>
     internal class Profiler: IProfiler
     {
+        private readonly Stopwatch _sessionDuration = new Stopwatch();
+
         private readonly IEventRelay _eventRelay;
 
         private readonly Dictionary<Guid, RequestProfile> _requestProfiles = new Dictionary<Guid, RequestProfile>();
@@ -35,6 +38,9 @@ namespace SereneApi.Adapters.Profiling.Profiling
 
             HasActiveSession = true;
 
+            _sessionDuration.Reset();
+            _sessionDuration.Start();
+
             _requestProfiles.Clear();
 
             _eventRelay.Subscribe<RetryEvent>(OnRetryEvent);
@@ -56,7 +62,9 @@ namespace SereneApi.Adapters.Profiling.Profiling
 
             HasActiveSession = false;
 
-            return new Session(_requestProfiles.Values.ToList());
+            _sessionDuration.Stop();
+
+            return new Session(_requestProfiles.Values.ToList(), _sessionDuration.Elapsed);
         }
 
         private void OnRetryEvent(RetryEvent retryEvent)

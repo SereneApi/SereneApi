@@ -268,11 +268,11 @@ namespace SereneApi
 
             try
             {
-                HttpError httpError = serializer.Deserialize<HttpError>(content);
+                DefaultFailureResponse defaultFailureResponse = serializer.Deserialize<DefaultFailureResponse>(content);
 
                 _logger?.LogInformation("Deserialization completed successfully.");
 
-                return ApiResponse.Failure(request, status, httpError.Message);
+                return ApiResponse.Failure(request, status, defaultFailureResponse.Message);
             }
             catch(Exception exception)
             {
@@ -305,11 +305,11 @@ namespace SereneApi
 
             try
             {
-                HttpError httpError = serializer.Deserialize<HttpError>(content);
+                DefaultFailureResponse defaultFailureResponse = serializer.Deserialize<DefaultFailureResponse>(content);
 
                 _logger?.LogInformation("Deserialization completed successfully.");
 
-                return ApiResponse<TResponse>.Failure(request, status, httpError.Message);
+                return ApiResponse<TResponse>.Failure(request, status, defaultFailureResponse.Message);
             }
             catch(Exception exception)
             {

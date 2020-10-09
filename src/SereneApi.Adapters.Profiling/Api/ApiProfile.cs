@@ -1,19 +1,16 @@
-﻿using SereneApi.Adapters.Profiling.Profiling.Request;
+﻿using SereneApi.Adapters.Profiling.Request;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 
-namespace SereneApi.Adapters.Profiling.Profiling.Api
+namespace SereneApi.Adapters.Profiling.Api
 {
-    internal class ApiProfile<TApi>: IApiProfile<TApi>
+    internal class ApiProfile: IApiProfile
     {
-        public IRequestProfile this[Guid identity] => Requests.Single(r => r.Identity == identity);
-
         public IReadOnlyList<IRequestProfile> Requests { get; }
 
         /// <summary>
-        /// Creates a new instance of an Api's statistics profile.
+        /// Creates a new instance of an APIs statistics profile.
         /// </summary>
         /// <param name="requests">The requests made with the specific API.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
@@ -21,11 +18,5 @@ namespace SereneApi.Adapters.Profiling.Profiling.Api
         {
             Requests = requests ?? throw new ArgumentNullException(nameof(requests));
         }
-
-        public IEndpointProfile ByEndpoint(Func<TApi, string> endpointName)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }
