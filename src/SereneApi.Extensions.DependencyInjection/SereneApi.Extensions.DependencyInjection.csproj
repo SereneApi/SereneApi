@@ -18,7 +18,7 @@
     <RepositoryType>GIT</RepositoryType>
     <PackageTags>REST; RESTful; DI; DependencyInjection; AspNet; Extensions</PackageTags>
     <NeutralLanguage>en-AU</NeutralLanguage>
-    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageReleaseNotes>ADDED - ConfgirueApiAdapters method.</PackageReleaseNotes>
     <PackageId>SereneApi.Extensions.DependencyInjection</PackageId>
     <AssemblyName>DeltaWare.SereneApi.Extensions.DependencyInjection</AssemblyName>
       <IncludeSymbols>true</IncludeSymbols>

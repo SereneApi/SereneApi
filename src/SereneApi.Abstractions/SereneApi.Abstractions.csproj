@@ -13,7 +13,7 @@
 	  <Product>SereneApi</Product>
 	  <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <Version>1.1.1.0</Version>
+	  <Version>1.1.1.1</Version>
 	  <NeutralLanguage>en-AU</NeutralLanguage>
 	  <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 	  <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
@@ -21,7 +21,13 @@
 	  <PackageIcon>nuget_logo.png</PackageIcon>
 	  <PackageId>SereneApi.Abstractions</PackageId>
 	  <PackageReleaseNotes>ADDED - IApiAdapter, to be used for current and future adapters.
-ADDED - IEventManager/IEventRelay, enabling internal event system to be used.</PackageReleaseNotes>
+ADDED - IEventManager/IEventRelay, enabling internal event system to be used.
+ADDED - Identity to all Requests.
+ADDED - DefaultFailureResponse class, which will be used to deserialize failed requests containing messages
+ADDED - Request property to ApiResponse.
+ADDED - SerializerExtensions.
+
+RENAMED - DefaultApiConfigurtion to ApiConfiguration.</PackageReleaseNotes>
       <IncludeSymbols>true</IncludeSymbols>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
