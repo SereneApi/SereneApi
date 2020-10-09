@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SereneApi.Abstractions.Response;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Events;
 
 namespace DependencyInjection.WebUi.Controllers
 {

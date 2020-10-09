@@ -15,9 +15,9 @@ namespace SereneApi.Extensions.Newtonsoft.Tests
         [Fact]
         public void AddSuccessfully()
         {
-            IDefaultApiConfiguration configuration = new DefaultApiConfiguration();
+            IApiConfiguration configuration = new ApiConfiguration();
 
-            IDefaultApiConfigurationExtensions configurationExtensions = configuration.GetExtensions();
+            IApiConfigurationExtensions configurationExtensions = configuration.GetExtensions();
 
             Should.NotThrow(() => configurationExtensions.AddNewtonsoft());
 
@@ -33,9 +33,9 @@ namespace SereneApi.Extensions.Newtonsoft.Tests
         [Fact]
         public void AddWithSettingsSuccessfully()
         {
-            IDefaultApiConfiguration configuration = new DefaultApiConfiguration();
+            IApiConfiguration configuration = new ApiConfiguration();
 
-            IDefaultApiConfigurationExtensions configurationExtensions = configuration.GetExtensions();
+            IApiConfigurationExtensions configurationExtensions = configuration.GetExtensions();
 
             JsonSerializerSettings settings = new JsonSerializerSettings
             {
@@ -59,9 +59,9 @@ namespace SereneApi.Extensions.Newtonsoft.Tests
         [Fact]
         public void AddWithSettingsBuilderSuccessfully()
         {
-            IDefaultApiConfiguration configuration = new DefaultApiConfiguration();
+            IApiConfiguration configuration = new ApiConfiguration();
 
-            IDefaultApiConfigurationExtensions configurationExtensions = configuration.GetExtensions();
+            IApiConfigurationExtensions configurationExtensions = configuration.GetExtensions();
 
             Should.NotThrow(() => configurationExtensions.AddNewtonsoft(s => s.DateFormatString = "TEST"));
 
@@ -80,9 +80,9 @@ namespace SereneApi.Extensions.Newtonsoft.Tests
         [Fact]
         public void ThrowArgumentNullException_Settings()
         {
-            IDefaultApiConfiguration configuration = new DefaultApiConfiguration();
+            IApiConfiguration configuration = new ApiConfiguration();
 
-            IDefaultApiConfigurationExtensions configurationExtensions = configuration.GetExtensions();
+            IApiConfigurationExtensions configurationExtensions = configuration.GetExtensions();
 
             JsonSerializerSettings settings = null;
 
@@ -92,9 +92,9 @@ namespace SereneApi.Extensions.Newtonsoft.Tests
         [Fact]
         public void ThrowArgumentNullException_Builder()
         {
-            IDefaultApiConfiguration configuration = new DefaultApiConfiguration();
+            IApiConfiguration configuration = new ApiConfiguration();
 
-            IDefaultApiConfigurationExtensions configurationExtensions = configuration.GetExtensions();
+            IApiConfigurationExtensions configurationExtensions = configuration.GetExtensions();
 
             Action<JsonSerializerSettings> builder = null;
 

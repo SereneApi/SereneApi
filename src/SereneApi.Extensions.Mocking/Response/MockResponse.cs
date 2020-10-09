@@ -22,23 +22,18 @@ namespace SereneApi.Extensions.Mocking.Response
         /// <inheritdoc cref="IMockResponse.Status"/>
         public Status Status { get; }
 
-        /// <inheritdoc cref="IMockResponse.Message"/>
-        public string Message { get; }
-
         /// <summary>
         /// Creates a new instance of <seealso cref="MockResponse"/>.
         /// </summary>
         /// <param name="dependencies">The dependencies available to the <see cref="MockResponse"/>.</param>
         /// <param name="status">The status of the response.</param>
-        /// <param name="message">The message of the response.</param>
         /// <param name="responseContent">,The content of the response.</param>
         /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
-        public MockResponse([NotNull] IDependencyProvider dependencies, Status status, string message, IApiRequestContent responseContent)
+        public MockResponse([NotNull] IDependencyProvider dependencies, Status status, IApiRequestContent responseContent)
         {
             _dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
             _responseContent = responseContent;
 
-            Message = message;
             Status = status;
         }
 

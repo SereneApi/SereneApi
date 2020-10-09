@@ -5,9 +5,9 @@ using System.Diagnostics.CodeAnalysis;
 namespace SereneApi.Abstractions.Configuration
 {
     /// <summary>
-    /// Extends <see cref="IDefaultApiConfiguration"/>.
+    /// Extends <see cref="IApiConfiguration"/>.
     /// </summary>
-    public interface IDefaultApiConfigurationExtensions
+    public interface IApiConfigurationExtensions: IApiAdapter
     {
         /// <summary>
         /// Adds the specified dependencies.

@@ -30,20 +30,20 @@ namespace SereneApi.Extensions.DependencyInjection.Options
 
             using IDependencyProvider provider = Dependencies.BuildProvider();
 
-            IDefaultApiConfiguration defaultApiConfiguration = provider.GetDependency<IDefaultApiConfiguration>();
+            IApiConfiguration apiConfiguration = provider.GetDependency<IApiConfiguration>();
 
             if(string.IsNullOrWhiteSpace(resourcePath))
             {
                 if(resourcePath != string.Empty)
                 {
-                    resourcePath = defaultApiConfiguration.ResourcePath;
+                    resourcePath = apiConfiguration.ResourcePath;
                 }
             }
 
             ConnectionConfiguration = new ConnectionConfiguration(source, resource, resourcePath)
             {
-                Timeout = defaultApiConfiguration.Timeout,
-                RetryAttempts = defaultApiConfiguration.RetryCount
+                Timeout = apiConfiguration.Timeout,
+                RetryAttempts = apiConfiguration.RetryCount
             };
 
             #region Timeout

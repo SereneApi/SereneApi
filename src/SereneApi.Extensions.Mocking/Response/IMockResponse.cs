@@ -19,11 +19,6 @@ namespace SereneApi.Extensions.Mocking.Response
         Status Status { get; }
 
         /// <summary>
-        /// The message the <see cref="IMockResponse"/> will respond with.
-        /// </summary>
-        string Message { get; }
-
-        /// <summary>
         /// Gets the <see cref="IApiRequestContent"/> that the <see cref="IMockResponse"/> will responds with.
         /// </summary>
         /// <remarks>The <see cref="CancellationToken"/> is required for the timeout to function.</remarks>

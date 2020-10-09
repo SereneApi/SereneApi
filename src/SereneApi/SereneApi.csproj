@@ -13,14 +13,14 @@
     <Product>SereneApi</Product>
     <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.1.1.0</Version>
+    <Version>1.1.1.1</Version>
     <NeutralLanguage>en-AU</NeutralLanguage>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Copyright>Copyright (c) 2020 DeltaWare</Copyright>
     <PackageIcon>nuget_logo.png</PackageIcon>
     <PackageId>SereneApi</PackageId>
-    <PackageReleaseNotes>UPDATED - SereneApi.Abstractions</PackageReleaseNotes>
+    <PackageReleaseNotes>UPDATE - SereneApi.Abstractions</PackageReleaseNotes>
       <IncludeSymbols>true</IncludeSymbols>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
       <AssemblyVersion>1.1.0.5</AssemblyVersion>

@@ -14,7 +14,7 @@ namespace SereneApi.Abstractions.Tests.Factories
 
         public QueryFactoryShould()
         {
-            IDefaultApiConfiguration configuration = DefaultApiConfiguration.Default;
+            IApiConfiguration configuration = ApiConfiguration.Default;
 
             IApiOptionsBuilder apiOptionsBuilder = configuration.GetOptionsBuilder();
 

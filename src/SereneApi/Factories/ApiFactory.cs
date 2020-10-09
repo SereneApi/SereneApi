@@ -16,21 +16,21 @@ namespace SereneApi.Factories
 
         private readonly Dictionary<Type, IApiOptionsBuilder> _handlerOptions = new Dictionary<Type, IApiOptionsBuilder>();
 
-        private readonly IDefaultApiConfiguration _configuration;
+        private readonly IApiConfiguration _configuration;
 
         /// <summary>
         /// Creates a new instance of <see cref="ApiFactory"/>.
         /// </summary>
         public ApiFactory()
         {
-            _configuration = DefaultApiConfiguration.Default;
+            _configuration = ApiConfiguration.Default;
         }
 
         /// <summary>
         /// Creates a new instance of <see cref="ApiFactory"/>.
         /// </summary>
         /// <param name="configuration">The default configuration that will be provided to all APIs.</param>
-        public ApiFactory([NotNull] IDefaultApiConfiguration configuration)
+        public ApiFactory([NotNull] IApiConfiguration configuration)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }

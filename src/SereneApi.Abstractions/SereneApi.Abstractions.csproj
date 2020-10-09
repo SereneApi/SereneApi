@@ -13,21 +13,21 @@
 	  <Product>SereneApi</Product>
 	  <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <Version>1.1.1.0</Version>
+	  <Version>1.1.1.1</Version>
 	  <NeutralLanguage>en-AU</NeutralLanguage>
 	  <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 	  <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	  <Copyright>Copyright (c) 2020 DeltaWare</Copyright>
 	  <PackageIcon>nuget_logo.png</PackageIcon>
 	  <PackageId>SereneApi.Abstractions</PackageId>
-	  <PackageReleaseNotes>ADDED - AddConfiguration to enable configuration with IConnectionConfiguration
+	  <PackageReleaseNotes>ADDED - IApiAdapter, to be used for current and future adapters.
+ADDED - IEventManager/IEventRelay, enabling internal event system to be used.
+ADDED - Identity to all Requests.
+ADDED - DefaultFailureResponse class, which will be used to deserialize failed requests containing messages
+ADDED - Request property to ApiResponse.
+ADDED - SerializerExtensions.
 
-RENAMED - IConnectionSettings to IConnectionConfiguration
-RENAMED - UseSource to SetSource
-RENAMED - UseCredentials to AddCredentials
-RENAMED - WithInBodyContent to AddInBodyContent
-
-IMPROVED - Request building, WithEndPointTemplate has been replaced, Now WithEndPoint.WithParameters must be used.</PackageReleaseNotes>
+RENAMED - DefaultApiConfigurtion to ApiConfiguration.</PackageReleaseNotes>
       <IncludeSymbols>true</IncludeSymbols>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
@@ -44,7 +44,7 @@ IMPROVED - Request building, WithEndPointTemplate has been replaced, Now WithEnd
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DeltaWare.Dependencies" Version="1.0.2.1" />
+    <PackageReference Include="DeltaWare.Dependencies" Version="1.1.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
     <PackageReference Include="System.Text.Json" Version="4.7.2" />
   </ItemGroup>

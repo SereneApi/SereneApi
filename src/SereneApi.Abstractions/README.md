@@ -70,7 +70,7 @@ Contains all the elements used for configuration. It is possible to implement th
 	
 * **RetryAttempts** | *Optional*<br/>Specifies how many times the connection will be retried after it has timed-out.
 ### DefaultConfiguration
-*IDefaultApiConfiguration* specifies default configuration for all APIs. The configuration is already configured out of the box, but it is possible to override these values. This allows global configuration and dependency extension to be applied easily. The following default configuration can be used.
+*IApiConfiguration* specifies default configuration for all APIs. The configuration is already configured out of the box, but it is possible to override these values. This allows global configuration and dependency extension to be applied easily. The following default configuration can be used.
 *	**Resource Path**
 *	**Timeout**
 *	**Retry Attempts**
@@ -343,7 +343,7 @@ RetryAttempts | Optional
 Specifies how many times the connection will be retried after it has timed-out.
 
 DefaultConfiguration
-IDefaultApiConfiguration specifies default configuration for all APIs. The configuration is already configured out of the box, but it is possible to override these values. This allows global configuration and dependency extension to be applied easily. The following default configuration can be used.
+IApiConfiguration specifies default configuration for all APIs. The configuration is already configured out of the box, but it is possible to override these values. This allows global configuration and dependency extension to be applied easily. The following default configuration can be used.
 
 Resource Path
 Timeout
