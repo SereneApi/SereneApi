@@ -5,7 +5,7 @@ namespace SereneApi.Abstractions.Configuration
     /// <summary>
     /// The default provider for API configuration.
     /// </summary>
-    public interface IDefaultApiConfiguration: IDefaultApiConfigurationExtensions
+    public interface IApiConfiguration: IApiConfigurationExtensions
     {
         /// <summary>
         /// The default resource path if it has not been provided.
@@ -33,9 +33,9 @@ namespace SereneApi.Abstractions.Configuration
         TBuilder GetOptionsBuilder<TBuilder>() where TBuilder : IApiOptionsBuilder, new();
 
         /// <summary>
-        /// Gets <see cref="IDefaultApiConfigurationExtensions"/> allowing extension of default values.
+        /// Gets <see cref="IApiConfigurationExtensions"/> allowing extension of default values.
         /// </summary>
         /// <returns></returns>
-        IDefaultApiConfigurationExtensions GetExtensions();
+        IApiConfigurationExtensions GetExtensions();
     }
 }

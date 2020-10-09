@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SereneApi.Abstractions.Request;
+using System;
 
 namespace SereneApi.Abstractions.Response
 {
@@ -7,6 +8,11 @@ namespace SereneApi.Abstractions.Response
     /// </summary>
     public interface IApiResponse
     {
+        /// <summary>
+        /// Specifies the request.
+        /// </summary>
+        IApiRequest Request { get; }
+
         /// <summary>
         /// Specifies the status received.
         /// </summary>

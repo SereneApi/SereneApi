@@ -192,8 +192,7 @@ namespace SereneApi.Extensions.Mocking.Handlers
 
             return new HttpResponseMessage
             {
-                StatusCode = mockResponse.Status.ToHttpStatusCode(),
-                ReasonPhrase = mockResponse.Message
+                StatusCode = mockResponse.Status.ToHttpStatusCode()
             };
         }
 

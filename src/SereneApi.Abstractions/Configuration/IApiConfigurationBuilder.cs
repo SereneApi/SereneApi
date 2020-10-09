@@ -5,24 +5,24 @@ using System.Diagnostics.CodeAnalysis;
 namespace SereneApi.Abstractions.Configuration
 {
     /// <summary>
-    /// Configures <see cref="IDefaultApiConfiguration"/>.
+    /// Configures <see cref="IApiConfiguration"/>.
     /// </summary>
-    public interface IDefaultApiConfigurationBuilder
+    public interface IApiConfigurationBuilder
     {
         /// <summary>
         /// Specifies the default resource path if it has not been provided.
         /// </summary>
-        string ResourcePath { get; set; }
+        string ResourcePath { set; }
 
         /// <summary>
         /// Specifies the default timeout value if it has not been provided.
         /// </summary>
-        int Timeout { get; set; }
+        int Timeout { set; }
 
         /// <summary>
         /// Specifies the default retry count if it has not been provided.
         /// </summary>
-        int RetryCount { get; set; }
+        int RetryCount { set; }
 
         /// <summary>
         /// Overrides previously set dependencies with the specified dependencies.

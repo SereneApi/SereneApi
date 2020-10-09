@@ -36,7 +36,7 @@ namespace SereneApi.Abstractions.Options
 
             using IDependencyProvider provider = Dependencies.BuildProvider();
 
-            IDefaultApiConfiguration defaultApiConfiguration = provider.GetDependency<IDefaultApiConfiguration>();
+            IApiConfiguration apiConfiguration = provider.GetDependency<IApiConfiguration>();
 
             string resourcePath = configuration.ResourcePath;
 
@@ -44,15 +44,15 @@ namespace SereneApi.Abstractions.Options
             {
                 if(resourcePath != string.Empty)
                 {
-                    resourcePath = defaultApiConfiguration.ResourcePath;
+                    resourcePath = apiConfiguration.ResourcePath;
                 }
             }
 
             ConnectionConfiguration connection =
                 new ConnectionConfiguration(configuration.BaseAddress, configuration.Resource, resourcePath)
                 {
-                    Timeout = defaultApiConfiguration.Timeout,
-                    RetryAttempts = defaultApiConfiguration.RetryCount
+                    Timeout = apiConfiguration.Timeout,
+                    RetryAttempts = apiConfiguration.RetryCount
                 };
 
             #region Timeout
@@ -96,7 +96,7 @@ namespace SereneApi.Abstractions.Options
 
             using IDependencyProvider provider = Dependencies.BuildProvider();
 
-            IDefaultApiConfiguration configuration = provider.GetDependency<IDefaultApiConfiguration>();
+            IApiConfiguration configuration = provider.GetDependency<IApiConfiguration>();
 
             if(string.IsNullOrWhiteSpace(resourcePath))
             {

@@ -6,6 +6,9 @@ namespace SereneApi.Abstractions.Request
     /// <inheritdoc cref="IApiRequest"/>
     public class ApiRequest: IApiRequest
     {
+        /// <inheritdoc cref="IApiRequest.Identity"/>
+        public Guid Identity { get; }
+
         /// <inheritdoc cref="IApiRequest.Endpoint"/>
         public Uri Endpoint { get; }
 
@@ -28,6 +31,8 @@ namespace SereneApi.Abstractions.Request
             {
                 throw new ArgumentException("An invalid method was provided.");
             }
+
+            Identity = Guid.NewGuid();
 
             Method = method;
             Endpoint = endpoint;

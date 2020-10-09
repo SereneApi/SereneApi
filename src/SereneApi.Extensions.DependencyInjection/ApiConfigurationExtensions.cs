@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Extensions.DependencyInjection
 {
-    public static class DefaultApiExtensionsExtensions
+    public static class ApiConfigurationExtensions
     {
         /// <summary>
         /// Adds an authentication API. Before a request is made it will be authenticated.
@@ -20,7 +20,7 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <param name="callApi">Perform the authentication request.</param>
         /// <param name="extractToken">Extract the token information from the response.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public static IDefaultApiConfigurationExtensions AddDIAuthenticator<TApi, TDto>([NotNull] this IDefaultApiConfigurationExtensions extensions, [NotNull] Func<TApi, Task<IApiResponse<TDto>>> callApi, [NotNull] Func<TDto, TokenAuthResult> extractToken) where TApi : class, IDisposable where TDto : class
+        public static IApiConfigurationExtensions AddDIAuthenticator<TApi, TDto>([NotNull] this IApiConfigurationExtensions extensions, [NotNull] Func<TApi, Task<IApiResponse<TDto>>> callApi, [NotNull] Func<TDto, TokenAuthResult> extractToken) where TApi : class, IDisposable where TDto : class
         {
             if(extensions == null)
             {

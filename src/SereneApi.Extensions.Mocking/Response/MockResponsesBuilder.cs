@@ -25,13 +25,13 @@ namespace SereneApi.Extensions.Mocking.Response
         /// <inheritdoc>
         ///     <cref>IMockResponsesBuilder.AddMockResponse</cref>
         /// </inheritdoc>
-        public IMockResponseConfigurator AddMockResponse(Status status, string message = null)
+        public IMockResponseConfigurator AddMockResponse(Status status)
         {
             IDependencyCollection dependencies = new DependencyCollection();
 
             dependencies.AddScoped(() => _dependencies.GetDependency<ISerializer>(), Binding.Unbound);
 
-            _mockResponses.Add(() => BuildMockResponse(dependencies.BuildProvider(), status, message, null));
+            _mockResponses.Add(() => BuildMockResponse(dependencies.BuildProvider(), status, null));
 
             return BuildResponseExtensions(dependencies);
         }
@@ -47,7 +47,7 @@ namespace SereneApi.Extensions.Mocking.Response
 
             IApiRequestContent responseContent = _dependencies.GetDependency<ISerializer>().Serialize(content);
 
-            _mockResponses.Add(() => BuildMockResponse(dependencies.BuildProvider(), Status.Ok, null, responseContent));
+            _mockResponses.Add(() => BuildMockResponse(dependencies.BuildProvider(), Status.Ok, responseContent));
 
             return BuildResponseExtensions(dependencies);
         }
@@ -63,7 +63,7 @@ namespace SereneApi.Extensions.Mocking.Response
 
             IApiRequestContent responseContent = _dependencies.GetDependency<ISerializer>().Serialize(content);
 
-            _mockResponses.Add(() => BuildMockResponse(dependencies.BuildProvider(), status, null, responseContent));
+            _mockResponses.Add(() => BuildMockResponse(dependencies.BuildProvider(), status, responseContent));
 
             return BuildResponseExtensions(dependencies);
         }
@@ -73,9 +73,9 @@ namespace SereneApi.Extensions.Mocking.Response
             return new MockResponseConfigurator(dependencies);
         }
 
-        protected virtual IMockResponse BuildMockResponse(IDependencyProvider provider, Status status, string message, IApiRequestContent responseContent)
+        protected virtual IMockResponse BuildMockResponse(IDependencyProvider provider, Status status, IApiRequestContent responseContent)
         {
-            return new MockResponse(provider, status, message, responseContent);
+            return new MockResponse(provider, status, responseContent);
         }
 
         /// <summary>
