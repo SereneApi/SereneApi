@@ -1,4 +1,5 @@
-﻿using SereneApi.Abstractions.Authorization;
+﻿using Microsoft.Extensions.Logging;
+using SereneApi.Abstractions.Authorization;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Request.Content;
