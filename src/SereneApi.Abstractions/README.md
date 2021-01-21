@@ -51,7 +51,7 @@ When *IAuthorization.AuthorizeAsync* is called in the example above it performs 
 >
 >**BEST PRACTICE:** When implementing *IAuthorize* it should only authorize when there is no authorization present or if the previous authorization has expired. This is due to the fact that authorizing every time could degrade application performance, especially if authorizing with an external API.
 >
->**SEE:** *[TokenAuthorizer](https://github.com/armorall171/SereneApi/blob/master/src/SereneApi.Abstractions/Authorization/Authorizers/TokenAuthorizer.cs)* and *[InjectedTokenAuthorizer](https://github.com/armorall171/SereneApi/blob/master/src/SereneApi.Extensions.DependencyInjection/Authorizers/InjectedTokenAuthorizer.cs)* for more details on *IAuthorize* implementation. 
+>**SEE:** *[TokenAuthorizer](https://github.com/DeltaWareAU/SereneApi/blob/master/src/SereneApi.Abstractions/Authorization/Authorizers/TokenAuthorizer.cs)* and *[InjectedTokenAuthorizer](https://github.com/DeltaWareAU/SereneApi/blob/master/src/SereneApi.Extensions.DependencyInjection/Authorizers/InjectedTokenAuthorizer.cs)* for more details on *IAuthorize* implementation. 
 ## Configuration
 Contains all the elements used for configuration. It is possible to implement the interfaces in this namespace to extend the functionality of configuration.
 ### ConnectionSettings
@@ -70,7 +70,7 @@ Contains all the elements used for configuration. It is possible to implement th
 	
 * **RetryAttempts** | *Optional*<br/>Specifies how many times the connection will be retried after it has timed-out.
 ### DefaultConfiguration
-*IDefaultApiConfiguration* specifies default configuration for all APIs. The configuration is already configured out of the box, but it is possible to override these values. This allows global configuration and dependency extension to be applied easily. The following default configuration can be used.
+*IApiConfiguration* specifies default configuration for all APIs. The configuration is already configured out of the box, but it is possible to override these values. This allows global configuration and dependency extension to be applied easily. The following default configuration can be used.
 *	**Resource Path**
 *	**Timeout**
 *	**Retry Attempts**
@@ -121,7 +121,7 @@ Contains abstractions and components used for creating and submitting API option
 Contains options and dependencies that can be used by an API's handler. Options will contain dependencies base on the supplied dependencies added with *IApiOptionsConfigurator* and *IApiOptionsExtensions*.
 ### IApiOptionsBuilder
 Defines the build options method. This interface exists to create separation between building and configuration of options. Both *IApiOptionsConfigurator* and *IApiOptionsBuilder* should both be inherited together.
->**SEE:** *[ApiOptionsBuilder](https://github.com/armorall171/SereneApi/blob/master/src/SereneApi.Abstractions/Options/ApiOptionsBuilder.cs)* for more details on implementation.
+>**SEE:** *[ApiOptionsBuilder](https://github.com/DeltaWareAU/SereneApi/blob/master/src/SereneApi.Abstractions/Options/ApiOptionsBuilder.cs)* for more details on implementation.
 ### IApiOptionsConfigurator
 Defines methods for options configuration. This interface is intended to be used alongside the *RegisterApi* method. It will generate the configuration for *IApiOptions* before it is instantiated.
 
@@ -343,7 +343,7 @@ RetryAttempts | Optional
 Specifies how many times the connection will be retried after it has timed-out.
 
 DefaultConfiguration
-IDefaultApiConfiguration specifies default configuration for all APIs. The configuration is already configured out of the box, but it is possible to override these values. This allows global configuration and dependency extension to be applied easily. The following default configuration can be used.
+IApiConfiguration specifies default configuration for all APIs. The configuration is already configured out of the box, but it is possible to override these values. This allows global configuration and dependency extension to be applied easily. The following default configuration can be used.
 
 Resource Path
 Timeout

@@ -1,4 +1,5 @@
-﻿using SereneApi.Abstractions.Response;
+﻿using SereneApi.Abstractions.Request;
+using SereneApi.Abstractions.Response;
 using Shouldly;
 using System;
 using Xunit;
@@ -12,7 +13,7 @@ namespace SereneApi.Tests.Types
         {
             Status status = Status.Ok;
 
-            IApiResponse response = ApiResponse.Success(status);
+            IApiResponse response = ApiResponse.Success(ApiRequest.Empty, status);
 
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
@@ -27,14 +28,14 @@ namespace SereneApi.Tests.Types
             string resultString = "Success!";
             Status status = Status.Ok;
 
-            IApiResponse<string> response = ApiResponse<string>.Success(status, resultString);
+            IApiResponse<string> response = ApiResponse<string>.Success(ApiRequest.Empty, status, resultString);
 
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
             response.Exception.ShouldBeNull();
             response.Message.ShouldBeNull();
             response.Status.ShouldBe(status);
-            response.Result.ShouldBe(resultString);
+            response.Data.ShouldBe(resultString);
         }
 
         [Theory]
@@ -45,7 +46,7 @@ namespace SereneApi.Tests.Types
         {
             Status status = Status.InternalServerError;
 
-            IApiResponse response = ApiResponse.Failure(status, message);
+            IApiResponse response = ApiResponse.Failure(ApiRequest.Empty, status, message);
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(false);
@@ -62,14 +63,14 @@ namespace SereneApi.Tests.Types
         {
             Status status = Status.InternalServerError;
 
-            IApiResponse<string> response = ApiResponse<string>.Failure(status, message);
+            IApiResponse<string> response = ApiResponse<string>.Failure(ApiRequest.Empty, status, message);
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(false);
             response.Exception.ShouldBeNull();
             response.Message.ShouldBe(message);
             response.Status.ShouldBe(status);
-            response.Result.ShouldBeNull();
+            response.Data.ShouldBeNull();
         }
 
         [Fact]
@@ -79,7 +80,7 @@ namespace SereneApi.Tests.Types
             ArgumentException argumentException = new ArgumentException("Bad params man");
             Status status = Status.InternalServerError;
 
-            IApiResponse response = ApiResponse.Failure(status, message, argumentException);
+            IApiResponse response = ApiResponse.Failure(ApiRequest.Empty, status, message, argumentException);
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(true);
@@ -95,14 +96,14 @@ namespace SereneApi.Tests.Types
             ArgumentException argumentException = new ArgumentException("Bad params man");
             Status status = Status.InternalServerError;
 
-            IApiResponse<string> response = ApiResponse<string>.Failure(status, message, argumentException);
+            IApiResponse<string> response = ApiResponse<string>.Failure(ApiRequest.Empty, status, message, argumentException);
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(true);
             response.Exception.ShouldBe(argumentException);
             response.Message.ShouldBe(message);
             response.Status.ShouldBe(status);
-            response.Result.ShouldBeNull();
+            response.Data.ShouldBeNull();
         }
     }
 }

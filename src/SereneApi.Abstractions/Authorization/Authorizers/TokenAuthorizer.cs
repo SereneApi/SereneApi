@@ -15,7 +15,7 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
     /// <typeparam name="TDto">The method in which the token will be retrieved.</typeparam>
     public class TokenAuthorizer<TApi, TDto>: IAuthorizer where TApi : class, IDisposable where TDto : class
     {
-        //private readonly TimerCallback _tokenRefresher;
+        private const int _expiryLeeway = -60;
 
         private readonly Func<TApi, Task<IApiResponse<TDto>>> _apiCall;
 
@@ -27,9 +27,9 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
         protected IDependencyProvider Dependencies { get; }
 
         /// <summary>
-        /// The time in seconds before the token expires.
+        /// The time when the token expires.
         /// </summary>
-        protected int TokenExpiryTime { get; private set; }
+        protected DateTime TokenExpiryTime { get; private set; }
 
         /// <summary> 
         /// The authorization result.
@@ -63,16 +63,7 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
                 return Authorization;
             }
 
-            using TApi api = GetApi();
-
-            IApiResponse<TDto> response = await PerformAuthenticationRequestAsync(api);
-
-            if(response == null)
-            {
-                throw new NullReferenceException("No response was received.");
-            }
-
-            return Authorization;
+            return await RetrieveTokenAsync();
         }
 
         /// <summary>
@@ -97,22 +88,33 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
         }
 
         /// <summary>
-        /// Gets the token asynchronously using the supplied API.
+        /// Retrieves the token from the API
         /// </summary>
-        /// <param name="api">The API ud to mke the request.</param>
-        protected virtual Task<IApiResponse<TDto>> PerformAuthenticationRequestAsync(TApi api)
-        {
-            return _apiCall.Invoke(api);
-        }
-
-        /// <summary>
-        /// Retrieves the token from the API response.
-        /// </summary>
-        /// <param name="response">The response to retrieve the token from.</param>
+        /// <param name="disposeApi">Specifies if the API will be disposed of.</param>
         /// <exception cref="Exception">Thrown when the response was not successful.</exception>
         /// <exception cref="NullReferenceException">Thrown when a null token is provided.</exception>
-        protected virtual void RetrieveToken(IApiResponse<TDto> response)
+        protected virtual async Task<BearerAuthorization> RetrieveTokenAsync(bool disposeApi = true)
         {
+            // Not sure if this is really the best way to achieve this...
+            if(Authorization != null && DateTime.Now < TokenExpiryTime)
+            {
+                return Authorization;
+            }
+
+            TApi api = GetApi();
+
+            if(api == null)
+            {
+                throw new ArgumentNullException(nameof(api), "Could not retrieve an API using \"GetApi\"");
+            }
+
+            IApiResponse<TDto> response = await _apiCall.Invoke(api);
+
+            if(disposeApi)
+            {
+                api.Dispose();
+            }
+
             if(!response.WasSuccessful || response.HasNullResult())
             {
                 if(response.HasException)
@@ -123,15 +125,18 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
                 throw new Exception(response.Message);
             }
 
-            TokenAuthResult token = _extractTokenFunction.Invoke(response.Result);
+            TokenAuthResult token = _extractTokenFunction.Invoke(response.Data);
 
             if(token == null)
             {
                 throw new NullReferenceException("No token was retrieved.");
             }
 
-            TokenExpiryTime = token.ExpiryTime;
+            // Not sure if this is really the best way to achieve this...
+            TokenExpiryTime = DateTime.Now.Add(TimeSpan.FromSeconds(token.ExpiryTime + _expiryLeeway));
             Authorization = new BearerAuthorization(token.Token);
+
+            return Authorization;
         }
     }
 }

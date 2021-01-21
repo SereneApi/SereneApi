@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
     <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
 
     <PropertyGroup>
@@ -6,10 +6,10 @@
         <TargetFrameworks>netstandard2.1;netcoreapp3.1</TargetFrameworks>
         <PackageId>SereneApi.AspNetCore</PackageId>
         <PackageTags>sereneapi;api;webapi;aspnet;aspnetcore</PackageTags>
-        <PackageProjectUrl>https://github.com/armorall171/SereneApi#what-is-serene-api</PackageProjectUrl>
+        <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
         <PackageLicenseUrl></PackageLicenseUrl>
         <RepositoryType>GIT</RepositoryType>
-        <RepositoryUrl>https://github.com/armorall171/SereneApi.git</RepositoryUrl>
+        <RepositoryUrl>https://github.com/DeltaWareAU/SereneApi.git</RepositoryUrl>
 
         <!-- Package contains only the final .nuspec file with a few listed dependencies. -->
         <GenerateNuspecDependsOn>$(GenerateNuspecDependsOn);PopulateNuspec</GenerateNuspecDependsOn>
@@ -19,10 +19,10 @@
         <IncludeSymbols>false</IncludeSymbols>
         <NuspecFile>$(MSBuildProjectName).nuspec</NuspecFile>
         <MicrosoftExtensionsApiDescriptionServerPackageVersion>3.0.0</MicrosoftExtensionsApiDescriptionServerPackageVersion>
-        <Authors>Bradley Clarke</Authors>
+        <Authors>DeltaWare</Authors>
         <Company>DeltaWare</Company>
         <Product>SereneApi</Product>
-        <Copyright>Copyright (c) 2020 Bradley Clarke</Copyright>
+        <Copyright>Copyright (c) 2020 DeltaWare</Copyright>
         <PackageLicenseFile>README.md</PackageLicenseFile>
         <NeutralLanguage>en-AU</NeutralLanguage>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>

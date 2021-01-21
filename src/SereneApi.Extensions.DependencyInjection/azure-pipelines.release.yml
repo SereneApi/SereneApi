@@ -27,6 +27,13 @@ steps:
     arguments: '--configuration $(buildConfiguration)'
     projects: 'src/SereneApi.Extensions.DependencyInjection/SereneApi.Extensions.DependencyInjection.csproj'
 
+- task: DotNetCoreCLI@2
+  displayName: 'Test'
+  inputs:
+    command: test
+    projects: 'tests/SereneApi.Extensions.DependencyInjection.Tests/SereneApi.Extensions.DependencyInjection.Tests.csproj'
+    arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+
 # The second task is dotnet pack command again pointing to the csproj file
 # The nobuild means the project will not be compiled before running pack, because its already built in above step
 - task: DotNetCoreCLI@2

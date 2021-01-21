@@ -6,6 +6,9 @@ namespace SereneApi.Abstractions.Request
     /// <inheritdoc cref="IApiRequest"/>
     public class ApiRequest: IApiRequest
     {
+        /// <inheritdoc cref="IApiRequest.Identity"/>
+        public Guid Identity { get; }
+
         /// <inheritdoc cref="IApiRequest.Endpoint"/>
         public Uri Endpoint { get; }
 
@@ -14,6 +17,10 @@ namespace SereneApi.Abstractions.Request
 
         /// <inheritdoc cref="IApiRequest.Content"/>
         public IApiRequestContent Content { get; }
+
+        private ApiRequest()
+        {
+        }
 
         /// <summary>
         /// Creates a new instance of a <see cref="ApiRequest"/>.
@@ -29,10 +36,18 @@ namespace SereneApi.Abstractions.Request
                 throw new ArgumentException("An invalid method was provided.");
             }
 
+            Identity = Guid.NewGuid();
+
             Method = method;
             Endpoint = endpoint;
             Content = content;
         }
+
+        /// <summary>
+        /// An empty API request.
+        /// </summary>
+        /// <remarks>Mostly used internally for Unit Testing.</remarks>
+        public static IApiRequest Empty { get; } = new ApiRequest();
     }
 
 }

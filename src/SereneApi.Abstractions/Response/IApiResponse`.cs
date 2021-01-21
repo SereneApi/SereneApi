@@ -7,8 +7,8 @@ namespace SereneApi.Abstractions.Response
     public interface IApiResponse<out TEntity>: IApiResponse
     {
         /// <summary>
-        /// The deserialized value received from the API.
+        /// The deserialized data received from the API.
         /// </summary>
-        TEntity Result { get; }
+        TEntity Data { get; }
     }
 }

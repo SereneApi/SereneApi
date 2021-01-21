@@ -1,6 +1,5 @@
 ﻿using DeltaWare.Dependencies;
 using DeltaWare.Dependencies.Abstractions;
-using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Authorization;
 using SereneApi.Abstractions.Authorization.Types;
 using SereneApi.Abstractions.Configuration;
@@ -24,10 +23,70 @@ namespace SereneApi.Abstractions.Options
         /// <summary>
         /// Specifies the connection settings for the API.
         /// </summary>
-        protected ConnectionSettings ConnectionSettings { get; set; }
+        protected ConnectionConfiguration ConnectionConfiguration { get; set; }
 
-        /// <inheritdoc cref="IApiOptionsConfigurator.UseSource"/>
-        public void UseSource([NotNull] string baseAddress, string resource = null, string resourcePath = null)
+        /// <inheritdoc cref="IApiOptionsConfigurator.AddConfiguration"/>
+        public void AddConfiguration([NotNull] IConnectionConfiguration configuration)
+        {
+            if(configuration == null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
+
+            using IDependencyProvider provider = Dependencies.BuildProvider();
+
+            IApiConfiguration apiConfiguration = provider.GetDependency<IApiConfiguration>();
+
+            string resourcePath = configuration.ResourcePath;
+
+            if(string.IsNullOrWhiteSpace(resourcePath))
+            {
+                if(resourcePath != string.Empty)
+                {
+                    resourcePath = apiConfiguration.ResourcePath;
+                }
+            }
+
+            ConnectionConfiguration connection =
+                new ConnectionConfiguration(configuration.BaseAddress, configuration.Resource, resourcePath)
+                {
+                    Timeout = apiConfiguration.Timeout,
+                    RetryAttempts = apiConfiguration.RetryCount
+                };
+
+            #region Timeout
+
+            int timeout = configuration.Timeout;
+
+            if(timeout < 0)
+            {
+                throw new ArgumentException("The Timeout value must be greater than 0");
+            }
+
+            if(timeout != default)
+            {
+                connection.Timeout = timeout;
+            }
+
+            #endregion
+            #region Retry Count
+
+            int retryCount = configuration.RetryAttempts;
+
+            if(retryCount != default)
+            {
+                Rules.ValidateRetryAttempts(retryCount);
+
+                connection.RetryAttempts = retryCount;
+            }
+
+            #endregion
+
+            ConnectionConfiguration = connection;
+        }
+
+        /// <inheritdoc cref="IApiOptionsConfigurator.SetSource"/>
+        public void SetSource([NotNull] string baseAddress, string resource = null, string resourcePath = null)
         {
             if(string.IsNullOrWhiteSpace(baseAddress))
             {
@@ -36,7 +95,7 @@ namespace SereneApi.Abstractions.Options
 
             using IDependencyProvider provider = Dependencies.BuildProvider();
 
-            IDefaultApiConfiguration configuration = provider.GetDependency<IDefaultApiConfiguration>();
+            IApiConfiguration configuration = provider.GetDependency<IApiConfiguration>();
 
             if(string.IsNullOrWhiteSpace(resourcePath))
             {
@@ -46,7 +105,7 @@ namespace SereneApi.Abstractions.Options
                 }
             }
 
-            ConnectionSettings = new ConnectionSettings(baseAddress, resource, resourcePath)
+            ConnectionConfiguration = new ConnectionConfiguration(baseAddress, resource, resourcePath)
             {
                 Timeout = configuration.Timeout,
                 RetryAttempts = configuration.RetryCount
@@ -61,12 +120,12 @@ namespace SereneApi.Abstractions.Options
                 throw new ArgumentException("A timeout value must be greater than 0.");
             }
 
-            if(ConnectionSettings == null)
+            if(ConnectionConfiguration == null)
             {
                 throw new MethodAccessException("Source information must be supplied fired.");
             }
 
-            ConnectionSettings.Timeout = seconds;
+            ConnectionConfiguration.Timeout = seconds;
         }
 
         /// <inheritdoc cref="IApiOptionsConfigurator.SetRetryAttempts(int)"/>
@@ -77,14 +136,14 @@ namespace SereneApi.Abstractions.Options
                 throw new ArgumentException("Retry attempts must be greater or equal to 0.");
             }
 
-            if(ConnectionSettings == null)
+            if(ConnectionConfiguration == null)
             {
                 throw new MethodAccessException("Source information must be supplied fired.");
             }
 
             Rules.ValidateRetryAttempts(attemptCount);
 
-            ConnectionSettings.RetryAttempts = attemptCount;
+            ConnectionConfiguration.RetryAttempts = attemptCount;
         }
 
         /// <inheritdoc cref="IApiOptionsConfigurator.UseLogger"/>
@@ -109,8 +168,8 @@ namespace SereneApi.Abstractions.Options
             Dependencies.AddScoped(() => queryFactory);
         }
 
-        /// <inheritdoc cref="IApiOptionsConfigurator.UseCredentials"/>
-        public void UseCredentials([NotNull] ICredentials credentials)
+        /// <inheritdoc cref="IApiOptionsConfigurator.AddCredentials"/>
+        public void AddCredentials([NotNull] ICredentials credentials)
         {
             if(credentials == null)
             {
@@ -167,8 +226,8 @@ namespace SereneApi.Abstractions.Options
         /// <inheritdoc cref="IApiOptionsConfigurator.SetTimeout(int,int)"/>
         public void SetTimeout([NotNull] int seconds, [NotNull] int attempts)
         {
-            ConnectionSettings.Timeout = seconds;
-            ConnectionSettings.RetryAttempts = attempts;
+            ConnectionConfiguration.Timeout = seconds;
+            ConnectionConfiguration.RetryAttempts = attempts;
         }
 
         /// <inheritdoc cref="IApiOptionsConfigurator.UseRouteFactory"/>
@@ -195,9 +254,9 @@ namespace SereneApi.Abstractions.Options
 
         public IApiOptions BuildOptions()
         {
-            Dependencies.AddScoped<IConnectionSettings>(() => ConnectionSettings);
+            Dependencies.AddScoped<IConnectionConfiguration>(() => ConnectionConfiguration);
 
-            IApiOptions apiOptions = new ApiOptions(Dependencies.BuildProvider(), ConnectionSettings);
+            IApiOptions apiOptions = new ApiOptions(Dependencies.BuildProvider(), ConnectionConfiguration);
 
             return apiOptions;
         }

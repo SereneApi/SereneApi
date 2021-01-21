@@ -21,20 +21,20 @@ namespace SereneApi
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.GetAsync"/>
-        public Task<IApiResponse<TResource>> GetAsync(TIdentifier identifier)
+        public virtual Task<IApiResponse<TResource>> GetAsync(TIdentifier identifier)
         {
             return PerformRequestAsync<TResource>(Method.GET, request => request
-                .WithEndpoint(identifier));
+                .WithParameter(identifier));
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.GetAllAsync"/>
-        public Task<IApiResponse<List<TResource>>> GetAllAsync()
+        public virtual Task<IApiResponse<List<TResource>>> GetAllAsync()
         {
             return PerformRequestAsync<List<TResource>>(Method.GET);
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.CreateAsync"/>
-        public Task<IApiResponse<TResource>> CreateAsync([NotNull] TResource resource)
+        public virtual Task<IApiResponse<TResource>> CreateAsync([NotNull] TResource resource)
         {
             if(resource == null)
             {
@@ -42,18 +42,18 @@ namespace SereneApi
             }
 
             return PerformRequestAsync<TResource>(Method.POST, request => request
-                .WithInBodyContent(resource));
+                .AddInBodyContent(resource));
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.DeleteAsync"/>
-        public Task<IApiResponse> DeleteAsync(TIdentifier identifier)
+        public virtual Task<IApiResponse> DeleteAsync(TIdentifier identifier)
         {
             return PerformRequestAsync(Method.DELETE, request => request
-                .WithEndpoint(identifier));
+                .WithParameter(identifier));
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.ReplaceAsync"/>
-        public Task<IApiResponse<TResource>> ReplaceAsync([NotNull] TResource resource)
+        public virtual Task<IApiResponse<TResource>> ReplaceAsync([NotNull] TResource resource)
         {
             if(resource == null)
             {
@@ -61,11 +61,11 @@ namespace SereneApi
             }
 
             return PerformRequestAsync<TResource>(Method.PUT, request => request
-                .WithInBodyContent(resource));
+                .AddInBodyContent(resource));
         }
 
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.UpdateAsync"/>
-        public Task<IApiResponse<TResource>> UpdateAsync([NotNull] TResource resource)
+        public virtual Task<IApiResponse<TResource>> UpdateAsync([NotNull] TResource resource)
         {
             if(resource == null)
             {
@@ -73,7 +73,7 @@ namespace SereneApi
             }
 
             return PerformRequestAsync<TResource>(Method.PATCH, request => request
-                .WithInBodyContent(resource));
+                .AddInBodyContent(resource));
         }
     }
 }
