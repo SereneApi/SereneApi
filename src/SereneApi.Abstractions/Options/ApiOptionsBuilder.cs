@@ -1,6 +1,5 @@
 ﻿using DeltaWare.Dependencies;
 using DeltaWare.Dependencies.Abstractions;
-using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Authorization;
 using SereneApi.Abstractions.Authorization.Types;
 using SereneApi.Abstractions.Configuration;
