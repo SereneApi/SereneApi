@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Events;
+using SereneApi.Abstractions.Extensions;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Request;
 using SereneApi.Abstractions.Request.Events;
 using SereneApi.Abstractions.Response;
-using SereneApi.Extensions;
+using SereneApi.Abstractions.Response.Events;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
@@ -125,7 +126,11 @@ namespace SereneApi
 
                 _logger?.LogInformation("The {httpMethod} request against {RequestRoute} completed successfully.", method.ToString(), GetRequestRoute(endpoint));
 
-                return ProcessResponse(request, responseMessage);
+                IApiResponse response = ResponseHandler.ProcessResponse(request, responseMessage);
+
+                _eventManager?.PublishAsync(new ResponseEvent(this, response)).FireAndForget();
+
+                return response;
             }
             catch(ArgumentException exception)
             {
@@ -240,7 +245,11 @@ namespace SereneApi
 
                 _logger?.LogInformation("The {httpMethod} request against {RequestRoute} completed successfully.", method.ToString(), GetRequestRoute(endpoint));
 
-                return ProcessResponse<TResponse>(request, responseMessage);
+                IApiResponse<TResponse> response = ResponseHandler.ProcessResponse<TResponse>(request, responseMessage);
+
+                _eventManager?.PublishAsync(new ResponseEvent(this, response)).FireAndForget();
+
+                return response;
             }
             catch(ArgumentException exception)
             {

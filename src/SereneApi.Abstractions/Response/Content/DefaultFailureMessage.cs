@@ -14,11 +14,6 @@ namespace SereneApi.Abstractions.Response.Content
         public string Message { get; set; }
 
         /// <summary>
-        /// Specifies further message details.
-        /// </summary>
-        public string MessageDetail { get; set; }
-
-        /// <summary>
         /// Creates a new instance of <see cref="DefaultFailureResponse"/>.
         /// </summary>
         public DefaultFailureResponse()
@@ -29,8 +24,7 @@ namespace SereneApi.Abstractions.Response.Content
         /// Creates a new instance of <see cref="DefaultFailureResponse"/>.
         /// </summary>
         /// <param name="message">The failure message.</param>
-        /// <param name="messageDetail">Further details of the message.</param>
-        public DefaultFailureResponse([NotNull] string message, string messageDetail = null)
+        public DefaultFailureResponse([NotNull] string message)
         {
             if(string.IsNullOrWhiteSpace(message))
             {
@@ -38,7 +32,6 @@ namespace SereneApi.Abstractions.Response.Content
             }
 
             Message = message;
-            MessageDetail = messageDetail;
         }
     }
 }
