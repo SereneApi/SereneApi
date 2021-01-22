@@ -3,6 +3,7 @@ using SereneApi.Abstractions.Authorization;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Request.Content;
+using SereneApi.Abstractions.Response.Handlers;
 using SereneApi.Abstractions.Routing;
 using SereneApi.Abstractions.Serialization;
 using System;
@@ -93,6 +94,16 @@ namespace SereneApi.Abstractions.Options
         /// <param name="serializer">The <see cref="ISerializer"/> to be used for serialization.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         void UseSerializer([NotNull] ISerializer serializer);
+
+        /// <summary>
+        /// Specifies an <see cref="IResponseHandler"/> to be use when processing responses.
+        /// </summary>
+        void UseResponseHandler([NotNull] IResponseHandler responseHandler);
+
+        /// <summary>
+        /// Specifies an <see cref="IFailedResponseHandler"/> to be used when processing failed responses.
+        /// </summary>
+        void UseFailedResponseHandler([NotNull] IFailedResponseHandler failedResponseHandler);
 
         /// <summary>
         /// Specifies an <see cref="IAuthorization"/> which will be used when authenticating.
