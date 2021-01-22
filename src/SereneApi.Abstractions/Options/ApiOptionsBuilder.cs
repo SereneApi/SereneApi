@@ -7,6 +7,7 @@ using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Helpers;
 using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Request.Content;
+using SereneApi.Abstractions.Response.Handlers;
 using SereneApi.Abstractions.Routing;
 using SereneApi.Abstractions.Serialization;
 using System;
@@ -180,6 +181,17 @@ namespace SereneApi.Abstractions.Options
             Dependencies.AddScoped(() => credentials);
         }
 
+        /// <inheritdoc cref="IApiOptionsConfigurator.UseFailedResponseHandler"/>
+        public void UseFailedResponseHandler(IFailedResponseHandler failedResponseHandler)
+        {
+            if(failedResponseHandler == null)
+            {
+                throw new ArgumentNullException(nameof(failedResponseHandler));
+            }
+
+            Dependencies.AddScoped(() => failedResponseHandler);
+        }
+
         /// <inheritdoc cref="IApiOptionsConfigurator.AddAuthentication"/>
         public void AddAuthentication(IAuthorization authorization)
         {
@@ -251,6 +263,17 @@ namespace SereneApi.Abstractions.Options
             }
 
             Dependencies.AddScoped(() => serializer);
+        }
+
+        /// <inheritdoc cref="IApiOptionsConfigurator.UseResponseHandler"/>
+        public void UseResponseHandler(IResponseHandler responseHandler)
+        {
+            if(responseHandler == null)
+            {
+                throw new ArgumentNullException(nameof(responseHandler));
+            }
+
+            Dependencies.AddScoped(() => responseHandler);
         }
 
         public IApiOptions BuildOptions()
