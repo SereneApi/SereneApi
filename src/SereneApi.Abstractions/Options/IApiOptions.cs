@@ -16,5 +16,10 @@ namespace SereneApi.Abstractions.Options
         /// The connect settings used when making an API request.
         /// </summary>
         IConnectionConfiguration Connection { get; }
+
+        /// <summary>
+        /// Specifies if exceptions will be thrown.
+        /// </summary>
+        bool ThrowExceptions { get; }
     }
 }

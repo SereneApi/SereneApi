@@ -17,6 +17,8 @@ namespace SereneApi.Abstractions.Options
         /// <inheritdoc cref="IApiOptions.Connection"/>
         public IConnectionConfiguration Connection { get; set; }
 
+        public bool ThrowExceptions { get; set; }
+
         #endregion
         #region Constructors
 
