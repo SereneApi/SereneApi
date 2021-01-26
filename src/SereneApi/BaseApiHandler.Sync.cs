@@ -146,6 +146,11 @@ namespace SereneApi
                     "An Exception occurred whilst performing a HTTP {httpMethod} Request to {RequestRoute}",
                     method.ToString(), GetRequestRoute(endpoint));
 
+                if(Options.ThrowExceptions)
+                {
+                    throw;
+                }
+
                 return ApiResponse.Failure(request, Status.None,
                     $"An Exception occurred whilst performing a HTTP {method} Request",
                     exception);
@@ -154,6 +159,11 @@ namespace SereneApi
             {
                 _logger?.LogWarning(exception, "The Request Timed Out; Retry limit reach");
 
+                if(Options.ThrowExceptions)
+                {
+                    throw;
+                }
+
                 return ApiResponse.Failure(request, Status.None, "The Request Timed Out; Retry limit reached", exception);
             }
             catch(Exception exception)
@@ -161,6 +171,11 @@ namespace SereneApi
                 _logger?.LogError(exception,
                     "An Exception occurred whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
                     method.ToString(), GetRequestRoute(endpoint));
+
+                if(Options.ThrowExceptions)
+                {
+                    throw;
+                }
 
                 return ApiResponse.Failure(request, Status.None,
                     $"An Exception occurred whilst performing a HTTP {method} Request",
@@ -265,6 +280,11 @@ namespace SereneApi
                     "An Exception occurred whilst performing a HTTP {httpMethod} Request to {RequestRoute}",
                     method.ToString(), GetRequestRoute(endpoint));
 
+                if(Options.ThrowExceptions)
+                {
+                    throw;
+                }
+
                 return ApiResponse<TResponse>.Failure(request, Status.None,
                     $"An Exception occurred whilst performing a HTTP {method} Request",
                     exception);
@@ -273,6 +293,11 @@ namespace SereneApi
             {
                 _logger?.LogWarning(exception, "The Request Timed Out; Retry limit reach");
 
+                if(Options.ThrowExceptions)
+                {
+                    throw;
+                }
+
                 return ApiResponse<TResponse>.Failure(request, Status.None, "The Request Timed Out; Retry limit reached", exception);
             }
             catch(Exception exception)
@@ -280,6 +305,11 @@ namespace SereneApi
                 _logger?.LogError(exception,
                     "An Exception occurred whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
                     method.ToString(), GetRequestRoute(endpoint));
+
+                if(Options.ThrowExceptions)
+                {
+                    throw;
+                }
 
                 return ApiResponse<TResponse>.Failure(request, Status.None,
                     $"An Exception occurred whilst performing a HTTP {method} Request",
