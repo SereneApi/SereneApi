@@ -13,16 +13,14 @@
     <Product>SereneApi</Product>
     <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.1.1.2</Version>
+    <Version>1.1.1.3</Version>
     <NeutralLanguage>en-AU</NeutralLanguage>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Copyright>Copyright (c) 2020 DeltaWare</Copyright>
     <PackageIcon>nuget_logo.png</PackageIcon>
     <PackageId>SereneApi</PackageId>
-    <PackageReleaseNotes>REWORKED - Response Handling, allows easier overloading and follows SOLID principles more closely.
-
-MOVED - Response Processing to abstractions. These can be overridden during registration and configuration.</PackageReleaseNotes>
+    <PackageReleaseNotes>ADDED - Exception Throwing if Options Enabled.</PackageReleaseNotes>
       <IncludeSymbols>true</IncludeSymbols>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
       <AssemblyVersion>1.1.0.5</AssemblyVersion>

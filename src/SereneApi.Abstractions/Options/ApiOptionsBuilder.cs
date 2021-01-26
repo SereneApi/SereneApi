@@ -19,6 +19,8 @@ namespace SereneApi.Abstractions.Options
     /// <inheritdoc cref="IApiOptionsConfigurator"/>
     public class ApiOptionsBuilder: IApiOptionsBuilder, IApiOptionsExtensions
     {
+        private bool _throwExceptions;
+
         /// <inheritdoc cref="ICoreOptions.Dependencies"/>
         public IDependencyCollection Dependencies { get; } = new DependencyCollection();
 
@@ -236,6 +238,11 @@ namespace SereneApi.Abstractions.Options
             Dependencies.AddScoped(() => type);
         }
 
+        public void ThrowExceptions()
+        {
+            _throwExceptions = true;
+        }
+
         /// <inheritdoc cref="IApiOptionsConfigurator.SetTimeout(int,int)"/>
         public void SetTimeout([NotNull] int seconds, [NotNull] int attempts)
         {
@@ -280,9 +287,10 @@ namespace SereneApi.Abstractions.Options
         {
             Dependencies.AddScoped<IConnectionConfiguration>(() => ConnectionConfiguration);
 
-            IApiOptions apiOptions = new ApiOptions(Dependencies.BuildProvider(), ConnectionConfiguration);
-
-            return apiOptions;
+            return new ApiOptions(Dependencies.BuildProvider(), ConnectionConfiguration)
+            {
+                ThrowExceptions = _throwExceptions
+            };
         }
 
         #region IDisposable
