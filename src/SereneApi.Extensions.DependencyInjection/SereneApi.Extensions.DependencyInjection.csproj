@@ -18,7 +18,7 @@
     <RepositoryType>GIT</RepositoryType>
     <PackageTags>REST; RESTful; DI; DependencyInjection; AspNet; Extensions</PackageTags>
     <NeutralLanguage>en-AU</NeutralLanguage>
-    <PackageReleaseNotes>ADDED - Service Lifetime Parameter to RegisterApi method. [NOTE: This is mostly untested.]</PackageReleaseNotes>
+    <PackageReleaseNotes>REMOVED - Internal Client Factory due to memory leaks and performance concerns</PackageReleaseNotes>
     <PackageId>SereneApi.Extensions.DependencyInjection</PackageId>
     <AssemblyName>DeltaWare.SereneApi.Extensions.DependencyInjection</AssemblyName>
       <IncludeSymbols>true</IncludeSymbols>

@@ -345,7 +345,7 @@ namespace SereneApi
                 {
                     IClientFactory clientFactory = Options.RetrieveRequiredDependency<IClientFactory>();
 
-                    using HttpClient client = await clientFactory.BuildClientAsync();
+                    HttpClient client = await clientFactory.BuildClientAsync();
 
                     HttpResponseMessage responseMessage = await requestAction.Invoke(client);
 

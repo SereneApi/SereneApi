@@ -342,7 +342,7 @@ namespace SereneApi
                 {
                     IClientFactory clientFactory = Options.RetrieveRequiredDependency<IClientFactory>();
 
-                    using HttpClient client = clientFactory.BuildClientAsync().Result;
+                    HttpClient client = clientFactory.BuildClientAsync().Result;
 
                     // Using Task.Result bubbles the exception up to the caller.
                     // This means the Try Catch inside of RetryRequest does not catch the TaskCanceledException.
