@@ -6,7 +6,6 @@ using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Options;
-using SereneApi.Extensions.DependencyInjection.Factories;
 using SereneApi.Extensions.DependencyInjection.Options;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -277,19 +276,7 @@ namespace SereneApi.Extensions.DependencyInjection
                     return loggerFactory?.CreateLogger<TApi>();
                 });
             }
-
-            builder.Dependencies.AddScoped<IClientFactory>(p =>
-            {
-                DefaultClientFactory<TApi> defaultClientFactory = new DefaultClientFactory<TApi>(p);
-
-                if(!defaultClientFactory.IsConfigured)
-                {
-                    defaultClientFactory.Configure();
-                }
-
-                return defaultClientFactory;
-            });
-
+            
             return builder;
         }
 
@@ -340,18 +327,6 @@ namespace SereneApi.Extensions.DependencyInjection
                     return loggerFactory?.CreateLogger<TApi>();
                 });
             }
-
-            builder.Dependencies.AddScoped<IClientFactory>(p =>
-            {
-                DefaultClientFactory<TApi> defaultClientFactory = new DefaultClientFactory<TApi>(p);
-
-                if(!defaultClientFactory.IsConfigured)
-                {
-                    defaultClientFactory.Configure();
-                }
-
-                return defaultClientFactory;
-            });
 
             return builder;
         }
