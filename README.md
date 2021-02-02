@@ -9,6 +9,20 @@ I found that creating Web Requests, then needing to Deserialize/Serialize usuall
 
 After using the repository patter for many years. I decided to try fiddling with the idea of an API consumer using a similar pattern. After implementing a basic handler I decided the idea was found and began work on SereneApi.
 
+### Documentation
+* **[SereneApi](https://github.com/SereneApi/SereneApi/tree/master/src/SereneApi#getting-started)**<br/>Covers the basics usage of SereneApi
+
+* **[SereneApi.Abstractions](https://github.com/SereneApi/SereneApi/tree/master/src/SereneApi.Abstractions#getting-started)**<br/>Covers the basics components and more advanced usage.
+
+* **[SereneApi.Extensions.DependencyInjection](https://github.com/SereneApi/SereneApi/tree/master/src/SereneApi.Extensions.DependencyInjection#getting-started)**<br/>Covers how to use SereneApi with DependencyInjection.
+
+* **[SereneApi.Extensions.Mocking](https://github.com/SereneApi/SereneApi/tree/master/src/SereneApi.Extensions.Mocking#overview)**<br/>Covers how to use the Mocking API.
+
+* **[SereneApi.Extensions.Newtonsoft](https://github.com/SereneApi/SereneApi/tree/master/src/SereneApi.Extensions.Newtonsoft#getting-started)**<br/>Covers usage of Newtonsoft.
+
+
+
+
 ## Stable Release
 |Package|Downloads|Build|NuGet|
 |-|-|-|-|
@@ -26,6 +40,3 @@ After using the repository patter for many years. I decided to try fiddling with
 |**SereneApi.Extensions.DependencyInjection**|![Azure DevOps tests](https://img.shields.io/azure-devops/tests/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/15?style=for-the-badge)|![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/15?style=for-the-badge)|
 |**SereneApi.Extensions.Mocking**|![Azure DevOps tests](https://img.shields.io/azure-devops/tests/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/16?style=for-the-badge)|![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/16?style=for-the-badge)|
 |**SereneApi.Extensions.Newtonsoft**|![Azure DevOps tests](https://img.shields.io/azure-devops/tests/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/17?style=for-the-badge)|![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/17?style=for-the-badge)|
-## Special Thanks
-
-* Nuget Icons made by <a href="https://www.flaticon.com/authors/prosymbols" title="Prosymbols">Prosymbols</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>

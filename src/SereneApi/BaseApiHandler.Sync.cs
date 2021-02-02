@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Events;
+using SereneApi.Abstractions.Extensions;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Request;
 using SereneApi.Abstractions.Request.Events;
 using SereneApi.Abstractions.Response;
-using SereneApi.Extensions;
+using SereneApi.Abstractions.Response.Events;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
@@ -125,7 +126,11 @@ namespace SereneApi
 
                 _logger?.LogInformation("The {httpMethod} request against {RequestRoute} completed successfully.", method.ToString(), GetRequestRoute(endpoint));
 
-                return ProcessResponse(request, responseMessage);
+                IApiResponse response = ResponseHandler.ProcessResponse(request, responseMessage);
+
+                _eventManager?.PublishAsync(new ResponseEvent(this, response)).FireAndForget();
+
+                return response;
             }
             catch(ArgumentException exception)
             {
@@ -141,6 +146,11 @@ namespace SereneApi
                     "An Exception occurred whilst performing a HTTP {httpMethod} Request to {RequestRoute}",
                     method.ToString(), GetRequestRoute(endpoint));
 
+                if(Options.ThrowExceptions)
+                {
+                    throw;
+                }
+
                 return ApiResponse.Failure(request, Status.None,
                     $"An Exception occurred whilst performing a HTTP {method} Request",
                     exception);
@@ -149,6 +159,11 @@ namespace SereneApi
             {
                 _logger?.LogWarning(exception, "The Request Timed Out; Retry limit reach");
 
+                if(Options.ThrowExceptions)
+                {
+                    throw;
+                }
+
                 return ApiResponse.Failure(request, Status.None, "The Request Timed Out; Retry limit reached", exception);
             }
             catch(Exception exception)
@@ -156,6 +171,11 @@ namespace SereneApi
                 _logger?.LogError(exception,
                     "An Exception occurred whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
                     method.ToString(), GetRequestRoute(endpoint));
+
+                if(Options.ThrowExceptions)
+                {
+                    throw;
+                }
 
                 return ApiResponse.Failure(request, Status.None,
                     $"An Exception occurred whilst performing a HTTP {method} Request",
@@ -240,7 +260,11 @@ namespace SereneApi
 
                 _logger?.LogInformation("The {httpMethod} request against {RequestRoute} completed successfully.", method.ToString(), GetRequestRoute(endpoint));
 
-                return ProcessResponse<TResponse>(request, responseMessage);
+                IApiResponse<TResponse> response = ResponseHandler.ProcessResponse<TResponse>(request, responseMessage);
+
+                _eventManager?.PublishAsync(new ResponseEvent(this, response)).FireAndForget();
+
+                return response;
             }
             catch(ArgumentException exception)
             {
@@ -256,6 +280,11 @@ namespace SereneApi
                     "An Exception occurred whilst performing a HTTP {httpMethod} Request to {RequestRoute}",
                     method.ToString(), GetRequestRoute(endpoint));
 
+                if(Options.ThrowExceptions)
+                {
+                    throw;
+                }
+
                 return ApiResponse<TResponse>.Failure(request, Status.None,
                     $"An Exception occurred whilst performing a HTTP {method} Request",
                     exception);
@@ -264,6 +293,11 @@ namespace SereneApi
             {
                 _logger?.LogWarning(exception, "The Request Timed Out; Retry limit reach");
 
+                if(Options.ThrowExceptions)
+                {
+                    throw;
+                }
+
                 return ApiResponse<TResponse>.Failure(request, Status.None, "The Request Timed Out; Retry limit reached", exception);
             }
             catch(Exception exception)
@@ -271,6 +305,11 @@ namespace SereneApi
                 _logger?.LogError(exception,
                     "An Exception occurred whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
                     method.ToString(), GetRequestRoute(endpoint));
+
+                if(Options.ThrowExceptions)
+                {
+                    throw;
+                }
 
                 return ApiResponse<TResponse>.Failure(request, Status.None,
                     $"An Exception occurred whilst performing a HTTP {method} Request",
@@ -303,7 +342,7 @@ namespace SereneApi
                 {
                     IClientFactory clientFactory = Options.RetrieveRequiredDependency<IClientFactory>();
 
-                    using HttpClient client = clientFactory.BuildClientAsync().Result;
+                    HttpClient client = clientFactory.BuildClientAsync().Result;
 
                     // Using Task.Result bubbles the exception up to the caller.
                     // This means the Try Catch inside of RetryRequest does not catch the TaskCanceledException.

@@ -13,21 +13,16 @@
 	  <Product>SereneApi</Product>
 	  <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <Version>1.1.1.1</Version>
+	  <Version>1.1.1.4</Version>
 	  <NeutralLanguage>en-AU</NeutralLanguage>
 	  <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 	  <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	  <Copyright>Copyright (c) 2020 DeltaWare</Copyright>
 	  <PackageIcon>nuget_logo.png</PackageIcon>
 	  <PackageId>SereneApi.Abstractions</PackageId>
-	  <PackageReleaseNotes>ADDED - IApiAdapter, to be used for current and future adapters.
-ADDED - IEventManager/IEventRelay, enabling internal event system to be used.
-ADDED - Identity to all Requests.
-ADDED - DefaultFailureResponse class, which will be used to deserialize failed requests containing messages
-ADDED - Request property to ApiResponse.
-ADDED - SerializerExtensions.
+	  <PackageReleaseNotes>ADDED - Logging to ClientFactory
 
-RENAMED - DefaultApiConfigurtion to ApiConfiguration.</PackageReleaseNotes>
+REFACTORED - ClientFactory to cache the created HttpClient</PackageReleaseNotes>
       <IncludeSymbols>true</IncludeSymbols>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>

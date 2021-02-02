@@ -2,9 +2,9 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
-namespace SereneApi.Extensions
+namespace SereneApi.Abstractions.Extensions
 {
-    internal static class TaskExtensions
+    public static class TaskExtensions
     {
         public static async void FireAndForget(this Task task, [AllowNull] Action<Exception> onException = null)
         {
