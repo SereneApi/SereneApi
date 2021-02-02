@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Configuration;
-using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Options;
 using SereneApi.Extensions.DependencyInjection.Options;
@@ -276,7 +275,7 @@ namespace SereneApi.Extensions.DependencyInjection
                     return loggerFactory?.CreateLogger<TApi>();
                 });
             }
-            
+
             return builder;
         }
 

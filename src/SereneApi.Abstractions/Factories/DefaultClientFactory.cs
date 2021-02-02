@@ -1,16 +1,16 @@
-﻿using System;
+﻿using DeltaWare.Dependencies.Abstractions;
+using Microsoft.Extensions.Logging;
+using SereneApi.Abstractions.Authorization;
+using SereneApi.Abstractions.Authorization.Authorizers;
+using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Request.Content;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using DeltaWare.Dependencies.Abstractions;
-using Microsoft.Extensions.Logging;
-using SereneApi.Abstractions.Authorization;
-using SereneApi.Abstractions.Authorization.Authorizers;
-using SereneApi.Abstractions.Configuration;
-using SereneApi.Abstractions.Request.Content;
 
 namespace SereneApi.Abstractions.Factories
 {
