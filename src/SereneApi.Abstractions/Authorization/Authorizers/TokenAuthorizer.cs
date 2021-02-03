@@ -4,7 +4,11 @@ using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Response;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
+using Microsoft.Extensions.Logging;
+using Timer = System.Timers.Timer;
 
 namespace SereneApi.Abstractions.Authorization.Authorizers
 {
@@ -15,11 +19,19 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
     /// <typeparam name="TDto">The method in which the token will be retrieved.</typeparam>
     public class TokenAuthorizer<TApi, TDto>: IAuthorizer where TApi : class, IDisposable where TDto : class
     {
-        private const int _expiryLeeway = -60;
+        private bool _tokenExpired = false;
+
+        private const int _expiryLeewaySeconds = -60;
 
         private readonly Func<TApi, Task<IApiResponse<TDto>>> _apiCall;
 
         private readonly Func<TDto, TokenAuthResult> _extractTokenFunction;
+
+        private readonly ILogger _logger;
+
+        private readonly object _authorizationLock = new object();
+
+        private readonly Timer _tokenRenew = new Timer();
 
         /// <summary>
         /// The dependencies that can be used to authorize with.
@@ -29,12 +41,14 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
         /// <summary>
         /// The time when the token expires.
         /// </summary>
-        protected DateTime TokenExpiryTime { get; private set; }
+        protected TimeSpan TokenExpiryTime { get; private set; }
 
         /// <summary> 
         /// The authorization result.
         /// </summary>
         protected BearerAuthorization Authorization { get; private set; }
+
+        protected bool WillAutoRenew { get; set; }
 
         /// <summary>
         /// Creates a new instance of <seealso cref="TokenAuthorizer{TApi,TDto}"/>.
@@ -43,12 +57,20 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
         /// <param name="apiCall">The API call to authorize with.</param>
         /// <param name="retrieveToken">The method in which the token will be retrieved.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public TokenAuthorizer([NotNull] IDependencyProvider dependencies, [NotNull] Func<TApi, Task<IApiResponse<TDto>>> apiCall, [NotNull] Func<TDto, TokenAuthResult> retrieveToken = null)
+        public TokenAuthorizer([NotNull] IDependencyProvider dependencies, [NotNull] Func<TApi, Task<IApiResponse<TDto>>> apiCall, [NotNull] Func<TDto, TokenAuthResult> retrieveToken = null, bool autoRenew = true)
         {
             Dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
+            Dependencies.TryGetDependency(out _logger);
 
             _apiCall = apiCall ?? throw new ArgumentNullException(nameof(apiCall));
             _extractTokenFunction = retrieveToken ?? throw new ArgumentNullException(nameof(retrieveToken));
+
+            WillAutoRenew = autoRenew;
+
+            // This may not be needed, but we're adding a default time so it doesn't continue to throw events.
+            // This value will changed after a token is retrieved.
+            _tokenRenew.Interval = 600;
+            _tokenRenew.Elapsed += async (s, e) => await OnTimedEventAsync(s,e);
         }
 
         /// <summary>
@@ -58,12 +80,9 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
         /// <exception cref="NullReferenceException">Thrown we no response was received.</exception>
         public virtual async Task<IAuthorization> AuthorizeAsync()
         {
-            if(Authorization != null)
-            {
-                return Authorization;
-            }
+            Authorization = await RetrieveTokenAsync();
 
-            return await RetrieveTokenAsync();
+            return Authorization;
         }
 
         /// <summary>
@@ -74,7 +93,7 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
         {
             TApi api = null;
 
-            if(Dependencies.TryGetDependency(out IApiFactory handlerFactory))
+            if(!Dependencies.TryGetDependency(out IApiFactory handlerFactory))
             {
                 api = handlerFactory.Build<TApi>();
             }
@@ -95,17 +114,30 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
         /// <exception cref="NullReferenceException">Thrown when a null token is provided.</exception>
         protected virtual async Task<BearerAuthorization> RetrieveTokenAsync(bool disposeApi = true)
         {
-            // Not sure if this is really the best way to achieve this...
-            if(Authorization != null && DateTime.Now < TokenExpiryTime)
+            Monitor.Enter(_authorizationLock);
+
+            if(Authorization != null || !_tokenExpired)
             {
+                Monitor.Exit(_authorizationLock);
+
+                _logger?.LogDebug("Using cached authorization");
+
                 return Authorization;
             }
 
-            TApi api = GetApi();
+            TApi api;
 
-            if(api == null)
+            try
             {
-                throw new ArgumentNullException(nameof(api), "Could not retrieve an API using \"GetApi\"");
+                api = GetApi();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            finally
+            {
+                Monitor.Exit(_authorizationLock);
             }
 
             IApiResponse<TDto> response = await _apiCall.Invoke(api);
@@ -117,6 +149,8 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
 
             if(!response.WasSuccessful || response.HasNullResult())
             {
+                Monitor.Exit(_authorizationLock);
+
                 if(response.HasException)
                 {
                     throw response.Exception;
@@ -129,14 +163,34 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
 
             if(token == null)
             {
+                Monitor.Exit(_authorizationLock);
+
                 throw new NullReferenceException("No token was retrieved.");
             }
 
             // Not sure if this is really the best way to achieve this...
-            TokenExpiryTime = DateTime.Now.Add(TimeSpan.FromSeconds(token.ExpiryTime + _expiryLeeway));
-            Authorization = new BearerAuthorization(token.Token);
+            TokenExpiryTime = TimeSpan.FromSeconds(token.ExpiryTime + _expiryLeewaySeconds);
 
-            return Authorization;
+            _tokenRenew.Interval = TokenExpiryTime.Milliseconds;
+            _tokenExpired = false;
+
+            Monitor.Exit(_authorizationLock);
+
+            return new BearerAuthorization(token.Token); ;
+        }
+
+        private async Task OnTimedEventAsync(object source, ElapsedEventArgs e)
+        {
+            if (WillAutoRenew)
+            {
+                _logger?.LogDebug("Auto renewing authorization token");
+
+                Authorization = await RetrieveTokenAsync();
+            }
+            else
+            {
+                _tokenExpired = true;
+            }
         }
     }
 }

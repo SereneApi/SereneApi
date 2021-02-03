@@ -17,9 +17,10 @@ namespace SereneApi
         /// <typeparam name="TDto">The DTO returned by the authentication API.</typeparam>
         /// <param name="callApi">Perform the authentication request.</param>
         /// <param name="extractToken">Extract the token information from the response.</param>
+        /// <param name="autoRenew">Specifies if the authenticator will auto-renew the token</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         /// <exception cref="InvalidCastException">Thrown when extensions does not implement <see cref="ICoreOptions"/>.</exception>
-        public static IApiOptionsExtensions AddAuthenticator<TApi, TDto>(this IApiOptionsExtensions extensions, Func<TApi, Task<IApiResponse<TDto>>> callApi, Func<TDto, TokenAuthResult> extractToken) where TApi : class, IDisposable where TDto : class
+        public static IApiOptionsExtensions AddAuthenticator<TApi, TDto>(this IApiOptionsExtensions extensions, Func<TApi, Task<IApiResponse<TDto>>> callApi, Func<TDto, TokenAuthResult> extractToken, bool autoRenew = true) where TApi : class, IDisposable where TDto : class
         {
             if(extensions == null)
             {
@@ -41,7 +42,7 @@ namespace SereneApi
                 throw new InvalidCastException($"Base type must inherit {nameof(ICoreOptions)}");
             }
 
-            options.Dependencies.AddSingleton<IAuthorizer>(p => new TokenAuthorizer<TApi, TDto>(p, callApi, extractToken));
+            options.Dependencies.AddSingleton<IAuthorizer>(p => new TokenAuthorizer<TApi, TDto>(p, callApi, extractToken, autoRenew));
 
             return extensions;
         }
