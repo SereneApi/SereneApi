@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Authors>DeltaWare</Authors>
+    <Authors>Bradley Clarke</Authors>
     <Product>SereneApi</Product>
     <Description>SereneApi is a .NET Library that introduces an intuitive way of consuming your REST APIs while combining a robust set of extensible tools. This packages enables profiling against your APIs enabling quering against your API usage statics, this could be useful for Unit Testing.</Description>
     <Copyright>Copyright (c) 2020 DeltaWare</Copyright>

@@ -1,6 +1,6 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Options;
-using SereneApi.Extensions.Mocking.Handlers;
 using SereneApi.Extensions.Mocking.Response;
 using System;
 using System.Collections.Generic;
@@ -40,7 +40,9 @@ namespace SereneApi.Extensions.Mocking
 
                 if(enableOutgoingRequests)
                 {
-                    return new MockMessageHandler(mockResponses, new HttpClientHandler());
+                    HttpMessageHandler messageHandler = p.GetDependency<IClientFactory>().BuildHttpMessageHandler();
+
+                    return new MockMessageHandler(mockResponses, messageHandler);
                 }
 
                 return new MockMessageHandler(mockResponses);

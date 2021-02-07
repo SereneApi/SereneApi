@@ -22,7 +22,7 @@ namespace SereneApi.Abstractions.Tests.Factories
 
             IApiOptions options = apiOptionsBuilder.BuildOptions();
 
-            _queryFactory = options.RetrieveRequiredDependency<IQueryFactory>();
+            _queryFactory = options.Dependencies.GetDependency<IQueryFactory>();
         }
 
         [Fact]

@@ -1,4 +1,4 @@
-﻿using SereneApi.Abstractions.Request.Content;
+﻿using SereneApi.Abstractions.Content;
 using SereneApi.Abstractions.Response;
 using SereneApi.Extensions.Mocking.Dependencies;
 using SereneApi.Extensions.Mocking.Dependencies.Whitelist;

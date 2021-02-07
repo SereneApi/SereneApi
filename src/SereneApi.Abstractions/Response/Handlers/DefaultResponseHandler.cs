@@ -14,11 +14,15 @@ namespace SereneApi.Abstractions.Response.Handlers
     {
         private readonly IDependencyProvider _dependencyProvider;
 
+        private readonly IFailedResponseHandler _failedResponseHandler;
+
         private readonly ILogger _logger;
 
         public DefaultResponseHandler(IDependencyProvider dependencyProvider)
         {
             _dependencyProvider = dependencyProvider ?? throw new ArgumentNullException(nameof(dependencyProvider));
+
+            _failedResponseHandler = _dependencyProvider.GetDependency<IFailedResponseHandler>();
 
             _dependencyProvider.TryGetDependency(out _logger);
         }
@@ -55,7 +59,7 @@ namespace SereneApi.Abstractions.Response.Handlers
             {
                 _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}", responseMessage.StatusCode, responseMessage.ReasonPhrase);
 
-                response = _dependencyProvider.GetDependency<IFailedResponseHandler>().ProcessFailedRequest(request, status, responseMessage.Content);
+                response = _failedResponseHandler.ProcessFailedRequest(request, status, responseMessage.Content);
             }
 
             return response;
@@ -88,7 +92,7 @@ namespace SereneApi.Abstractions.Response.Handlers
             {
                 _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}", responseMessage.StatusCode, responseMessage.ReasonPhrase);
 
-                response = _dependencyProvider.GetDependency<IFailedResponseHandler>().ProcessFailedRequest<TResponse>(request, status, responseMessage.Content);
+                response = _failedResponseHandler.ProcessFailedRequest<TResponse>(request, status, responseMessage.Content);
             }
             else
             {
@@ -157,7 +161,7 @@ namespace SereneApi.Abstractions.Response.Handlers
                 _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}",
                     responseMessage.StatusCode, responseMessage.ReasonPhrase);
 
-                response = await _dependencyProvider.GetDependency<IFailedResponseHandler>().ProcessFailedRequestAsync<TResponse>(request, status, responseMessage.Content);
+                response = await _failedResponseHandler.ProcessFailedRequestAsync<TResponse>(request, status, responseMessage.Content);
             }
             else
             {

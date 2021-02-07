@@ -1,6 +1,4 @@
-﻿using SereneApi.Abstractions.Response.Content;
-using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using SereneApi.Abstractions.Content;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -8,34 +6,16 @@ namespace SereneApi.Abstractions.Serialization
 {
     public static class SerializerExtensions
     {
-        public static TResponse Deserialize<TResponse>([NotNull] this ISerializer serializer, [NotNull] HttpContent content)
+        /// <inheritdoc cref="ISerializer.Deserialize{T}"/>
+        public static T Deserialize<T>(this ISerializer serializer, HttpContent content)
         {
-            if(serializer == null)
-            {
-                throw new ArgumentNullException(nameof(serializer));
-            }
-
-            if(content == null)
-            {
-                throw new ArgumentNullException(nameof(content));
-            }
-
-            return serializer.Deserialize<TResponse>(new HttpContentResponse(content));
+            return serializer.Deserialize<T>(new HttpContentResponse(content));
         }
 
-        public static Task<TResponse> DeserializeAsync<TResponse>([NotNull] this ISerializer serializer, [NotNull] HttpContent content)
+        /// <inheritdoc cref="ISerializer.DeserializeAsync{T}"/>
+        public static Task<T> DeserializeAsync<T>(this ISerializer serializer, HttpContent content)
         {
-            if(serializer == null)
-            {
-                throw new ArgumentNullException(nameof(serializer));
-            }
-
-            if(content == null)
-            {
-                throw new ArgumentNullException(nameof(content));
-            }
-
-            return serializer.DeserializeAsync<TResponse>(new HttpContentResponse(content));
+            return serializer.DeserializeAsync<T>(new HttpContentResponse(content));
         }
     }
 }

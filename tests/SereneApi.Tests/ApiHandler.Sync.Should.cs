@@ -1,7 +1,7 @@
 ﻿using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Content;
 using SereneApi.Abstractions.Request;
 using SereneApi.Abstractions.Response;
-using SereneApi.Abstractions.Response.Content;
 using SereneApi.Extensions.Mocking;
 using SereneApi.Factories;
 using SereneApi.Tests.Interfaces;
@@ -42,7 +42,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandlerWrapper.PerformRequest<MockPersonDto>(Method.GET));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandlerWrapper.PerformRequestWrapper<MockPersonDto>(Method.GET));
 
             #endregion
             #region Assert
@@ -95,7 +95,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(() => apiHandlerWrapper.PerformRequest(Method.GET));
+            IApiResponse response = Should.NotThrow(() => apiHandlerWrapper.PerformRequestWrapper(Method.GET));
 
             #endregion
             #region Assert
@@ -145,7 +145,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandlerWrapper.PerformRequest<MockPersonDto>(Method.GET));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandlerWrapper.PerformRequestWrapper<MockPersonDto>(Method.GET));
 
             #endregion
             #region Assert
@@ -202,7 +202,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(() => apiHandlerWrapper.PerformRequest(Method.GET));
+            IApiResponse response = Should.NotThrow(() => apiHandlerWrapper.PerformRequestWrapper(Method.GET));
 
             #endregion
             #region Assert
@@ -253,7 +253,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandlerWrapper.PerformRequest<MockPersonDto>(Method.GET));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandlerWrapper.PerformRequestWrapper<MockPersonDto>(Method.GET));
 
             #endregion
             #region Assert
@@ -312,7 +312,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(() => apiHandlerWrapper.PerformRequest(Method.GET));
+            IApiResponse response = Should.NotThrow(() => apiHandlerWrapper.PerformRequestWrapper(Method.GET));
 
             #endregion
             #region Assert
@@ -365,7 +365,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandlerWrapper.PerformRequest<MockPersonDto>(Method.GET));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandlerWrapper.PerformRequestWrapper<MockPersonDto>(Method.GET));
 
             #endregion
             #region Assert
@@ -420,7 +420,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(() => apiHandlerWrapper.PerformRequest(Method.GET));
+            IApiResponse response = Should.NotThrow(() => apiHandlerWrapper.PerformRequestWrapper(Method.GET));
 
             #endregion
             #region Assert
@@ -474,7 +474,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandlerWrapper.PerformRequest<MockPersonDto>(Method.GET));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandlerWrapper.PerformRequestWrapper<MockPersonDto>(Method.GET));
 
             #endregion
             #region Assert
@@ -531,7 +531,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(() => apiHandlerWrapper.PerformRequest(Method.GET));
+            IApiResponse response = Should.NotThrow(() => apiHandlerWrapper.PerformRequestWrapper(Method.GET));
 
             #endregion
             #region Assert
@@ -586,7 +586,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandlerWrapper.PerformRequest<MockPersonDto>(Method.GET));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandlerWrapper.PerformRequestWrapper<MockPersonDto>(Method.GET));
 
             #endregion
             #region Assert
@@ -641,7 +641,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(() => apiHandlerWrapper.PerformRequest(Method.GET, r => r.AgainstResource(resource)));
+            IApiResponse response = Should.NotThrow(() => apiHandlerWrapper.PerformRequestWrapper(Method.GET, r => r.AgainstResource(resource)));
 
             #endregion
             #region Assert
@@ -693,7 +693,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandlerWrapper.PerformRequest<MockPersonDto>(Method.GET, r => r.AgainstResource(resource)));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandlerWrapper.PerformRequestWrapper<MockPersonDto>(Method.GET, r => r.AgainstResource(resource)));
 
             #endregion
             #region Assert
@@ -753,7 +753,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(() => apiHandlerWrapper.PerformRequest(Method.GET, r => r.WithEndPoint(endpoint)));
+            IApiResponse response = Should.NotThrow(() => apiHandlerWrapper.PerformRequestWrapper(Method.GET, r => r.WithEndPoint(endpoint)));
 
             #endregion
             #region Assert
@@ -804,7 +804,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandlerWrapper.PerformRequest<MockPersonDto>(Method.GET, r => r.WithEndPoint(endpoint)));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(() => apiHandlerWrapper.PerformRequestWrapper<MockPersonDto>(Method.GET, r => r.WithEndPoint(endpoint)));
 
             #endregion
             #region Assert

@@ -1,5 +1,4 @@
-﻿using SereneApi.Abstractions.Request.Content;
-using SereneApi.Abstractions.Response.Content;
+﻿using SereneApi.Abstractions.Content;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;

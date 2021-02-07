@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using DeltaWare.Dependencies.Abstractions;
+using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Events;
 using SereneApi.Abstractions.Handler;
@@ -19,6 +20,8 @@ namespace SereneApi
         #region Variables
 
         private readonly ILogger _logger;
+
+        private readonly IDependencyProvider _dependencies;
 
         private readonly IEventManager _eventManager;
 
@@ -53,10 +56,12 @@ namespace SereneApi
             Connection = options.Connection;
 
             Options = options;
-            Options.RetrieveDependency(out _logger);
-            Options.RetrieveDependency(out _eventManager);
 
-            ResponseHandler = Options.RetrieveRequiredDependency<IResponseHandler>();
+            _dependencies = Options.Dependencies;
+            _dependencies.TryGetDependency(out _logger);
+            _dependencies.TryGetDependency(out _eventManager);
+
+            ResponseHandler = _dependencies.GetDependency<IResponseHandler>();
 
             _logger?.LogInformation($"{GetType()} has been instantiated");
         }
@@ -65,6 +70,11 @@ namespace SereneApi
         #region IDisposable
 
         private bool _disposed;
+
+        /// <summary>
+        /// Occurs when the component is disposed by a call to the Dispose() method
+        /// </summary>
+        public event EventHandler Disposed;
 
         /// <summary>
         /// Throws an Object Disposed Exception if the <see cref="BaseApiHandler"/> has been disposed.
@@ -101,8 +111,11 @@ namespace SereneApi
 
             if(disposing)
             {
+
                 Options.Dispose();
             }
+
+            Disposed?.Invoke(this, new EventArgs());
 
             _disposed = true;
         }

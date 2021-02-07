@@ -11,12 +11,12 @@ namespace SereneApi.Tests.Interfaces
     {
         IConnectionConfiguration Connection { get; }
 
-        IApiResponse PerformRequest(Method method, Expression<Func<IRequest, IRequestCreated>> factory = null);
+        IApiResponse PerformRequestWrapper(Method method, Expression<Func<IRequest, IRequestCreated>> factory = null);
 
-        IApiResponse<TResponse> PerformRequest<TResponse>(Method method, Expression<Func<IRequest, IRequestCreated>> factory = null);
+        IApiResponse<TResponse> PerformRequestWrapper<TResponse>(Method method, Expression<Func<IRequest, IRequestCreated>> factory = null);
 
-        Task<IApiResponse> PerformRequestAsync(Method method, Expression<Func<IRequest, IRequestCreated>> factory = null);
+        Task<IApiResponse> PerformRequestAsyncWrapper(Method method, Expression<Func<IRequest, IRequestCreated>> factory = null);
 
-        Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(Method method, Expression<Func<IRequest, IRequestCreated>> factory = null);
+        Task<IApiResponse<TResponse>> PerformRequestAsyncWrapper<TResponse>(Method method, Expression<Func<IRequest, IRequestCreated>> factory = null);
     }
 }

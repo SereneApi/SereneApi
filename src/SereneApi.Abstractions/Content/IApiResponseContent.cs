@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 
-namespace SereneApi.Abstractions.Response.Content
+namespace SereneApi.Abstractions.Content
 {
     public interface IApiResponseContent
     {

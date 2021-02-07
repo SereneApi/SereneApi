@@ -1,6 +1,6 @@
-﻿using SereneApi.Abstractions.Options;
+﻿using SereneApi.Abstractions.Content;
+using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Queries;
-using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Routing;
 using SereneApi.Abstractions.Serialization;
 using System;
@@ -53,9 +53,9 @@ namespace SereneApi.Abstractions.Request
                 throw new ArgumentNullException(nameof(options));
             }
 
-            _routeFactory = options.RetrieveRequiredDependency<IRouteFactory>();
-            _queryFactory = options.RetrieveRequiredDependency<IQueryFactory>();
-            _serializer = options.RetrieveRequiredDependency<ISerializer>();
+            _routeFactory = options.Dependencies.GetDependency<IRouteFactory>();
+            _queryFactory = options.Dependencies.GetDependency<IQueryFactory>();
+            _serializer = options.Dependencies.GetDependency<ISerializer>();
             _resource = resource;
         }
 
@@ -190,26 +190,7 @@ namespace SereneApi.Abstractions.Request
         /// <inheritdoc cref="IRequestEndPointParams.WithParameters(IList{object})"/>
         public IRequestContent WithParameters(IList<object> parameters)
         {
-            if(parameters == null)
-            {
-                throw new ArgumentNullException(nameof(parameters));
-            }
-
-            object[] parameterArray = parameters.ToArray();
-
-            if(parameterArray.Length <= 0)
-            {
-                throw new ArgumentException(nameof(parameters));
-            }
-
-            if(string.IsNullOrWhiteSpace(_endpoint))
-            {
-                throw new MethodAccessException("An EndPoint must be specified before parameters can be added.");
-            }
-
-            _endpointParameters = parameterArray;
-
-            return this;
+            return WithParameters(parameters.ToArray());
         }
 
         /// <see cref="IRequestCreated.GetRequest"/>
@@ -226,12 +207,15 @@ namespace SereneApi.Abstractions.Request
 
             if(!string.IsNullOrWhiteSpace(_endpoint))
             {
-                _routeFactory.AddEndpoint(_endpoint);
-            }
-
-            if(_endpointParameters != null)
-            {
-                _routeFactory.AddParameters(_endpointParameters);
+                if(_endpointParameters?.Length > 0)
+                {
+                    _routeFactory.AddEndpoint(_endpoint);
+                    _routeFactory.AddParameters(_endpointParameters);
+                }
+                else
+                {
+                    _routeFactory.AddParameters(_endpoint);
+                }
             }
 
             if(!string.IsNullOrWhiteSpace(_query))

@@ -1,4 +1,4 @@
-﻿using SereneApi.Abstractions.Request.Content;
+﻿using SereneApi.Abstractions.Content;
 using System;
 
 namespace SereneApi.Abstractions.Request
@@ -46,8 +46,7 @@ namespace SereneApi.Abstractions.Request
         /// <summary>
         /// An empty API request.
         /// </summary>
-        /// <remarks>Mostly used internally for Unit Testing.</remarks>
+        /// <remarks>Used internally for Unit Testing.</remarks>
         public static IApiRequest Empty { get; } = new ApiRequest();
     }
-
 }

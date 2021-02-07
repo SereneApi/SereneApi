@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
-namespace SereneApi.Abstractions.Authorization.Types
+namespace SereneApi.Abstractions.Authorization
 {
     /// <summary>
     /// Authorizes an API request using Basic authorization with the specified Username and Password.

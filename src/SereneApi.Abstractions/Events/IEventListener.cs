@@ -4,6 +4,6 @@ namespace SereneApi.Abstractions.Events
 {
     public interface IEventListener
     {
-        DateTime EventTime { get; }
+        DateTimeOffset EventTime { get; }
     }
 }

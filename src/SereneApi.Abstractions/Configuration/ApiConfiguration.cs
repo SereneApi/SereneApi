@@ -1,9 +1,9 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Abstractions.Content;
 using SereneApi.Abstractions.Events;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Queries;
-using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Response.Handlers;
 using SereneApi.Abstractions.Routing;
 using SereneApi.Abstractions.Serialization;
@@ -54,6 +54,16 @@ namespace SereneApi.Abstractions.Configuration
             _dependencyFactory += factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
+        public void AddCredentials(ICredentials credentials)
+        {
+            if(credentials == null)
+            {
+                throw new ArgumentNullException(nameof(credentials));
+            }
+
+            _dependencyFactory += d => d.AddSingleton(() => credentials);
+        }
+
         /// <inheritdoc cref="IApiConfiguration.GetOptionsBuilder"/>
         public IApiOptionsBuilder GetOptionsBuilder()
         {
@@ -97,8 +107,8 @@ namespace SereneApi.Abstractions.Configuration
                 {
                     dependencies.TryAddScoped<IQueryFactory>(() => new QueryFactory());
                     dependencies.TryAddScoped<ISerializer>(() => new DefaultJsonSerializer());
-                    dependencies.TryAddScoped<ContentType>(() => ContentType.Json);
-                    dependencies.TryAddScoped<ICredentials>(() => CredentialCache.DefaultCredentials);
+                    dependencies.TryAddScoped(() => ContentType.Json);
+                    dependencies.TryAddScoped(() => CredentialCache.DefaultCredentials);
                     dependencies.TryAddScoped<IRouteFactory>(p => new DefaultRouteFactory(p));
                     dependencies.TryAddScoped<IClientFactory>(p => new DefaultClientFactory(p));
                     dependencies.TryAddScoped<IResponseHandler>(p => new DefaultResponseHandler(p));

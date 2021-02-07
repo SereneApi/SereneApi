@@ -9,8 +9,10 @@ namespace SereneApi.Abstractions.Factories
     public interface IClientFactory
     {
         /// <summary>
-        /// Builds an <see cref="HttpClient"/> asynchronously.
+        /// Builds an <see cref="HttpClient"/>. The returned <see cref="HttpClient"/> should not be disposed.
         /// </summary>
         Task<HttpClient> BuildClientAsync();
+
+        HttpMessageHandler BuildHttpMessageHandler();
     }
 }

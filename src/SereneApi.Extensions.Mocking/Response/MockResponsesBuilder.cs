@@ -1,6 +1,6 @@
 ﻿using DeltaWare.Dependencies;
 using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Abstractions.Request.Content;
+using SereneApi.Abstractions.Content;
 using SereneApi.Abstractions.Response;
 using SereneApi.Abstractions.Serialization;
 using System;

@@ -2,12 +2,10 @@
 using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Authorization;
-using SereneApi.Abstractions.Authorization.Types;
 using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Content;
 using SereneApi.Abstractions.Helpers;
 using SereneApi.Abstractions.Queries;
-using SereneApi.Abstractions.Request.Content;
-using SereneApi.Abstractions.Response.Handlers;
 using SereneApi.Abstractions.Routing;
 using SereneApi.Abstractions.Serialization;
 using System;
@@ -19,7 +17,7 @@ namespace SereneApi.Abstractions.Options
     /// <inheritdoc cref="IApiOptionsConfigurator"/>
     public class ApiOptionsBuilder: IApiOptionsBuilder, IApiOptionsExtensions
     {
-        private bool _throwExceptions;
+        private bool _throwExceptions = false;
 
         /// <inheritdoc cref="ICoreOptions.Dependencies"/>
         public IDependencyCollection Dependencies { get; } = new DependencyCollection();
@@ -183,17 +181,6 @@ namespace SereneApi.Abstractions.Options
             Dependencies.AddScoped(() => credentials);
         }
 
-        /// <inheritdoc cref="IApiOptionsConfigurator.UseFailedResponseHandler"/>
-        public void UseFailedResponseHandler(IFailedResponseHandler failedResponseHandler)
-        {
-            if(failedResponseHandler == null)
-            {
-                throw new ArgumentNullException(nameof(failedResponseHandler));
-            }
-
-            Dependencies.AddScoped(() => failedResponseHandler);
-        }
-
         /// <inheritdoc cref="IApiOptionsConfigurator.AddAuthentication"/>
         public void AddAuthentication(IAuthorization authorization)
         {
@@ -272,25 +259,16 @@ namespace SereneApi.Abstractions.Options
             Dependencies.AddScoped(() => serializer);
         }
 
-        /// <inheritdoc cref="IApiOptionsConfigurator.UseResponseHandler"/>
-        public void UseResponseHandler(IResponseHandler responseHandler)
-        {
-            if(responseHandler == null)
-            {
-                throw new ArgumentNullException(nameof(responseHandler));
-            }
-
-            Dependencies.AddScoped(() => responseHandler);
-        }
-
         public IApiOptions BuildOptions()
         {
             Dependencies.AddScoped<IConnectionConfiguration>(() => ConnectionConfiguration);
 
-            return new ApiOptions(Dependencies.BuildProvider(), ConnectionConfiguration)
+            IApiOptions apiOptions = new ApiOptions(Dependencies.BuildProvider(), ConnectionConfiguration)
             {
                 ThrowExceptions = _throwExceptions
             };
+
+            return apiOptions;
         }
 
         #region IDisposable
