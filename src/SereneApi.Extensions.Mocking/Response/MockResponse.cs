@@ -1,8 +1,8 @@
-﻿using SereneApi.Abstractions.Content;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Abstractions.Content;
 using SereneApi.Abstractions.Response;
 using SereneApi.Extensions.Mocking.Dependencies;
 using SereneApi.Extensions.Mocking.Dependencies.Whitelist;
-using DeltaWare.Dependencies.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;

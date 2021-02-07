@@ -1,10 +1,10 @@
-﻿using SereneApi.Abstractions.Configuration;
+﻿using DeltaWare.Dependencies.Abstractions;
+using Microsoft.Extensions.Logging;
+using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Events;
 using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Response.Handlers;
-using DeltaWare.Dependencies.Abstractions;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;

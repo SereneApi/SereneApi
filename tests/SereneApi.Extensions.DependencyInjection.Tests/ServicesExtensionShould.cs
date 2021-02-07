@@ -31,7 +31,7 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
             testApi.Connection.Timeout.ShouldBe(30);
             testApi.Connection.RetryAttempts.ShouldBe(0);
 
-            testApi.Options.RetrieveDependency(out ILogger logger).ShouldBeFalse();
+            testApi.Options.Dependencies.TryGetDependency(out ILogger logger).ShouldBeFalse();
         }
 
         [Fact]
@@ -62,7 +62,7 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
             testApi.Connection.Timeout.ShouldBe(60);
             testApi.Connection.RetryAttempts.ShouldBe(2);
 
-            testApi.Options.RetrieveDependency(out ILogger logger).ShouldBeTrue();
+            testApi.Options.Dependencies.TryGetDependency(out ILogger logger).ShouldBeTrue();
 
             logger.ShouldBeOfType<Logger<ITestApi>>();
         }
@@ -97,7 +97,7 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
             testApi.Connection.Timeout.ShouldBe(30);
             testApi.Connection.RetryAttempts.ShouldBe(0);
 
-            testApi.Options.RetrieveDependency(out ILogger logger).ShouldBeTrue();
+            testApi.Options.Dependencies.TryGetDependency(out ILogger logger).ShouldBeTrue();
 
             logger.ShouldBeOfType<Logger<ITestApi>>();
         }
@@ -135,7 +135,7 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
             testApi.Connection.Timeout.ShouldBe(60);
             testApi.Connection.RetryAttempts.ShouldBe(2);
 
-            testApi.Options.RetrieveDependency(out ILogger logger).ShouldBeTrue();
+            testApi.Options.Dependencies.TryGetDependency(out ILogger logger).ShouldBeTrue();
 
             logger.ShouldBeOfType<Logger<ITestApi>>();
         }

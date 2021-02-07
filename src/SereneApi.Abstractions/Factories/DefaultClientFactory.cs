@@ -1,9 +1,9 @@
-﻿using SereneApi.Abstractions.Authorization;
+﻿using DeltaWare.Dependencies.Abstractions;
+using Microsoft.Extensions.Logging;
+using SereneApi.Abstractions.Authorization;
 using SereneApi.Abstractions.Authorization.Authorizers;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Content;
-using DeltaWare.Dependencies.Abstractions;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;

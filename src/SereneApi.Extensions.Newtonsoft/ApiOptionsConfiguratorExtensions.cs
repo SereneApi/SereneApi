@@ -1,6 +1,6 @@
-﻿using SereneApi.Abstractions.Options;
+﻿using Newtonsoft.Json;
+using SereneApi.Abstractions.Options;
 using SereneApi.Extensions.Newtonsoft.Serializers;
-using Newtonsoft.Json;
 using System;
 using System.Diagnostics.CodeAnalysis;
 

@@ -18,6 +18,10 @@ namespace SereneApi.Abstractions.Request
         /// <inheritdoc cref="IApiRequest.Content"/>
         public IApiRequestContent Content { get; }
 
+        private ApiRequest()
+        {
+        }
+
         /// <summary>
         /// Creates a new instance of a <see cref="ApiRequest"/>.
         /// </summary>
@@ -38,6 +42,11 @@ namespace SereneApi.Abstractions.Request
             Endpoint = endpoint;
             Content = content;
         }
-    }
 
+        /// <summary>
+        /// An empty API request.
+        /// </summary>
+        /// <remarks>Used internally for Unit Testing.</remarks>
+        public static IApiRequest Empty { get; } = new ApiRequest();
+    }
 }

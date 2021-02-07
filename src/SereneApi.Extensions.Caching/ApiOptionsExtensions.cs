@@ -1,7 +1,7 @@
-﻿using SereneApi.Abstractions.Options;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Abstractions.Options;
 using SereneApi.Extensions.Caching.Options;
 using SereneApi.Extensions.Caching.Types;
-using DeltaWare.Dependencies.Abstractions;
 using System;
 using System.Net.Http;
 

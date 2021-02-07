@@ -1,6 +1,6 @@
-﻿using SereneApi.Abstractions.Content;
+﻿using Newtonsoft.Json;
+using SereneApi.Abstractions.Content;
 using SereneApi.Abstractions.Serialization;
-using Newtonsoft.Json;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;

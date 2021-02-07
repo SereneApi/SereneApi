@@ -1,7 +1,7 @@
-﻿using SereneApi.Abstractions.Request;
-using SereneApi.Abstractions.Serialization;
-using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.Logging;
+using SereneApi.Abstractions.Request;
+using SereneApi.Abstractions.Serialization;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;

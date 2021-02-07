@@ -1,7 +1,7 @@
-﻿using SereneApi.Abstractions.Factories;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Options;
 using SereneApi.Extensions.Mocking.Response;
-using DeltaWare.Dependencies.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;

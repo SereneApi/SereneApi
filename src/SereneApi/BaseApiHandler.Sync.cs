@@ -1,9 +1,9 @@
-﻿using SereneApi.Abstractions.Events;
+﻿using Microsoft.Extensions.Logging;
+using SereneApi.Abstractions.Events;
 using SereneApi.Abstractions.Extensions;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Request;
 using SereneApi.Abstractions.Response;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;

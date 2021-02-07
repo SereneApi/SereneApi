@@ -1,4 +1,5 @@
-﻿using SereneApi.Abstractions.Content;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Abstractions.Content;
 using SereneApi.Abstractions.Events;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Options;
@@ -6,7 +7,6 @@ using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Response.Handlers;
 using SereneApi.Abstractions.Routing;
 using SereneApi.Abstractions.Serialization;
-using DeltaWare.Dependencies.Abstractions;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;

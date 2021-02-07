@@ -1,5 +1,5 @@
-﻿using SereneApi.Abstractions.Response;
-using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Abstractions.Response;
 using System;
 
 namespace SereneApi.Abstractions.Request

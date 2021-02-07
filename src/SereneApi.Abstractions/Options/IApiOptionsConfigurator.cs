@@ -1,10 +1,10 @@
-﻿using SereneApi.Abstractions.Authorization;
+﻿using Microsoft.Extensions.Logging;
+using SereneApi.Abstractions.Authorization;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Content;
 using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Routing;
 using SereneApi.Abstractions.Serialization;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;

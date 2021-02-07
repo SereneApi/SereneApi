@@ -1,7 +1,7 @@
-﻿using SereneApi.Abstractions.Factories;
-using SereneApi.Extensions.Caching.Types;
-using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.Logging;
+using SereneApi.Abstractions.Factories;
+using SereneApi.Extensions.Caching.Types;
 using System;
 using System.Net.Http;
 using System.Threading;

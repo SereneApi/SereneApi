@@ -1,11 +1,11 @@
-﻿using SereneApi.Abstractions.Configuration;
-using SereneApi.Abstractions.Handler;
-using SereneApi.Abstractions.Options;
-using SereneApi.Extensions.DependencyInjection.Options;
-using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Handler;
+using SereneApi.Abstractions.Options;
+using SereneApi.Extensions.DependencyInjection.Options;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;

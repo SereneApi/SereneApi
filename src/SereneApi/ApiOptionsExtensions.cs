@@ -1,7 +1,7 @@
-﻿using SereneApi.Abstractions.Authorization.Authorizers;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Abstractions.Authorization.Authorizers;
 using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Response;
-using DeltaWare.Dependencies.Abstractions;
 using System;
 using System.Threading.Tasks;
 
