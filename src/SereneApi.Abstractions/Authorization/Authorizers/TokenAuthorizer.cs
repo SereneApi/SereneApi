@@ -1,13 +1,12 @@
-﻿using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Abstractions.Authorization.Types;
-using SereneApi.Abstractions.Factories;
+﻿using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Response;
+using DeltaWare.Dependencies.Abstractions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-using Microsoft.Extensions.Logging;
 using Timer = System.Timers.Timer;
 
 namespace SereneApi.Abstractions.Authorization.Authorizers
@@ -17,7 +16,7 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
     /// </summary>
     /// <typeparam name="TApi">The API that will be used to authorize with.</typeparam>
     /// <typeparam name="TDto">The method in which the token will be retrieved.</typeparam>
-    public class TokenAuthorizer<TApi, TDto>: IAuthorizer where TApi : class, IDisposable where TDto : class
+    public class TokenAuthorizer<TApi, TDto>: IAuthorizer, IDisposable where TApi : class, IDisposable where TDto : class
     {
         private bool _tokenExpired = false;
 
@@ -69,8 +68,7 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
 
             // This may not be needed, but we're adding a default time so it doesn't continue to throw events.
             // This value will changed after a token is retrieved.
-            _tokenRenew.Interval = 600;
-            _tokenRenew.Elapsed += async (s, e) => await OnTimedEventAsync(s,e);
+            _tokenRenew.Elapsed += async (s, e) => await OnTimedEventAsync(s, e);
         }
 
         /// <summary>
@@ -131,7 +129,7 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
             {
                 api = GetApi();
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 throw e;
             }
@@ -181,16 +179,56 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
 
         private async Task OnTimedEventAsync(object source, ElapsedEventArgs e)
         {
-            if (WillAutoRenew)
+            if(WillAutoRenew)
             {
                 _logger?.LogDebug("Auto renewing authorization token");
 
                 Authorization = await RetrieveTokenAsync();
+
+                if(!_tokenRenew.Enabled)
+                {
+                    _tokenRenew.Start();
+                }
             }
             else
             {
                 _tokenExpired = true;
             }
         }
+
+        #region IDisposable
+
+        private bool _disposed;
+
+        /// <summary>
+        /// Disposes the current instance of the <see cref="TokenAuthorizer{TApi,TDto}"/>.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Override this method to implement <see cref="TokenAuthorizer{TApi,TDto}"/> disposal.
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if(_disposed)
+            {
+                return;
+            }
+
+            if(disposing)
+            {
+                _tokenRenew.Stop();
+                _tokenRenew.Dispose();
+            }
+
+            _disposed = true;
+        }
+
+        #endregion
     }
 }

@@ -1,4 +1,4 @@
-﻿using SereneApi.Abstractions.Request.Content;
+﻿using SereneApi.Abstractions.Content;
 using SereneApi.Extensions.Mocking.Dependencies.Whitelist;
 using SereneApi.Extensions.Mocking.Extensions;
 using SereneApi.Extensions.Mocking.Response;
@@ -10,7 +10,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SereneApi.Extensions.Mocking.Handlers
+namespace SereneApi.Extensions.Mocking
 {
     /// <summary>
     /// Handles processing of <see cref="IMockResponse"/>.
@@ -45,13 +45,13 @@ namespace SereneApi.Extensions.Mocking.Handlers
         /// Created a new instance of <see cref="MockMessageHandler"/>.
         /// </summary>
         /// <param name="mockResponses">The mock responses the <see cref="MockMessageHandler"/> will respond with.</param>
-        /// <param name="clientHandler">Will process outgoing requests if no <see cref="IMockResponse"/> is available.</param>
+        /// <param name="messageHandler">Will process outgoing requests if no <see cref="IMockResponse"/> is available.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         /// <exception cref="ArgumentException">Thrown when the params are empty.</exception>
         /// <remarks>When a client handler is supplied it will allow outgoing requests if no mock response is found.</remarks>
-        public MockMessageHandler(IReadOnlyList<IMockResponse> mockResponses, [NotNull] HttpClientHandler clientHandler) : this(mockResponses)
+        public MockMessageHandler(IReadOnlyList<IMockResponse> mockResponses, [NotNull] HttpMessageHandler messageHandler) : this(mockResponses)
         {
-            InnerHandler = clientHandler ?? throw new ArgumentNullException(nameof(clientHandler));
+            InnerHandler = messageHandler ?? throw new ArgumentNullException(nameof(messageHandler));
         }
 
         /// <exception cref="NullReferenceException">Thrown if there is no <see cref="IMockResponse"/> for the request and no <see cref="HttpClientHandler"/> was provided.</exception>

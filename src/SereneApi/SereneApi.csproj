@@ -2,50 +2,31 @@
 
   <PropertyGroup>
 	  <TargetFramework>netstandard2.1</TargetFramework>
-    <AssemblyName>DeltaWare.SereneApi</AssemblyName>
+    <AssemblyName>SereneApi</AssemblyName>
     <RootNamespace>SereneApi</RootNamespace>
-    <RepositoryUrl>https://github.com/DeltaWareAU/SereneApi.git</RepositoryUrl>
-    <RepositoryType>GIT</RepositoryType>
-    <PackageTags>REST; Client; Wrapper; RESTful; Consumer; Fluent; Fluent API</PackageTags>
-    <Description>Serene API is a small library intended to provide a straightforward way of consuming RESTful APIs requiring as little code &amp; setup as possible whilst providing a powerful set of tools.</Description>
-    <Authors>DeltaWare</Authors>
-    <Company>DeltaWare</Company>
+    <RepositoryUrl></RepositoryUrl>
+    <RepositoryType></RepositoryType>
+    <PackageTags></PackageTags>
+    <Description></Description>
+    <Authors>Bradley Clarke</Authors>
+    <Company>Maritime Superanuation</Company>
     <Product>SereneApi</Product>
-    <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
+    <PackageProjectUrl></PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.1.1.4</Version>
+    <Version>1.2.1.5</Version>
     <NeutralLanguage>en-AU</NeutralLanguage>
-    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Copyright>Copyright (c) 2020 DeltaWare</Copyright>
-    <PackageIcon>nuget_logo.png</PackageIcon>
+    <PackageLicenseFile></PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Copyright></Copyright>
+    <PackageIcon></PackageIcon>
     <PackageId>SereneApi</PackageId>
-    <PackageReleaseNotes>REFACTORED - HttpClient is no longer disposed by ApiHandler as its lifetime is handled by ClientFactory</PackageReleaseNotes>
+    <PackageReleaseNotes></PackageReleaseNotes>
       <IncludeSymbols>true</IncludeSymbols>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-      <AssemblyVersion>1.1.0.5</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Response\**" />
-    <EmbeddedResource Remove="Response\**" />
-    <None Remove="Response\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.5" />
 	  <PackageReference Include="System.Text.Json" Version="4.7.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\..\nuget_logo.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <None Include="..\..\LICENSE.md">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
   </ItemGroup>
 
   <ItemGroup>

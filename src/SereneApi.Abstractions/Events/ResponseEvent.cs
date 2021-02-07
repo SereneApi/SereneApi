@@ -1,12 +1,12 @@
-﻿using SereneApi.Abstractions.Events;
-using SereneApi.Abstractions.Handler;
+﻿using SereneApi.Abstractions.Handler;
+using SereneApi.Abstractions.Response;
 using System;
 
-namespace SereneApi.Abstractions.Response.Events
+namespace SereneApi.Abstractions.Events
 {
     public class ResponseEvent: IEventListener<IApiHandler, IApiResponse>
     {
-        public DateTime EventTime { get; }
+        public DateTimeOffset EventTime { get; } = DateTimeOffset.Now;
 
         public IApiHandler Reference { get; }
 
@@ -16,8 +16,6 @@ namespace SereneApi.Abstractions.Response.Events
         {
             Reference = reference;
             Value = value;
-
-            EventTime = DateTime.Now;
         }
     }
 }

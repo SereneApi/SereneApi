@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Version>1.0.1.7-beta</Version>
+    <Authors>Bradley Clarke</Authors>
+    <Company>Maritime Superanutation</Company>
+    <Product>ApiCommon</Product>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ApiCommon.Abstractions\ApiCommon.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

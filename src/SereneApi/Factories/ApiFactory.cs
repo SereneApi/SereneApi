@@ -1,8 +1,8 @@
-﻿using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Abstractions.Configuration;
+﻿using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Options;
+using DeltaWare.Dependencies.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -16,14 +16,14 @@ namespace SereneApi.Factories
 
         private readonly Dictionary<Type, IApiOptionsBuilder> _handlerOptions = new Dictionary<Type, IApiOptionsBuilder>();
 
-        private readonly IApiConfiguration _configuration;
+        private ApiConfiguration _configuration;
 
         /// <summary>
         /// Creates a new instance of <see cref="ApiFactory"/>.
         /// </summary>
         public ApiFactory()
         {
-            _configuration = ApiConfiguration.Default;
+            _configuration = (ApiConfiguration)ApiConfiguration.Default;
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace SereneApi.Factories
         /// <param name="configuration">The default configuration that will be provided to all APIs.</param>
         public ApiFactory([NotNull] IApiConfiguration configuration)
         {
-            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _configuration = (ApiConfiguration)configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
         /// <inheritdoc>
@@ -127,6 +127,52 @@ namespace SereneApi.Factories
             IApiOptionsExtensions extensions = ExtendApi<TApi>();
 
             factory.Invoke(extensions);
+        }
+
+        /// <summary>
+        /// Configures the default configuration for all APIs.
+        /// </summary>
+        /// <param name="configuration">The prevalent configuration for all APIs.</param>
+        /// <exception cref="ArgumentException">Thrown if this is called after API registration or if it is called twice.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
+        /// <remarks>These values can be overriden during API Registration.</remarks>
+        public IApiConfigurationExtensions ConfigureSereneApi([AllowNull] IApiConfiguration configuration = null)
+        {
+            if(configuration != null)
+            {
+                _configuration = (ApiConfiguration)configuration;
+            }
+
+            return _configuration.GetExtensions();
+        }
+
+        /// <summary>
+        /// Configures the default configuration for all APIs.
+        /// </summary>
+        /// <param name="factory">The prevalent configuration for all APIs.</param>
+        /// <exception cref="ArgumentException">Thrown if this is called after API registration or if it is called twice.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
+        /// <remarks>These values can be overriden during API Registration.</remarks>
+        public IApiConfigurationExtensions ConfigureSereneApi([NotNull] Action<IApiConfigurationBuilder> factory)
+        {
+            if(factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
+            factory.Invoke(_configuration);
+
+            return _configuration.GetExtensions();
+        }
+
+        public void ConfigureApiAdapters([NotNull] Action<IApiAdapter> configurator)
+        {
+            if(configurator == null)
+            {
+                throw new ArgumentNullException(nameof(configurator));
+            }
+
+            configurator.Invoke(_configuration.GetExtensions());
         }
 
         #region IDisposable

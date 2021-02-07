@@ -1,10 +1,10 @@
-﻿using DeltaWare.Dependencies.Abstractions;
+﻿using SereneApi.Abstractions.Content;
 using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Request;
-using SereneApi.Abstractions.Request.Content;
 using SereneApi.Abstractions.Serialization;
 using SereneApi.Extensions.Mocking.Dependencies;
 using SereneApi.Extensions.Mocking.Dependencies.Whitelist;
+using DeltaWare.Dependencies.Abstractions;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;

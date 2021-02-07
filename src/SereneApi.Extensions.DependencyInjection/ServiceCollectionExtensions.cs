@@ -1,11 +1,11 @@
-﻿using DeltaWare.Dependencies.Abstractions;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
-using SereneApi.Abstractions.Configuration;
+﻿using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Options;
 using SereneApi.Extensions.DependencyInjection.Options;
+using DeltaWare.Dependencies.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -142,11 +142,10 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <typeparam name="TApi">The API to be associated to a Handler.</typeparam>
         /// <typeparam name="TApiHandler">The Handler which will be configured and perform API calls.</typeparam>
         /// <param name="factory">Configures the API Handler using the provided configuration.</param>
-        /// <param name ="serviceLifetime">Configures the lifetime of the API handler.</param>
         /// <exception cref="ArgumentException">Thrown when the specified API has already been registered.</exception>
         /// <exception cref="ArgumentNullException">Thrown when a null value has been provided.</exception>
         /// <remarks>By default an <see cref="ILoggerFactory"/> is added to the API to create an <seealso cref="ILogger"/>.</remarks>
-        public static IApiOptionsExtensions RegisterApi<TApi, TApiHandler>([NotNull] this IServiceCollection services, [NotNull] Action<IApiOptionsConfigurator<TApi>> factory, ServiceLifetime serviceLifetime = ServiceLifetime.Scoped) where TApi : class where TApiHandler : class, IApiHandler, TApi
+        public static IApiOptionsExtensions RegisterApi<TApi, TApiHandler>([NotNull] this IServiceCollection services, [NotNull] Action<IApiOptionsConfigurator<TApi>> factory) where TApi : class where TApiHandler : class, IApiHandler, TApi
         {
             if(services == null)
             {
@@ -160,7 +159,7 @@ namespace SereneApi.Extensions.DependencyInjection
 
             services.TryAddSingleton(ApiConfiguration.Default);
 
-            ServiceDescriptor service = new ServiceDescriptor(typeof(TApi), typeof(TApiHandler), serviceLifetime);
+            ServiceDescriptor service = ServiceDescriptor.Scoped<TApi, TApiHandler>();
 
             if(services.Contains(service))
             {
@@ -178,7 +177,7 @@ namespace SereneApi.Extensions.DependencyInjection
             services.Add(new ServiceDescriptor(typeof(IApiOptionsConfigurator<TApi>),
                 p => CreateApiHandlerOptionsBuilder(factory, builder, services), ServiceLifetime.Singleton));
 
-            services.Add(new ServiceDescriptor(typeof(IApiOptions<TApi>), BuildApiHandlerOptions<TApi>, serviceLifetime));
+            services.Add(new ServiceDescriptor(typeof(IApiOptions<TApi>), BuildApiHandlerOptions<TApi>, ServiceLifetime.Scoped));
 
             return builder;
         }
@@ -189,13 +188,12 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <typeparam name="TApi">The API to be associated to a Handler.</typeparam>
         /// <typeparam name="TApiHandler">The Handler which will be configured and perform API calls.</typeparam>
         /// <param name="factory">Configures the API Handler using the provided configuration.</param>
-        /// <param name ="serviceLifetime">Configures the lifetime of the API handler.</param>
         /// <exception cref="ArgumentException">Thrown when the specified API has already been registered.</exception>
         /// <exception cref="ArgumentNullException">Thrown when a null value has been provided.</exception>
         /// <remarks>By default an <see cref="ILoggerFactory"/> is added to the API to create an <seealso cref="ILogger"/>.</remarks>
         public static IApiOptionsExtensions RegisterApi<TApi, TApiHandler>(
             [NotNull] this IServiceCollection services,
-            [NotNull] Action<IApiOptionsConfigurator<TApi>, IServiceProvider> factory, ServiceLifetime serviceLifetime = ServiceLifetime.Scoped)
+            [NotNull] Action<IApiOptionsConfigurator<TApi>, IServiceProvider> factory)
             where TApi : class where TApiHandler : class, IApiHandler, TApi
         {
             if(services == null)
@@ -210,7 +208,7 @@ namespace SereneApi.Extensions.DependencyInjection
 
             services.TryAddSingleton(ApiConfiguration.Default);
 
-            ServiceDescriptor service = new ServiceDescriptor(typeof(TApi), typeof(TApiHandler), serviceLifetime);
+            ServiceDescriptor service = ServiceDescriptor.Scoped<TApi, TApiHandler>();
 
             if(services.Contains(service))
             {
@@ -229,7 +227,7 @@ namespace SereneApi.Extensions.DependencyInjection
                 p => CreateApiHandlerOptionsBuilder(factory, builder, services, p), ServiceLifetime.Singleton));
 
             services.TryAdd(new ServiceDescriptor(typeof(IApiOptions<TApi>),
-                BuildApiHandlerOptions<TApi>, serviceLifetime));
+                BuildApiHandlerOptions<TApi>, ServiceLifetime.Scoped));
 
             return builder;
         }

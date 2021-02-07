@@ -1,5 +1,5 @@
-﻿using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Abstractions.Configuration;
+﻿using SereneApi.Abstractions.Configuration;
+using DeltaWare.Dependencies.Abstractions;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -10,12 +10,12 @@ namespace SereneApi.Abstractions.Options
     [DebuggerDisplay("Source: {Connection.Source}")]
     public class ApiOptions: IApiOptions
     {
-        private readonly IDependencyProvider _dependencies;
-
         #region Properties
 
         /// <inheritdoc cref="IApiOptions.Connection"/>
-        public IConnectionConfiguration Connection { get; set; }
+        public IConnectionConfiguration Connection { get; }
+
+        public IDependencyProvider Dependencies { get; }
 
         public bool ThrowExceptions { get; set; }
 
@@ -30,24 +30,11 @@ namespace SereneApi.Abstractions.Options
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         public ApiOptions([NotNull] IDependencyProvider dependencies, [NotNull] IConnectionConfiguration connection)
         {
-            _dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
+            Dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
             Connection = connection ?? throw new ArgumentNullException(nameof(connection));
         }
 
         #endregion
-
-        /// <inheritdoc cref="IApiOptions.RetrieveRequiredDependency{TDependency}"/>
-        public TDependency RetrieveRequiredDependency<TDependency>()
-        {
-            return _dependencies.GetDependency<TDependency>();
-        }
-
-        /// <inheritdoc cref="IApiOptions.RetrieveRequiredDependency{TDependency}"/>
-        public bool RetrieveDependency<TDependency>(out TDependency dependency)
-        {
-            return _dependencies.TryGetDependency(out dependency);
-        }
-
         #region IDisposable
 
         private volatile bool _disposed;
@@ -68,7 +55,7 @@ namespace SereneApi.Abstractions.Options
 
             if(disposing)
             {
-                _dependencies.Dispose();
+                Dependencies.Dispose();
             }
 
             _disposed = true;

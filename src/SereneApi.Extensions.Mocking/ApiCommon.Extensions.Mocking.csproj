@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>ApiCommon.Extensions.Mocking</AssemblyName>
+    <PackageId>ApiCommon.Extensions.Mocking</PackageId>
+    <Authors>Bradley Clarke</Authors>
+    <Company>Maritime Superanutation</Company>
+    <Product>ApiCommon</Product>
+    <Version>1.2.1.1</Version>
+    <Copyright></Copyright>
+    <PackageLicenseFile></PackageLicenseFile>
+    <PackageIcon></PackageIcon>
+    <PackageProjectUrl></PackageProjectUrl>
+    <RepositoryUrl></RepositoryUrl>
+    <RepositoryType></RepositoryType>
+    <PackageTags></PackageTags>
+    <NeutralLanguage>English (Australia)</NeutralLanguage>
+    <Description></Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+      <IncludeSymbols>true</IncludeSymbols>
+      <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ApiCommon.Abstractions\ApiCommon.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

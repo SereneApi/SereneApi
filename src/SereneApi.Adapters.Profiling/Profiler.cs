@@ -1,6 +1,4 @@
 ﻿using SereneApi.Abstractions.Events;
-using SereneApi.Abstractions.Request.Events;
-using SereneApi.Abstractions.Response.Events;
 using SereneApi.Adapters.Profiling.Request;
 using System;
 using System.Collections.Generic;

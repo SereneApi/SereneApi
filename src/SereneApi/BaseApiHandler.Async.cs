@@ -1,11 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
-using SereneApi.Abstractions.Events;
+﻿using SereneApi.Abstractions.Events;
 using SereneApi.Abstractions.Extensions;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Request;
-using SereneApi.Abstractions.Request.Events;
 using SereneApi.Abstractions.Response;
-using SereneApi.Abstractions.Response.Events;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
@@ -24,9 +22,13 @@ namespace SereneApi
         /// </summary>
         /// <param name="method">The <see cref="Method"/> that will be used for the request.</param>
         /// <param name="factory">The <see cref="IRequest"/> that will be performed.</param>
-        protected Task<IApiResponse> PerformRequestAsync(Method method, [AllowNull] Expression<Func<IRequest, IRequestCreated>> factory = null)
+        protected Task<IApiResponse> PerformRequestAsync(Method method, [AllowNull] Expression<Func<IRequest, IRequestCreated>> factory = null, Action<IRequestOptions> optionsAction = null)
         {
             CheckIfDisposed();
+
+            RequestOptions requestOptions = new RequestOptions(_dependencies);
+
+            optionsAction?.Invoke(requestOptions);
 
             RequestBuilder requestBuilder = new RequestBuilder(Options, Connection.Resource);
 
@@ -46,7 +48,7 @@ namespace SereneApi
         /// <param name="method">The <see cref="Method"/> that will be used for the request.</param>
         /// <param name="factory">The <see cref="IRequest"/> that will be performed.</param>
         /// <typeparam name="TResponse">The <see cref="Type"/> to be deserialized from the body of the response.</typeparam>
-        protected Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(Method method, [AllowNull] Expression<Func<IRequest, IRequestCreated>> factory = null)
+        protected Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(Method method, [AllowNull] Expression<Func<IRequest, IRequestCreated>> factory = null, Action<IRequestOptions> optionsAction = null)
         {
             CheckIfDisposed();
 
@@ -88,7 +90,7 @@ namespace SereneApi
                 {
                     _logger?.LogInformation("Performing a {httpMethod} request against {RequestRoute}", method.ToString(), GetRequestRoute(endpoint));
 
-                    responseMessage = await RetryRequestAsync(async client =>
+                    responseMessage = await PerformRequestWithRetryAsync(async client =>
                     {
                         return method switch
                         {
@@ -109,7 +111,7 @@ namespace SereneApi
 
                     HttpContent content = (HttpContent)request.Content.GetContent();
 
-                    responseMessage = await RetryRequestAsync(async client =>
+                    responseMessage = await PerformRequestWithRetryAsync(async client =>
                     {
                         return method switch
                         {
@@ -222,7 +224,7 @@ namespace SereneApi
                 {
                     _logger?.LogInformation("Performing a {httpMethod} request against {RequestRoute}", method.ToString(), GetRequestRoute(endpoint));
 
-                    responseMessage = await RetryRequestAsync(async client =>
+                    responseMessage = await PerformRequestWithRetryAsync(async client =>
                     {
                         return method switch
                         {
@@ -243,7 +245,7 @@ namespace SereneApi
 
                     HttpContent content = (HttpContent)request.Content.GetContent();
 
-                    responseMessage = await RetryRequestAsync(async client =>
+                    responseMessage = await PerformRequestWithRetryAsync(async client =>
                     {
                         return method switch
                         {
@@ -263,7 +265,7 @@ namespace SereneApi
 
                 _logger?.LogInformation("The {httpMethod} request against {RequestRoute} completed successfully.", method.ToString(), GetRequestRoute(endpoint));
 
-                IApiResponse<TResponse> response = await ResponseHandler.ProcessResponseAsync<TResponse>(request, responseMessage);
+                IApiResponse<TResponse> response = ResponseHandler.ProcessResponse<TResponse>(request, responseMessage);
 
                 _eventManager?.PublishAsync(new ResponseEvent(this, response)).FireAndForget();
 
@@ -334,22 +336,25 @@ namespace SereneApi
         /// </summary>
         /// <param name="requestAction">The request to be performed.</param>
         /// <param name="request">The request that will be performed.</param>
-        private async Task<HttpResponseMessage> RetryRequestAsync(Func<HttpClient, Task<HttpResponseMessage>> requestAction, IApiRequest request)
+        private async Task<HttpResponseMessage> PerformRequestWithRetryAsync(Func<HttpClient, Task<HttpResponseMessage>> requestAction, IApiRequest request)
         {
-            bool retryingRequest;
+            bool retryingRequest = false;
             int requestsAttempted = 0;
+
+
+            IClientFactory clientFactory = _dependencies.GetDependency<IClientFactory>();
+
+            HttpClient client = await clientFactory.BuildClientAsync();
 
             do
             {
                 try
                 {
-                    IClientFactory clientFactory = Options.RetrieveRequiredDependency<IClientFactory>();
-
-                    HttpClient client = await clientFactory.BuildClientAsync();
-
                     HttpResponseMessage responseMessage = await requestAction.Invoke(client);
 
-                    return responseMessage;
+                    retryingRequest = false;
+
+                    return responseMessage ?? throw new NullReferenceException(nameof(responseMessage));
                 }
                 catch(TaskCanceledException canceledException)
                 {
@@ -368,6 +373,15 @@ namespace SereneApi
                         _eventManager?.PublishAsync(new RetryEvent(this, request)).FireAndForget();
 
                         retryingRequest = true;
+                    }
+                }
+                finally
+                {
+                    if(retryingRequest == false)
+                    {
+                        _logger?.LogDebug("Disposing HttpClient");
+
+                        client.Dispose();
                     }
                 }
             } while(retryingRequest);

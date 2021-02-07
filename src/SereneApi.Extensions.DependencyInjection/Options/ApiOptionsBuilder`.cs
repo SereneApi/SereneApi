@@ -1,8 +1,8 @@
-﻿using DeltaWare.Dependencies.Abstractions;
-using Microsoft.Extensions.Configuration;
-using SereneApi.Abstractions.Configuration;
+﻿using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Helpers;
 using SereneApi.Abstractions.Options;
+using DeltaWare.Dependencies.Abstractions;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Diagnostics.CodeAnalysis;
 

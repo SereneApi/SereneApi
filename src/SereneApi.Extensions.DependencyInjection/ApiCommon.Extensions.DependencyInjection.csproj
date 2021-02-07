@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Version>1.2.1.8</Version>
+    <Authors>Bradley Clarke</Authors>
+    <Company>Maritime Superanutation</Company>
+    <Product>ApiCommon</Product>
+    <Description></Description>
+    <Copyright></Copyright>
+    <PackageLicenseFile></PackageLicenseFile>
+    <PackageProjectUrl></PackageProjectUrl>
+    <PackageIcon></PackageIcon>
+    <RepositoryUrl></RepositoryUrl>
+    <RepositoryType></RepositoryType>
+    <PackageTags></PackageTags>
+    <NeutralLanguage>en-AU</NeutralLanguage>
+    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageId>ApiCommon.Extensions.DependencyInjection</PackageId>
+    <AssemblyName>ApiCommon.Extensions.DependencyInjection</AssemblyName>
+      <IncludeSymbols>true</IncludeSymbols>
+      <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ApiCommon.Abstractions\ApiCommon.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

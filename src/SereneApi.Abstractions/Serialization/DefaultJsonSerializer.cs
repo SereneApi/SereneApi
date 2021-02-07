@@ -1,5 +1,4 @@
-﻿using SereneApi.Abstractions.Request.Content;
-using SereneApi.Abstractions.Response.Content;
+﻿using SereneApi.Abstractions.Content;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -116,7 +115,7 @@ namespace SereneApi.Abstractions.Serialization
         /// <summary>
         /// The default options used for deserialization by <seealso cref="DefaultJsonSerializer"/>.
         /// </summary>
-        public static JsonSerializerOptions DefaultDeserializerOptions = new JsonSerializerOptions
+        public static JsonSerializerOptions DefaultDeserializerOptions { get; } = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         };
@@ -124,7 +123,7 @@ namespace SereneApi.Abstractions.Serialization
         /// <summary>
         /// The default options used for serialization by <seealso cref="DefaultJsonSerializer"/>.
         /// </summary>
-        public static JsonSerializerOptions DefaultSerializerOptions = new JsonSerializerOptions
+        public static JsonSerializerOptions DefaultSerializerOptions { get; } = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         };

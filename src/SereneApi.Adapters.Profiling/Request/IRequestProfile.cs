@@ -32,11 +32,11 @@ namespace SereneApi.Adapters.Profiling.Request
         /// <summary>
         /// Specifies when the request was initialized.
         /// </summary>
-        DateTime Sent { get; }
+        DateTimeOffset Sent { get; }
 
         /// <summary>
         /// Specifies when the request was finalized.
         /// </summary>
-        DateTime Received { get; }
+        DateTimeOffset Received { get; }
     }
 }

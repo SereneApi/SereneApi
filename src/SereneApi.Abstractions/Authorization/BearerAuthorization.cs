@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace SereneApi.Abstractions.Authorization.Types
+namespace SereneApi.Abstractions.Authorization
 {
     /// <summary>
     /// Authorizes an API request using Bearer authorization.

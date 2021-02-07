@@ -1,6 +1,6 @@
-﻿using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Abstractions.Configuration;
+﻿using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Helpers;
+using DeltaWare.Dependencies.Abstractions;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;

@@ -1,8 +1,8 @@
-﻿using DeltaWare.Dependencies.Abstractions;
-using Microsoft.Extensions.DependencyInjection;
-using SereneApi.Abstractions.Authorization;
+﻿using SereneApi.Abstractions.Authorization;
 using SereneApi.Abstractions.Authorization.Authorizers;
 using SereneApi.Abstractions.Response;
+using DeltaWare.Dependencies.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;

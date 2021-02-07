@@ -6,7 +6,7 @@ namespace SereneApi.Abstractions.Events
 {
     public class RetryEvent: IEventListener<IApiHandler, Guid>
     {
-        public DateTime EventTime { get; }
+        public DateTimeOffset EventTime { get; } = DateTimeOffset.Now;
 
         public IApiHandler Reference { get; }
 
@@ -16,8 +16,6 @@ namespace SereneApi.Abstractions.Events
         {
             Reference = reference;
             Value = request.Identity;
-
-            EventTime = DateTime.Now;
         }
     }
 }

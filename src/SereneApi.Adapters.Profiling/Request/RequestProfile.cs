@@ -1,5 +1,5 @@
-﻿using SereneApi.Abstractions.Request;
-using SereneApi.Abstractions.Request.Content;
+﻿using SereneApi.Abstractions.Content;
+using SereneApi.Abstractions.Request;
 using SereneApi.Abstractions.Response;
 using System;
 using System.Diagnostics;
@@ -23,9 +23,9 @@ namespace SereneApi.Adapters.Profiling.Request
 
         public int RetryAttempts { get; set; } = 0;
 
-        public DateTime Sent { get; set; }
+        public DateTimeOffset Sent { get; set; }
 
-        public DateTime Received { get; set; }
+        public DateTimeOffset Received { get; set; }
 
         public TimeSpan RequestDuration => Received.Subtract(Sent);
 

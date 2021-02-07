@@ -1,4 +1,4 @@
-﻿using SereneApi.Abstractions.Request.Content;
+﻿using SereneApi.Abstractions.Content;
 using System;
 
 namespace SereneApi.Abstractions.Request
@@ -17,10 +17,6 @@ namespace SereneApi.Abstractions.Request
 
         /// <inheritdoc cref="IApiRequest.Content"/>
         public IApiRequestContent Content { get; }
-
-        private ApiRequest()
-        {
-        }
 
         /// <summary>
         /// Creates a new instance of a <see cref="ApiRequest"/>.
@@ -42,12 +38,6 @@ namespace SereneApi.Abstractions.Request
             Endpoint = endpoint;
             Content = content;
         }
-
-        /// <summary>
-        /// An empty API request.
-        /// </summary>
-        /// <remarks>Mostly used internally for Unit Testing.</remarks>
-        public static IApiRequest Empty { get; } = new ApiRequest();
     }
 
 }

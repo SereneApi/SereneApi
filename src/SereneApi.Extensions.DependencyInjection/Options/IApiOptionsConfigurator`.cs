@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
-using SereneApi.Abstractions.Options;
+﻿using SereneApi.Abstractions.Options;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;

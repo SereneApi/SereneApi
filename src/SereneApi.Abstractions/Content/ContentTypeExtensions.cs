@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SereneApi.Abstractions.Request.Content
+namespace SereneApi.Abstractions.Content
 {
     public static class ContentTypeExtensions
     {
