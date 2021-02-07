@@ -7,8 +7,8 @@
         <RepositoryUrl>https://github.com/DeltaWareAU/SereneApi.git</RepositoryUrl>
         <RepositoryType>GIT</RepositoryType>
         <PackageTags>REST; Client; Wrapper; RESTful; Consumer; Fluent; Fluent API</PackageTags>
-        <Description>Serene API is a small library intended to provide a straightforward way of consuming RESTful APIs requiring as little code &amp; setup as possible whilst providing a powerful set of tools.</Description>
-        <Authors>DeltaWare</Authors>
+        <Description>SereneApi is a .NET Library that introduces an intuitive way of consuming your REST APIs while combining a robust set of extensible tools.</Description>
+        <Authors>Bradley Clarke</Authors>
         <Company>DeltaWare</Company>
         <Product>SereneApi</Product>
         <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
