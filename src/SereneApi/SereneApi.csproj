@@ -1,36 +1,48 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-	  <TargetFramework>netstandard2.1</TargetFramework>
-    <AssemblyName>SereneApi</AssemblyName>
-    <RootNamespace>SereneApi</RootNamespace>
-    <RepositoryUrl></RepositoryUrl>
-    <RepositoryType></RepositoryType>
-    <PackageTags></PackageTags>
-    <Description></Description>
-    <Authors>Bradley Clarke</Authors>
-    <Company>Maritime Superanuation</Company>
-    <Product>SereneApi</Product>
-    <PackageProjectUrl></PackageProjectUrl>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.2.1.5</Version>
-    <NeutralLanguage>en-AU</NeutralLanguage>
-    <PackageLicenseFile></PackageLicenseFile>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Copyright></Copyright>
-    <PackageIcon></PackageIcon>
-    <PackageId>SereneApi</PackageId>
-    <PackageReleaseNotes></PackageReleaseNotes>
-      <IncludeSymbols>true</IncludeSymbols>
-      <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <AssemblyName>DeltaWare.SereneApi</AssemblyName>
+        <RootNamespace>SereneApi</RootNamespace>
+        <RepositoryUrl>https://github.com/DeltaWareAU/SereneApi.git</RepositoryUrl>
+        <RepositoryType>GIT</RepositoryType>
+        <PackageTags>REST; Client; Wrapper; RESTful; Consumer; Fluent; Fluent API</PackageTags>
+        <Description>Serene API is a small library intended to provide a straightforward way of consuming RESTful APIs requiring as little code &amp; setup as possible whilst providing a powerful set of tools.</Description>
+        <Authors>DeltaWare</Authors>
+        <Company>DeltaWare</Company>
+        <Product>SereneApi</Product>
+        <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Version>1.1.1.4</Version>
+        <NeutralLanguage>en-AU</NeutralLanguage>
+        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <Copyright>Copyright (c) 2020 DeltaWare</Copyright>
+        <PackageIcon>nuget_logo.png</PackageIcon>
+        <PackageId>SereneApi</PackageId>
+        <PackageReleaseNotes>REFACTORED - HttpClient is no longer disposed by ApiHandler as its lifetime is handled by ClientFactory</PackageReleaseNotes>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <AssemblyVersion>1.1.0.5</AssemblyVersion>
+    </PropertyGroup>
 
-  <ItemGroup>
-	  <PackageReference Include="System.Text.Json" Version="4.7.2" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="System.Text.Json" Version="4.7.2" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SereneApi.Abstractions\SereneApi.Abstractions.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="..\..\nuget_logo.png">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </None>
+        <None Include="..\..\LICENSE.md">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\SereneApi.Abstractions\SereneApi.Abstractions.csproj" />
+    </ItemGroup>
 
 </Project>
