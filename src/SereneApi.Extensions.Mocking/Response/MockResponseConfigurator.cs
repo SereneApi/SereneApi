@@ -1,7 +1,6 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
 using SereneApi.Abstractions.Content;
-using SereneApi.Abstractions.Options;
-using SereneApi.Abstractions.Request;
+using SereneApi.Abstractions.Requests;
 using SereneApi.Abstractions.Serialization;
 using SereneApi.Extensions.Mocking.Dependencies;
 using SereneApi.Extensions.Mocking.Dependencies.Whitelist;
@@ -11,7 +10,7 @@ using System.Linq;
 
 namespace SereneApi.Extensions.Mocking.Response
 {
-    public class MockResponseConfigurator: IMockResponseConfigurator, ICoreOptions
+    public class MockResponseConfigurator : IMockResponseConfigurator
     {
         public IDependencyCollection Dependencies { get; }
 
@@ -27,12 +26,12 @@ namespace SereneApi.Extensions.Mocking.Response
         /// <inheritdoc cref="IMockResponseUrl.RespondsToRequestsWith"/>
         public virtual IMockResponseContent RespondsToRequestsWith(params string[] uris)
         {
-            if(uris == null)
+            if (uris == null)
             {
                 throw new ArgumentNullException(nameof(uris));
             }
 
-            if(uris.Length == 0)
+            if (uris.Length == 0)
             {
                 throw new ArgumentException($"{nameof(uris)} must not be Empty.");
             }
@@ -49,7 +48,7 @@ namespace SereneApi.Extensions.Mocking.Response
         /// </inheritdoc>
         public virtual void RespondsToRequestsWith<TContent>([NotNull] TContent inBodyContent)
         {
-            if(inBodyContent == null)
+            if (inBodyContent == null)
             {
                 throw new ArgumentNullException(nameof(inBodyContent));
             }
@@ -58,7 +57,7 @@ namespace SereneApi.Extensions.Mocking.Response
             {
                 ISerializer serializer = p.GetDependency<ISerializer>();
 
-                IApiRequestContent content = serializer.Serialize(inBodyContent);
+                IRequestContent content = serializer.Serialize(inBodyContent);
 
                 return new ContentWhitelistDependency(content);
             });

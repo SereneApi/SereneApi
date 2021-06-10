@@ -3,7 +3,7 @@ using System.Timers;
 
 namespace SereneApi.Extensions.Caching.Types
 {
-    public class CachedItem<TValue>: IDisposable
+    public class CachedItem<TValue> : IDisposable
     {
         private readonly Timer _expiryTimer = new Timer();
 
@@ -46,12 +46,12 @@ namespace SereneApi.Extensions.Caching.Types
         /// </summary>
         protected virtual void Dispose(bool disposing)
         {
-            if(_disposed)
+            if (_disposed)
             {
                 return;
             }
 
-            if(disposing)
+            if (disposing)
             {
                 _expiryTimer.Dispose();
             }

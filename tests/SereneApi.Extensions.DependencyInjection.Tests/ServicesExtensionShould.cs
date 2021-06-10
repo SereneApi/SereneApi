@@ -1,7 +1,6 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SereneApi.Abstractions.Options;
 using Shouldly;
 using System;
 using Xunit;
@@ -83,7 +82,7 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
                 b.SetSource("http://localhost/", "Test");
             });
 
-            ((ICoreOptions)serviceCollection.ExtendApi<ITestApi>()).Dependencies
+            serviceCollection.ExtendApi<ITestApi>().Dependencies
                 .AddScoped<ILogger>(() => new Logger<ITestApi>(new LoggerFactory()));
 
             IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
@@ -121,7 +120,7 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
             serviceCollection.ExtendApi<ITestApi>(r =>
             {
                 // For testing purposes only, but this is how implementation should be done for extensions.
-                ((ICoreOptions)r).Dependencies.AddScoped<ILogger>(() => new Logger<ITestApi>(new LoggerFactory()));
+                r.Dependencies.AddScoped<ILogger>(() => new Logger<ITestApi>(new LoggerFactory()));
             });
 
             IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();

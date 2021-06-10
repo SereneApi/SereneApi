@@ -16,7 +16,7 @@ namespace SereneApi.Extensions.Mocking
     /// Handles processing of <see cref="IMockResponse"/>.
     /// </summary>
     /// <remarks>Override this class if you wish to extend or change its behaviour.</remarks>
-    public class MockMessageHandler: DelegatingHandler
+    public class MockMessageHandler : DelegatingHandler
     {
         private readonly IReadOnlyList<IMockResponse> _mockResponses;
 
@@ -28,12 +28,12 @@ namespace SereneApi.Extensions.Mocking
         /// <exception cref="ArgumentException">Thrown when the params are empty.</exception>
         public MockMessageHandler(IReadOnlyList<IMockResponse> mockResponses)
         {
-            if(mockResponses == null)
+            if (mockResponses == null)
             {
                 throw new ArgumentNullException(nameof(mockResponses));
             }
 
-            if(mockResponses.Count <= 0)
+            if (mockResponses.Count <= 0)
             {
                 throw new ArgumentException($"{nameof(mockResponses)} must not be empty.");
             }
@@ -57,27 +57,27 @@ namespace SereneApi.Extensions.Mocking
         /// <exception cref="NullReferenceException">Thrown if there is no <see cref="IMockResponse"/> for the request and no <see cref="HttpClientHandler"/> was provided.</exception>
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            if(request == null)
+            if (request == null)
             {
                 throw new ArgumentNullException(nameof(request));
             }
 
             Dictionary<int, IMockResponse> weightedResponses = new Dictionary<int, IMockResponse>();
 
-            foreach(IMockResponse mockResponse in _mockResponses)
+            foreach (IMockResponse mockResponse in _mockResponses)
             {
                 int responseWeight = await GetResponseWeightAsync(mockResponse, request);
 
                 // If two responses have the same weight the older response will be ignored.
-                if(responseWeight >= 0 && !weightedResponses.ContainsKey(responseWeight))
+                if (responseWeight >= 0 && !weightedResponses.ContainsKey(responseWeight))
                 {
                     weightedResponses.Add(responseWeight, mockResponse);
                 }
             }
 
-            if(weightedResponses.Count <= 0)
+            if (weightedResponses.Count <= 0)
             {
-                if(InnerHandler == null)
+                if (InnerHandler == null)
                 {
                     // No client was provided, so an error is thrown as no response was found.
                     throw new NullReferenceException($"No response was found for the {request.Method.ToMethod().ToString().ToUpper()} request to {request.RequestUri}");
@@ -103,7 +103,7 @@ namespace SereneApi.Extensions.Mocking
         /// <remarks>Override this method if you have added custom <see cref="IWhitelist"/>.</remarks>
         protected virtual async Task<int> GetResponseWeightAsync([NotNull] IMockResponse mockResponse, HttpRequestMessage request)
         {
-            if(mockResponse == null)
+            if (mockResponse == null)
             {
                 throw new ArgumentNullException(nameof(mockResponse));
             }
@@ -112,56 +112,56 @@ namespace SereneApi.Extensions.Mocking
 
             Validity validity = mockResponse.Validate(request.RequestUri);
 
-            switch(validity)
+            switch (validity)
             {
                 case Validity.NotApplicable:
-                break;
+                    break;
                 case Validity.Valid:
-                responseWeight++;
-                break;
+                    responseWeight++;
+                    break;
                 case Validity.Invalid:
-                return -1;
+                    return -1;
                 default:
-                throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException();
             }
 
             validity = mockResponse.Validate(request.Method.ToMethod());
 
-            switch(validity)
+            switch (validity)
             {
                 case Validity.NotApplicable:
-                break;
+                    break;
                 case Validity.Valid:
-                responseWeight++;
-                break;
+                    responseWeight++;
+                    break;
                 case Validity.Invalid:
-                return -1;
+                    return -1;
                 default:
-                throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException();
             }
 
-            if(request.Content == null)
+            if (request.Content == null)
             {
                 return responseWeight;
             }
 
             string content = await request.Content.ReadAsStringAsync();
 
-            IApiRequestContent requestContent = new JsonContent(content);
+            IRequestContent requestContent = new JsonContent(content);
 
             validity = mockResponse.Validate(requestContent);
 
-            switch(validity)
+            switch (validity)
             {
                 case Validity.NotApplicable:
-                break;
+                    break;
                 case Validity.Valid:
-                responseWeight++;
-                break;
+                    responseWeight++;
+                    break;
                 case Validity.Invalid:
-                return -1;
+                    return -1;
                 default:
-                throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException();
             }
 
             return responseWeight;
@@ -174,14 +174,14 @@ namespace SereneApi.Extensions.Mocking
         /// <exception cref="ArgumentNullException">Thrown if a null value is supplied.</exception>
         protected virtual async Task<HttpResponseMessage> GetResponseMessageAsync([NotNull] IMockResponse mockResponse, CancellationToken cancellationToken)
         {
-            if(mockResponse == null)
+            if (mockResponse == null)
             {
                 throw new ArgumentNullException(nameof(mockResponse));
             }
 
-            IApiRequestContent requestContent = await mockResponse.GetResponseContentAsync(cancellationToken);
+            IRequestContent requestContent = await mockResponse.GetResponseContentAsync(cancellationToken);
 
-            if(requestContent != null)
+            if (requestContent != null)
             {
                 return new HttpResponseMessage
                 {
@@ -202,16 +202,16 @@ namespace SereneApi.Extensions.Mocking
 
         protected override void Dispose(bool disposing)
         {
-            if(_disposed)
+            if (_disposed)
             {
                 return;
             }
 
             base.Dispose(disposing);
 
-            if(disposing)
+            if (disposing)
             {
-                foreach(IMockResponse mockResponse in _mockResponses)
+                foreach (IMockResponse mockResponse in _mockResponses)
                 {
                     mockResponse.Dispose();
                 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Abstractions.Queries.Attributes
 {
@@ -7,7 +6,7 @@ namespace SereneApi.Abstractions.Queries.Attributes
     /// Specifies the key to be used for the queries value.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public class QueryKeyAttribute: Attribute
+    public class QueryKeyAttribute : Attribute
     {
         /// <summary>
         /// The key to be used for the queries value.
@@ -19,9 +18,9 @@ namespace SereneApi.Abstractions.Queries.Attributes
         /// </summary>
         /// <param name="key">The key to be used for the query value.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public QueryKeyAttribute([NotNull] string key)
+        public QueryKeyAttribute(string key)
         {
-            if(string.IsNullOrWhiteSpace(key))
+            if (string.IsNullOrWhiteSpace(key))
             {
                 throw new ArgumentNullException(nameof(key));
             }

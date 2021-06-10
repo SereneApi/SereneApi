@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Extensions.Caching
 {
-    public class CachedMessageHandler: DelegatingHandler
+    public class CachedMessageHandler : DelegatingHandler
     {
         private readonly ILogger _logger;
 
@@ -27,12 +27,12 @@ namespace SereneApi.Extensions.Caching
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            if(request.Method != HttpMethod.Get)
+            if (request.Method != HttpMethod.Get)
             {
                 return await base.SendAsync(request, cancellationToken);
             }
 
-            if(_responseCache.TryGet(request.RequestUri, out ICachedResponse cachedResponse))
+            if (_responseCache.TryGet(request.RequestUri, out ICachedResponse cachedResponse))
             {
                 _logger?.LogInformation("Returning Cached content for request uri: {uri}", request.RequestUri);
 

@@ -14,7 +14,7 @@ namespace SereneApi.Extensions.DependencyInjection.Authorizers
     /// </summary>
     /// <typeparam name="TApi">The API that will be making the authorization request.</typeparam>
     /// <typeparam name="TDto">The DTO returned by the authentication API.</typeparam>
-    internal class InjectedTokenAuthorizer<TApi, TDto>: TokenAuthorizer<TApi, TDto> where TApi : class, IDisposable where TDto : class
+    internal class InjectedTokenAuthorizer<TApi, TDto> : TokenAuthorizer<TApi, TDto> where TApi : class, IDisposable where TDto : class
     {
         /// <summary>
         /// Creates a new instance of <see cref="InjectedTokenAuthorizer{TApi,TDto}"/>.
@@ -29,7 +29,7 @@ namespace SereneApi.Extensions.DependencyInjection.Authorizers
         /// <inheritdoc cref="IAuthorizer.AuthorizeAsync"/>
         public override async Task<IAuthorization> AuthorizeAsync()
         {
-            if(Authorization != null)
+            if (Authorization != null)
             {
                 return Authorization;
             }

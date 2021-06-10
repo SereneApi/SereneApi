@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace SereneApi.Abstractions.Content
 {
-    public class FormUrlEncodedContent: IApiRequestContent
+    public class FormUrlEncodedContent : IRequestContent
     {
         public List<KeyValuePair<string, string>> Content { get; }
 
@@ -20,7 +20,7 @@ namespace SereneApi.Abstractions.Content
 
         public override bool Equals(object obj)
         {
-            if(!(obj is FormUrlEncodedContent content))
+            if (!(obj is FormUrlEncodedContent content))
             {
                 return false;
             }

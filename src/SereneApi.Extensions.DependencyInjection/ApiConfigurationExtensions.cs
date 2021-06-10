@@ -20,25 +20,24 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <param name="callApi">Perform the authentication request.</param>
         /// <param name="extractToken">Extract the token information from the response.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public static IApiConfigurationExtensions AddDIAuthenticator<TApi, TDto>([NotNull] this IApiConfigurationExtensions extensions, [NotNull] Func<TApi, Task<IApiResponse<TDto>>> callApi, [NotNull] Func<TDto, TokenAuthResult> extractToken) where TApi : class, IDisposable where TDto : class
+        public static IConfigurationExtensions AddDIAuthenticator<TApi, TDto>([NotNull] this IConfigurationExtensions extensions, [NotNull] Func<TApi, Task<IApiResponse<TDto>>> callApi, [NotNull] Func<TDto, TokenAuthResult> extractToken) where TApi : class, IDisposable where TDto : class
         {
-            if(extensions == null)
+            if (extensions == null)
             {
                 throw new ArgumentNullException(nameof(extensions));
             }
 
-            if(callApi == null)
+            if (callApi == null)
             {
                 throw new ArgumentNullException(nameof(callApi));
             }
 
-            if(extractToken == null)
+            if (extractToken == null)
             {
                 throw new ArgumentNullException(nameof(extractToken));
             }
 
-            extensions.AddDependencies(d =>
-                d.AddSingleton<IAuthorizer>(p => new InjectedTokenAuthorizer<TApi, TDto>(p, callApi, extractToken)));
+            extensions.AddDependencies(d => d.AddSingleton<IAuthorizer>(p => new InjectedTokenAuthorizer<TApi, TDto>(p, callApi, extractToken)));
 
             return extensions;
         }

@@ -14,13 +14,13 @@ namespace SereneApi.Abstractions.Tests.Factories
 
         public QueryFactoryShould()
         {
-            IApiConfiguration configuration = ApiConfiguration.Default;
+            SereneApiConfiguration configuration = SereneApiConfiguration.Default;
 
-            IApiOptionsBuilder apiOptionsBuilder = configuration.GetOptionsBuilder();
+            IApiOptionsFactory factory = configuration.BuildOptionsFactory();
 
-            apiOptionsBuilder.SetSource("http://test.com");
+            factory.SetSource("http://test.com");
 
-            IApiOptions options = apiOptionsBuilder.BuildOptions();
+            IApiOptions options = factory.BuildOptions();
 
             _queryFactory = options.Dependencies.GetDependency<IQueryFactory>();
         }

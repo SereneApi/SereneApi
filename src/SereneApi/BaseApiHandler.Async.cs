@@ -1,12 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
-using SereneApi.Abstractions.Events;
-using SereneApi.Abstractions.Extensions;
+using SereneApi.Abstractions.Events.Types;
 using SereneApi.Abstractions.Factories;
-using SereneApi.Abstractions.Request;
+using SereneApi.Abstractions.Requests;
 using SereneApi.Abstractions.Response;
 using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq.Expressions;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -20,58 +17,13 @@ namespace SereneApi
         /// <summary>
         /// Performs an API Request Asynchronously.
         /// </summary>
-        /// <param name="method">The <see cref="Method"/> that will be used for the request.</param>
-        /// <param name="factory">The <see cref="IRequest"/> that will be performed.</param>
-        protected Task<IApiResponse> PerformRequestAsync(Method method, [AllowNull] Expression<Func<IRequest, IRequestCreated>> factory = null, Action<IRequestOptions> optionsAction = null)
-        {
-            CheckIfDisposed();
-
-            RequestOptions requestOptions = new RequestOptions(_dependencies);
-
-            optionsAction?.Invoke(requestOptions);
-
-            RequestBuilder requestBuilder = new RequestBuilder(Options, Connection.Resource);
-
-            requestBuilder.UsingMethod(method);
-
-            // The request is optional, so a null check is applied.
-            factory?.Compile().Invoke(requestBuilder);
-
-            IApiRequest required = requestBuilder.GetRequest();
-
-            return PerformRequestAsync(required);
-        }
-
-        /// <summary>
-        /// Performs an API Request Asynchronously.
-        /// </summary>
-        /// <param name="method">The <see cref="Method"/> that will be used for the request.</param>
-        /// <param name="factory">The <see cref="IRequest"/> that will be performed.</param>
-        /// <typeparam name="TResponse">The <see cref="Type"/> to be deserialized from the body of the response.</typeparam>
-        protected Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(Method method, [AllowNull] Expression<Func<IRequest, IRequestCreated>> factory = null, Action<IRequestOptions> optionsAction = null)
-        {
-            CheckIfDisposed();
-
-            RequestBuilder requestBuilder = new RequestBuilder(Options, Connection.Resource);
-
-            requestBuilder.UsingMethod(method);
-
-            // The request is optional, so a null check is applied.
-            factory?.Compile().Invoke(requestBuilder);
-
-            IApiRequest request = requestBuilder.GetRequest();
-
-            return PerformRequestAsync<TResponse>(request);
-        }
-
-        /// <summary>
-        /// Performs an API Request Asynchronously.
-        /// </summary>
         /// <param name="request">The request to be performed.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        protected virtual async Task<IApiResponse> PerformRequestAsync([NotNull] IApiRequest request)
+        protected internal virtual async Task<IApiResponse> PerformRequestAsync(IApiRequest request)
         {
-            if(request == null)
+            CheckIfDisposed();
+
+            if (request == null)
             {
                 throw new ArgumentNullException(nameof(request));
             }
@@ -80,13 +32,13 @@ namespace SereneApi
 
             HttpResponseMessage responseMessage = null;
 
-            Uri endpoint = request.Endpoint;
+            Uri endpoint = request.Route;
 
             Method method = request.Method;
 
             try
             {
-                if(request.Content == null)
+                if (request.Content == null)
                 {
                     _logger?.LogInformation("Performing a {httpMethod} request against {RequestRoute}", method.ToString(), GetRequestRoute(endpoint));
 
@@ -137,9 +89,9 @@ namespace SereneApi
 
                 return response;
             }
-            catch(ArgumentException exception)
+            catch (ArgumentException exception)
             {
-                if(method == Method.GET || method == Method.DELETE || method == Method.NONE)
+                if (method == Method.GET || method == Method.DELETE || method == Method.NONE)
                 {
                     _logger?.LogWarning("An invalid method [{httpMethod}] was provided.", method.ToString());
 
@@ -151,7 +103,7 @@ namespace SereneApi
                     "An Exception occurred whilst performing a HTTP {httpMethod} Request to {RequestRoute}",
                     method.ToString(), GetRequestRoute(endpoint));
 
-                if(Options.ThrowExceptions)
+                if (Options.ThrowExceptions)
                 {
                     throw;
                 }
@@ -160,24 +112,24 @@ namespace SereneApi
                     $"An Exception occurred whilst performing a HTTP {method} Request",
                     exception);
             }
-            catch(TimeoutException exception)
+            catch (TimeoutException exception)
             {
                 _logger?.LogWarning(exception, "The Request Timed Out; Retry limit reach");
 
-                if(Options.ThrowExceptions)
+                if (Options.ThrowExceptions)
                 {
                     throw;
                 }
 
                 return ApiResponse.Failure(request, Status.None, "The Request Timed Out; Retry limit reached", exception);
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 _logger?.LogError(exception,
                     "An Exception occurred whilst performing a HTTP {httpMethod} Request to {RequestRoute",
                     method.ToString(), GetRequestRoute(endpoint));
 
-                if(Options.ThrowExceptions)
+                if (Options.ThrowExceptions)
                 {
                     throw;
                 }
@@ -188,7 +140,7 @@ namespace SereneApi
             }
             finally
             {
-                if(responseMessage != null)
+                if (responseMessage != null)
                 {
                     _logger?.LogInformation("Disposing response for the HTTP {httpMethod} Request to {RequestRoute}", method.ToString(), GetRequestRoute(endpoint));
 
@@ -203,9 +155,11 @@ namespace SereneApi
         /// <typeparam name="TResponse">The <see cref="Type"/> to be deserialized from the body of the response.</typeparam>
         /// <param name="request">The request to be performed.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        protected virtual async Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>([NotNull] IApiRequest request)
+        protected internal virtual async Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(IApiRequest request)
         {
-            if(request == null)
+            CheckIfDisposed();
+
+            if (request == null)
             {
                 throw new ArgumentNullException(nameof(request));
             }
@@ -214,13 +168,13 @@ namespace SereneApi
 
             HttpResponseMessage responseMessage = null;
 
-            Uri endpoint = request.Endpoint;
+            Uri endpoint = request.Route;
 
             Method method = request.Method;
 
             try
             {
-                if(request.Content == null)
+                if (request.Content == null)
                 {
                     _logger?.LogInformation("Performing a {httpMethod} request against {RequestRoute}", method.ToString(), GetRequestRoute(endpoint));
 
@@ -271,9 +225,9 @@ namespace SereneApi
 
                 return response;
             }
-            catch(ArgumentException exception)
+            catch (ArgumentException exception)
             {
-                if(method == Method.GET || method == Method.DELETE || method == Method.NONE)
+                if (method == Method.GET || method == Method.DELETE || method == Method.NONE)
                 {
                     _logger?.LogWarning("An invalid method [{httpMethod}] was provided.", method.ToString());
 
@@ -285,7 +239,7 @@ namespace SereneApi
                     "An Exception occurred whilst performing a HTTP {httpMethod} Request to {RequestRoute}",
                     method.ToString(), GetRequestRoute(endpoint));
 
-                if(Options.ThrowExceptions)
+                if (Options.ThrowExceptions)
                 {
                     throw;
                 }
@@ -294,24 +248,24 @@ namespace SereneApi
                     $"An Exception occurred whilst performing a HTTP {method} Request",
                     exception);
             }
-            catch(TimeoutException exception)
+            catch (TimeoutException exception)
             {
                 _logger?.LogWarning(exception, "The Request Timed Out; Retry limit reach");
 
-                if(Options.ThrowExceptions)
+                if (Options.ThrowExceptions)
                 {
                     throw;
                 }
 
                 return ApiResponse<TResponse>.Failure(request, Status.None, "The Request Timed Out; Retry limit reached", exception);
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 _logger?.LogError(exception,
                     "An Exception occurred whilst performing a HTTP {httpMethod} Request to {RequestRoute}",
                     method.ToString(), GetRequestRoute(endpoint));
 
-                if(Options.ThrowExceptions)
+                if (Options.ThrowExceptions)
                 {
                     throw;
                 }
@@ -322,7 +276,7 @@ namespace SereneApi
             }
             finally
             {
-                if(responseMessage != null)
+                if (responseMessage != null)
                 {
                     _logger?.LogInformation("Disposing response for the HTTP {httpMethod} Request to {RequestRoute}", method.ToString(), GetRequestRoute(endpoint));
 
@@ -356,19 +310,19 @@ namespace SereneApi
 
                     return responseMessage ?? throw new NullReferenceException(nameof(responseMessage));
                 }
-                catch(TaskCanceledException canceledException)
+                catch (TaskCanceledException canceledException)
                 {
                     requestsAttempted++;
 
-                    if(Connection.RetryAttempts == 0 || requestsAttempted == Connection.RetryAttempts)
+                    if (Connection.RetryAttempts == 0 || requestsAttempted == Connection.RetryAttempts)
                     {
-                        _logger?.LogError(canceledException, "The Request to \"{RequestRoute}\" has Timed Out; Retry limit reached. Retired {count}", GetRequestRoute(request.Endpoint), requestsAttempted);
+                        _logger?.LogError(canceledException, "The Request to \"{RequestRoute}\" has Timed Out; Retry limit reached. Retired {count}", GetRequestRoute(request.Route), requestsAttempted);
 
                         retryingRequest = false;
                     }
                     else
                     {
-                        _logger?.LogWarning("Request to \"{RequestRoute}\" has Timed out, retrying. Attempts Remaining {count}", GetRequestRoute(request.Endpoint), Connection.RetryAttempts - requestsAttempted);
+                        _logger?.LogWarning("Request to \"{RequestRoute}\" has Timed out, retrying. Attempts Remaining {count}", GetRequestRoute(request.Route), Connection.RetryAttempts - requestsAttempted);
 
                         _eventManager?.PublishAsync(new RetryEvent(this, request)).FireAndForget();
 
@@ -377,16 +331,16 @@ namespace SereneApi
                 }
                 finally
                 {
-                    if(retryingRequest == false)
+                    if (retryingRequest == false)
                     {
                         _logger?.LogDebug("Disposing HttpClient");
 
                         client.Dispose();
                     }
                 }
-            } while(retryingRequest);
+            } while (retryingRequest);
 
-            throw new TimeoutException($"The Request to \"{GetRequestRoute(request.Endpoint)}\" has Timed Out; Retry limit reached. Retired {requestsAttempted}");
+            throw new TimeoutException($"The Request to \"{GetRequestRoute(request.Route)}\" has Timed Out; Retry limit reached. Retired {requestsAttempted}");
         }
 
         #endregion

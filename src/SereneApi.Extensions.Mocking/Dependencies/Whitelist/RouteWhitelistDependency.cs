@@ -7,7 +7,7 @@ namespace SereneApi.Extensions.Mocking.Dependencies.Whitelist
     /// <summary>
     /// Only replies to requests that contain the specified route.
     /// </summary>
-    public class RouteWhitelistDependency: IWhitelist
+    public class RouteWhitelistDependency : IWhitelist
     {
         private readonly Uri[] _routes;
 
@@ -19,12 +19,12 @@ namespace SereneApi.Extensions.Mocking.Dependencies.Whitelist
         /// <exception cref="ArgumentException">Thrown when the params are empty.</exception>
         public RouteWhitelistDependency([NotNull] params Uri[] routes)
         {
-            if(routes == null)
+            if (routes == null)
             {
                 throw new ArgumentNullException(nameof(routes));
             }
 
-            if(routes.Length <= 0)
+            if (routes.Length <= 0)
             {
                 throw new ArgumentException($"{nameof(routes)} must not be empty.");
             }
@@ -35,17 +35,17 @@ namespace SereneApi.Extensions.Mocking.Dependencies.Whitelist
         /// <inheritdoc cref="IWhitelist.Validate"/>
         public Validity Validate(object value)
         {
-            if(value == null)
+            if (value == null)
             {
                 throw new ArgumentNullException(nameof(value));
             }
 
-            if(!(value is Uri route))
+            if (!(value is Uri route))
             {
                 return Validity.NotApplicable;
             }
 
-            if(_routes.Contains(route))
+            if (_routes.Contains(route))
             {
                 return Validity.Valid;
             }

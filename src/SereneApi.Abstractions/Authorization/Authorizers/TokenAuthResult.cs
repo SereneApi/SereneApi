@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Abstractions.Authorization.Authorizers
 {
@@ -22,9 +21,9 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
         /// <param name="expiryTime">The amount of time in seconds before the token expires.</param>
         /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
         /// <remarks>An expiry time of 0 specifies that the token does not expire.</remarks>
-        public TokenAuthResult([NotNull] string token, int expiryTime = 0)
+        public TokenAuthResult(string token, int expiryTime = 0)
         {
-            if(string.IsNullOrWhiteSpace(token))
+            if (string.IsNullOrWhiteSpace(token))
             {
                 throw new ArgumentNullException(nameof(token));
             }

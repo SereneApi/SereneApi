@@ -1,5 +1,5 @@
-﻿using SereneApi.Abstractions.Request;
-using SereneApi.Abstractions.Response;
+﻿using SereneApi.Abstractions.Response;
+using SereneApi.Requests.Types;
 using Shouldly;
 using System;
 using Xunit;

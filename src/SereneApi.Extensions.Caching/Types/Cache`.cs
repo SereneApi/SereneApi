@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SereneApi.Extensions.Caching.Types
 {
-    public class Cache<TKey, TValue>: IDisposable
+    public class Cache<TKey, TValue> : IDisposable
     {
         private readonly Dictionary<TKey, CachedItem<TValue>> _cachedItems = new Dictionary<TKey, CachedItem<TValue>>();
 
@@ -19,7 +19,7 @@ namespace SereneApi.Extensions.Caching.Types
 
         public TValue Get(TKey key)
         {
-            if(_cachedItems.TryGetValue(key, out CachedItem<TValue> cachedItem))
+            if (_cachedItems.TryGetValue(key, out CachedItem<TValue> cachedItem))
             {
                 return cachedItem.Value;
             }
@@ -67,14 +67,14 @@ namespace SereneApi.Extensions.Caching.Types
         /// </summary>
         protected virtual void Dispose(bool disposing)
         {
-            if(_disposed)
+            if (_disposed)
             {
                 return;
             }
 
-            if(disposing)
+            if (disposing)
             {
-                foreach(CachedItem<TValue> cachedItem in _cachedItems.Values)
+                foreach (CachedItem<TValue> cachedItem in _cachedItems.Values)
                 {
                     cachedItem.Dispose();
                 }

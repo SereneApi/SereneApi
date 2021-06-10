@@ -1,38 +1,37 @@
-﻿using SereneApi.Abstractions.Configuration;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Options;
-using DeltaWare.Dependencies.Abstractions;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Factories
 {
     /// <inheritdoc cref="IApiFactory"/>
-    public class ApiFactory: IApiFactory
+    public class ApiFactory : IApiFactory
     {
-        private readonly Dictionary<Type, Type> _handlers = new Dictionary<Type, Type>();
+        private readonly Dictionary<Type, Type> _apiHandlers = new Dictionary<Type, Type>();
 
-        private readonly Dictionary<Type, IApiOptionsBuilder> _handlerOptions = new Dictionary<Type, IApiOptionsBuilder>();
+        private readonly Dictionary<Type, IApiOptionsFactory> _apiOptionsFactories = new Dictionary<Type, IApiOptionsFactory>();
 
-        private ApiConfiguration _configuration;
+        private ISereneApiConfiguration _configuration;
 
         /// <summary>
         /// Creates a new instance of <see cref="ApiFactory"/>.
         /// </summary>
         public ApiFactory()
         {
-            _configuration = (ApiConfiguration)ApiConfiguration.Default;
+            _configuration = SereneApiConfiguration.Default;
         }
 
         /// <summary>
         /// Creates a new instance of <see cref="ApiFactory"/>.
         /// </summary>
         /// <param name="configuration">The default configuration that will be provided to all APIs.</param>
-        public ApiFactory([NotNull] IApiConfiguration configuration)
+        public ApiFactory(ISereneApiConfiguration configuration)
         {
-            _configuration = (ApiConfiguration)configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
         /// <inheritdoc>
@@ -44,14 +43,14 @@ namespace SereneApi.Factories
 
             Type handlerType = typeof(TApi);
 
-            if(!_handlerOptions.TryGetValue(handlerType, out IApiOptionsBuilder builder))
+            if (!_apiOptionsFactories.TryGetValue(handlerType, out IApiOptionsFactory factory))
             {
                 throw new ArgumentException($"{nameof(TApi)} has not been registered.");
             }
 
-            IApiOptions apiOptions = builder.BuildOptions();
+            IApiOptions apiOptions = factory.BuildOptions();
 
-            TApi handler = (TApi)Activator.CreateInstance(_handlers[handlerType], apiOptions);
+            TApi handler = (TApi)Activator.CreateInstance(_apiHandlers[handlerType], apiOptions);
 
             return handler;
         }
@@ -61,52 +60,47 @@ namespace SereneApi.Factories
         /// </summary>
         /// <typeparam name="TApi">The API to be associated to a Handler.</typeparam>
         /// <typeparam name="TApiHandler">The Handler which will be configured and perform API calls.</typeparam>
-        /// <param name="factory">Configures the API Handler using the provided configuration.</param>
+        /// <param name="builder">Configures the API Handler using the provided configuration.</param>
         /// <exception cref="ArgumentException">Thrown when the specified API has already been registered.</exception>
         /// <exception cref="ArgumentNullException">Thrown when a null value has been provided.</exception>
-        public IApiOptionsExtensions RegisterApi<TApi, TApiHandler>([NotNull] Action<IApiOptionsConfigurator> factory) where TApiHandler : IApiHandler, TApi
+        public IApiOptionsExtensions RegisterApi<TApi, TApiHandler>(Action<IApiOptionsBuilder> builder) where TApiHandler : IApiHandler, TApi
         {
-            if(factory == null)
+            if (builder == null)
             {
-                throw new ArgumentNullException(nameof(factory));
+                throw new ArgumentNullException(nameof(builder));
             }
 
             CheckIfDisposed();
 
             Type handlerType = typeof(TApi);
 
-            if(_handlers.ContainsKey(handlerType))
+            if (_apiHandlers.ContainsKey(handlerType))
             {
                 throw new ArgumentException($"Cannot Register Multiple Instances of {nameof(TApi)}");
             }
 
-            IApiOptionsBuilder builder = _configuration.GetOptionsBuilder();
+            IApiOptionsFactory factory = _configuration.BuildOptionsFactory();
 
-            builder.Dependencies.AddSingleton<IApiFactory>(() => this, Binding.Unbound);
+            factory.Dependencies.AddSingleton<IApiFactory>(() => this, Binding.Unbound);
 
-            factory.Invoke(builder);
+            builder.Invoke(factory);
 
-            _handlers.Add(handlerType, typeof(TApiHandler));
-            _handlerOptions.Add(handlerType, builder);
+            _apiHandlers.Add(handlerType, typeof(TApiHandler));
+            _apiOptionsFactories.Add(handlerType, factory);
 
-            return (IApiOptionsExtensions)builder;
+            return factory;
         }
 
-        /// <summary>
-        /// Allows extensions to be implemented for the specified API.
-        /// </summary>
-        /// <typeparam name="TApi">The API that will be extended.</typeparam>
-        /// <exception cref="ArgumentNullException">Thrown if a null value is supplied.</exception>
-        public IApiOptionsExtensions ExtendApi<TApi>() where TApi : class
+        public IApiOptionsExtensions ExtendApi<TApi>()
         {
             CheckIfDisposed();
 
-            if(!_handlerOptions.TryGetValue(typeof(TApi), out IApiOptionsBuilder builder))
+            if (!_apiOptionsFactories.TryGetValue(typeof(TApi), out IApiOptionsFactory factory))
             {
                 throw new ArgumentException($"Could not find any registered extensions to {typeof(TApi)}");
             }
 
-            return (IApiOptionsExtensions)builder;
+            return factory;
         }
 
         /// <summary>
@@ -115,18 +109,14 @@ namespace SereneApi.Factories
         /// <typeparam name="TApi">The API that will be extended.</typeparam>
         /// <param name="factory">Configures the API extensions.</param>
         /// <exception cref="ArgumentNullException">Thrown if a null value is supplied.</exception>
-        public void ExtendApi<TApi>([NotNull] Action<IApiOptionsExtensions> factory) where TApi : class
+        public void ExtendApi<TApi>(Action<IApiOptionsExtensions> builder) where TApi : class
         {
-            if(factory == null)
+            if (builder == null)
             {
-                throw new ArgumentNullException(nameof(factory));
+                throw new ArgumentNullException(nameof(builder));
             }
 
-            CheckIfDisposed();
-
-            IApiOptionsExtensions extensions = ExtendApi<TApi>();
-
-            factory.Invoke(extensions);
+            builder.Invoke(ExtendApi<TApi>());
         }
 
         /// <summary>
@@ -136,43 +126,20 @@ namespace SereneApi.Factories
         /// <exception cref="ArgumentException">Thrown if this is called after API registration or if it is called twice.</exception>
         /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
         /// <remarks>These values can be overriden during API Registration.</remarks>
-        public IApiConfigurationExtensions ConfigureSereneApi([AllowNull] IApiConfiguration configuration = null)
+        public void ConfigureSereneApi(ISereneApiConfiguration configuration)
         {
-            if(configuration != null)
-            {
-                _configuration = (ApiConfiguration)configuration;
-            }
-
-            return _configuration.GetExtensions();
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
         /// <summary>
         /// Configures the default configuration for all APIs.
         /// </summary>
-        /// <param name="factory">The prevalent configuration for all APIs.</param>
+        /// <param name="configuration">The prevalent configuration for all APIs.</param>
         /// <exception cref="ArgumentException">Thrown if this is called after API registration or if it is called twice.</exception>
         /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
         /// <remarks>These values can be overriden during API Registration.</remarks>
-        public IApiConfigurationExtensions ConfigureSereneApi([NotNull] Action<IApiConfigurationBuilder> factory)
+        public void ConfigureSereneApi(Action<ISereneApiConfiguration> builder)
         {
-            if(factory == null)
-            {
-                throw new ArgumentNullException(nameof(factory));
-            }
-
-            factory.Invoke(_configuration);
-
-            return _configuration.GetExtensions();
-        }
-
-        public void ConfigureApiAdapters([NotNull] Action<IApiAdapter> configurator)
-        {
-            if(configurator == null)
-            {
-                throw new ArgumentNullException(nameof(configurator));
-            }
-
-            configurator.Invoke(_configuration.GetExtensions());
         }
 
         #region IDisposable
@@ -181,7 +148,7 @@ namespace SereneApi.Factories
 
         protected void CheckIfDisposed()
         {
-            if(_disposed)
+            if (_disposed)
             {
                 throw new ObjectDisposedException(nameof(GetType));
             }
@@ -196,16 +163,16 @@ namespace SereneApi.Factories
 
         protected virtual void Dispose(bool disposing)
         {
-            if(_disposed)
+            if (_disposed)
             {
                 return;
             }
 
-            if(disposing)
+            if (disposing)
             {
-                foreach(IApiOptionsBuilder builder in _handlerOptions.Values)
+                foreach (IApiOptionsFactory factory in _apiOptionsFactories.Values)
                 {
-                    builder.Dispose();
+                    factory.Dispose();
                 }
             }
 

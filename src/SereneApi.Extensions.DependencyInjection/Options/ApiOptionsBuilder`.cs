@@ -1,6 +1,7 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.Configuration;
 using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Connection;
 using SereneApi.Abstractions.Helpers;
 using SereneApi.Abstractions.Options;
 using System;
@@ -8,18 +9,18 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Extensions.DependencyInjection.Options
 {
-    /// <inheritdoc cref="IApiOptionsConfigurator{TApi}"/>
-    internal class ApiOptionsBuilder<TApi>: ApiOptionsBuilder, IApiOptionsBuilder<TApi>, IApiOptionsConfigurator<TApi> where TApi : class
+    /// <inheritdoc cref="IApiOptionsBuilder{TApi}"/>
+    internal class ApiOptionsFactory<TApi> : ApiOptionsFactory, IApiOptionsBuilder<TApi> where TApi : class
     {
-        /// <inheritdoc cref="IApiOptionsConfigurator{TApi}.AddConfiguration(Microsoft.Extensions.Configuration.IConfiguration)"/>
+        /// <inheritdoc cref="IApiOptionsBuilder{TApi}.AddConfiguration(Microsoft.Extensions.Configuration.IConfiguration)"/>
         public void AddConfiguration([NotNull] IConfiguration configuration)
         {
-            if(configuration == null)
+            if (configuration == null)
             {
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            if(Dependencies.HasDependency<IConnectionConfiguration>())
+            if (Dependencies.HasDependency<IConnectionSettings>())
             {
                 throw new MethodAccessException("This method cannot be called twice");
             }
@@ -30,17 +31,17 @@ namespace SereneApi.Extensions.DependencyInjection.Options
 
             using IDependencyProvider provider = Dependencies.BuildProvider();
 
-            IApiConfiguration apiConfiguration = provider.GetDependency<IApiConfiguration>();
+            ISereneApiConfiguration apiConfiguration = provider.GetDependency<ISereneApiConfiguration>();
 
-            if(string.IsNullOrWhiteSpace(resourcePath))
+            if (string.IsNullOrWhiteSpace(resourcePath))
             {
-                if(resourcePath != string.Empty)
+                if (resourcePath != string.Empty)
                 {
                     resourcePath = apiConfiguration.ResourcePath;
                 }
             }
 
-            ConnectionConfiguration = new ConnectionConfiguration(source, resource, resourcePath)
+            ConnectionSettings = new ConnectionSettings(source, resource, resourcePath)
             {
                 Timeout = apiConfiguration.Timeout,
                 RetryAttempts = apiConfiguration.RetryCount
@@ -48,49 +49,49 @@ namespace SereneApi.Extensions.DependencyInjection.Options
 
             #region Timeout
 
-            if(configuration.ContainsKey(ConfigurationExtensions.TimeoutKey))
+            if (configuration.ContainsKey(ConfigurationExtensions.TimeoutKey))
             {
                 int timeout = configuration.Get<int>(ConfigurationExtensions.TimeoutKey, ConfigurationExtensions.TimeoutIsRequired);
 
-                if(timeout < 0)
+                if (timeout < 0)
                 {
                     throw new ArgumentException("The Timeout value must be greater than 0");
                 }
 
-                if(timeout != default)
+                if (timeout != default)
                 {
-                    ConnectionConfiguration.Timeout = timeout;
+                    ConnectionSettings.Timeout = timeout;
                 }
             }
 
             #endregion
             #region Retry Count
 
-            if(!configuration.ContainsKey(ConfigurationExtensions.RetryCountKey))
+            if (!configuration.ContainsKey(ConfigurationExtensions.RetryCountKey))
             {
                 return;
             }
 
             int retryCount = configuration.Get<int>(ConfigurationExtensions.RetryCountKey, ConfigurationExtensions.RetryIsRequired);
 
-            if(retryCount == default)
+            if (retryCount == default)
             {
                 return;
             }
 
             Rules.ValidateRetryAttempts(retryCount);
 
-            ConnectionConfiguration.RetryAttempts = retryCount;
+            ConnectionSettings.RetryAttempts = retryCount;
 
             #endregion
         }
 
-        /// <inheritdoc cref="IApiOptionsBuilder{TApi}.BuildOptions"/>
+        /// <inheritdoc cref="IApiOptionsBuilder.BuildOptions"/>
         public new IApiOptions<TApi> BuildOptions()
         {
-            Dependencies.AddScoped<IConnectionConfiguration>(() => ConnectionConfiguration);
+            Dependencies.AddScoped<IConnectionSettings>(() => ConnectionSettings);
 
-            IApiOptions<TApi> apiOptions = new ApiOptions<TApi>(Dependencies.BuildProvider(), ConnectionConfiguration);
+            IApiOptions<TApi> apiOptions = new ApiOptions<TApi>(Dependencies.BuildProvider(), ConnectionSettings);
 
             return apiOptions;
         }

@@ -1,23 +1,28 @@
-﻿using SereneApi.Abstractions.Content;
-using SereneApi.Abstractions.Request;
+﻿using SereneApi.Abstractions;
+using SereneApi.Abstractions.Content;
+using SereneApi.Abstractions.Requests;
 using SereneApi.Abstractions.Response;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace SereneApi.Adapters.Profiling.Request
 {
     [DebuggerDisplay("{Method} | {Endpoint}")]
-    internal class RequestProfile: IRequestProfile
+    internal class RequestProfile : IRequestProfile
     {
         public Type Source { get; }
-
         public Guid Identity { get; }
-
-        public Uri Endpoint { get; }
-
+        public Uri Route { get; }
+        public string Resource { get; }
+        public IApiVersion Version { get; }
+        public string Endpoint { get; set; }
+        public string EndpointTemplate { get; set; }
+        public object[] Parameters { get; set; }
+        public Dictionary<string, string> Query { get; set; }
         public Method Method { get; }
 
-        public IApiRequestContent Content { get; }
+        public IRequestContent Content { get; }
 
         public IApiResponse Response { get; set; }
 
@@ -33,6 +38,12 @@ namespace SereneApi.Adapters.Profiling.Request
         {
             Identity = request.Identity;
             Endpoint = request.Endpoint;
+            EndpointTemplate = request.EndpointTemplate;
+            Parameters = request.Parameters;
+            Query = request.Query;
+            Route = request.Route;
+            Resource = request.Resource;
+            Version = request.Version;
             Method = request.Method;
             Content = request.Content;
 

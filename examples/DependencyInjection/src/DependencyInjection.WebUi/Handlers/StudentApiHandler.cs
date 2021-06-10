@@ -20,6 +20,11 @@ namespace DependencyInjection.WebUi.Handlers
 
         public Task<IApiResponse<StudentDto>> GetAsync(long studentId)
         {
+            Request
+                .WithMethod(Method.GET)
+                .Perform();
+
+
             // This GET request will use the students Id as a parameter for the request.
             // http://localhost:8080/api/Students/{studentId}
             return PerformRequestAsync<StudentDto>(Method.GET, r => r
