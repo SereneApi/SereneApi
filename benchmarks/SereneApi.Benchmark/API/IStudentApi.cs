@@ -6,6 +6,6 @@ namespace SereneApi.Benchmark.API
 {
     public interface IStudentApi: IDisposable
     {
-        Task<IApiResponse<StudentDto>> GetStudents();
+        Task<IApiResponse<StudentDto>> GetStudentsAsync();
     }
 }

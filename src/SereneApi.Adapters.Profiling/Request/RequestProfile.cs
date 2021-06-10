@@ -34,6 +34,8 @@ namespace SereneApi.Adapters.Profiling.Request
 
         public TimeSpan RequestDuration => Received.Subtract(Sent);
 
+        public string ResourcePath { get; set; }
+
         public RequestProfile(IApiRequest request, Type sourceApi)
         {
             Identity = request.Identity;
@@ -43,6 +45,7 @@ namespace SereneApi.Adapters.Profiling.Request
             Query = request.Query;
             Route = request.Route;
             Resource = request.Resource;
+            ResourcePath = request.ResourcePath;
             Version = request.Version;
             Method = request.Method;
             Content = request.Content;
