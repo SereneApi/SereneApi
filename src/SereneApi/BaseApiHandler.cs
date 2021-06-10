@@ -127,6 +127,6 @@ namespace SereneApi
             return $"{Options.Connection.BaseAddress}{endpoint}";
         }
 
-        public IApiRequestBuilder BuildRequest => new RequestBuilder(this);
+        public IApiRequestBuilder MakeRequest => new RequestBuilder(this);
     }
 }

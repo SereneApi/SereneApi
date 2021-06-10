@@ -13,7 +13,7 @@ namespace SereneApi.Benchmark.AspNet.API
 
         public Task<IApiResponse<StudentDto>> GetStudents()
         {
-            return BuildRequest
+            return MakeRequest
                 .UsingMethod(Method.GET)
                 .RespondsWithContent<StudentDto>()
                 .ExecuteAsync();

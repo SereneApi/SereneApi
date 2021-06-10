@@ -1,13 +1,13 @@
 ﻿using DependencyInjection.API;
 using SereneApi;
 using SereneApi.Abstractions.Options;
-using SereneApi.Abstractions.Request;
+using SereneApi.Abstractions.Requests;
 using SereneApi.Abstractions.Response;
 using System.Threading.Tasks;
 
 namespace DependencyInjection.WebUi.Handlers
 {
-    public class ValuesApiHandler: BaseApiHandler, IValuesApi
+    public class ValuesApiHandler : BaseApiHandler, IValuesApi
     {
         public ValuesApiHandler(IApiOptions<IValuesApi> options) : base(options)
         {
@@ -15,14 +15,22 @@ namespace DependencyInjection.WebUi.Handlers
 
         public Task<IApiResponse<int>> GetAsync(int value)
         {
-            return PerformRequestAsync<int>(Method.GET,
-                r => r.WithEndPoint("int/{0}").WithParameters(value));
+            return MakeRequest
+                .UsingMethod(Method.GET)
+                .WithEndpoint("int/{0}")
+                .WithParameter(value)
+                .RespondsWithContent<int>()
+                .ExecuteAsync();
         }
 
-        public IApiResponse<string> GetAsync(string value)
+        public IApiResponse<string> Get(string value)
         {
-            return PerformRequest<string>(Method.GET,
-                r => r.WithEndPoint("string/{0}").WithParameters(value));
+            return MakeRequest
+                .UsingMethod(Method.GET)
+                .WithEndpoint("string/{0}")
+                .WithParameter(value)
+                .RespondsWithContent<string>()
+                .Execute();
         }
     }
 }

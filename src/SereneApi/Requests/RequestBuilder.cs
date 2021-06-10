@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Requests
 {
-    internal class RequestBuilder : IApiRequestBuilder
+    internal class RequestBuilder : IApiRequestBuilder, IApiRequestResource
     {
         private readonly BaseApiHandler _apiHandler;
 
@@ -38,9 +38,14 @@ namespace SereneApi.Requests
 
         public IApiRequestVersion AgainstResource(string resource)
         {
-            if (string.IsNullOrWhiteSpace(resource))
+            if (resource == null)
             {
                 throw new ArgumentNullException(nameof(resource));
+            }
+
+            if (string.IsNullOrWhiteSpace(resource))
+            {
+                throw new ArgumentException(nameof(resource));
             }
 
             _apiRequest.Resource = resource;

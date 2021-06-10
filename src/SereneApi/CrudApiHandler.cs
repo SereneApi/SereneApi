@@ -22,7 +22,7 @@ namespace SereneApi
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.GetAsync"/>
         public virtual Task<IApiResponse<TResource>> GetAsync(TIdentifier identifier)
         {
-            return BuildRequest
+            return MakeRequest
                 .UsingMethod(Method.GET)
                 .WithParameter(identifier)
                 .RespondsWithContent<TResource>()
@@ -32,7 +32,7 @@ namespace SereneApi
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.GetAllAsync"/>
         public virtual Task<IApiResponse<List<TResource>>> GetAllAsync()
         {
-            return BuildRequest
+            return MakeRequest
                 .UsingMethod(Method.GET)
                 .RespondsWithContent<List<TResource>>()
                 .ExecuteAsync();
@@ -46,7 +46,7 @@ namespace SereneApi
                 throw new ArgumentNullException(nameof(resource));
             }
 
-            return BuildRequest
+            return MakeRequest
                 .UsingMethod(Method.POST)
                 .AddInBodyContent(resource)
                 .RespondsWithContent<TResource>()
@@ -56,7 +56,7 @@ namespace SereneApi
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.DeleteAsync"/>
         public virtual Task<IApiResponse> DeleteAsync(TIdentifier identifier)
         {
-            return BuildRequest
+            return MakeRequest
                 .UsingMethod(Method.DELETE)
                 .WithParameter(identifier)
                 .ExecuteAsync();
@@ -70,7 +70,7 @@ namespace SereneApi
                 throw new ArgumentNullException(nameof(resource));
             }
 
-            return BuildRequest
+            return MakeRequest
                 .UsingMethod(Method.PUT)
                 .AddInBodyContent(resource)
                 .RespondsWithContent<TResource>()
@@ -85,7 +85,7 @@ namespace SereneApi
                 throw new ArgumentNullException(nameof(resource));
             }
 
-            return BuildRequest
+            return MakeRequest
                 .UsingMethod(Method.PATCH)
                 .AddInBodyContent(resource)
                 .RespondsWithContent<TResource>()

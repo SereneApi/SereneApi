@@ -41,7 +41,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.BuildRequest
+            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.GET)
                 .RespondsWithContent<MockPersonDto>()
                 .ExecuteAsync());
@@ -97,7 +97,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.BuildRequest
+            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.GET)
                 .ExecuteAsync());
 
@@ -149,7 +149,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.BuildRequest
+            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.GET)
                 .RespondsWithContent<MockPersonDto>()
                 .ExecuteAsync());
@@ -209,7 +209,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.BuildRequest.UsingMethod(Method.GET).ExecuteAsync());
+            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest.UsingMethod(Method.GET).ExecuteAsync());
 
             #endregion
             #region Assert
@@ -260,7 +260,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.BuildRequest
+            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.GET)
                 .RespondsWithContent<MockPersonDto>()
                 .ExecuteAsync());
@@ -323,7 +323,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.BuildRequest
+            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.GET)
                 .ExecuteAsync());
 
@@ -378,7 +378,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.BuildRequest
+            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.GET)
                 .RespondsWithContent<MockPersonDto>()
                 .ExecuteAsync());
@@ -436,7 +436,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.BuildRequest
+            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.GET)
                 .ExecuteAsync());
 
@@ -492,7 +492,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.BuildRequest
+            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.GET)
                 .RespondsWithContent<MockPersonDto>()
                 .ExecuteAsync());
@@ -551,7 +551,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.BuildRequest
+            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.GET)
                 .ExecuteAsync());
 
@@ -608,7 +608,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.BuildRequest
+            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.GET)
                 .RespondsWithContent<MockPersonDto>()
                 .ExecuteAsync());
@@ -666,7 +666,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.BuildRequest
+            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.GET)
                 .AgainstResource(resource)
                 .ExecuteAsync());
@@ -721,7 +721,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.BuildRequest
+            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.GET)
                 .AgainstResource(resource)
                 .RespondsWithContent<MockPersonDto>()
@@ -785,7 +785,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.BuildRequest
+            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.GET)
                 .WithEndpoint(endpoint)
                 .ExecuteAsync());
@@ -839,7 +839,7 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.BuildRequest
+            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.GET)
                 .WithEndpoint(endpoint)
                 .RespondsWithContent<MockPersonDto>()

@@ -25,8 +25,8 @@ namespace SereneApi.Abstractions.Options
         /// </summary>
         protected ConnectionSettings ConnectionSettings { get; set; }
 
-        /// <inheritdoc cref="IApiOptionsBuilder.AddConnectionSettings"/>
-        public void AddConnectionSettings(IConnectionSettings configuration)
+        /// <inheritdoc cref="IApiOptionsBuilder.AddConfiguration"/>
+        public void AddConfiguration(IConnectionSettings configuration)
         {
             if (configuration == null)
             {

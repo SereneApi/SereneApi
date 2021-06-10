@@ -8,7 +8,7 @@ namespace SereneApi.Tests.Interfaces
     {
         IConnectionSettings Connection { get; }
 
-        IApiRequestBuilder BuildRequest { get; }
+        IApiRequestBuilder MakeRequest { get; }
 
     }
 }

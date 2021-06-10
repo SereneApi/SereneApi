@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using SereneApi.Abstractions.Options;
 using SereneApi.Extensions.DependencyInjection;
 using SereneApi.Extensions.Newtonsoft;
 

@@ -19,7 +19,7 @@ namespace SereneApi.Abstractions.Options
         /// <param name="configuration">The configuration that will be used for communication with the API.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         /// <exception cref="MethodAccessException">Thrown when the method is called twice.</exception>
-        void AddConnectionSettings(IConnectionSettings configuration);
+        void AddConfiguration(IConnectionSettings configuration);
 
         /// <summary>
         /// The source that requests will be made against.

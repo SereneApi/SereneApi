@@ -10,6 +10,6 @@ namespace SereneApi.Tests.Mock
         {
         }
 
-        public new IApiRequestBuilder BuildRequest => base.BuildRequest;
+        public new IApiRequestBuilder MakeRequest => base.MakeRequest;
     }
 }
