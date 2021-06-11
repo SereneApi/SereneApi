@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Benchmark.API
 {
-    public interface IStudentApi: IDisposable
+    public interface IStudentApi : IDisposable
     {
         Task<IApiResponse<StudentDto>> GetStudentsAsync();
     }

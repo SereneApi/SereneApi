@@ -1,7 +1,6 @@
 ﻿using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Requests;
 using SereneApi.Abstractions.Response;
-using System;
 using System.Threading.Tasks;
 
 namespace SereneApi.Benchmark.API

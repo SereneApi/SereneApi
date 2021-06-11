@@ -67,7 +67,7 @@ namespace SereneApi.Tests.Helper
         [InlineData("http://localhost/api/resource", "http://localhost/api/resource/")]
         public void EnsureSourceSlashTerminationString(string source, string expectedSource)
         {
-            source = SourceHelpers.EnsureSourceSlashTermination(source);
+            source = SourceHelpers.EnsureSlashTermination(source);
 
             source.ShouldBe(expectedSource);
         }
@@ -81,7 +81,7 @@ namespace SereneApi.Tests.Helper
             Uri sourceUri = new Uri(source);
             Uri expectedSourceUri = new Uri(expectedSource);
 
-            sourceUri = SourceHelpers.EnsureSourceSlashTermination(sourceUri);
+            sourceUri = SourceHelpers.EnsureSlashTermination(sourceUri);
 
             sourceUri.ShouldBe(expectedSourceUri);
         }
@@ -96,7 +96,7 @@ namespace SereneApi.Tests.Helper
         [InlineData("http://localhost/api/resource////", "http://localhost/api/resource")]
         public void EnsureSourceNoSlashTerminationString(string source, string expectedSource)
         {
-            source = SourceHelpers.EnsureSourceNoSlashTermination(source);
+            source = SourceHelpers.EnsureNoSlashTermination(source);
 
             source.ShouldBe(expectedSource);
         }
@@ -113,7 +113,7 @@ namespace SereneApi.Tests.Helper
             Uri sourceUri = new Uri(source);
             Uri expectedSourceUri = new Uri(expectedSource);
 
-            sourceUri = SourceHelpers.EnsureSourceNoSlashTermination(sourceUri);
+            sourceUri = SourceHelpers.EnsureNoSlashTermination(sourceUri);
 
             sourceUri.ShouldBe(expectedSourceUri);
         }

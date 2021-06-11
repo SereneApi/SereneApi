@@ -19,7 +19,7 @@ namespace SereneApi.Abstractions.Configuration
 
         private Action<IDependencyCollection> _dependencyFactory;
 
-        public string ResourcePath { get; set; } = "api/";
+        public string ResourcePath { get; set; } = "api";
 
         public int Timeout { get; set; } = 30;
 

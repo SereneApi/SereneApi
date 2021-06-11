@@ -26,7 +26,7 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
             testApi.ShouldNotBeNull();
             testApi.Connection.BaseAddress.ShouldBe(new Uri("http://localhost/"));
             testApi.Connection.Resource.ShouldBe("Test");
-            testApi.Connection.ResourcePath.ShouldBe("api/");
+            testApi.Connection.ResourcePath.ShouldBe("api");
             testApi.Connection.Timeout.ShouldBe(30);
             testApi.Connection.RetryAttempts.ShouldBe(0);
 
@@ -57,7 +57,7 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
             testApi.ShouldNotBeNull();
             testApi.Connection.BaseAddress.ShouldBe(new Uri("http://localhost/"));
             testApi.Connection.Resource.ShouldBe("Test");
-            testApi.Connection.ResourcePath.ShouldBe("api/v2/");
+            testApi.Connection.ResourcePath.ShouldBe("api/v2");
             testApi.Connection.Timeout.ShouldBe(60);
             testApi.Connection.RetryAttempts.ShouldBe(2);
 
@@ -92,7 +92,7 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
             testApi.ShouldNotBeNull();
             testApi.Connection.BaseAddress.ShouldBe(new Uri("http://localhost/"));
             testApi.Connection.Resource.ShouldBe("Test");
-            testApi.Connection.ResourcePath.ShouldBe("api/v2/");
+            testApi.Connection.ResourcePath.ShouldBe("api/v2");
             testApi.Connection.Timeout.ShouldBe(30);
             testApi.Connection.RetryAttempts.ShouldBe(0);
 
@@ -130,7 +130,7 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
             testApi.ShouldNotBeNull();
             testApi.Connection.BaseAddress.ShouldBe(new Uri("http://localhost/"));
             testApi.Connection.Resource.ShouldBe("Test");
-            testApi.Connection.ResourcePath.ShouldBe("api/");
+            testApi.Connection.ResourcePath.ShouldBe("api");
             testApi.Connection.Timeout.ShouldBe(60);
             testApi.Connection.RetryAttempts.ShouldBe(2);
 

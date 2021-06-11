@@ -5,7 +5,7 @@ namespace SereneApi.Requests.Types
 {
     internal class ApiVersion : IApiVersion
     {
-        public string Version { get; }
+        private readonly string _version;
 
         public ApiVersion(string version)
         {
@@ -14,7 +14,12 @@ namespace SereneApi.Requests.Types
                 throw new ArgumentNullException(nameof(version));
             }
 
-            Version = version;
+            _version = version;
+        }
+
+        public string GetVersionString()
+        {
+            return _version;
         }
     }
 }

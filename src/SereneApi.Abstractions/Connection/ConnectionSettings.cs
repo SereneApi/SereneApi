@@ -40,12 +40,12 @@ namespace SereneApi.Abstractions.Connection
                 throw new ArgumentNullException(nameof(baseAddress));
             }
 
-            baseAddress = SourceHelpers.EnsureSourceSlashTermination(baseAddress);
+            baseAddress = SourceHelpers.EnsureSlashTermination(baseAddress);
 
             BaseAddress = new Uri(baseAddress);
-            Resource = SourceHelpers.EnsureSourceNoSlashTermination(resource);
-            ResourcePath = SourceHelpers.EnsureSourceSlashTermination(resourcePath);
-            Source = $"{BaseAddress}{ResourcePath}{Resource}";
+            Resource = SourceHelpers.EnsureNoSlashTermination(resource);
+            ResourcePath = SourceHelpers.EnsureNoSlashTermination(resourcePath);
+            Source = BuildSourceAddress();
         }
 
         /// <summary>
@@ -58,10 +58,34 @@ namespace SereneApi.Abstractions.Connection
         /// <exception cref="UriFormatException">Thrown when the base address is incorrectly formatted.</exception>
         public ConnectionSettings([NotNull] Uri baseAddress, string resource = default, string resourcePath = default)
         {
-            BaseAddress = SourceHelpers.EnsureSourceSlashTermination(baseAddress);
-            Resource = SourceHelpers.EnsureSourceNoSlashTermination(resource);
-            ResourcePath = SourceHelpers.EnsureSourceSlashTermination(resourcePath);
-            Source = $"{BaseAddress}{ResourcePath}{Resource}";
+            BaseAddress = SourceHelpers.EnsureSlashTermination(baseAddress);
+            Resource = SourceHelpers.EnsureNoSlashTermination(resource);
+            ResourcePath = SourceHelpers.EnsureNoSlashTermination(resourcePath);
+            Source = BuildSourceAddress();
+        }
+
+        private string BuildSourceAddress()
+        {
+            string source = BaseAddress.ToString();
+
+            if (!string.IsNullOrWhiteSpace(ResourcePath))
+            {
+                source += ResourcePath;
+
+                if (!string.IsNullOrWhiteSpace(Resource))
+                {
+                    source += $"/{Resource}";
+                }
+
+                return source;
+            }
+
+            if (!string.IsNullOrWhiteSpace(Resource))
+            {
+                source += Resource;
+            }
+
+            return source;
         }
     }
 }

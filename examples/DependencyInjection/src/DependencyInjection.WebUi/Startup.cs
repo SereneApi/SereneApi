@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using SereneApi.Abstractions.Options;
 using SereneApi.Extensions.DependencyInjection;
 using SereneApi.Extensions.Newtonsoft;
 
@@ -28,7 +27,7 @@ namespace DependencyInjection.WebUi
 
             services.ConfigureSereneApi(r =>
             {
-                r.ResourcePath = "api/v2/";
+                r.ResourcePath = "api/v2";
             }).AddNewtonsoft();
 
             // Add an ApiHandler to the services collection, this enables dependency injection.
@@ -61,7 +60,7 @@ namespace DependencyInjection.WebUi
             app.UseSwagger();
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("../swagger/v1/swagger.json", "WebUi"); });
 
-            if(env.IsDevelopment())
+            if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }

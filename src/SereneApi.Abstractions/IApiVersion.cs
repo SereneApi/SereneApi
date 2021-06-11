@@ -2,6 +2,6 @@
 {
     public interface IApiVersion
     {
-        string Version { get; }
+        string GetVersionString();
     }
 }

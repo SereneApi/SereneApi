@@ -10,7 +10,7 @@ namespace SereneApi.Abstractions.Helpers
         /// <summary>
         /// Ensures that a / is appended to the end of the value.
         /// </summary>
-        public static string EnsureSourceSlashTermination(string value)
+        public static string EnsureSlashTermination(string value)
         {
             const char termination = '/';
 
@@ -32,9 +32,9 @@ namespace SereneApi.Abstractions.Helpers
         /// <summary>
         /// Ensures that a / is appended to the end of the value.
         /// </summary>
-        public static Uri EnsureSourceSlashTermination(Uri value)
+        public static Uri EnsureSlashTermination(Uri value)
         {
-            string valueString = EnsureSourceSlashTermination(value.ToString());
+            string valueString = EnsureSlashTermination(value.ToString());
 
             return new Uri(valueString);
         }
@@ -42,7 +42,7 @@ namespace SereneApi.Abstractions.Helpers
         /// <summary>
         /// Ensures that there is no / appended to the end of the value.
         /// </summary>
-        public static string EnsureSourceNoSlashTermination(string value)
+        public static string EnsureNoSlashTermination(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
@@ -64,9 +64,9 @@ namespace SereneApi.Abstractions.Helpers
         /// <summary>
         /// Ensures that there is no / appended to the end of the value.
         /// </summary>
-        public static Uri EnsureSourceNoSlashTermination(Uri value)
+        public static Uri EnsureNoSlashTermination(Uri value)
         {
-            string valueString = EnsureSourceNoSlashTermination(value.ToString());
+            string valueString = EnsureNoSlashTermination(value.ToString());
 
             return new Uri(valueString);
         }

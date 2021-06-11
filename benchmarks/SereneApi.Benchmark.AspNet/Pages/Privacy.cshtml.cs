@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace SereneApi.Benchmark.AspNet.Pages
 {
-    public class PrivacyModel: PageModel
+    public class PrivacyModel : PageModel
     {
         private readonly ILogger<PrivacyModel> _logger;
 

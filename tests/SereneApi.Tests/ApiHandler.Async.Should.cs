@@ -647,7 +647,7 @@ namespace SereneApi.Tests
             #region Arrange
 
             string fullSource = $"{source}/api/{resource}";
-            string finalSource = $"{source}/api/";
+            string finalSource = $"{source}/api";
 
             using ApiFactory apiFactory = new ApiFactory();
 
@@ -701,7 +701,7 @@ namespace SereneApi.Tests
             #region Arrange
 
             string fullSource = $"{source}/api/{resource}";
-            string finalSource = $"{source}/api/";
+            string finalSource = $"{source}/api";
 
 
             using ApiFactory apiFactory = new ApiFactory();

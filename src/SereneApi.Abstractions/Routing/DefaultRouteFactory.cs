@@ -56,7 +56,12 @@ namespace SereneApi.Abstractions.Routing
         /// <inheritdoc cref="IRouteFactory.BuildRoute"/>
         public Uri BuildRoute(IApiRequest request)
         {
-            string route = $"{request.ResourcePath}{request.Resource}";
+            string route = $"{request.ResourcePath}/{request.Resource}";
+
+            if (request.Version != null)
+            {
+                route += $"/{request.Version.GetVersionString()}";
+            }
 
             if (!string.IsNullOrWhiteSpace(request.Endpoint))
             {
