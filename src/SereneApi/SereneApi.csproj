@@ -28,6 +28,7 @@ CHANGED - How requests are made. Request creation is now done using Fluent API.<
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <AssemblyVersion>1.1.0.5</AssemblyVersion>
+        <ApplicationIcon>nuget_logo.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>

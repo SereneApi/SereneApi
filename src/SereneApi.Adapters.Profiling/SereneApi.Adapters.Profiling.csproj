@@ -17,6 +17,7 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReleaseNotes>MIGRATED - To .Net5</PackageReleaseNotes>
+    <ApplicationIcon>nuget_logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>

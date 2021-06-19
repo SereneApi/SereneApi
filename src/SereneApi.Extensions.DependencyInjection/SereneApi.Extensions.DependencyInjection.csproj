@@ -23,6 +23,7 @@
     <AssemblyName>DeltaWare.SereneApi.Extensions.DependencyInjection</AssemblyName>
       <IncludeSymbols>true</IncludeSymbols>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+      <ApplicationIcon>nuget_logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
