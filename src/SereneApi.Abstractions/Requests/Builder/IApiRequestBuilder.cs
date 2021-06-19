@@ -1,7 +1,6 @@
-﻿using SereneApi.Abstractions.Requests;
-using System;
+﻿using System;
 
-namespace SereneApi.Requests
+namespace SereneApi.Abstractions.Requests.Builder
 {
     public interface IApiRequestBuilder
     {

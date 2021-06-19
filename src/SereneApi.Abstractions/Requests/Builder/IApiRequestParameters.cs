@@ -1,7 +1,6 @@
 ﻿using System;
-using SereneApi.Abstractions.Handler;
 
-namespace SereneApi.Requests
+namespace SereneApi.Abstractions.Requests.Builder
 {
     public interface IApiRequestParameters : IApiRequestQuery
     {

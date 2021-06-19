@@ -1,7 +1,6 @@
-﻿using System;
-using SereneApi.Abstractions.Serialization;
+﻿using SereneApi.Abstractions.Serialization;
 
-namespace SereneApi.Requests
+namespace SereneApi.Abstractions.Requests.Builder
 {
     public interface IApiRequestResponseContent : IApiRequestPerformer
     {

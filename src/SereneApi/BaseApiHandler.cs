@@ -8,6 +8,8 @@ using SereneApi.Abstractions.Response.Handlers;
 using SereneApi.Requests;
 using System;
 using System.Diagnostics;
+using SereneApi.Abstractions.Requests.Builder;
+using SereneApi.Requests.Builder;
 
 namespace SereneApi
 {

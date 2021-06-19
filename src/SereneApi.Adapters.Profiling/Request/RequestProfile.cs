@@ -36,6 +36,10 @@ namespace SereneApi.Adapters.Profiling.Request
 
         public string ResourcePath { get; set; }
 
+        public Type ContentType { get; set; }
+
+        public Type ResponseType { get; set; }
+
         public RequestProfile(IApiRequest request, Type sourceApi)
         {
             Identity = request.Identity;
@@ -49,6 +53,8 @@ namespace SereneApi.Adapters.Profiling.Request
             Version = request.Version;
             Method = request.Method;
             Content = request.Content;
+            ContentType = request.ContentType;
+            ResponseType = request.ResponseType;
 
             Source = sourceApi;
         }

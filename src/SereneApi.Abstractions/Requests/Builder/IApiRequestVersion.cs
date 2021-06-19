@@ -1,8 +1,7 @@
 ﻿using System;
-using SereneApi.Abstractions;
 using SereneApi.Abstractions.Handler;
 
-namespace SereneApi.Requests
+namespace SereneApi.Abstractions.Requests.Builder
 {
     public interface IApiRequestVersion : IApiRequestEndpoint
     {

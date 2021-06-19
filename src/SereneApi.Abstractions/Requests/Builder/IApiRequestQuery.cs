@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Linq.Expressions;
-using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Queries;
 
-namespace SereneApi.Requests
+namespace SereneApi.Abstractions.Requests.Builder
 {
     public interface IApiRequestQuery : IApiRequestContent
     {

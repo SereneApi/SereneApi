@@ -1,16 +1,17 @@
-﻿using SereneApi.Abstractions;
+﻿using System;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using SereneApi.Abstractions;
 using SereneApi.Abstractions.Queries;
 using SereneApi.Abstractions.Requests;
+using SereneApi.Abstractions.Requests.Builder;
 using SereneApi.Abstractions.Response;
 using SereneApi.Abstractions.Routing;
 using SereneApi.Abstractions.Serialization;
 using SereneApi.Extensions;
 using SereneApi.Requests.Types;
-using System;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 
-namespace SereneApi.Requests
+namespace SereneApi.Requests.Builder
 {
     internal class RequestBuilder : IApiRequestBuilder, IApiRequestResource
     {

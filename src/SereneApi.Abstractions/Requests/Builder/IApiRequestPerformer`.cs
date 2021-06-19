@@ -1,7 +1,7 @@
-﻿using SereneApi.Abstractions.Response;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using SereneApi.Abstractions.Response;
 
-namespace SereneApi.Requests
+namespace SereneApi.Abstractions.Requests.Builder
 {
     public interface IApiRequestPerformer<TContent>
     {
