@@ -1,21 +1,20 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Connection;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Abstractions.Options
 {
-    /// <inheritdoc cref="IApiOptions"/>
     [DebuggerDisplay("Source: {Connection.Source}")]
-    public class ApiOptions: IApiOptions
+    public class ApiOptions : IApiOptions
     {
-        private readonly IDependencyProvider _dependencies;
-
         #region Properties
 
         /// <inheritdoc cref="IApiOptions.Connection"/>
-        public IConnectionConfiguration Connection { get; set; }
+        public IConnectionSettings Connection { get; }
+
+        public IDependencyProvider Dependencies { get; }
 
         public bool ThrowExceptions { get; set; }
 
@@ -26,28 +25,15 @@ namespace SereneApi.Abstractions.Options
         /// Creates a new instance of <see cref="ApiOptions"/>
         /// </summary>
         /// <param name="dependencies">The dependencies that can be used when making an API request.</param>
-        /// <param name="connection">The <see cref="IConnectionConfiguration"/> used to make requests to the API.</param>
+        /// <param name="connection">The <see cref="IConnectionSettings"/> used to make requests to the API.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public ApiOptions([NotNull] IDependencyProvider dependencies, [NotNull] IConnectionConfiguration connection)
+        public ApiOptions([NotNull] IDependencyProvider dependencies, [NotNull] IConnectionSettings connection)
         {
-            _dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
+            Dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
             Connection = connection ?? throw new ArgumentNullException(nameof(connection));
         }
 
         #endregion
-
-        /// <inheritdoc cref="IApiOptions.RetrieveRequiredDependency{TDependency}"/>
-        public TDependency RetrieveRequiredDependency<TDependency>()
-        {
-            return _dependencies.GetDependency<TDependency>();
-        }
-
-        /// <inheritdoc cref="IApiOptions.RetrieveRequiredDependency{TDependency}"/>
-        public bool RetrieveDependency<TDependency>(out TDependency dependency)
-        {
-            return _dependencies.TryGetDependency(out dependency);
-        }
-
         #region IDisposable
 
         private volatile bool _disposed;
@@ -61,14 +47,14 @@ namespace SereneApi.Abstractions.Options
 
         protected virtual void Dispose(bool disposing)
         {
-            if(_disposed)
+            if (_disposed)
             {
                 return;
             }
 
-            if(disposing)
+            if (disposing)
             {
-                _dependencies.Dispose();
+                Dependencies.Dispose();
             }
 
             _disposed = true;

@@ -4,7 +4,7 @@ namespace DependencyInjection.Service.Controllers
 {
     [Route("api/v2/[controller]")]
     [ApiController]
-    public class ValuesController: ControllerBase
+    public class ValuesController : ControllerBase
     {
         [HttpGet("int/{value}")]
         public int GetInt(int value)

@@ -1,4 +1,4 @@
-﻿using SereneApi.Abstractions.Request;
+﻿using SereneApi.Abstractions.Requests;
 using System.Net.Http;
 
 namespace SereneApi.Extensions.Mocking.Extensions

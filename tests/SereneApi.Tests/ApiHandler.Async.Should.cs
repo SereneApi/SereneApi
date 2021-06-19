@@ -1,7 +1,6 @@
 ﻿using SereneApi.Abstractions.Configuration;
-using SereneApi.Abstractions.Request;
+using SereneApi.Abstractions.Requests;
 using SereneApi.Abstractions.Response;
-using SereneApi.Abstractions.Response.Content;
 using SereneApi.Extensions.Mocking;
 using SereneApi.Factories;
 using SereneApi.Tests.Interfaces;
@@ -42,16 +41,19 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.PerformRequestAsync<MockPersonDto>(Method.GET));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
+                .UsingMethod(Method.GET)
+                .RespondsWithContent<MockPersonDto>()
+                .ExecuteAsync());
 
             #endregion
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
             apiHandlerWrapper.Connection.Source.ShouldBe(fullSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(ApiConfiguration.Default.ResourcePath);
-            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(ApiConfiguration.Default.RetryCount);
-            apiHandlerWrapper.Connection.Timeout.ShouldBe(ApiConfiguration.Default.Timeout);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(SereneApiConfiguration.Default.ResourcePath);
+            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(SereneApiConfiguration.Default.RetryCount);
+            apiHandlerWrapper.Connection.Timeout.ShouldBe(SereneApiConfiguration.Default.Timeout);
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(true);
@@ -95,16 +97,18 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.PerformRequestAsync(Method.GET));
+            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
+                .UsingMethod(Method.GET)
+                .ExecuteAsync());
 
             #endregion
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
             apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(ApiConfiguration.Default.ResourcePath);
-            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(ApiConfiguration.Default.RetryCount);
-            apiHandlerWrapper.Connection.Timeout.ShouldBe(ApiConfiguration.Default.Timeout);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(SereneApiConfiguration.Default.ResourcePath);
+            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(SereneApiConfiguration.Default.RetryCount);
+            apiHandlerWrapper.Connection.Timeout.ShouldBe(SereneApiConfiguration.Default.Timeout);
 
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
@@ -145,16 +149,19 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.PerformRequestAsync<MockPersonDto>(Method.GET));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
+                .UsingMethod(Method.GET)
+                .RespondsWithContent<MockPersonDto>()
+                .ExecuteAsync());
 
             #endregion
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
             apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(ApiConfiguration.Default.ResourcePath);
-            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(ApiConfiguration.Default.RetryCount);
-            apiHandlerWrapper.Connection.Timeout.ShouldBe(ApiConfiguration.Default.Timeout);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(SereneApiConfiguration.Default.ResourcePath);
+            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(SereneApiConfiguration.Default.RetryCount);
+            apiHandlerWrapper.Connection.Timeout.ShouldBe(SereneApiConfiguration.Default.Timeout);
 
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
@@ -202,14 +209,14 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.PerformRequestAsync(Method.GET));
+            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest.UsingMethod(Method.GET).ExecuteAsync());
 
             #endregion
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
             apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(ApiConfiguration.Default.ResourcePath);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(SereneApiConfiguration.Default.ResourcePath);
             apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(retryCount);
             apiHandlerWrapper.Connection.Timeout.ShouldBe(timeoutSeconds);
 
@@ -253,14 +260,17 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.PerformRequestAsync<MockPersonDto>(Method.GET));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
+                .UsingMethod(Method.GET)
+                .RespondsWithContent<MockPersonDto>()
+                .ExecuteAsync());
 
             #endregion
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
             apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(ApiConfiguration.Default.ResourcePath);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(SereneApiConfiguration.Default.ResourcePath);
             apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(retryCount);
             apiHandlerWrapper.Connection.Timeout.ShouldBe(timeoutSeconds);
 
@@ -313,16 +323,18 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.PerformRequestAsync(Method.GET));
+            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
+                .UsingMethod(Method.GET)
+                .ExecuteAsync());
 
             #endregion
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
             apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(ApiConfiguration.Default.ResourcePath);
-            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(ApiConfiguration.Default.RetryCount);
-            apiHandlerWrapper.Connection.Timeout.ShouldBe(ApiConfiguration.Default.Timeout);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(SereneApiConfiguration.Default.ResourcePath);
+            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(SereneApiConfiguration.Default.RetryCount);
+            apiHandlerWrapper.Connection.Timeout.ShouldBe(SereneApiConfiguration.Default.Timeout);
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(false);
@@ -366,16 +378,19 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.PerformRequestAsync<MockPersonDto>(Method.GET));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
+                .UsingMethod(Method.GET)
+                .RespondsWithContent<MockPersonDto>()
+                .ExecuteAsync());
 
             #endregion
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
             apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(ApiConfiguration.Default.ResourcePath);
-            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(ApiConfiguration.Default.RetryCount);
-            apiHandlerWrapper.Connection.Timeout.ShouldBe(ApiConfiguration.Default.Timeout);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(SereneApiConfiguration.Default.ResourcePath);
+            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(SereneApiConfiguration.Default.RetryCount);
+            apiHandlerWrapper.Connection.Timeout.ShouldBe(SereneApiConfiguration.Default.Timeout);
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(false);
@@ -421,14 +436,16 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.PerformRequestAsync(Method.GET));
+            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
+                .UsingMethod(Method.GET)
+                .ExecuteAsync());
 
             #endregion
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
             apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(ApiConfiguration.Default.ResourcePath);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(SereneApiConfiguration.Default.ResourcePath);
             apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(retryCount);
             apiHandlerWrapper.Connection.Timeout.ShouldBe(timeoutSeconds);
 
@@ -475,14 +492,17 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.PerformRequestAsync<MockPersonDto>(Method.GET));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
+                .UsingMethod(Method.GET)
+                .RespondsWithContent<MockPersonDto>()
+                .ExecuteAsync());
 
             #endregion
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
             apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(ApiConfiguration.Default.ResourcePath);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(SereneApiConfiguration.Default.ResourcePath);
             apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(retryCount);
             apiHandlerWrapper.Connection.Timeout.ShouldBe(timeoutSeconds);
 
@@ -512,7 +532,7 @@ namespace SereneApi.Tests
                 o.SetSource(source, resource);
                 o.SetTimeout(timeoutSeconds);
 
-                if(retryCount > 0)
+                if (retryCount > 0)
                 {
                     o.SetRetryAttempts(retryCount);
                 }
@@ -531,14 +551,16 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.PerformRequestAsync(Method.GET));
+            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
+                .UsingMethod(Method.GET)
+                .ExecuteAsync());
 
             #endregion
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
             apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(ApiConfiguration.Default.ResourcePath);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(SereneApiConfiguration.Default.ResourcePath);
             apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(retryCount);
             apiHandlerWrapper.Connection.Timeout.ShouldBe(timeoutSeconds);
 
@@ -567,7 +589,7 @@ namespace SereneApi.Tests
                 o.SetSource(source, resource);
                 o.SetTimeout(timeoutSeconds);
 
-                if(retryCount > 0)
+                if (retryCount > 0)
                 {
                     o.SetRetryAttempts(retryCount);
                 }
@@ -586,14 +608,17 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.PerformRequestAsync<MockPersonDto>(Method.GET));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
+                .UsingMethod(Method.GET)
+                .RespondsWithContent<MockPersonDto>()
+                .ExecuteAsync());
 
             #endregion
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
             apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(ApiConfiguration.Default.ResourcePath);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(SereneApiConfiguration.Default.ResourcePath);
             apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(retryCount);
             apiHandlerWrapper.Connection.Timeout.ShouldBe(timeoutSeconds);
 
@@ -622,7 +647,7 @@ namespace SereneApi.Tests
             #region Arrange
 
             string fullSource = $"{source}/api/{resource}";
-            string finalSource = $"{source}/api/";
+            string finalSource = $"{source}/api";
 
             using ApiFactory apiFactory = new ApiFactory();
 
@@ -641,16 +666,19 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.PerformRequestAsync(Method.GET, r => r.AgainstResource(resource)));
+            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
+                .UsingMethod(Method.GET)
+                .AgainstResource(resource)
+                .ExecuteAsync());
 
             #endregion
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBeNull();
             apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(ApiConfiguration.Default.ResourcePath);
-            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(ApiConfiguration.Default.RetryCount);
-            apiHandlerWrapper.Connection.Timeout.ShouldBe(ApiConfiguration.Default.Timeout);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(SereneApiConfiguration.Default.ResourcePath);
+            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(SereneApiConfiguration.Default.RetryCount);
+            apiHandlerWrapper.Connection.Timeout.ShouldBe(SereneApiConfiguration.Default.Timeout);
 
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
@@ -673,7 +701,7 @@ namespace SereneApi.Tests
             #region Arrange
 
             string fullSource = $"{source}/api/{resource}";
-            string finalSource = $"{source}/api/";
+            string finalSource = $"{source}/api";
 
 
             using ApiFactory apiFactory = new ApiFactory();
@@ -693,16 +721,20 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.PerformRequestAsync<MockPersonDto>(Method.GET, r => r.AgainstResource(resource)));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
+                .UsingMethod(Method.GET)
+                .AgainstResource(resource)
+                .RespondsWithContent<MockPersonDto>()
+                .ExecuteAsync());
 
             #endregion
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBeNull();
             apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(ApiConfiguration.Default.ResourcePath);
-            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(ApiConfiguration.Default.RetryCount);
-            apiHandlerWrapper.Connection.Timeout.ShouldBe(ApiConfiguration.Default.Timeout);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(SereneApiConfiguration.Default.ResourcePath);
+            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(SereneApiConfiguration.Default.RetryCount);
+            apiHandlerWrapper.Connection.Timeout.ShouldBe(SereneApiConfiguration.Default.Timeout);
 
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
@@ -753,16 +785,19 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.PerformRequestAsync(Method.GET, r => r.WithEndPoint(endpoint)));
+            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
+                .UsingMethod(Method.GET)
+                .WithEndpoint(endpoint)
+                .ExecuteAsync());
 
             #endregion
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
             apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(ApiConfiguration.Default.ResourcePath);
-            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(ApiConfiguration.Default.RetryCount);
-            apiHandlerWrapper.Connection.Timeout.ShouldBe(ApiConfiguration.Default.Timeout);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(SereneApiConfiguration.Default.ResourcePath);
+            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(SereneApiConfiguration.Default.RetryCount);
+            apiHandlerWrapper.Connection.Timeout.ShouldBe(SereneApiConfiguration.Default.Timeout);
 
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
@@ -804,16 +839,20 @@ namespace SereneApi.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.PerformRequestAsync<MockPersonDto>(Method.GET, r => r.WithEndPoint(endpoint)));
+            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
+                .UsingMethod(Method.GET)
+                .WithEndpoint(endpoint)
+                .RespondsWithContent<MockPersonDto>()
+                .ExecuteAsync());
 
             #endregion
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
             apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(ApiConfiguration.Default.ResourcePath);
-            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(ApiConfiguration.Default.RetryCount);
-            apiHandlerWrapper.Connection.Timeout.ShouldBe(ApiConfiguration.Default.Timeout);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(SereneApiConfiguration.Default.ResourcePath);
+            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(SereneApiConfiguration.Default.RetryCount);
+            apiHandlerWrapper.Connection.Timeout.ShouldBe(SereneApiConfiguration.Default.Timeout);
 
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);

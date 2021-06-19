@@ -1,12 +1,15 @@
-﻿using Microsoft.Extensions.Logging;
-using SereneApi.Abstractions.Configuration;
+﻿using DeltaWare.Dependencies.Abstractions;
+using Microsoft.Extensions.Logging;
+using SereneApi.Abstractions.Connection;
 using SereneApi.Abstractions.Events;
 using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Response.Handlers;
+using SereneApi.Requests;
 using System;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
+using SereneApi.Abstractions.Requests.Builder;
+using SereneApi.Requests.Builder;
 
 namespace SereneApi
 {
@@ -14,11 +17,13 @@ namespace SereneApi
     /// When Inherited; Provides the methods required for implementing a RESTful Api consumer.
     /// </summary>
     [DebuggerDisplay("Source:{Connection.Source}; Timeout:{Connection.Timeout}")]
-    public abstract partial class BaseApiHandler: IApiHandler
+    public abstract partial class BaseApiHandler : IApiHandler
     {
         #region Variables
 
         private readonly ILogger _logger;
+
+        private readonly IDependencyProvider _dependencies;
 
         private readonly IEventManager _eventManager;
 
@@ -28,12 +33,12 @@ namespace SereneApi
         /// <summary>
         /// The dependencies that may be used by this API.
         /// </summary>
-        protected IApiOptions Options { get; }
+        protected internal IApiOptions Options { get; }
 
-        protected IResponseHandler ResponseHandler { get; }
+        protected internal IResponseHandler ResponseHandler { get; }
 
         /// <inheritdoc cref="IApiHandler.Connection"/>
-        public IConnectionConfiguration Connection { get; }
+        public IConnectionSettings Connection { get; }
 
         #endregion
         #region Constructors
@@ -43,9 +48,9 @@ namespace SereneApi
         /// </summary>
         /// <param name="options">The options to be used when making requests.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        protected BaseApiHandler([NotNull] IApiOptions options)
+        protected BaseApiHandler(IApiOptions options)
         {
-            if(options == null)
+            if (options == null)
             {
                 throw new ArgumentNullException(nameof(options));
             }
@@ -53,10 +58,12 @@ namespace SereneApi
             Connection = options.Connection;
 
             Options = options;
-            Options.RetrieveDependency(out _logger);
-            Options.RetrieveDependency(out _eventManager);
 
-            ResponseHandler = Options.RetrieveRequiredDependency<IResponseHandler>();
+            _dependencies = Options.Dependencies;
+            _dependencies.TryGetDependency(out _logger);
+            _dependencies.TryGetDependency(out _eventManager);
+
+            ResponseHandler = _dependencies.GetDependency<IResponseHandler>();
 
             _logger?.LogInformation($"{GetType()} has been instantiated");
         }
@@ -67,11 +74,16 @@ namespace SereneApi
         private bool _disposed;
 
         /// <summary>
+        /// Occurs when the component is disposed by a call to the Dispose() method
+        /// </summary>
+        public event EventHandler Disposed;
+
+        /// <summary>
         /// Throws an Object Disposed Exception if the <see cref="BaseApiHandler"/> has been disposed.
         /// </summary>
         protected void CheckIfDisposed()
         {
-            if(_disposed)
+            if (_disposed)
             {
                 throw new ObjectDisposedException(nameof(GetType));
             }
@@ -94,15 +106,18 @@ namespace SereneApi
         /// </summary>
         protected virtual void Dispose(bool disposing)
         {
-            if(_disposed)
+            if (_disposed)
             {
                 return;
             }
 
-            if(disposing)
+            if (disposing)
             {
+
                 Options.Dispose();
             }
+
+            Disposed?.Invoke(this, new EventArgs());
 
             _disposed = true;
         }
@@ -113,5 +128,7 @@ namespace SereneApi
         {
             return $"{Options.Connection.BaseAddress}{endpoint}";
         }
+
+        public IApiRequestBuilder MakeRequest => new RequestBuilder(this);
     }
 }

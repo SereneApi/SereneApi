@@ -3,7 +3,7 @@ using SereneApi.Abstractions.Options;
 
 namespace SereneApi.Extensions.DependencyInjection.Tests
 {
-    public interface ITestApi: IApiHandler
+    public interface ITestApi : IApiHandler
     {
         IApiOptions Options { get; }
     }

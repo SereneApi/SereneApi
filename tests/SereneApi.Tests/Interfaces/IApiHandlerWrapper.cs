@@ -1,22 +1,15 @@
-﻿using SereneApi.Abstractions.Configuration;
-using SereneApi.Abstractions.Request;
-using SereneApi.Abstractions.Response;
+﻿using SereneApi.Abstractions.Connection;
+using SereneApi.Requests;
 using System;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+using SereneApi.Abstractions.Requests.Builder;
 
 namespace SereneApi.Tests.Interfaces
 {
-    public interface IApiHandlerWrapper: IDisposable
+    public interface IApiHandlerWrapper : IDisposable
     {
-        IConnectionConfiguration Connection { get; }
+        IConnectionSettings Connection { get; }
 
-        IApiResponse PerformRequest(Method method, Expression<Func<IRequest, IRequestCreated>> factory = null);
+        IApiRequestBuilder MakeRequest { get; }
 
-        IApiResponse<TResponse> PerformRequest<TResponse>(Method method, Expression<Func<IRequest, IRequestCreated>> factory = null);
-
-        Task<IApiResponse> PerformRequestAsync(Method method, Expression<Func<IRequest, IRequestCreated>> factory = null);
-
-        Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(Method method, Expression<Func<IRequest, IRequestCreated>> factory = null);
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Configuration.Adapters;
 using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Options;
 using SereneApi.Extensions.DependencyInjection.Options;
@@ -21,18 +22,18 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <exception cref="ArgumentException">Thrown if this is called after API registration or if it is called twice.</exception>
         /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
         /// <remarks>These values can be overriden during API Registration.</remarks>
-        public static IApiConfigurationExtensions ConfigureSereneApi([NotNull] this IServiceCollection services, [AllowNull] IApiConfiguration configuration = null)
+        public static IConfigurationExtensions ConfigureSereneApi([NotNull] this IServiceCollection services, [AllowNull] ISereneApiConfiguration configuration = null)
         {
-            if(services == null)
+            if (services == null)
             {
                 throw new ArgumentNullException(nameof(services));
             }
 
-            configuration ??= ApiConfiguration.Default;
+            configuration ??= SereneApiConfiguration.Default;
 
             ServiceDescriptor service = ServiceDescriptor.Singleton(configuration);
 
-            if(services.Contains(service))
+            if (services.Contains(service))
             {
                 throw new ArgumentException("This can only be called once, or must be called before API Registration.");
             }
@@ -45,25 +46,25 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <summary>
         /// Configures the default configuration for all APIs.
         /// </summary>
-        /// <param name="factory">The prevalent configuration for all APIs.</param>
+        /// <param name="builder">The prevalent configuration for all APIs.</param>
         /// <exception cref="ArgumentException">Thrown if this is called after API registration or if it is called twice.</exception>
         /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
         /// <remarks>These values can be overriden during API Registration.</remarks>
-        public static IApiConfigurationExtensions ConfigureSereneApi([NotNull] this IServiceCollection services, [NotNull] Action<IApiConfigurationBuilder> factory)
+        public static IConfigurationExtensions ConfigureSereneApi([NotNull] this IServiceCollection services, [NotNull] Action<ISereneApiConfigurationBuilder> builder)
         {
-            if(services == null)
+            if (services == null)
             {
                 throw new ArgumentNullException(nameof(services));
             }
 
-            if(factory == null)
+            if (builder == null)
             {
-                throw new ArgumentNullException(nameof(factory));
+                throw new ArgumentNullException(nameof(builder));
             }
 
-            ApiConfiguration configuration = (ApiConfiguration)ApiConfiguration.Default;
+            SereneApiConfiguration configuration = SereneApiConfiguration.Default;
 
-            factory.Invoke(configuration);
+            builder.Invoke(configuration);
 
             return services.ConfigureSereneApi(configuration);
         }
@@ -75,23 +76,23 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <remarks>Should be called after ConfigureSereneApi if any configuration is required.</remarks>
         public static void ConfigureApiAdapters([NotNull] this IServiceCollection services, [NotNull] Action<IApiAdapter> configurator)
         {
-            if(services == null)
+            if (services == null)
             {
                 throw new ArgumentNullException(nameof(services));
             }
 
-            if(configurator == null)
+            if (configurator == null)
             {
                 throw new ArgumentNullException(nameof(configurator));
             }
 
-            services.TryAddSingleton(ApiConfiguration.Default);
+            services.TryAddSingleton((ISereneApiConfiguration)SereneApiConfiguration.Default);
 
             using ServiceProvider provider = services.BuildServiceProvider();
 
-            IApiAdapter apiAdapter = provider.GetRequiredService<IApiConfiguration>();
+            ISereneApiConfiguration sereneApiConfiguration = provider.GetRequiredService<ISereneApiConfiguration>();
 
-            configurator.Invoke(apiAdapter);
+            configurator.Invoke(sereneApiConfiguration.GetAdapter());
         }
 
         /// <summary>
@@ -101,14 +102,14 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <exception cref="ArgumentNullException">Thrown if a null value is supplied.</exception>
         public static IApiOptionsExtensions ExtendApi<TApi>([NotNull] this IServiceCollection services) where TApi : class
         {
-            if(services == null)
+            if (services == null)
             {
                 throw new ArgumentNullException(nameof(services));
             }
 
             using ServiceProvider serviceProvider = services.BuildServiceProvider();
 
-            return (IApiOptionsExtensions)serviceProvider.GetService<IApiOptionsConfigurator<TApi>>();
+            return (IApiOptionsExtensions)serviceProvider.GetService<IApiOptionsBuilder<TApi>>();
         }
 
         /// <summary>
@@ -119,19 +120,19 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <exception cref="ArgumentNullException">Thrown if a null value is supplied.</exception>
         public static void ExtendApi<TApi>([NotNull] this IServiceCollection services, [NotNull] Action<IApiOptionsExtensions> factory) where TApi : class
         {
-            if(services == null)
+            if (services == null)
             {
                 throw new ArgumentNullException(nameof(services));
             }
 
-            if(factory == null)
+            if (factory == null)
             {
                 throw new ArgumentNullException(nameof(factory));
             }
 
             using ServiceProvider serviceProvider = services.BuildServiceProvider();
 
-            IApiOptionsExtensions extensions = (IApiOptionsExtensions)serviceProvider.GetService<IApiOptionsConfigurator<TApi>>();
+            IApiOptionsExtensions extensions = (IApiOptionsExtensions)serviceProvider.GetService<IApiOptionsBuilder<TApi>>();
 
             factory.Invoke(extensions);
         }
@@ -142,27 +143,26 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <typeparam name="TApi">The API to be associated to a Handler.</typeparam>
         /// <typeparam name="TApiHandler">The Handler which will be configured and perform API calls.</typeparam>
         /// <param name="factory">Configures the API Handler using the provided configuration.</param>
-        /// <param name ="serviceLifetime">Configures the lifetime of the API handler.</param>
         /// <exception cref="ArgumentException">Thrown when the specified API has already been registered.</exception>
         /// <exception cref="ArgumentNullException">Thrown when a null value has been provided.</exception>
         /// <remarks>By default an <see cref="ILoggerFactory"/> is added to the API to create an <seealso cref="ILogger"/>.</remarks>
-        public static IApiOptionsExtensions RegisterApi<TApi, TApiHandler>([NotNull] this IServiceCollection services, [NotNull] Action<IApiOptionsConfigurator<TApi>> factory, ServiceLifetime serviceLifetime = ServiceLifetime.Scoped) where TApi : class where TApiHandler : class, IApiHandler, TApi
+        public static IApiOptionsExtensions RegisterApi<TApi, TApiHandler>([NotNull] this IServiceCollection services, [NotNull] Action<IApiOptionsBuilder<TApi>> builder) where TApi : class where TApiHandler : class, IApiHandler, TApi
         {
-            if(services == null)
+            if (services == null)
             {
                 throw new ArgumentNullException(nameof(services));
             }
 
-            if(factory == null)
+            if (builder == null)
             {
-                throw new ArgumentNullException(nameof(factory));
+                throw new ArgumentNullException(nameof(builder));
             }
 
-            services.TryAddSingleton(ApiConfiguration.Default);
+            services.TryAddSingleton((ISereneApiConfiguration)SereneApiConfiguration.Default);
 
-            ServiceDescriptor service = new ServiceDescriptor(typeof(TApi), typeof(TApiHandler), serviceLifetime);
+            ServiceDescriptor service = ServiceDescriptor.Scoped<TApi, TApiHandler>();
 
-            if(services.Contains(service))
+            if (services.Contains(service))
             {
                 throw new ArgumentException($"The API {typeof(TApi).Name} has already been registered.");
             }
@@ -171,16 +171,16 @@ namespace SereneApi.Extensions.DependencyInjection
 
             using ServiceProvider provider = services.BuildServiceProvider();
 
-            IApiConfiguration configuration = provider.GetRequiredService<IApiConfiguration>();
+            ISereneApiConfiguration configuration = provider.GetRequiredService<ISereneApiConfiguration>();
 
-            ApiOptionsBuilder<TApi> builder = configuration.GetOptionsBuilder<ApiOptionsBuilder<TApi>>();
+            ApiOptionsFactory<TApi> factory = configuration.BuildOptionsFactory<ApiOptionsFactory<TApi>>();
 
-            services.Add(new ServiceDescriptor(typeof(IApiOptionsConfigurator<TApi>),
-                p => CreateApiHandlerOptionsBuilder(factory, builder, services), ServiceLifetime.Singleton));
+            services.Add(new ServiceDescriptor(typeof(IApiOptionsBuilder<TApi>),
+                p => CreateApiHandlerOptionsBuilder(builder, factory, services), ServiceLifetime.Singleton));
 
-            services.Add(new ServiceDescriptor(typeof(IApiOptions<TApi>), BuildApiHandlerOptions<TApi>, serviceLifetime));
+            services.Add(new ServiceDescriptor(typeof(IApiOptions<TApi>), BuildApiHandlerOptions<TApi>, ServiceLifetime.Scoped));
 
-            return builder;
+            return factory;
         }
 
         /// <summary>
@@ -189,30 +189,29 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <typeparam name="TApi">The API to be associated to a Handler.</typeparam>
         /// <typeparam name="TApiHandler">The Handler which will be configured and perform API calls.</typeparam>
         /// <param name="factory">Configures the API Handler using the provided configuration.</param>
-        /// <param name ="serviceLifetime">Configures the lifetime of the API handler.</param>
         /// <exception cref="ArgumentException">Thrown when the specified API has already been registered.</exception>
         /// <exception cref="ArgumentNullException">Thrown when a null value has been provided.</exception>
         /// <remarks>By default an <see cref="ILoggerFactory"/> is added to the API to create an <seealso cref="ILogger"/>.</remarks>
         public static IApiOptionsExtensions RegisterApi<TApi, TApiHandler>(
             [NotNull] this IServiceCollection services,
-            [NotNull] Action<IApiOptionsConfigurator<TApi>, IServiceProvider> factory, ServiceLifetime serviceLifetime = ServiceLifetime.Scoped)
+            [NotNull] Action<IApiOptionsBuilder<TApi>, IServiceProvider> factory)
             where TApi : class where TApiHandler : class, IApiHandler, TApi
         {
-            if(services == null)
+            if (services == null)
             {
                 throw new ArgumentNullException(nameof(services));
             }
 
-            if(factory == null)
+            if (factory == null)
             {
                 throw new ArgumentNullException(nameof(factory));
             }
 
-            services.TryAddSingleton(ApiConfiguration.Default);
+            services.TryAddSingleton((ISereneApiConfiguration)SereneApiConfiguration.Default);
 
-            ServiceDescriptor service = new ServiceDescriptor(typeof(TApi), typeof(TApiHandler), serviceLifetime);
+            ServiceDescriptor service = ServiceDescriptor.Scoped<TApi, TApiHandler>();
 
-            if(services.Contains(service))
+            if (services.Contains(service))
             {
                 throw new ArgumentException($"The API {typeof(TApi).Name} has already been registered.");
             }
@@ -221,52 +220,52 @@ namespace SereneApi.Extensions.DependencyInjection
 
             using ServiceProvider provider = services.BuildServiceProvider();
 
-            IApiConfiguration configuration = provider.GetRequiredService<IApiConfiguration>();
+            ISereneApiConfiguration configuration = provider.GetRequiredService<ISereneApiConfiguration>();
 
-            ApiOptionsBuilder<TApi> builder = configuration.GetOptionsBuilder<ApiOptionsBuilder<TApi>>();
+            ApiOptionsFactory<TApi> builder = configuration.BuildOptionsFactory<ApiOptionsFactory<TApi>>();
 
-            services.TryAdd(new ServiceDescriptor(typeof(IApiOptionsConfigurator<TApi>),
+            services.TryAdd(new ServiceDescriptor(typeof(IApiOptionsBuilder<TApi>),
                 p => CreateApiHandlerOptionsBuilder(factory, builder, services, p), ServiceLifetime.Singleton));
 
             services.TryAdd(new ServiceDescriptor(typeof(IApiOptions<TApi>),
-                BuildApiHandlerOptions<TApi>, serviceLifetime));
+                BuildApiHandlerOptions<TApi>, ServiceLifetime.Scoped));
 
             return builder;
         }
 
         /// <summary>
-        /// Creates and configured the <see cref="IApiOptionsConfigurator"/> for the specified API.
+        /// Creates and configured the <see cref="IApiOptionsBuilder{TApi}"/> for the specified API.
         /// </summary>
-        /// <typeparam name="TApi">The API that the <see cref="IApiOptionsConfigurator"/> will be built for.</typeparam>
+        /// <typeparam name="TApi">The API that the <see cref="IApiOptionsBuilder{TApi}"/> will be built for.</typeparam>
         /// <param name="factory">Configures the user supplied values for <see cref="IApiConfiguration"/>.</param>
-        /// <param name="builder">Used to invoke the factory.</param>
+        /// <param name="factory">Used to invoke the factory.</param>
         /// <param name="services">Injected into the <see cref="IDependencyCollection"/> for <see cref="IApiOptions"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is supplied.</exception>
-        private static IApiOptionsConfigurator<TApi> CreateApiHandlerOptionsBuilder<TApi>([NotNull] Action<IApiOptionsConfigurator<TApi>> factory, [NotNull] ApiOptionsBuilder<TApi> builder, [NotNull] IServiceCollection services) where TApi : class
+        private static IApiOptionsBuilder<TApi> CreateApiHandlerOptionsBuilder<TApi>([NotNull] Action<IApiOptionsBuilder<TApi>> builder, [NotNull] ApiOptionsFactory<TApi> factory, [NotNull] IServiceCollection services) where TApi : class
         {
-            if(factory == null)
-            {
-                throw new ArgumentNullException(nameof(factory));
-            }
-
-            if(builder == null)
+            if (builder == null)
             {
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            if(services == null)
+            if (factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
+            if (services == null)
             {
                 throw new ArgumentNullException(nameof(services));
             }
 
-            factory.Invoke(builder);
+            builder.Invoke(factory);
 
-            builder.Dependencies.AddSingleton(() => services, Binding.Unbound);
-            builder.Dependencies.AddTransient<IServiceProvider>(p => p.GetDependency<IServiceCollection>().BuildServiceProvider());
+            factory.Dependencies.AddSingleton(() => services, Binding.Unbound);
+            factory.Dependencies.AddTransient<IServiceProvider>(p => p.GetDependency<IServiceCollection>().BuildServiceProvider());
 
-            if(services.Any(x => x.ServiceType == typeof(ILoggerFactory)))
+            if (services.Any(x => x.ServiceType == typeof(ILoggerFactory)))
             {
-                builder.Dependencies.TryAddScoped<ILogger>(p =>
+                factory.Dependencies.TryAddScoped<ILogger>(p =>
                 {
                     IServiceProvider serviceProvider = (ServiceProvider)p.GetDependency<IServiceProvider>();
 
@@ -276,48 +275,48 @@ namespace SereneApi.Extensions.DependencyInjection
                 });
             }
 
-            return builder;
+            return factory;
         }
 
         /// <summary>
-        /// Creates and configured the <see cref="IApiOptionsConfigurator"/> for the specified API.
+        /// Creates and configured the <see cref="IApiOptionsBuilder{TApi}"/> for the specified API.
         /// </summary>
-        /// <typeparam name="TApi">The API that the <see cref="IApiOptionsConfigurator"/> will be built for.</typeparam>
+        /// <typeparam name="TApi">The API that the <see cref="IApiOptionsBuilder{TApi}"/> will be built for.</typeparam>
         /// <param name="factory">Configures the user supplied values for <see cref="IApiConfiguration"/>.</param>
-        /// <param name="builder">Used to invoke the factory.</param>
+        /// <param name="factory">Used to invoke the factory.</param>
         /// <param name="services">Injected into the <see cref="IDependencyCollection"/> for <see cref="IApiOptions"/>.</param>
         /// <param name="provider">Used to invoke the factory.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is supplied.</exception>
-        private static IApiOptionsConfigurator<TApi> CreateApiHandlerOptionsBuilder<TApi>([NotNull] Action<IApiOptionsConfigurator<TApi>, IServiceProvider> factory, [NotNull] ApiOptionsBuilder<TApi> builder, [NotNull] IServiceCollection services, [NotNull] IServiceProvider provider) where TApi : class
+        private static IApiOptionsBuilder<TApi> CreateApiHandlerOptionsBuilder<TApi>([NotNull] Action<IApiOptionsBuilder<TApi>, IServiceProvider> builder, [NotNull] ApiOptionsFactory<TApi> factory, [NotNull] IServiceCollection services, [NotNull] IServiceProvider provider) where TApi : class
         {
-            if(factory == null)
-            {
-                throw new ArgumentNullException(nameof(factory));
-            }
-
-            if(builder == null)
+            if (builder == null)
             {
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            if(services == null)
+            if (factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
+            if (services == null)
             {
                 throw new ArgumentNullException(nameof(services));
             }
 
-            if(provider == null)
+            if (provider == null)
             {
                 throw new ArgumentNullException(nameof(provider));
             }
 
-            factory.Invoke(builder, provider);
+            builder.Invoke(factory, provider);
 
-            builder.Dependencies.AddSingleton(() => services, Binding.Unbound);
-            builder.Dependencies.AddTransient<IServiceProvider>(p => p.GetDependency<IServiceCollection>().BuildServiceProvider());
+            factory.Dependencies.AddSingleton(() => services, Binding.Unbound);
+            factory.Dependencies.AddTransient<IServiceProvider>(p => p.GetDependency<IServiceCollection>().BuildServiceProvider());
 
-            if(services.Any(x => x.ServiceType == typeof(ILoggerFactory)))
+            if (services.Any(x => x.ServiceType == typeof(ILoggerFactory)))
             {
-                builder.Dependencies.TryAddScoped<ILogger>(p =>
+                factory.Dependencies.TryAddScoped<ILogger>(p =>
                 {
                     IServiceProvider serviceProvider = p.GetDependency<IServiceProvider>();
 
@@ -327,25 +326,25 @@ namespace SereneApi.Extensions.DependencyInjection
                 });
             }
 
-            return builder;
+            return factory;
         }
 
         /// <summary>
         /// Builds <see cref="IApiOptions"/> for the specified API.
         /// </summary>
         /// <typeparam name="TApi">The API that the <see cref="IApiOptions"/> will be built for.</typeparam>
-        /// <param name="provider">Used to get the <see cref="IApiOptionsConfigurator"/>.</param>
+        /// <param name="provider">Used to get the <see cref="IApiOptionsBuilder{TApi}"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
         private static IApiOptions<TApi> BuildApiHandlerOptions<TApi>([NotNull] IServiceProvider provider) where TApi : class
         {
-            if(provider == null)
+            if (provider == null)
             {
                 throw new ArgumentNullException(nameof(provider));
             }
 
-            ApiOptionsBuilder<TApi> builder = (ApiOptionsBuilder<TApi>)provider.GetRequiredService<IApiOptionsConfigurator<TApi>>();
+            ApiOptionsFactory<TApi> factory = (ApiOptionsFactory<TApi>)provider.GetRequiredService<IApiOptionsBuilder<TApi>>();
 
-            return builder.BuildOptions();
+            return factory.BuildOptions();
         }
     }
 }

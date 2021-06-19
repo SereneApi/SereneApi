@@ -1,6 +1,6 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Options;
-using SereneApi.Extensions.Mocking.Handlers;
 using SereneApi.Extensions.Mocking.Response;
 using System;
 using System.Collections.Generic;
@@ -20,17 +20,12 @@ namespace SereneApi.Extensions.Mocking
         /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
         public static IApiOptionsExtensions WithMockResponse(this IApiOptionsExtensions extensions, [NotNull] Action<IMockResponsesBuilder> mockResponseBuilder, bool enableOutgoingRequests = false)
         {
-            if(mockResponseBuilder == null)
+            if (mockResponseBuilder == null)
             {
                 throw new ArgumentNullException(nameof(mockResponseBuilder));
             }
 
-            if(!(extensions is ICoreOptions options))
-            {
-                throw new InvalidCastException($"Base type must inherit {nameof(ICoreOptions)}");
-            }
-
-            options.Dependencies.AddScoped<HttpMessageHandler>(p =>
+            extensions.Dependencies.AddScoped<HttpMessageHandler>(p =>
             {
                 MockResponsesBuilder mockResponsesBuilder = new MockResponsesBuilder(p);
 
@@ -38,9 +33,11 @@ namespace SereneApi.Extensions.Mocking
 
                 List<IMockResponse> mockResponses = mockResponsesBuilder.Build();
 
-                if(enableOutgoingRequests)
+                if (enableOutgoingRequests)
                 {
-                    return new MockMessageHandler(mockResponses, new HttpClientHandler());
+                    HttpMessageHandler messageHandler = p.GetDependency<IClientFactory>().BuildHttpMessageHandler();
+
+                    return new MockMessageHandler(mockResponses, messageHandler);
                 }
 
                 return new MockMessageHandler(mockResponses);

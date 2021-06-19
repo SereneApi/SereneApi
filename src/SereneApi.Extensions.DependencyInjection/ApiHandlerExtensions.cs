@@ -23,27 +23,22 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <exception cref="InvalidCastException">Thrown when extensions does not implement <see cref="ICoreOptions"/>.</exception>
         public static IApiOptionsExtensions AddDIAuthenticator<TApi, TDto>([NotNull] this IApiOptionsExtensions extensions, [NotNull] Func<TApi, Task<IApiResponse<TDto>>> callApi, [NotNull] Func<TDto, TokenAuthResult> extractToken) where TApi : class, IDisposable where TDto : class
         {
-            if(extensions == null)
+            if (extensions == null)
             {
                 throw new ArgumentNullException(nameof(extensions));
             }
 
-            if(callApi == null)
+            if (callApi == null)
             {
                 throw new ArgumentNullException(nameof(callApi));
             }
 
-            if(extractToken == null)
+            if (extractToken == null)
             {
                 throw new ArgumentNullException(nameof(extractToken));
             }
 
-            if(!(extensions is ICoreOptions options))
-            {
-                throw new InvalidCastException($"Base type must inherit {nameof(ICoreOptions)}");
-            }
-
-            options.Dependencies.AddSingleton<IAuthorizer>(p => new InjectedTokenAuthorizer<TApi, TDto>(p, callApi, extractToken));
+            extensions.Dependencies.AddSingleton<IAuthorizer>(p => new InjectedTokenAuthorizer<TApi, TDto>(p, callApi, extractToken));
 
             return extensions;
         }

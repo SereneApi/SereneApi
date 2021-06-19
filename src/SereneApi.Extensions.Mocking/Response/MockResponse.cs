@@ -1,5 +1,5 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Abstractions.Request.Content;
+using SereneApi.Abstractions.Content;
 using SereneApi.Abstractions.Response;
 using SereneApi.Extensions.Mocking.Dependencies;
 using SereneApi.Extensions.Mocking.Dependencies.Whitelist;
@@ -13,11 +13,11 @@ using System.Threading.Tasks;
 namespace SereneApi.Extensions.Mocking.Response
 {
     /// <inheritdoc cref="IMockResponse"/>
-    internal class MockResponse: IMockResponse
+    internal class MockResponse : IMockResponse
     {
         private readonly IDependencyProvider _dependencies;
 
-        private readonly IApiRequestContent _responseContent;
+        private readonly IRequestContent _responseContent;
 
         /// <inheritdoc cref="IMockResponse.Status"/>
         public Status Status { get; }
@@ -29,7 +29,7 @@ namespace SereneApi.Extensions.Mocking.Response
         /// <param name="status">The status of the response.</param>
         /// <param name="responseContent">,The content of the response.</param>
         /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
-        public MockResponse([NotNull] IDependencyProvider dependencies, Status status, IApiRequestContent responseContent)
+        public MockResponse([NotNull] IDependencyProvider dependencies, Status status, IRequestContent responseContent)
         {
             _dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
             _responseContent = responseContent;
@@ -40,7 +40,7 @@ namespace SereneApi.Extensions.Mocking.Response
         /// <inheritdoc cref="IWhitelist.Validate"/>
         public Validity Validate([NotNull] object value)
         {
-            if(value == null)
+            if (value == null)
             {
                 throw new ArgumentNullException(nameof(value));
             }
@@ -55,9 +55,9 @@ namespace SereneApi.Extensions.Mocking.Response
         }
 
         /// <inheritdoc cref="IMockResponse.GetResponseContentAsync"/>
-        public async Task<IApiRequestContent> GetResponseContentAsync(CancellationToken cancellationToken = default)
+        public async Task<IRequestContent> GetResponseContentAsync(CancellationToken cancellationToken = default)
         {
-            if(_dependencies.TryGetDependency(out DelayedResponseDependency delay))
+            if (_dependencies.TryGetDependency(out DelayedResponseDependency delay))
             {
                 await delay.DelayResponseAsync(cancellationToken);
             }
@@ -77,12 +77,12 @@ namespace SereneApi.Extensions.Mocking.Response
 
         protected virtual void Dispose(bool disposing)
         {
-            if(_disposed)
+            if (_disposed)
             {
                 return;
             }
 
-            if(disposing)
+            if (disposing)
             {
                 _dependencies.Dispose();
             }

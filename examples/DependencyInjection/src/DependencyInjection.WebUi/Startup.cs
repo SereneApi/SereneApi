@@ -27,7 +27,7 @@ namespace DependencyInjection.WebUi
 
             services.ConfigureSereneApi(r =>
             {
-                r.ResourcePath = "api/v2/";
+                r.ResourcePath = "api/v2";
             }).AddNewtonsoft();
 
             // Add an ApiHandler to the services collection, this enables dependency injection.
@@ -60,7 +60,7 @@ namespace DependencyInjection.WebUi
             app.UseSwagger();
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("../swagger/v1/swagger.json", "WebUi"); });
 
-            if(env.IsDevelopment())
+            if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }

@@ -1,9 +1,9 @@
-﻿namespace SereneApi.Abstractions.Options
+﻿using DeltaWare.Dependencies.Abstractions;
+
+namespace SereneApi.Abstractions.Options
 {
-    /// <summary>
-    /// Extends <see cref="IApiOptions"/>.
-    /// </summary>
     public interface IApiOptionsExtensions
     {
+        IDependencyCollection Dependencies { get; }
     }
 }

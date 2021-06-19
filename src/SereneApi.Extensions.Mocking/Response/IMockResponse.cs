@@ -1,4 +1,4 @@
-﻿using SereneApi.Abstractions.Request.Content;
+﻿using SereneApi.Abstractions.Content;
 using SereneApi.Abstractions.Response;
 using SereneApi.Extensions.Mocking.Dependencies;
 using SereneApi.Extensions.Mocking.Dependencies.Whitelist;
@@ -11,7 +11,7 @@ namespace SereneApi.Extensions.Mocking.Response
     /// <summary>
     /// Responds to mock API request.
     /// </summary>
-    public interface IMockResponse: IWhitelist, IDisposable
+    public interface IMockResponse : IWhitelist, IDisposable
     {
         /// <summary>
         /// The <see cref="Status"/> the <see cref="IMockResponse"/> will respond with.
@@ -24,6 +24,6 @@ namespace SereneApi.Extensions.Mocking.Response
         /// <remarks>The <see cref="CancellationToken"/> is required for the timeout to function.</remarks>
         /// <param name="cancellationToken">The cancellation token used in conjunction with the <see cref="DelayedResponseDependency"/>.</param>
         /// <exception cref="TaskCanceledException">Thrown when a <see cref="CancellationToken"/> is received.</exception>
-        Task<IApiRequestContent> GetResponseContentAsync(CancellationToken cancellationToken = default);
+        Task<IRequestContent> GetResponseContentAsync(CancellationToken cancellationToken = default);
     }
 }

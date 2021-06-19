@@ -1,4 +1,4 @@
-﻿using SereneApi.Abstractions.Configuration;
+﻿using SereneApi.Abstractions.Configuration.Adapters;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
@@ -19,7 +19,7 @@ namespace SereneApi.Adapters.Profiling
 
         public static ISession Profile([NotNull] Action action)
         {
-            if(action == null)
+            if (action == null)
             {
                 throw new ArgumentNullException(nameof(action));
             }
@@ -33,7 +33,7 @@ namespace SereneApi.Adapters.Profiling
 
         public static async Task<ISession> ProfileAsync([NotNull] Func<Task> action)
         {
-            if(action == null)
+            if (action == null)
             {
                 throw new ArgumentNullException(nameof(action));
             }
@@ -53,7 +53,7 @@ namespace SereneApi.Adapters.Profiling
         /// <exception cref="MethodAccessException">Thrown when a session is already in progress.</exception>
         public static void StartSession()
         {
-            if(_profiler == null)
+            if (_profiler == null)
             {
                 throw new MethodAccessException("TestingAdapter must be initiate first.");
             }
@@ -68,7 +68,7 @@ namespace SereneApi.Adapters.Profiling
         /// <exception cref="MethodAccessException">Thrown when a session was not in progress.</exception>
         public static ISession EndSession()
         {
-            if(_profiler == null)
+            if (_profiler == null)
             {
                 throw new MethodAccessException("TestingAdapter must be initiate first.");
             }
@@ -83,22 +83,22 @@ namespace SereneApi.Adapters.Profiling
         /// <exception cref="MethodAccessException">Thrown when this method is called more than once.</exception>
         public static IApiAdapter Initiate([NotNull] IApiAdapter adapter)
         {
-            if(adapter == null)
+            if (adapter == null)
             {
                 throw new ArgumentNullException(nameof(adapter));
             }
 
-            if(_profiler != null)
+            if (_profiler != null)
             {
                 throw new MethodAccessException("Method cannot be called twice.");
             }
 
-            if(adapter.EventRelay == null)
+            if (adapter.Events == null)
             {
-                throw new ArgumentNullException(nameof(adapter.EventRelay));
+                throw new ArgumentNullException(nameof(adapter.Events));
             }
 
-            _profiler = new Profiler(adapter.EventRelay);
+            _profiler = new Profiler(adapter.Events);
 
             return adapter;
         }

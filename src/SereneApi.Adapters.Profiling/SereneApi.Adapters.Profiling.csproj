@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <Authors>DeltaWare</Authors>
+    <TargetFramework>net5.0</TargetFramework>
+    <Authors>Bradley Clarke</Authors>
     <Product>SereneApi</Product>
     <Description>SereneApi is a .NET Library that introduces an intuitive way of consuming your REST APIs while combining a robust set of extensible tools. This packages enables profiling against your APIs enabling quering against your API usage statics, this could be useful for Unit Testing.</Description>
     <Copyright>Copyright (c) 2020 DeltaWare</Copyright>
@@ -13,13 +13,11 @@
     <PackageTags>..\..\LICENSE.md</PackageTags>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <Version>1.1.0.0-beta</Version>
+    <Version>1.5.0.1-beta</Version>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>ADDED - ProfilingAdapter, profiles APIs.
-ADDED - ISesison, contains all statistics collected during the session.
-ADDED - IApiProfile, contains all statistics collected against a specific API.
-ADDED - IRequestProfile, contains all statistics related to a specific request.</PackageReleaseNotes>
+    <PackageReleaseNotes>MIGRATED - To .Net5</PackageReleaseNotes>
+    <ApplicationIcon>nuget_logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>

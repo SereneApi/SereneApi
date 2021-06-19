@@ -43,9 +43,9 @@ namespace SereneApi.Extensions.Mocking.Dependencies
         {
             return Task.Factory.StartNew(() =>
             {
-                if(DelayAmount > 0)
+                if (DelayAmount > 0)
                 {
-                    if(_timesDelayed <= 0)
+                    if (_timesDelayed <= 0)
                     {
                         return;
                     }
@@ -55,7 +55,7 @@ namespace SereneApi.Extensions.Mocking.Dependencies
 
                 bool canceled = cancellationToken.WaitHandle.WaitOne(DelayTime);
 
-                if(canceled)
+                if (canceled)
                 {
                     throw new TaskCanceledException("The response was canceled as it breached the timeout time.");
                 }

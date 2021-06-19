@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Extensions.Mocking.Response
 {
-    public interface IMockResponseUrl: IMockResponseContent
+    public interface IMockResponseUrl : IMockResponseContent
     {
         /// <summary>
         /// The <see cref="IMockResponse"/> only responds to requests within the specified <see cref="Uri"/>s.

@@ -9,7 +9,7 @@ using System.Linq;
 namespace SereneApi.Adapters.Profiling
 {
     [DebuggerDisplay("Duration: {Duration}")]
-    internal class Session: ISession
+    internal class Session : ISession
     {
         public TimeSpan Duration { get; private set; }
 

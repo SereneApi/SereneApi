@@ -5,7 +5,7 @@ namespace SereneApi.Abstractions.Queries.Exceptions
     /// <summary>
     /// Thrown when a query requires a specific property to be provided.
     /// </summary>
-    public class RequiredQueryElementException: Exception
+    public class RequiredQueryElementException : Exception
     {
         /// <summary>
         /// Creates a new instance of <see cref="RequiredQueryElementException"/>.

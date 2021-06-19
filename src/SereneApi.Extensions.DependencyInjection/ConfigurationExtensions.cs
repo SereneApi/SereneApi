@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Connection;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -23,32 +23,32 @@ namespace SereneApi.Extensions.DependencyInjection
         public const bool RetryIsRequired = false;
 
         /// <summary>
-        /// Returns the <see cref="IConnectionConfiguration"/> from within ApiConfig that matches the specified API Key.
+        /// Returns the <see cref="IConnectionSettings"/> from within ApiConfig that matches the specified API Key.
         /// </summary>
         /// <param name="configuration">The ROOT <see cref="IConfiguration"/> to be searched.</param>
         /// <param name="apiConfigurationKey">The <see cref="IConfiguration"/> name containing the API Configuration.</param>
         /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
         /// <exception cref="KeyNotFoundException">Thrown when the specified api key was not found.</exception>
-        public static IConnectionConfiguration GetApiConfig([NotNull] this IConfiguration configuration, [NotNull] string apiConfigurationKey)
+        public static IConnectionSettings GetApiConfig([NotNull] this IConfiguration configuration, [NotNull] string apiConfigurationKey)
         {
-            if(configuration == null)
+            if (configuration == null)
             {
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            if(string.IsNullOrWhiteSpace(apiConfigurationKey))
+            if (string.IsNullOrWhiteSpace(apiConfigurationKey))
             {
                 throw new ArgumentNullException(nameof(apiConfigurationKey));
             }
 
-            if(!configuration.GetSection(ApiConfigKey).Exists())
+            if (!configuration.GetSection(ApiConfigKey).Exists())
             {
                 throw new KeyNotFoundException($"Could not find {ApiConfigKey} inside the Configuration");
             }
 
             IConfiguration configurationSection = configuration.GetSection(ApiConfigKey);
 
-            if(!configurationSection.GetSection(apiConfigurationKey).Exists())
+            if (!configurationSection.GetSection(apiConfigurationKey).Exists())
             {
                 throw new KeyNotFoundException($"Could not find {ApiConfigKey}:{apiConfigurationKey} inside the Configuration");
             }
@@ -59,20 +59,20 @@ namespace SereneApi.Extensions.DependencyInjection
             string resource = apiConfiguration.Get<string>(ResourceKey, ResourceIsRequired);
             string resourcePath = apiConfiguration.Get<string>(ResourcePathKey, ResourcePathIsRequired);
 
-            ConnectionConfiguration connection = new ConnectionConfiguration(source, resource, resourcePath);
+            ConnectionSettings connection = new ConnectionSettings(source, resource, resourcePath);
 
             #region Timeout
 
-            if(apiConfiguration.ContainsKey(TimeoutKey))
+            if (apiConfiguration.ContainsKey(TimeoutKey))
             {
                 int timeout = apiConfiguration.Get<int>(TimeoutKey, TimeoutIsRequired);
 
-                if(timeout < 0)
+                if (timeout < 0)
                 {
                     throw new ArgumentException("The Timeout value must be greater than 0");
                 }
 
-                if(timeout != default)
+                if (timeout != default)
                 {
                     connection.Timeout = timeout;
                 }
@@ -81,11 +81,11 @@ namespace SereneApi.Extensions.DependencyInjection
             #endregion
             #region Retry Count
 
-            if(!apiConfiguration.ContainsKey(RetryCountKey))
+            if (!apiConfiguration.ContainsKey(RetryCountKey))
             {
                 int retryCount = apiConfiguration.Get<int>(RetryCountKey, RetryIsRequired);
 
-                if(retryCount != default)
+                if (retryCount != default)
                 {
                     connection.RetryAttempts = retryCount;
                 }
@@ -104,38 +104,38 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <param name="apiSourceKey">The <see cref="IConfigurationSection"/> containing the source for the API.</param>
         /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
         /// <exception cref="KeyNotFoundException">Thrown when the specified api key was not found.</exception>
-        public static IConnectionConfiguration GetApiConfig([NotNull] this IConfiguration configuration, [NotNull] string apiConfigurationKey, [NotNull] string apiSourceKey)
+        public static IConnectionSettings GetApiConfig([NotNull] this IConfiguration configuration, [NotNull] string apiConfigurationKey, [NotNull] string apiSourceKey)
         {
-            if(configuration == null)
+            if (configuration == null)
             {
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            if(string.IsNullOrWhiteSpace(apiConfigurationKey))
+            if (string.IsNullOrWhiteSpace(apiConfigurationKey))
             {
                 throw new ArgumentNullException(nameof(apiConfigurationKey));
             }
 
-            if(string.IsNullOrWhiteSpace(apiSourceKey))
+            if (string.IsNullOrWhiteSpace(apiSourceKey))
             {
                 throw new ArgumentNullException(nameof(apiSourceKey));
             }
 
-            if(!configuration.GetSection(ApiConfigKey).Exists())
+            if (!configuration.GetSection(ApiConfigKey).Exists())
             {
                 throw new KeyNotFoundException($"Could not find {ApiConfigKey} inside the Configuration");
             }
 
             IConfiguration configurationSection = configuration.GetSection(ApiConfigKey);
 
-            if(!configurationSection.GetSection(apiConfigurationKey).Exists())
+            if (!configurationSection.GetSection(apiConfigurationKey).Exists())
             {
                 throw new KeyNotFoundException($"Could not find {ApiConfigKey}:{apiConfigurationKey} inside the Configuration");
             }
 
             IConfiguration apiConfiguration = configurationSection.GetSection(apiConfigurationKey);
 
-            if(!configurationSection.GetSection(apiSourceKey).Exists())
+            if (!configurationSection.GetSection(apiSourceKey).Exists())
             {
                 throw new KeyNotFoundException($"Could not find {ApiConfigKey}:{apiSourceKey} inside the Configuration");
             }
@@ -144,20 +144,20 @@ namespace SereneApi.Extensions.DependencyInjection
             string resource = apiConfiguration.Get<string>(ResourceKey, ResourceIsRequired);
             string resourcePath = apiConfiguration.Get<string>(ResourcePathKey, ResourcePathIsRequired);
 
-            ConnectionConfiguration connection = new ConnectionConfiguration(source, resource, resourcePath);
+            ConnectionSettings connection = new ConnectionSettings(source, resource, resourcePath);
 
             #region Timeout
 
-            if(apiConfiguration.ContainsKey(TimeoutKey))
+            if (apiConfiguration.ContainsKey(TimeoutKey))
             {
                 int timeout = apiConfiguration.Get<int>(TimeoutKey, TimeoutIsRequired);
 
-                if(timeout < 0)
+                if (timeout < 0)
                 {
                     throw new ArgumentException("The Timeout value must be greater than 0");
                 }
 
-                if(timeout != default)
+                if (timeout != default)
                 {
                     connection.Timeout = timeout;
                 }
@@ -166,11 +166,11 @@ namespace SereneApi.Extensions.DependencyInjection
             #endregion
             #region Retry Count
 
-            if(!apiConfiguration.ContainsKey(RetryCountKey))
+            if (!apiConfiguration.ContainsKey(RetryCountKey))
             {
                 int retryCount = apiConfiguration.Get<int>(RetryCountKey, RetryIsRequired);
 
-                if(retryCount != default)
+                if (retryCount != default)
                 {
                     connection.RetryAttempts = retryCount;
                 }
@@ -192,22 +192,22 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <exception cref="KeyNotFoundException">Thrown when the specified value cannot be found and requited is set to true.</exception>
         internal static TValue Get<TValue>([NotNull] this IConfiguration configuration, [NotNull] string key, bool required = true)
         {
-            if(configuration == null)
+            if (configuration == null)
             {
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            if(string.IsNullOrWhiteSpace(key))
+            if (string.IsNullOrWhiteSpace(key))
             {
                 throw new ArgumentNullException(nameof(key));
             }
 
-            if(configuration.GetSection(key).Exists())
+            if (configuration.GetSection(key).Exists())
             {
                 return configuration.GetSection(key).Get<TValue>();
             }
 
-            if(required)
+            if (required)
             {
                 throw new KeyNotFoundException($"Could not find {key} inside the Configuration");
             }
@@ -223,12 +223,12 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
         internal static bool ContainsKey([NotNull] this IConfiguration configuration, [NotNull] string key)
         {
-            if(configuration == null)
+            if (configuration == null)
             {
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            if(string.IsNullOrWhiteSpace(key))
+            if (string.IsNullOrWhiteSpace(key))
             {
                 throw new ArgumentNullException(nameof(key));
             }

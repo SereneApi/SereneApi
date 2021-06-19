@@ -15,15 +15,15 @@ namespace SereneApi.Extensions.Newtonsoft.Tests
         [Fact]
         public void AddSuccessfully()
         {
-            IApiConfiguration configuration = new ApiConfiguration();
+            SereneApiConfiguration configuration = new SereneApiConfiguration();
 
-            IApiConfigurationExtensions configurationExtensions = configuration.GetExtensions();
+            IConfigurationExtensions configurationExtensions = configuration.GetExtensions();
 
             Should.NotThrow(() => configurationExtensions.AddNewtonsoft());
 
-            IApiOptionsBuilder options = configuration.GetOptionsBuilder();
+            IApiOptionsFactory factory = configuration.BuildOptionsFactory();
 
-            using IDependencyProvider provider = options.Dependencies.BuildProvider();
+            using IDependencyProvider provider = factory.Dependencies.BuildProvider();
 
             ISerializer serializer = provider.GetDependency<ISerializer>();
 
@@ -33,9 +33,9 @@ namespace SereneApi.Extensions.Newtonsoft.Tests
         [Fact]
         public void AddWithSettingsSuccessfully()
         {
-            IApiConfiguration configuration = new ApiConfiguration();
+            SereneApiConfiguration configuration = new SereneApiConfiguration();
 
-            IApiConfigurationExtensions configurationExtensions = configuration.GetExtensions();
+            IConfigurationExtensions configurationExtensions = configuration.GetExtensions();
 
             JsonSerializerSettings settings = new JsonSerializerSettings
             {
@@ -44,9 +44,9 @@ namespace SereneApi.Extensions.Newtonsoft.Tests
 
             Should.NotThrow(() => configurationExtensions.AddNewtonsoft(settings));
 
-            IApiOptionsBuilder options = configuration.GetOptionsBuilder();
+            IApiOptionsFactory factory = configuration.BuildOptionsFactory();
 
-            using IDependencyProvider provider = options.Dependencies.BuildProvider();
+            using IDependencyProvider provider = factory.Dependencies.BuildProvider();
 
             ISerializer serializer = provider.GetDependency<ISerializer>();
 
@@ -59,15 +59,15 @@ namespace SereneApi.Extensions.Newtonsoft.Tests
         [Fact]
         public void AddWithSettingsBuilderSuccessfully()
         {
-            IApiConfiguration configuration = new ApiConfiguration();
+            SereneApiConfiguration configuration = new SereneApiConfiguration();
 
-            IApiConfigurationExtensions configurationExtensions = configuration.GetExtensions();
+            IConfigurationExtensions configurationExtensions = configuration.GetExtensions();
 
             Should.NotThrow(() => configurationExtensions.AddNewtonsoft(s => s.DateFormatString = "TEST"));
 
-            IApiOptionsBuilder options = configuration.GetOptionsBuilder();
+            IApiOptionsFactory factory = configuration.BuildOptionsFactory();
 
-            using IDependencyProvider provider = options.Dependencies.BuildProvider();
+            using IDependencyProvider provider = factory.Dependencies.BuildProvider();
 
             ISerializer serializer = provider.GetDependency<ISerializer>();
 
@@ -80,9 +80,9 @@ namespace SereneApi.Extensions.Newtonsoft.Tests
         [Fact]
         public void ThrowArgumentNullException_Settings()
         {
-            IApiConfiguration configuration = new ApiConfiguration();
+            SereneApiConfiguration configuration = new SereneApiConfiguration();
 
-            IApiConfigurationExtensions configurationExtensions = configuration.GetExtensions();
+            IConfigurationExtensions configurationExtensions = configuration.GetExtensions();
 
             JsonSerializerSettings settings = null;
 
@@ -92,9 +92,9 @@ namespace SereneApi.Extensions.Newtonsoft.Tests
         [Fact]
         public void ThrowArgumentNullException_Builder()
         {
-            IApiConfiguration configuration = new ApiConfiguration();
+            SereneApiConfiguration configuration = new SereneApiConfiguration();
 
-            IApiConfigurationExtensions configurationExtensions = configuration.GetExtensions();
+            IConfigurationExtensions configurationExtensions = configuration.GetExtensions();
 
             Action<JsonSerializerSettings> builder = null;
 

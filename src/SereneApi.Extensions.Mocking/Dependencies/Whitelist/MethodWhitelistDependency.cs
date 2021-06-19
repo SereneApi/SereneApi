@@ -1,4 +1,4 @@
-﻿using SereneApi.Abstractions.Request;
+﻿using SereneApi.Abstractions.Requests;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -8,7 +8,7 @@ namespace SereneApi.Extensions.Mocking.Dependencies.Whitelist
     /// <summary>
     /// Only replies to requests that contain the specified <see cref="Method"/>.
     /// </summary>
-    public class MethodWhitelistDependency: IWhitelist
+    public class MethodWhitelistDependency : IWhitelist
     {
         private readonly Method[] _method;
 
@@ -20,17 +20,17 @@ namespace SereneApi.Extensions.Mocking.Dependencies.Whitelist
         /// <exception cref="ArgumentException">Thrown when the params are empty or an invalid <see cref="Method"/> is provided.</exception>
         public MethodWhitelistDependency([NotNull] params Method[] methods)
         {
-            if(methods == null)
+            if (methods == null)
             {
                 throw new ArgumentNullException(nameof(methods));
             }
 
-            if(methods.Length <= 0)
+            if (methods.Length <= 0)
             {
                 throw new ArgumentException($"{nameof(methods)} must not be empty.");
             }
 
-            if(methods.Any(m => m == Method.NONE))
+            if (methods.Any(m => m == Method.NONE))
             {
                 throw new ArgumentException("An invalid method was provided.");
             }
@@ -41,17 +41,17 @@ namespace SereneApi.Extensions.Mocking.Dependencies.Whitelist
         /// <inheritdoc cref="IWhitelist.Validate"/>
         public Validity Validate(object value)
         {
-            if(value == null)
+            if (value == null)
             {
                 throw new ArgumentNullException(nameof(value));
             }
 
-            if(!(value is Method method))
+            if (!(value is Method method))
             {
                 return Validity.NotApplicable;
             }
 
-            if(_method.Contains(method))
+            if (_method.Contains(method))
             {
                 return Validity.Valid;
             }

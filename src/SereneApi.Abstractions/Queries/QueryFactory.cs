@@ -12,7 +12,7 @@ using System.Text;
 namespace SereneApi.Abstractions.Queries
 {
     /// <inheritdoc cref="IQueryFactory"/>
-    public class QueryFactory: IQueryFactory
+    public class QueryFactory : IQueryFactory
     {
         private readonly ObjectToStringFormatter _formatter;
 
@@ -28,16 +28,9 @@ namespace SereneApi.Abstractions.Queries
         /// <inheritdoc>
         ///     <cref>IQueryFactory.Build</cref>
         /// </inheritdoc>
-        public string Build<TQueryable>([NotNull] TQueryable query)
+        public string Build<TQueryable>(TQueryable query)
         {
-            if(query == null)
-            {
-                throw new ArgumentNullException(nameof(query));
-            }
-
-            PropertyInfo[] queryProperties = typeof(TQueryable).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-
-            List<string> querySections = queryProperties.Select(p => ExtractQueryString(p, query)).Where(q => !string.IsNullOrWhiteSpace(q)).ToList();
+            Dictionary<string, string> querySections = BuildDictionary(query);
 
             return BuildQueryString(querySections);
         }
@@ -45,45 +38,83 @@ namespace SereneApi.Abstractions.Queries
         /// <inheritdoc>
         ///     <cref>IQueryFactory.Build</cref>
         /// </inheritdoc>
-        public string Build<TQueryable>([NotNull] TQueryable query, [NotNull] Expression<Func<TQueryable, object>> selector)
+        public string Build<TQueryable>(TQueryable query, Expression<Func<TQueryable, object>> selector)
         {
-            if(query == null)
+            Dictionary<string, string> querySections = BuildDictionary(query, selector);
+
+            return BuildQueryString(querySections);
+        }
+
+        public string Build(Dictionary<string, string> query)
+        {
+            return BuildQueryString(query);
+        }
+
+        public Dictionary<string, string> BuildDictionary<TQueryable>(TQueryable query)
+        {
+            if (query == null)
             {
                 throw new ArgumentNullException(nameof(query));
             }
 
-            if(selector == null)
+            Dictionary<string, string> querySections = new Dictionary<string, string>();
+
+            PropertyInfo[] queryProperties = typeof(TQueryable).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (PropertyInfo queryProperty in queryProperties)
+            {
+                KeyValuePair<string, string> querySection = ExtractQuerySection(queryProperty, query);
+
+                if (string.IsNullOrWhiteSpace(querySection.Value))
+                {
+                    continue;
+                }
+
+                querySections.Add(querySection.Key, querySection.Value);
+            }
+
+            return querySections;
+        }
+
+        public Dictionary<string, string> BuildDictionary<TQueryable>(TQueryable query, Expression<Func<TQueryable, object>> selector)
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+
+            if (selector == null)
             {
                 throw new ArgumentNullException(nameof(selector));
             }
 
-            List<string> querySections = new List<string>();
-
-            if(!(selector.Body is NewExpression body))
+            if (!(selector.Body is NewExpression body))
             {
-                return string.Empty;
+                return null;
             }
 
-            foreach(Expression expression in body.Arguments)
+            Dictionary<string, string> querySections = new Dictionary<string, string>();
+
+            foreach (Expression expression in body.Arguments)
             {
-                if(!(expression is MemberExpression member))
+                if (!(expression is MemberExpression member))
                 {
                     continue;
                 }
 
                 PropertyInfo property = (PropertyInfo)member.Member;
 
-                string queryString = ExtractQueryString(property, query);
+                KeyValuePair<string, string> querySection = ExtractQuerySection(property, query);
 
-                if(string.IsNullOrWhiteSpace(queryString))
+                if (string.IsNullOrWhiteSpace(querySection.Value))
                 {
                     continue;
                 }
 
-                querySections.Add(queryString);
+                querySections.Add(querySection.Key, querySection.Value);
             }
 
-            return BuildQueryString(querySections);
+            return querySections;
         }
 
         /// <summary>
@@ -93,14 +124,14 @@ namespace SereneApi.Abstractions.Queries
         /// <param name="queryProperty">The property containing the specific value.</param>
         /// <param name="query">The instantiated query that the value will be extracted from.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        private string ExtractQueryString<TQueryable>([NotNull] PropertyInfo queryProperty, [NotNull] TQueryable query)
+        private KeyValuePair<string, string> ExtractQuerySection<TQueryable>(PropertyInfo queryProperty, TQueryable query)
         {
-            if(queryProperty == null)
+            if (queryProperty == null)
             {
                 throw new ArgumentNullException(nameof(queryProperty));
             }
 
-            if(query == null)
+            if (query == null)
             {
                 throw new ArgumentNullException(nameof(query));
             }
@@ -114,18 +145,18 @@ namespace SereneApi.Abstractions.Queries
 
             bool required = false;
 
-            if(requiredAttribute != null)
+            if (requiredAttribute != null)
             {
                 requiredAttribute.Validate(queryValue, queryProperty.Name);
 
                 required = true;
             }
 
-            if(queryValue != null)
+            if (queryValue != null)
             {
                 QueryConverterAttribute converter = queryProperty.GetCustomAttribute<QueryConverterAttribute>();
 
-                if(converter == null)
+                if (converter == null)
                 {
                     queryString = _formatter(queryValue);
                 }
@@ -134,9 +165,9 @@ namespace SereneApi.Abstractions.Queries
                     queryString = converter.Converter.Convert(queryValue);
                 }
 
-                if(string.IsNullOrWhiteSpace(queryString))
+                if (string.IsNullOrWhiteSpace(queryString))
                 {
-                    if(required)
+                    if (required)
                     {
                         throw new RequiredQueryElementException(queryProperty.Name);
                     }
@@ -145,9 +176,9 @@ namespace SereneApi.Abstractions.Queries
                 }
             }
 
-            if(string.IsNullOrWhiteSpace(queryString))
+            if (string.IsNullOrWhiteSpace(queryString))
             {
-                return queryString;
+                return new KeyValuePair<string, string>();
             }
 
             queryProperty.GetCustomAttribute<MinLengthAttribute>()?.Validate(queryString, queryProperty.Name);
@@ -157,7 +188,7 @@ namespace SereneApi.Abstractions.Queries
 
             QueryKeyAttribute key = queryProperty.GetCustomAttribute<QueryKeyAttribute>();
 
-            if(key == null)
+            if (key == null)
             {
                 queryKey = queryProperty.Name;
             }
@@ -166,7 +197,7 @@ namespace SereneApi.Abstractions.Queries
                 queryKey = key.Key;
             }
 
-            return BuildQuerySection(queryKey, queryString);
+            return new KeyValuePair<string, string>(queryKey, queryString);
         }
 
         /// <summary>
@@ -174,23 +205,25 @@ namespace SereneApi.Abstractions.Queries
         /// </summary>
         /// <param name="querySections">Each string index represents an element in the query.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        private static string BuildQueryString([NotNull] IReadOnlyList<string> querySections)
+        private static string BuildQueryString(Dictionary<string, string> querySections)
         {
-            if(querySections == null)
+            if (querySections == null)
             {
                 throw new ArgumentNullException(nameof(querySections));
             }
 
             // No sections return empty string.
-            if(querySections.Count == 0)
+            if (querySections.Count == 0)
             {
                 return null;
             }
 
             // There is only one Section so we return the first section.
-            if(querySections.Count == 1)
+            if (querySections.Count == 1)
             {
-                return $"?{querySections[0]}";
+                KeyValuePair<string, string> querySection = querySections.First();
+
+                return $"?{BuildQuerySection(querySection)}";
             }
 
             StringBuilder queryBuilder = new StringBuilder();
@@ -198,27 +231,28 @@ namespace SereneApi.Abstractions.Queries
             // AddDependency the question mark to the front of the query.
             queryBuilder.Append("?");
 
-            // Enumerate all indexes except for the last index.
-            for(int i = 0; i < querySections.Count - 1; i++)
+            foreach (KeyValuePair<string, string> querySection in querySections)
             {
-                // Attach the query section and append an ampersand as we are adding more sections.
-                queryBuilder.Append($"{querySections[i]}&");
+                queryBuilder.Append($"{BuildQuerySection(querySection)}&");
             }
 
-            // Last section so we don't need an ampersand.
-            queryBuilder.Append(querySections.Last());
+            string queryString = queryBuilder.ToString();
 
-            return queryBuilder.ToString();
+            // If ampersand is the last character of the query string remove it.
+            if (queryString.Last() == '&')
+            {
+                queryString = queryString.Remove(queryString.Length - 1);
+            }
+
+            return queryString;
         }
 
         /// <summary>
-        /// Builds the query section using the supplied name and value string.
+        /// Builds the query section.
         /// </summary>
-        /// <param name="name">The key to be used in the query section.</param>
-        /// <param name="value">The value to be used in the query section.</param>
-        private static string BuildQuerySection(string name, string value)
+        private static string BuildQuerySection(KeyValuePair<string, string> querySection)
         {
-            return $"{name}={value}";
+            return $"{querySection.Key}={querySection.Value}";
         }
 
         /// <summary>
@@ -227,10 +261,10 @@ namespace SereneApi.Abstractions.Queries
         private static string DefaultQueryFormatter(object queryObject)
         {
             // If object is of a DateTime Value we will convert it to once.
-            if(queryObject is DateTime dateTimeQuery)
+            if (queryObject is DateTime dateTimeQuery)
             {
                 // The DateTime contains a TimeSpan so we'll include that in the query
-                if(dateTimeQuery.TimeOfDay != TimeSpan.Zero)
+                if (dateTimeQuery.TimeOfDay != TimeSpan.Zero)
                 {
                     return dateTimeQuery.ToString("yyyy-MM-dd HH:mm:ss");
                 }
