@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <AssemblyName>DeltaWare.SereneApi.AspNet</AssemblyName>
+    <ApplicationIcon>nuget_logo.ico</ApplicationIcon>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageId>SereneApi.AspNet</PackageId>
+    <Version>1.5.0.1</Version>
+    <Authors>Bradley Clarke</Authors>
+    <Company>DeltaWare</Company>
+    <Product>SereneApi</Product>
+    <Description>SereneApi is a .NET Library that introduces an intuitive way of consuming your REST APIs while combining a robust set of extensible tools.</Description>
+    <Copyright>Copyright (c) 2020 DeltaWare</Copyright>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
+    <PackageIcon>nuget_logo.png</PackageIcon>
+    <PackageIconUrl />
+    <RepositoryUrl>https://github.com/DeltaWareAU/SereneApi.git</RepositoryUrl>
+    <RepositoryType>GIT</RepositoryType>
+    <PackageTags>REST; Client; Wrapper; RESTful; Consumer; Fluent; Fluent API; AspNet</PackageTags>
+    <NeutralLanguage>English (Australia)</NeutralLanguage>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SereneApi.Abstractions\SereneApi.Abstractions.csproj" />
+    <ProjectReference Include="..\SereneApi.Extensions.DependencyInjection\SereneApi.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="..\SereneApi\SereneApi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\..\nuget_logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
