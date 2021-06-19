@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Abstractions.Content
 {
-    public class HttpContentResponse: IApiResponseContent
+    public class HttpContentResponse : IResponseContent
     {
         private readonly HttpContent _content;
 

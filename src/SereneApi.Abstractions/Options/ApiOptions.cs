@@ -1,19 +1,18 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Abstractions.Configuration;
+using SereneApi.Abstractions.Connection;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Abstractions.Options
 {
-    /// <inheritdoc cref="IApiOptions"/>
     [DebuggerDisplay("Source: {Connection.Source}")]
-    public class ApiOptions: IApiOptions
+    public class ApiOptions : IApiOptions
     {
         #region Properties
 
         /// <inheritdoc cref="IApiOptions.Connection"/>
-        public IConnectionConfiguration Connection { get; }
+        public IConnectionSettings Connection { get; }
 
         public IDependencyProvider Dependencies { get; }
 
@@ -26,9 +25,9 @@ namespace SereneApi.Abstractions.Options
         /// Creates a new instance of <see cref="ApiOptions"/>
         /// </summary>
         /// <param name="dependencies">The dependencies that can be used when making an API request.</param>
-        /// <param name="connection">The <see cref="IConnectionConfiguration"/> used to make requests to the API.</param>
+        /// <param name="connection">The <see cref="IConnectionSettings"/> used to make requests to the API.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public ApiOptions([NotNull] IDependencyProvider dependencies, [NotNull] IConnectionConfiguration connection)
+        public ApiOptions([NotNull] IDependencyProvider dependencies, [NotNull] IConnectionSettings connection)
         {
             Dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
             Connection = connection ?? throw new ArgumentNullException(nameof(connection));
@@ -48,12 +47,12 @@ namespace SereneApi.Abstractions.Options
 
         protected virtual void Dispose(bool disposing)
         {
-            if(_disposed)
+            if (_disposed)
             {
                 return;
             }
 
-            if(disposing)
+            if (disposing)
             {
                 Dependencies.Dispose();
             }

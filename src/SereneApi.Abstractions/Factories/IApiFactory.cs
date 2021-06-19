@@ -5,7 +5,7 @@ namespace SereneApi.Abstractions.Factories
     /// <summary>
     /// Builds new instances of APIs using the provided settings.
     /// </summary>
-    public interface IApiFactory: IDisposable
+    public interface IApiFactory : IDisposable
     {
         /// <summary>
         /// Builds a new instance of the specified API.

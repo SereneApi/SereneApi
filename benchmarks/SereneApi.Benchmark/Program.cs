@@ -1,4 +1,4 @@
-﻿using SereneApi.Abstractions.Request;
+﻿using SereneApi.Abstractions.Requests;
 using SereneApi.Abstractions.Response;
 using SereneApi.Benchmark.API;
 using SereneApi.Extensions.Mocking;
@@ -38,7 +38,7 @@ namespace SereneApi.Benchmark
             double buildMs = 0;
             double disposeMs = 0;
 
-            for(int i = 0; i < runs; i++)
+            for (int i = 0; i < runs; i++)
             {
                 Stopwatch buildTime = Stopwatch.StartNew();
 
@@ -48,11 +48,11 @@ namespace SereneApi.Benchmark
 
                 Stopwatch runTime = Stopwatch.StartNew();
 
-                var response = studentApi.GetStudents().GetAwaiter().GetResult();
+                var response = studentApi.GetStudentsAsync().GetAwaiter().GetResult();
 
                 runTime.Stop();
 
-                if(response.WasNotSuccessful() || response.Data == null)
+                if (response.WasNotSuccessful() || response.Data == null)
                 {
                     throw new NullReferenceException();
                 }

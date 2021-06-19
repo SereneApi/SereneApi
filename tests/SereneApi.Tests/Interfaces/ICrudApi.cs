@@ -3,7 +3,7 @@ using SereneApi.Tests.Mock;
 
 namespace SereneApi.Tests.Interfaces
 {
-    public interface ICrudApi: ICrudApi<MockPersonDto, long>
+    public interface ICrudApi : ICrudApi<MockPersonDto, long>
     {
     }
 }

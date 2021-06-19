@@ -10,18 +10,18 @@ namespace SereneApi.Abstractions.Helpers
         /// <summary>
         /// Ensures that a / is appended to the end of the value.
         /// </summary>
-        public static string EnsureSourceSlashTermination(string value)
+        public static string EnsureSlashTermination(string value)
         {
             const char termination = '/';
 
-            if(string.IsNullOrWhiteSpace(value))
+            if (string.IsNullOrWhiteSpace(value))
             {
                 return value;
             }
 
             int lastCharIndex = value.Length - 1;
 
-            if(value[lastCharIndex] != termination)
+            if (value[lastCharIndex] != termination)
             {
                 value += termination;
             }
@@ -32,9 +32,9 @@ namespace SereneApi.Abstractions.Helpers
         /// <summary>
         /// Ensures that a / is appended to the end of the value.
         /// </summary>
-        public static Uri EnsureSourceSlashTermination(Uri value)
+        public static Uri EnsureSlashTermination(Uri value)
         {
-            string valueString = EnsureSourceSlashTermination(value.ToString());
+            string valueString = EnsureSlashTermination(value.ToString());
 
             return new Uri(valueString);
         }
@@ -42,16 +42,16 @@ namespace SereneApi.Abstractions.Helpers
         /// <summary>
         /// Ensures that there is no / appended to the end of the value.
         /// </summary>
-        public static string EnsureSourceNoSlashTermination(string value)
+        public static string EnsureNoSlashTermination(string value)
         {
-            if(string.IsNullOrWhiteSpace(value))
+            if (string.IsNullOrWhiteSpace(value))
             {
                 return value;
             }
 
             int index = value.Length - 1;
 
-            while(index >= 1 && value[index] == '/')
+            while (index >= 1 && value[index] == '/')
             {
                 value = value.Substring(0, index);
 
@@ -64,9 +64,9 @@ namespace SereneApi.Abstractions.Helpers
         /// <summary>
         /// Ensures that there is no / appended to the end of the value.
         /// </summary>
-        public static Uri EnsureSourceNoSlashTermination(Uri value)
+        public static Uri EnsureNoSlashTermination(Uri value)
         {
-            string valueString = EnsureSourceNoSlashTermination(value.ToString());
+            string valueString = EnsureNoSlashTermination(value.ToString());
 
             return new Uri(valueString);
         }
@@ -78,7 +78,7 @@ namespace SereneApi.Abstractions.Helpers
         {
             int lastCharIndex = source.Length - 1;
 
-            if(source[lastCharIndex] != '/')
+            if (source[lastCharIndex] != '/')
             {
                 throw new ArgumentException("The HttpClient BaseAddress must end with a /");
             }

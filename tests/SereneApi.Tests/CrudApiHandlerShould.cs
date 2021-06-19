@@ -1,6 +1,5 @@
-﻿using SereneApi.Abstractions.Content;
-using SereneApi.Abstractions.Handler;
-using SereneApi.Abstractions.Request;
+﻿using SereneApi.Abstractions.Handler;
+using SereneApi.Abstractions.Requests;
 using SereneApi.Abstractions.Response;
 using SereneApi.Extensions.Mocking;
 using SereneApi.Factories;
@@ -128,7 +127,7 @@ namespace SereneApi.Tests
 
             List<MockPersonDto> results = response.Data;
 
-            for(int i = 0; i < results.Count; i++)
+            for (int i = 0; i < results.Count; i++)
             {
                 results[i].Name.ShouldBe(MockPersonDto.All[i].Name);
                 results[i].Age.ShouldBe(MockPersonDto.All[i].Age);

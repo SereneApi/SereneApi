@@ -1,10 +1,10 @@
-﻿using SereneApi.Abstractions.Request;
+﻿using SereneApi.Abstractions.Requests;
 using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Extensions.Mocking.Response
 {
-    public interface IMockResponseMethod: IMockResponseUrl
+    public interface IMockResponseMethod : IMockResponseUrl
     {
         /// <summary>
         /// The <see cref="IMockResponse"/> only responds to requests that are of the specified <see cref="Method"/>.

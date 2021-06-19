@@ -7,10 +7,10 @@ using System.Diagnostics.CodeAnalysis;
 namespace SereneApi.Extensions.DependencyInjection.Options
 {
     /// <summary>
-    /// Configures the <see cref="IApiOptionsBuilder{TApi}"/>.
+    /// Configures the <see cref="IApiOptionsBuilder"/>.
     /// </summary>
     /// <typeparam name="TApi">The API the <see cref="IApiOptions{TApi}"/> are intended for.</typeparam>
-    public interface IApiOptionsConfigurator<TApi>: IApiOptionsConfigurator where TApi : class
+    public interface IApiOptionsBuilder<TApi> : IApiOptionsBuilder where TApi : class
     {
         /// <summary>
         /// Adds the APIs connection information from the provided <see cref="IConfiguration"/>.

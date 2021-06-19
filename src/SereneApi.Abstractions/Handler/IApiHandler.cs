@@ -1,4 +1,4 @@
-﻿using SereneApi.Abstractions.Configuration;
+﻿using SereneApi.Abstractions.Connection;
 using System;
 
 namespace SereneApi.Abstractions.Handler
@@ -6,11 +6,11 @@ namespace SereneApi.Abstractions.Handler
     /// <summary>
     /// Handles API requests using the specified connection.
     /// </summary>
-    public interface IApiHandler: IDisposable
+    public interface IApiHandler : IDisposable
     {
         /// <summary>
         /// The connection that will be used when performing API requests.
         /// </summary>
-        IConnectionConfiguration Connection { get; }
+        IConnectionSettings Connection { get; }
     }
 }

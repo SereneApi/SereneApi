@@ -2,7 +2,7 @@
 
 namespace SereneApi.Extensions.Mocking.Response
 {
-    public interface IMockResponseConfigurator: IMockResponseMethod
+    public interface IMockResponseConfigurator : IMockResponseMethod
     {
         /// <summary>
         /// Delays the <see cref="IMockResponse"/> by the specified number of seconds.

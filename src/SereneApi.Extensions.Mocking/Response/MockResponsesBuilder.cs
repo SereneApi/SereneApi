@@ -11,7 +11,7 @@ namespace SereneApi.Extensions.Mocking.Response
 {
     // This type should not be disposed of as it does not own the DependencyCollection.
     /// <inheritdoc cref="IMockResponsesBuilder"/>
-    public class MockResponsesBuilder: IMockResponsesBuilder
+    public class MockResponsesBuilder : IMockResponsesBuilder
     {
         private readonly List<Func<IMockResponse>> _mockResponses = new List<Func<IMockResponse>>();
 
@@ -45,7 +45,7 @@ namespace SereneApi.Extensions.Mocking.Response
 
             dependencies.AddScoped(() => _dependencies.GetDependency<ISerializer>(), Binding.Unbound);
 
-            IApiRequestContent responseContent = _dependencies.GetDependency<ISerializer>().Serialize(content);
+            IRequestContent responseContent = _dependencies.GetDependency<ISerializer>().Serialize(content);
 
             _mockResponses.Add(() => BuildMockResponse(dependencies.BuildProvider(), Status.Ok, responseContent));
 
@@ -61,7 +61,7 @@ namespace SereneApi.Extensions.Mocking.Response
 
             dependencies.AddScoped(() => _dependencies.GetDependency<ISerializer>(), Binding.Unbound);
 
-            IApiRequestContent responseContent = _dependencies.GetDependency<ISerializer>().Serialize(content);
+            IRequestContent responseContent = _dependencies.GetDependency<ISerializer>().Serialize(content);
 
             _mockResponses.Add(() => BuildMockResponse(dependencies.BuildProvider(), status, responseContent));
 
@@ -73,7 +73,7 @@ namespace SereneApi.Extensions.Mocking.Response
             return new MockResponseConfigurator(dependencies);
         }
 
-        protected virtual IMockResponse BuildMockResponse(IDependencyProvider provider, Status status, IApiRequestContent responseContent)
+        protected virtual IMockResponse BuildMockResponse(IDependencyProvider provider, Status status, IRequestContent responseContent)
         {
             return new MockResponse(provider, status, responseContent);
         }

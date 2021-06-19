@@ -1,7 +1,6 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SereneApi.Abstractions.Options;
 using Shouldly;
 using System;
 using Xunit;
@@ -27,7 +26,7 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
             testApi.ShouldNotBeNull();
             testApi.Connection.BaseAddress.ShouldBe(new Uri("http://localhost/"));
             testApi.Connection.Resource.ShouldBe("Test");
-            testApi.Connection.ResourcePath.ShouldBe("api/");
+            testApi.Connection.ResourcePath.ShouldBe("api");
             testApi.Connection.Timeout.ShouldBe(30);
             testApi.Connection.RetryAttempts.ShouldBe(0);
 
@@ -58,7 +57,7 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
             testApi.ShouldNotBeNull();
             testApi.Connection.BaseAddress.ShouldBe(new Uri("http://localhost/"));
             testApi.Connection.Resource.ShouldBe("Test");
-            testApi.Connection.ResourcePath.ShouldBe("api/v2/");
+            testApi.Connection.ResourcePath.ShouldBe("api/v2");
             testApi.Connection.Timeout.ShouldBe(60);
             testApi.Connection.RetryAttempts.ShouldBe(2);
 
@@ -83,7 +82,7 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
                 b.SetSource("http://localhost/", "Test");
             });
 
-            ((ICoreOptions)serviceCollection.ExtendApi<ITestApi>()).Dependencies
+            serviceCollection.ExtendApi<ITestApi>().Dependencies
                 .AddScoped<ILogger>(() => new Logger<ITestApi>(new LoggerFactory()));
 
             IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
@@ -93,7 +92,7 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
             testApi.ShouldNotBeNull();
             testApi.Connection.BaseAddress.ShouldBe(new Uri("http://localhost/"));
             testApi.Connection.Resource.ShouldBe("Test");
-            testApi.Connection.ResourcePath.ShouldBe("api/v2/");
+            testApi.Connection.ResourcePath.ShouldBe("api/v2");
             testApi.Connection.Timeout.ShouldBe(30);
             testApi.Connection.RetryAttempts.ShouldBe(0);
 
@@ -121,7 +120,7 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
             serviceCollection.ExtendApi<ITestApi>(r =>
             {
                 // For testing purposes only, but this is how implementation should be done for extensions.
-                ((ICoreOptions)r).Dependencies.AddScoped<ILogger>(() => new Logger<ITestApi>(new LoggerFactory()));
+                r.Dependencies.AddScoped<ILogger>(() => new Logger<ITestApi>(new LoggerFactory()));
             });
 
             IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
@@ -131,7 +130,7 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
             testApi.ShouldNotBeNull();
             testApi.Connection.BaseAddress.ShouldBe(new Uri("http://localhost/"));
             testApi.Connection.Resource.ShouldBe("Test");
-            testApi.Connection.ResourcePath.ShouldBe("api/");
+            testApi.Connection.ResourcePath.ShouldBe("api");
             testApi.Connection.Timeout.ShouldBe(60);
             testApi.Connection.RetryAttempts.ShouldBe(2);
 

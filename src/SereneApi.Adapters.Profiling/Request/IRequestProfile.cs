@@ -1,4 +1,4 @@
-﻿using SereneApi.Abstractions.Request;
+﻿using SereneApi.Abstractions.Requests;
 using SereneApi.Abstractions.Response;
 using System;
 
@@ -7,7 +7,7 @@ namespace SereneApi.Adapters.Profiling.Request
     /// <summary>
     /// Contains all statics related to a request.
     /// </summary>
-    public interface IRequestProfile: IApiRequest
+    public interface IRequestProfile : IApiRequest
     {
         /// <summary>
         /// Species the source API.

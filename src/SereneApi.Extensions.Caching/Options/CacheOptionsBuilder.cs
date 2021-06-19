@@ -2,13 +2,13 @@
 
 namespace SereneApi.Extensions.Caching.Options
 {
-    public class CacheOptionsBuilder: ICacheOptionsBuilder
+    public class CacheOptionsBuilder : ICacheOptionsBuilder
     {
         private TimeSpan _lifeSpan;
 
         public void SetCacheLifeSpan(TimeSpan lifeSpan)
         {
-            if(lifeSpan.TotalMilliseconds <= 0)
+            if (lifeSpan.TotalMilliseconds <= 0)
             {
                 throw new ArgumentException("Expiration time must be greater than 0 seconds");
             }

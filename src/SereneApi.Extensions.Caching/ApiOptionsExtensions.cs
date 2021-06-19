@@ -17,13 +17,8 @@ namespace SereneApi.Extensions.Caching
 
             ICacheOptions cacheOptions = cacheOptionsBuilder.BuildOptions();
 
-            if(!(extensions is ICoreOptions options))
-            {
-                throw new InvalidCastException($"Base type must inherit {nameof(ICoreOptions)}");
-            }
-
-            options.Dependencies.AddSingleton(() => new Cache<Uri, ICachedResponse>(cacheOptions));
-            options.Dependencies.AddScoped<HttpMessageHandler>(p => new CachedMessageHandler(p));
+            extensions.Dependencies.AddSingleton(() => new Cache<Uri, ICachedResponse>(cacheOptions));
+            extensions.Dependencies.AddScoped<HttpMessageHandler>(p => new CachedMessageHandler(p));
 
             return extensions;
         }

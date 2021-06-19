@@ -10,7 +10,7 @@ namespace SereneApi.Extensions.Newtonsoft.Serializers
     /// <summary>
     /// An <seealso cref="ISerializer"/> that implements Newtonsoft for Serialization.
     /// </summary>
-    public class NewtonsoftSerializer: ISerializer
+    public class NewtonsoftSerializer : ISerializer
     {
         public JsonSerializerSettings DeserializerSettings { get; }
 
@@ -51,9 +51,9 @@ namespace SereneApi.Extensions.Newtonsoft.Serializers
         /// <inheritdoc>
         ///     <cref>ISerializer.Deserialize</cref>
         /// </inheritdoc>
-        public TObject Deserialize<TObject>([NotNull] IApiResponseContent content)
+        public TObject Deserialize<TObject>([NotNull] IResponseContent content)
         {
-            if(content == null)
+            if (content == null)
             {
                 throw new ArgumentNullException(nameof(content));
             }
@@ -66,9 +66,9 @@ namespace SereneApi.Extensions.Newtonsoft.Serializers
         /// <inheritdoc>
         ///     <cref>ISerializer.DeserializeAsync</cref>
         /// </inheritdoc>
-        public async Task<TObject> DeserializeAsync<TObject>([NotNull] IApiResponseContent content)
+        public async Task<TObject> DeserializeAsync<TObject>([NotNull] IResponseContent content)
         {
-            if(content == null)
+            if (content == null)
             {
                 throw new ArgumentNullException(nameof(content));
             }
@@ -81,9 +81,9 @@ namespace SereneApi.Extensions.Newtonsoft.Serializers
         /// <inheritdoc>
         ///     <cref>ISerializer.Serialize</cref>
         /// </inheritdoc>
-        public IApiRequestContent Serialize<T>([NotNull] T value)
+        public IRequestContent Serialize<T>([NotNull] T value)
         {
-            if(value == null)
+            if (value == null)
             {
                 throw new ArgumentNullException(nameof(value));
             }
@@ -96,9 +96,9 @@ namespace SereneApi.Extensions.Newtonsoft.Serializers
         /// <inheritdoc>
         ///     <cref>ISerializer.SerializeAsync</cref>
         /// </inheritdoc>
-        public Task<IApiRequestContent> SerializeAsync<T>([NotNull] T value)
+        public Task<IRequestContent> SerializeAsync<T>([NotNull] T value)
         {
-            if(value == null)
+            if (value == null)
             {
                 throw new ArgumentNullException(nameof(value));
             }
@@ -107,7 +107,7 @@ namespace SereneApi.Extensions.Newtonsoft.Serializers
             {
                 string jsonContent = JsonConvert.SerializeObject(value, SerializerSettings);
 
-                return (IApiRequestContent)new JsonContent(jsonContent);
+                return (IRequestContent)new JsonContent(jsonContent);
             });
         }
 

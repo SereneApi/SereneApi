@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <PackageId>SereneApi.Extensions.Caching</PackageId>
     <Authors>Bradley Clarke</Authors>
     <Company>DeltaWare</Company>
@@ -15,9 +15,11 @@
     <RepositoryType>GIT</RepositoryType>
     <PackageTags>REST; Client; Wrapper; RESTful; Consumer; Fluent; Fluent API; Caching</PackageTags>
     <NeutralLanguage>en-AU</NeutralLanguage>
-    <Version>1.0.0.1</Version>
+    <Version>1.5.0.1-beta</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>MIGRATED - To .Net5</PackageReleaseNotes>
+    <ApplicationIcon>nuget_logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>

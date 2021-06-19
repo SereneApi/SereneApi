@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SereneApi.Abstractions.Content
 {
-    public class JsonContent: IApiRequestContent
+    public class JsonContent : IRequestContent
     {
         /// <summary>
         /// The <see cref="Encoding"/> of the in body content.
@@ -40,7 +40,7 @@ namespace SereneApi.Abstractions.Content
 
         public override bool Equals(object obj)
         {
-            if(!(obj is JsonContent content))
+            if (!(obj is JsonContent content))
             {
                 return false;
             }

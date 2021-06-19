@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Response;
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
@@ -16,7 +15,7 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
     /// </summary>
     /// <typeparam name="TApi">The API that will be used to authorize with.</typeparam>
     /// <typeparam name="TDto">The method in which the token will be retrieved.</typeparam>
-    public class TokenAuthorizer<TApi, TDto>: IAuthorizer, IDisposable where TApi : class, IDisposable where TDto : class
+    public class TokenAuthorizer<TApi, TDto> : IAuthorizer, IDisposable where TApi : class, IDisposable where TDto : class
     {
         private bool _tokenExpired = false;
 
@@ -56,7 +55,7 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
         /// <param name="apiCall">The API call to authorize with.</param>
         /// <param name="retrieveToken">The method in which the token will be retrieved.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public TokenAuthorizer([NotNull] IDependencyProvider dependencies, [NotNull] Func<TApi, Task<IApiResponse<TDto>>> apiCall, [NotNull] Func<TDto, TokenAuthResult> retrieveToken = null, bool autoRenew = true)
+        public TokenAuthorizer(IDependencyProvider dependencies, Func<TApi, Task<IApiResponse<TDto>>> apiCall, Func<TDto, TokenAuthResult> retrieveToken = null, bool autoRenew = true)
         {
             Dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
             Dependencies.TryGetDependency(out _logger);
@@ -91,12 +90,12 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
         {
             TApi api = null;
 
-            if(!Dependencies.TryGetDependency(out IApiFactory handlerFactory))
+            if (!Dependencies.TryGetDependency(out IApiFactory handlerFactory))
             {
                 api = handlerFactory.Build<TApi>();
             }
 
-            if(api == null)
+            if (api == null)
             {
                 throw new NullReferenceException($"Could not find any registered instances of {typeof(TApi).Name} in the ApiHandler");
             }
@@ -114,7 +113,7 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
         {
             Monitor.Enter(_authorizationLock);
 
-            if(Authorization != null || !_tokenExpired)
+            if (Authorization != null || !_tokenExpired)
             {
                 Monitor.Exit(_authorizationLock);
 
@@ -129,10 +128,6 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
             {
                 api = GetApi();
             }
-            catch(Exception e)
-            {
-                throw e;
-            }
             finally
             {
                 Monitor.Exit(_authorizationLock);
@@ -140,16 +135,16 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
 
             IApiResponse<TDto> response = await _apiCall.Invoke(api);
 
-            if(disposeApi)
+            if (disposeApi)
             {
                 api.Dispose();
             }
 
-            if(!response.WasSuccessful || response.HasNullResult())
+            if (!response.WasSuccessful || response.HasNullResult())
             {
                 Monitor.Exit(_authorizationLock);
 
-                if(response.HasException)
+                if (response.HasException)
                 {
                     throw response.Exception;
                 }
@@ -159,7 +154,7 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
 
             TokenAuthResult token = _extractTokenFunction.Invoke(response.Data);
 
-            if(token == null)
+            if (token == null)
             {
                 Monitor.Exit(_authorizationLock);
 
@@ -179,13 +174,13 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
 
         private async Task OnTimedEventAsync(object source, ElapsedEventArgs e)
         {
-            if(WillAutoRenew)
+            if (WillAutoRenew)
             {
                 _logger?.LogDebug("Auto renewing authorization token");
 
                 Authorization = await RetrieveTokenAsync();
 
-                if(!_tokenRenew.Enabled)
+                if (!_tokenRenew.Enabled)
                 {
                     _tokenRenew.Start();
                 }
@@ -215,12 +210,12 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
         /// </summary>
         protected virtual void Dispose(bool disposing)
         {
-            if(_disposed)
+            if (_disposed)
             {
                 return;
             }
 
-            if(disposing)
+            if (disposing)
             {
                 _tokenRenew.Stop();
                 _tokenRenew.Dispose();

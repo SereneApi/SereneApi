@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>DeltaWare.SereneApi.Extensions.Newtonsoft</AssemblyName>
     <PackageId>SereneApi.Extensions.Newtonsoft</PackageId>
     <Authors>Bradley Clarke</Authors>
     <Company>DeltaWare</Company>
     <Product>SereneApi</Product>
-    <Version>1.1.1.1</Version>
+    <Version>1.5.0.1</Version>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageIcon>nuget_logo.png</PackageIcon>
     <RepositoryUrl>https://github.com/DeltaWareAU/SereneApi</RepositoryUrl>
@@ -20,12 +20,13 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <IncludeSymbols>true</IncludeSymbols>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-      <PackageReleaseNotes>UPDATED - SereneApi.Abstractions</PackageReleaseNotes>
+      <PackageReleaseNotes>MIGRATED - To .Net5</PackageReleaseNotes>
       <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
+      <ApplicationIcon>nuget_logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>

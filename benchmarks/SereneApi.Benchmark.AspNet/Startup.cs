@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SereneApi.Abstractions.Request;
+using SereneApi.Abstractions.Requests;
 using SereneApi.Benchmark.AspNet.API;
 using SereneApi.Extensions.DependencyInjection;
 using SereneApi.Extensions.Mocking;
@@ -42,7 +42,7 @@ namespace SereneApi.Benchmark.AspNet
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if(env.IsDevelopment())
+            if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }

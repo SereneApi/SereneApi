@@ -7,7 +7,7 @@ namespace DependencyInjection.WebUi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ValuesController: ControllerBase
+    public class ValuesController : ControllerBase
     {
         private readonly IValuesApi _valuesApi;
 
@@ -27,7 +27,7 @@ namespace DependencyInjection.WebUi.Controllers
         [HttpGet("string/{value}")]
         public ActionResult<IApiResponse<string>> GetStringAsync(string value)
         {
-            IApiResponse<string> response = _valuesApi.GetAsync(value);
+            IApiResponse<string> response = _valuesApi.Get(value);
 
             return Ok(response);
         }

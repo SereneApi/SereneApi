@@ -9,7 +9,7 @@ namespace DependencyInjection.WebUi.Handlers
     // ClassDto being the resource and long being the identity.
     // When this class is inherited it includes the base ApiHandler plus pre-implemented Crud methods.
     // This will become apparent in the Class Page.
-    public class ClassApiHandler: CrudApiHandler<ClassDto, long>, IClassApi
+    public class ClassApiHandler : CrudApiHandler<ClassDto, long>, IClassApi
     {
         public ClassApiHandler(IApiOptions<IClassApi> options) : base(options)
         {

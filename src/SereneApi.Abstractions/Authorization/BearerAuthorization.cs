@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Abstractions.Authorization
 {
     /// <summary>
     /// Authorizes an API request using Bearer authorization.
     /// </summary>
-    public class BearerAuthorization: IAuthorization
+    public class BearerAuthorization : IAuthorization
     {
         /// <inheritdoc cref="IAuthorization.Scheme"/>
         public string Scheme { get; } = "Bearer";
@@ -19,9 +18,9 @@ namespace SereneApi.Abstractions.Authorization
         /// </summary>
         /// <param name="token">The token to be used for Bearer authorization.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public BearerAuthorization([NotNull] string token)
+        public BearerAuthorization(string token)
         {
-            if(string.IsNullOrWhiteSpace(token))
+            if (string.IsNullOrWhiteSpace(token))
             {
                 throw new ArgumentNullException(nameof(token));
             }

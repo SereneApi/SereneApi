@@ -1,4 +1,5 @@
 ﻿using SereneApi.Abstractions.Events;
+using SereneApi.Abstractions.Events.Types;
 using SereneApi.Adapters.Profiling.Request;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Linq;
 namespace SereneApi.Adapters.Profiling
 {
     /// <inheritdoc cref="IProfiler"/>
-    internal class Profiler: IProfiler
+    internal class Profiler : IProfiler
     {
         private readonly Stopwatch _sessionDuration = new Stopwatch();
 
@@ -28,7 +29,7 @@ namespace SereneApi.Adapters.Profiling
         /// <inheritdoc cref="IProfiler.StartSession"/>
         public void StartSession()
         {
-            if(HasActiveSession)
+            if (HasActiveSession)
             {
                 // Seriously don't like this, but as it stands, this should never be thrown.    
                 throw new MethodAccessException();
@@ -49,7 +50,7 @@ namespace SereneApi.Adapters.Profiling
         /// <inheritdoc cref="IProfiler.EndSession"/>
         public ISession EndSession()
         {
-            if(!HasActiveSession)
+            if (!HasActiveSession)
             {
                 throw new MethodAccessException("StartSession must be call first.");
             }
@@ -67,7 +68,7 @@ namespace SereneApi.Adapters.Profiling
 
         private void OnRetryEvent(RetryEvent retryEvent)
         {
-            _requestProfiles[retryEvent.Value].RetryAttempts++;
+            _requestProfiles[retryEvent.Value.Identity].RetryAttempts++;
         }
 
         private void OnRequestEvent(RequestEvent requestEvent)

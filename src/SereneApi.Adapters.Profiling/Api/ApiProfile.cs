@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Adapters.Profiling.Api
 {
-    internal class ApiProfile: IApiProfile
+    internal class ApiProfile : IApiProfile
     {
         public IReadOnlyList<IRequestProfile> Requests { get; }
 

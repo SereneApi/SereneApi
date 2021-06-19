@@ -2,7 +2,7 @@
 
 namespace SereneApi.Extensions.DependencyInjection.Tests
 {
-    public class TestApiHandler: BaseApiHandler, ITestApi
+    public class TestApiHandler : BaseApiHandler, ITestApi
     {
         public new IApiOptions Options => base.Options;
 

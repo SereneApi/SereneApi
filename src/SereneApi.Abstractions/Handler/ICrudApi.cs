@@ -1,7 +1,6 @@
 ﻿using SereneApi.Abstractions.Response;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace SereneApi.Abstractions.Handler
@@ -29,7 +28,7 @@ namespace SereneApi.Abstractions.Handler
         /// </summary>
         /// <param name="resource">The resource to be created.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        Task<IApiResponse<TResource>> CreateAsync([NotNull] TResource resource);
+        Task<IApiResponse<TResource>> CreateAsync(TResource resource);
 
         /// <summary>
         /// Performs a DELETE request against the API.
@@ -42,13 +41,13 @@ namespace SereneApi.Abstractions.Handler
         /// </summary>
         /// <param name="resource">The resource to be replaced.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        Task<IApiResponse<TResource>> ReplaceAsync([NotNull] TResource resource);
+        Task<IApiResponse<TResource>> ReplaceAsync(TResource resource);
 
         /// <summary>
         /// Performs a PATCH request against the API.
         /// </summary>
         /// <param name="resource">The resource to be updated.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        Task<IApiResponse<TResource>> UpdateAsync([NotNull] TResource resource);
+        Task<IApiResponse<TResource>> UpdateAsync(TResource resource);
     }
 }

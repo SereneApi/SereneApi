@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace SereneApi.Benchmark.AspNet.Pages
 {
-    public class IndexModel: PageModel
+    public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
 
@@ -36,7 +36,7 @@ namespace SereneApi.Benchmark.AspNet.Pages
 
             double runMs = 0;
 
-            for(int i = 0; i < iterations; i++)
+            for (int i = 0; i < iterations; i++)
             {
                 Stopwatch runTime = Stopwatch.StartNew();
 
@@ -44,7 +44,7 @@ namespace SereneApi.Benchmark.AspNet.Pages
 
                 runTime.Stop();
 
-                if(response.WasNotSuccessful() || response.Data == null)
+                if (response.WasNotSuccessful() || response.Data == null)
                 {
                     throw new NullReferenceException();
                 }

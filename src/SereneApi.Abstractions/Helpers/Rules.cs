@@ -13,12 +13,12 @@ namespace SereneApi.Abstractions.Helpers
         /// </summary>
         public static void ValidateRetryAttempts(int retryCount)
         {
-            if(retryCount < MinimumRetryCount)
+            if (retryCount < MinimumRetryCount)
             {
                 throw new ArgumentException($"To Enable Retry on Timeout the RetryCount must be greater than or equal to {MinimumRetryCount}");
             }
 
-            if(retryCount > MaximumRetryCount)
+            if (retryCount > MaximumRetryCount)
             {
                 throw new ArgumentException($"To Enable Retry on Timeout the RetryCount must be less than or equal to {MaximumRetryCount}");
             }

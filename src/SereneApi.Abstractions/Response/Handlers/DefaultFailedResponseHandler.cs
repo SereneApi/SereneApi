@@ -1,22 +1,20 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.Logging;
-using SereneApi.Abstractions.Content;
-using SereneApi.Abstractions.Request;
+using SereneApi.Abstractions.Requests;
 using SereneApi.Abstractions.Serialization;
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SereneApi.Abstractions.Response.Handlers
 {
-    public class DefaultFailedResponseHandler: IFailedResponseHandler
+    public class DefaultFailedResponseHandler : IFailedResponseHandler
     {
         private readonly IDependencyProvider _dependencyProvider;
 
         private readonly ILogger _logger;
 
-        public DefaultFailedResponseHandler([NotNull] IDependencyProvider dependencyProvider)
+        public DefaultFailedResponseHandler(IDependencyProvider dependencyProvider)
         {
             _dependencyProvider = dependencyProvider ?? throw new ArgumentNullException(nameof(dependencyProvider));
 
@@ -25,12 +23,12 @@ namespace SereneApi.Abstractions.Response.Handlers
 
         public IApiResponse ProcessFailedRequest(IApiRequest request, Status status, HttpContent content)
         {
-            if(content == null)
+            if (content == null)
             {
                 return ApiResponse.Failure(request, status, string.Empty);
             }
 
-            if(!_dependencyProvider.TryGetDependency(out ISerializer serializer))
+            if (!_dependencyProvider.TryGetDependency(out ISerializer serializer))
             {
                 _logger?.LogWarning("Could not retrieve ISerializer dependency.");
 
@@ -47,7 +45,7 @@ namespace SereneApi.Abstractions.Response.Handlers
 
                 return ApiResponse.Failure(request, status, defaultFailureResponse.Message);
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 _logger?.LogWarning(exception, "Could not deserialize in body content.");
             }
@@ -57,12 +55,12 @@ namespace SereneApi.Abstractions.Response.Handlers
 
         public async Task<IApiResponse> ProcessFailedRequestAsync(IApiRequest request, Status status, HttpContent content)
         {
-            if(content == null)
+            if (content == null)
             {
                 return ApiResponse.Failure(request, status, string.Empty);
             }
 
-            if(!_dependencyProvider.TryGetDependency(out ISerializer serializer))
+            if (!_dependencyProvider.TryGetDependency(out ISerializer serializer))
             {
                 _logger?.LogWarning("Could not retrieve ISerializer dependency.");
 
@@ -79,7 +77,7 @@ namespace SereneApi.Abstractions.Response.Handlers
 
                 return ApiResponse.Failure(request, status, defaultFailureResponse.Message);
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 _logger?.LogWarning(exception, "Could not deserialize in body content.");
             }
@@ -89,12 +87,12 @@ namespace SereneApi.Abstractions.Response.Handlers
 
         public IApiResponse<TResponse> ProcessFailedRequest<TResponse>(IApiRequest request, Status status, HttpContent content)
         {
-            if(content == null)
+            if (content == null)
             {
                 return ApiResponse<TResponse>.Failure(request, status, string.Empty);
             }
 
-            if(!_dependencyProvider.TryGetDependency(out ISerializer serializer))
+            if (!_dependencyProvider.TryGetDependency(out ISerializer serializer))
             {
                 _logger?.LogWarning("Could not retrieve ISerializer dependency.");
 
@@ -111,7 +109,7 @@ namespace SereneApi.Abstractions.Response.Handlers
 
                 return ApiResponse<TResponse>.Failure(request, status, defaultFailureResponse.Message);
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 _logger?.LogWarning(exception, "Could not deserialize in body content.");
             }
@@ -121,12 +119,12 @@ namespace SereneApi.Abstractions.Response.Handlers
 
         public async Task<IApiResponse<TResponse>> ProcessFailedRequestAsync<TResponse>(IApiRequest request, Status status, HttpContent content)
         {
-            if(content == null)
+            if (content == null)
             {
                 return ApiResponse<TResponse>.Failure(request, status, string.Empty);
             }
 
-            if(!_dependencyProvider.TryGetDependency(out ISerializer serializer))
+            if (!_dependencyProvider.TryGetDependency(out ISerializer serializer))
             {
                 _logger?.LogWarning("Could not retrieve ISerializer dependency.");
 
@@ -143,7 +141,7 @@ namespace SereneApi.Abstractions.Response.Handlers
 
                 return ApiResponse<TResponse>.Failure(request, status, defaultFailureResponse.Message);
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 _logger?.LogWarning(exception, "Could not deserialize in body content.");
             }

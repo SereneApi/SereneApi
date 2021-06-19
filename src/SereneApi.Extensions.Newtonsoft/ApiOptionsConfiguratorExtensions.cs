@@ -11,9 +11,9 @@ namespace SereneApi.Extensions.Newtonsoft
         /// <summary>
         /// Uses <seealso cref="NewtonsoftSerializer"/> for serialization.
         /// </summary>
-        public static void UseNewtonsoftSerializer(this IApiOptionsConfigurator configurator)
+        public static void UseNewtonsoftSerializer(this IApiOptionsBuilder builder)
         {
-            configurator.UseSerializer(new NewtonsoftSerializer());
+            builder.UseSerializer(new NewtonsoftSerializer());
         }
 
         /// <summary>
@@ -21,14 +21,14 @@ namespace SereneApi.Extensions.Newtonsoft
         /// </summary>
         /// <param name="settings">The settings to be used by <see cref="NewtonsoftSerializer"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public static void UseNewtonsoftSerializer(this IApiOptionsConfigurator configurator, [NotNull] JsonSerializerSettings settings)
+        public static void UseNewtonsoftSerializer(this IApiOptionsBuilder builder, [NotNull] JsonSerializerSettings settings)
         {
-            if(settings == null)
+            if (settings == null)
             {
                 throw new ArgumentNullException(nameof(settings));
             }
 
-            configurator.UseSerializer(new NewtonsoftSerializer(settings));
+            builder.UseSerializer(new NewtonsoftSerializer(settings));
         }
 
         /// <summary>
@@ -36,9 +36,9 @@ namespace SereneApi.Extensions.Newtonsoft
         /// </summary>
         /// <param name="factory">Builds to the settings to be used by <see cref="NewtonsoftSerializer"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public static void UseNewtonsoftSerializer(this IApiOptionsConfigurator configurator, [NotNull] Action<JsonSerializerSettings> factory)
+        public static void UseNewtonsoftSerializer(this IApiOptionsBuilder builder, [NotNull] Action<JsonSerializerSettings> factory)
         {
-            if(factory == null)
+            if (factory == null)
             {
                 throw new ArgumentNullException(nameof(factory));
             }
@@ -47,7 +47,7 @@ namespace SereneApi.Extensions.Newtonsoft
 
             factory.Invoke(settings);
 
-            UseNewtonsoftSerializer(configurator, settings);
+            UseNewtonsoftSerializer(builder, settings);
         }
     }
 }

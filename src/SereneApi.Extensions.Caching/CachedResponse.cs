@@ -4,7 +4,7 @@ using System.Net.Http;
 
 namespace SereneApi.Extensions.Caching
 {
-    public class CachedResponse: ICachedResponse
+    public class CachedResponse : ICachedResponse
     {
         public string Content { get; }
 
@@ -23,7 +23,7 @@ namespace SereneApi.Extensions.Caching
         {
             HttpContent content = null;
 
-            if(!string.IsNullOrWhiteSpace(Content))
+            if (!string.IsNullOrWhiteSpace(Content))
             {
                 content = (HttpContent)new JsonContent(Content).GetContent();
             }

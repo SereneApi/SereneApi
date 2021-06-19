@@ -1,52 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SereneApi.Abstractions.Events
 {
-    public class EventManager: IEventManager
+    public class EventManager : IEventManager
     {
         private readonly Dictionary<Type, List<object>> _events = new Dictionary<Type, List<object>>();
 
-        public void Publish<TEvent>([NotNull] TEvent sender) where TEvent : IEventListener
+        public void Publish<TEvent>(TEvent sender) where TEvent : IEventListener
         {
-            if(sender == null)
+            if (sender == null)
             {
                 throw new ArgumentNullException(nameof(sender));
             }
 
             Type eventType = typeof(TEvent);
 
-            if(!_events.TryGetValue(eventType, out List<object> listeners) || listeners.Count <= 0)
+            if (!_events.TryGetValue(eventType, out List<object> listeners) || listeners.Count <= 0)
             {
                 return;
             }
 
-            foreach(Action<TEvent> listener in listeners.Cast<Action<TEvent>>())
+            foreach (Action<TEvent> listener in listeners.Cast<Action<TEvent>>())
             {
                 listener.Invoke(sender);
             }
         }
 
-        public Task PublishAsync<TEvent>([NotNull] TEvent sender) where TEvent : IEventListener
+        public Task PublishAsync<TEvent>(TEvent sender) where TEvent : IEventListener
         {
             return Task.Factory.StartNew(() => Publish(sender));
         }
 
-        public void Subscribe<TEvent>([NotNull] Action<TEvent> listener) where TEvent : IEventListener
+        public void Subscribe<TEvent>(Action<TEvent> listener) where TEvent : IEventListener
         {
-            if(listener == null)
+            if (listener == null)
             {
                 throw new ArgumentNullException(nameof(listener));
             }
 
             Type eventType = typeof(TEvent);
 
-            if(_events.TryGetValue(eventType, out List<object> listeners))
+            if (_events.TryGetValue(eventType, out List<object> listeners))
             {
-                if(!listeners.Contains(listener))
+                if (!listeners.Contains(listener))
                 {
                     listeners.Add(listener);
                 }
@@ -59,21 +58,21 @@ namespace SereneApi.Abstractions.Events
             }
         }
 
-        public void UnSubscribe<TEvent>([NotNull] Action<TEvent> listener) where TEvent : IEventListener
+        public void UnSubscribe<TEvent>(Action<TEvent> listener) where TEvent : IEventListener
         {
-            if(listener == null)
+            if (listener == null)
             {
                 throw new ArgumentNullException(nameof(listener));
             }
 
             Type eventType = typeof(TEvent);
 
-            if(!_events.TryGetValue(eventType, out List<object> listeners))
+            if (!_events.TryGetValue(eventType, out List<object> listeners))
             {
                 return;
             }
 
-            if(listeners.Contains(listener))
+            if (listeners.Contains(listener))
             {
                 listeners.Remove(listener);
             }
