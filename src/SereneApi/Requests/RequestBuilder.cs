@@ -55,6 +55,16 @@ namespace SereneApi.Requests
 
         public IApiRequestEndpoint AgainstVersion(string version)
         {
+            if (version == null)
+            {
+                throw new ArgumentNullException(nameof(version));
+            }
+
+            if (string.IsNullOrWhiteSpace(version))
+            {
+                throw new ArgumentException(nameof(version));
+            }
+
             _apiRequest.Version = new ApiVersion(version);
 
             return this;
@@ -76,9 +86,14 @@ namespace SereneApi.Requests
 
         public IApiRequestParameters WithEndpoint(string endpoint)
         {
-            if (string.IsNullOrWhiteSpace(endpoint))
+            if (endpoint == null)
             {
                 throw new ArgumentNullException(nameof(endpoint));
+            }
+
+            if (string.IsNullOrWhiteSpace(endpoint))
+            {
+                throw new ArgumentException(nameof(endpoint));
             }
 
             _apiRequest.EndpointTemplate = endpoint;
@@ -136,12 +151,15 @@ namespace SereneApi.Requests
             ISerializer serializer = _apiHandler.Options.Dependencies.GetDependency<ISerializer>();
 
             _apiRequest.Content = serializer.Serialize(content);
+            _apiRequest.ContentType = typeof(TContent);
 
             return this;
         }
 
         public IApiRequestPerformer<TContent> RespondsWithContent<TContent>()
         {
+            _apiRequest.ResponseType = typeof(TContent);
+
             return new RequestBuilder<TContent>(_apiHandler, _apiRequest);
         }
 

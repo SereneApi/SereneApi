@@ -15,9 +15,10 @@
     <RepositoryType>GIT</RepositoryType>
     <PackageTags>REST; Client; Wrapper; RESTful; Consumer; Fluent; Fluent API; Caching</PackageTags>
     <NeutralLanguage>en-AU</NeutralLanguage>
-    <Version>1.0.0.1</Version>
+    <Version>1.5.0.1-beta</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>MIGRATED - To .Net5</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

@@ -54,5 +54,9 @@ namespace SereneApi.Abstractions.Requests
         /// The content contained within the body of the request.
         /// </summary>
         IRequestContent Content { get; }
+
+        public Type ContentType { get; }
+
+        public Type ResponseType { get; }
     }
 }

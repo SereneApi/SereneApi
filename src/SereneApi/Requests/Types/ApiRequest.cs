@@ -19,6 +19,10 @@ namespace SereneApi.Requests.Types
         public Dictionary<string, string> Query { get; set; }
         public Method Method { get; set; }
         public IRequestContent Content { get; set; }
+
+        public Type ContentType { get; set; }
+
+        public Type ResponseType { get; set; }
         /// <summary>
         /// An empty API request.
         /// </summary>

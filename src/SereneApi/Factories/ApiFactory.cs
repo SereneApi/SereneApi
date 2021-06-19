@@ -107,7 +107,7 @@ namespace SereneApi.Factories
         /// Allows extensions to be implemented for the specified API.
         /// </summary>
         /// <typeparam name="TApi">The API that will be extended.</typeparam>
-        /// <param name="factory">Configures the API extensions.</param>
+        /// <param name="builder">Configures the API extensions.</param>
         /// <exception cref="ArgumentNullException">Thrown if a null value is supplied.</exception>
         public void ExtendApi<TApi>(Action<IApiOptionsExtensions> builder) where TApi : class
         {
@@ -134,7 +134,7 @@ namespace SereneApi.Factories
         /// <summary>
         /// Configures the default configuration for all APIs.
         /// </summary>
-        /// <param name="configuration">The prevalent configuration for all APIs.</param>
+        /// <param name="builder">The prevalent configuration for all APIs.</param>
         /// <exception cref="ArgumentException">Thrown if this is called after API registration or if it is called twice.</exception>
         /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
         /// <remarks>These values can be overriden during API Registration.</remarks>

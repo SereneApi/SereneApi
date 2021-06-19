@@ -7,7 +7,7 @@
     <Authors>Bradley Clarke</Authors>
     <Company>DeltaWare</Company>
     <Product>SereneApi</Product>
-    <Version>1.1.1.1</Version>
+    <Version>1.5.0.1</Version>
     <Copyright>Copyright (c) 2020 DeltaWare</Copyright>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageIcon>nuget_logo.png</PackageIcon>
@@ -23,9 +23,7 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
       <IncludeSymbols>true</IncludeSymbols>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-      <PackageReleaseNotes>FIXED - Issue where mocking was no longer working with failed request messages.
-
-REMOVED - Message option, now needs to be sent as InBodyContent using DefaultFailureResponse or custom type.</PackageReleaseNotes>
+      <PackageReleaseNotes>MIGRATED - To .Net5</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

@@ -13,13 +13,10 @@
     <PackageTags>..\..\LICENSE.md</PackageTags>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <Version>1.1.0.0-beta</Version>
+    <Version>1.5.0.1-beta</Version>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>ADDED - ProfilingAdapter, profiles APIs.
-ADDED - ISesison, contains all statistics collected during the session.
-ADDED - IApiProfile, contains all statistics collected against a specific API.
-ADDED - IRequestProfile, contains all statistics related to a specific request.</PackageReleaseNotes>
+    <PackageReleaseNotes>MIGRATED - To .Net5</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

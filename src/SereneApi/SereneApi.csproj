@@ -13,14 +13,18 @@
         <Product>SereneApi</Product>
         <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>1.1.1.4</Version>
+        <Version>1.5.0.1</Version>
         <NeutralLanguage>en-AU</NeutralLanguage>
         <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
         <Copyright>Copyright (c) 2020 DeltaWare</Copyright>
         <PackageIcon>nuget_logo.png</PackageIcon>
         <PackageId>SereneApi</PackageId>
-        <PackageReleaseNotes>REFACTORED - HttpClient is no longer disposed by ApiHandler as its lifetime is handled by ClientFactory</PackageReleaseNotes>
+        <PackageReleaseNotes>MIGRATED - To .Net5
+
+IMPROVED - Request speed by ~39% [0.04ms to 0.029ms]
+
+CHANGED - How requests are made. Request creation is now done using Fluent API.</PackageReleaseNotes>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <AssemblyVersion>1.1.0.5</AssemblyVersion>

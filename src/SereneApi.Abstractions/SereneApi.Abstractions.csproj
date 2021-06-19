@@ -13,16 +13,14 @@
 	  <Product>SereneApi</Product>
 	  <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <Version>1.1.1.4</Version>
+	  <Version>1.5.0.1</Version>
 	  <NeutralLanguage>en-AU</NeutralLanguage>
 	  <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 	  <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	  <Copyright>Copyright (c) 2020 DeltaWare</Copyright>
 	  <PackageIcon>nuget_logo.png</PackageIcon>
 	  <PackageId>SereneApi.Abstractions</PackageId>
-	  <PackageReleaseNotes>ADDED - Logging to ClientFactory
-
-REFACTORED - ClientFactory to cache the created HttpClient</PackageReleaseNotes>
+	  <PackageReleaseNotes>MIGRATED - To .Net5</PackageReleaseNotes>
       <IncludeSymbols>true</IncludeSymbols>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
