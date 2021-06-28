@@ -23,9 +23,9 @@ namespace DependencyInjection.WebUi.Handlers
             // This GET request will use the students Id as a parameter for the request.
             // http://localhost:8080/api/Students/{studentId}
             return MakeRequest
-                .UsingMethod(Method.GET)
+                .UsingMethod(Method.Get)
                 .WithParameter(studentId)
-                .RespondsWithContent<StudentDto>()
+                .RespondsWithType<StudentDto>()
                 .ExecuteAsync();
         }
 
@@ -34,8 +34,8 @@ namespace DependencyInjection.WebUi.Handlers
             // This is a simple GET request with no endpoint or parameters provided.
             // http://localhost:8080/api/Students
             return MakeRequest
-                .UsingMethod(Method.GET)
-                .RespondsWithContent<List<StudentDto>>()
+                .UsingMethod(Method.Get)
+                .RespondsWithType<List<StudentDto>>()
                 .ExecuteAsync();
         }
 
@@ -44,10 +44,10 @@ namespace DependencyInjection.WebUi.Handlers
             // In this example, only the Given and Last name values will used for the query.
             // http://localhost:8080/api/Students?GivenName=value&LastName=value
             return MakeRequest
-                .UsingMethod(Method.GET)
+                .UsingMethod(Method.Get)
                 .WithEndpoint("SearchBy/GivenAndLastName")
                 .WithQuery(student, s => new { s.GivenName, s.LastName })
-                .RespondsWithContent<List<StudentDto>>()
+                .RespondsWithType<List<StudentDto>>()
                 .ExecuteAsync();
         }
 
@@ -57,7 +57,7 @@ namespace DependencyInjection.WebUi.Handlers
             // http://localhost:8080/api/Students
 
             return MakeRequest
-                .UsingMethod(Method.POST)
+                .UsingMethod(Method.Post)
                 .AddInBodyContent(student)
                 .ExecuteAsync();
         }
@@ -67,10 +67,10 @@ namespace DependencyInjection.WebUi.Handlers
             // Here we are using an Endpoint Template, allowing more complex APIs.
             // http://localhost:8080/api/Students/{studentId}/Classes
             return MakeRequest
-                .UsingMethod(Method.GET)
+                .UsingMethod(Method.Get)
                 .WithEndpoint("{0}/Classes")
                 .WithParameter(studentId)
-                .RespondsWithContent<List<ClassDto>>()
+                .RespondsWithType<List<ClassDto>>()
                 .ExecuteAsync();
         }
     }

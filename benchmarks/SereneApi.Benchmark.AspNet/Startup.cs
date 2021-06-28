@@ -33,7 +33,7 @@ namespace SereneApi.Benchmark.AspNet
                     FirstName = "John",
                     LastName = "Smith",
                     Id = 0
-                }).RespondsToRequestsWith(Method.GET);
+                }).RespondsToRequestsWith(Method.Get);
             });
 
             services.AddRazorPages();

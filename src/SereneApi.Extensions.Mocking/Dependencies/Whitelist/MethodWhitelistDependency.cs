@@ -30,7 +30,7 @@ namespace SereneApi.Extensions.Mocking.Dependencies.Whitelist
                 throw new ArgumentException($"{nameof(methods)} must not be empty.");
             }
 
-            if (methods.Any(m => m == Method.NONE))
+            if (methods.Any(m => m == Method.None))
             {
                 throw new ArgumentException("An invalid method was provided.");
             }

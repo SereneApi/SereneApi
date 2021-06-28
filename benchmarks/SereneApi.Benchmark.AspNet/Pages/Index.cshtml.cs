@@ -44,7 +44,7 @@ namespace SereneApi.Benchmark.AspNet.Pages
 
                 runTime.Stop();
 
-                if (response.WasNotSuccessful() || response.Data == null)
+                if (response.WasNotSuccessful || response.HasNullData())
                 {
                     throw new NullReferenceException();
                 }

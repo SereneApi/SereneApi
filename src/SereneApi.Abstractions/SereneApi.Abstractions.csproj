@@ -13,14 +13,15 @@
 	  <Product>SereneApi</Product>
 	  <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <Version>1.5.0.1</Version>
+	  <Version>1.5.0.2</Version>
 	  <NeutralLanguage>en-AU</NeutralLanguage>
 	  <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 	  <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	  <Copyright>Copyright (c) 2020 DeltaWare</Copyright>
 	  <PackageIcon>nuget_logo.png</PackageIcon>
 	  <PackageId>SereneApi.Abstractions</PackageId>
-	  <PackageReleaseNotes>MIGRATED - To .Net5</PackageReleaseNotes>
+	  <PackageReleaseNotes>CHANGED - RespondsWtihContent&lt;T&gt;() method to ResponseWithType&lt;T&gt;() to make it more clear
+CHANGED - Method Enum to use Pascal case instead of capitalised.</PackageReleaseNotes>
       <IncludeSymbols>true</IncludeSymbols>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
       <ApplicationIcon>nuget_logo.ico</ApplicationIcon>

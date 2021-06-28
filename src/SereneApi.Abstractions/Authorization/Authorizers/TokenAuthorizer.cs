@@ -140,7 +140,7 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
                 api.Dispose();
             }
 
-            if (!response.WasSuccessful || response.HasNullResult())
+            if (!response.WasSuccessful || response.HasNullData())
             {
                 Monitor.Exit(_authorizationLock);
 

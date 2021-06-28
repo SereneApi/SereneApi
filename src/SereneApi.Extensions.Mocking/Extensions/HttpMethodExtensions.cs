@@ -15,12 +15,12 @@ namespace SereneApi.Extensions.Mocking.Extensions
 
             return methodString switch
             {
-                "GET" => Method.GET,
-                "POST" => Method.POST,
-                "DELETE" => Method.DELETE,
-                "PATCH" => Method.PATCH,
-                "PUT" => Method.PUT,
-                _ => Method.NONE
+                "GET" => Method.Get,
+                "POST" => Method.Post,
+                "DELETE" => Method.Delete,
+                "PATCH" => Method.Patch,
+                "PUT" => Method.Put,
+                _ => Method.None
             };
         }
     }

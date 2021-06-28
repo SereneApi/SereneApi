@@ -46,12 +46,12 @@ namespace SereneApi
                     {
                         return method switch
                         {
-                            Method.POST => await client.PostAsync(endpoint, null),
-                            Method.GET => await client.GetAsync(endpoint),
-                            Method.PUT => await client.PutAsync(endpoint, null),
-                            Method.PATCH => await client.PatchAsync(endpoint, null),
-                            Method.DELETE => await client.DeleteAsync(endpoint),
-                            Method.NONE => throw new ArgumentException("None is not a valid method for a request."),
+                            Method.Post => await client.PostAsync(endpoint, null),
+                            Method.Get => await client.GetAsync(endpoint),
+                            Method.Put => await client.PutAsync(endpoint, null),
+                            Method.Patch => await client.PatchAsync(endpoint, null),
+                            Method.Delete => await client.DeleteAsync(endpoint),
+                            Method.None => throw new ArgumentException("None is not a valid method for a request."),
                             _ => throw new ArgumentOutOfRangeException(nameof(endpoint), method,
                                 "An incorrect Method Value was supplied.")
                         };
@@ -67,14 +67,14 @@ namespace SereneApi
                     {
                         return method switch
                         {
-                            Method.POST => await client.PostAsync(endpoint, content),
-                            Method.GET => throw new ArgumentException(
+                            Method.Post => await client.PostAsync(endpoint, content),
+                            Method.Get => throw new ArgumentException(
                                 "Get cannot be used in conjunction with an InBody Request"),
-                            Method.PUT => await client.PutAsync(endpoint, content),
-                            Method.PATCH => await client.PatchAsync(endpoint, content),
-                            Method.DELETE => throw new ArgumentException(
+                            Method.Put => await client.PutAsync(endpoint, content),
+                            Method.Patch => await client.PatchAsync(endpoint, content),
+                            Method.Delete => throw new ArgumentException(
                                 "Delete cannot be used in conjunction with an InBody Request"),
-                            Method.NONE => throw new ArgumentException("None is not a valid method for a request."),
+                            Method.None => throw new ArgumentException("None is not a valid method for a request."),
                             _ => throw new ArgumentOutOfRangeException(nameof(method), method,
                                 "An incorrect Method Value was supplied.")
                         };
@@ -91,7 +91,7 @@ namespace SereneApi
             }
             catch (ArgumentException exception)
             {
-                if (method == Method.GET || method == Method.DELETE || method == Method.NONE)
+                if (method == Method.Get || method == Method.Delete || method == Method.None)
                 {
                     _logger?.LogWarning("An invalid method [{httpMethod}] was provided.", method.ToString());
 
@@ -182,12 +182,12 @@ namespace SereneApi
                     {
                         return method switch
                         {
-                            Method.POST => await client.PostAsync(endpoint, null),
-                            Method.GET => await client.GetAsync(endpoint),
-                            Method.PUT => await client.PutAsync(endpoint, null),
-                            Method.PATCH => await client.PatchAsync(endpoint, null),
-                            Method.DELETE => await client.DeleteAsync(endpoint),
-                            Method.NONE => throw new ArgumentException("None is not a valid method for a request."),
+                            Method.Post => await client.PostAsync(endpoint, null),
+                            Method.Get => await client.GetAsync(endpoint),
+                            Method.Put => await client.PutAsync(endpoint, null),
+                            Method.Patch => await client.PatchAsync(endpoint, null),
+                            Method.Delete => await client.DeleteAsync(endpoint),
+                            Method.None => throw new ArgumentException("None is not a valid method for a request."),
                             _ => throw new ArgumentOutOfRangeException(nameof(endpoint), method,
                                 "An incorrect Method Value was supplied.")
                         };
@@ -203,14 +203,14 @@ namespace SereneApi
                     {
                         return method switch
                         {
-                            Method.POST => await client.PostAsync(endpoint, content),
-                            Method.GET => throw new ArgumentException(
+                            Method.Post => await client.PostAsync(endpoint, content),
+                            Method.Get => throw new ArgumentException(
                                 "Get cannot be used in conjunction with an InBody Request"),
-                            Method.PUT => await client.PutAsync(endpoint, content),
-                            Method.PATCH => await client.PatchAsync(endpoint, content),
-                            Method.DELETE => throw new ArgumentException(
+                            Method.Put => await client.PutAsync(endpoint, content),
+                            Method.Patch => await client.PatchAsync(endpoint, content),
+                            Method.Delete => throw new ArgumentException(
                                 "Delete cannot be used in conjunction with an InBody Request"),
-                            Method.NONE => throw new ArgumentException("None is not a valid method for a request."),
+                            Method.None => throw new ArgumentException("None is not a valid method for a request."),
                             _ => throw new ArgumentOutOfRangeException(nameof(method), method,
                                 "An incorrect Method Value was supplied.")
                         };
@@ -227,7 +227,7 @@ namespace SereneApi
             }
             catch (ArgumentException exception)
             {
-                if (method == Method.GET || method == Method.DELETE || method == Method.NONE)
+                if (method == Method.Get || method == Method.Delete || method == Method.None)
                 {
                     _logger?.LogWarning("An invalid method [{httpMethod}] was provided.", method.ToString());
 

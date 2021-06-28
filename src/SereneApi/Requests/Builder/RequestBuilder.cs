@@ -27,7 +27,7 @@ namespace SereneApi.Requests.Builder
 
         public IApiRequestResource UsingMethod(Method method)
         {
-            if (method == Method.NONE)
+            if (method == Method.None)
             {
                 throw new ArgumentException("Must use a valid Method.", nameof(method));
             }
@@ -124,7 +124,7 @@ namespace SereneApi.Requests.Builder
             return this;
         }
 
-        public IApiRequestContent WithQuery<TQuery>(TQuery query)
+        public IApiRequestType WithQuery<TQuery>(TQuery query)
         {
             IQueryFactory queryFactory = _apiHandler.Options.Dependencies.GetDependency<IQueryFactory>();
 
@@ -133,7 +133,7 @@ namespace SereneApi.Requests.Builder
             return this;
         }
 
-        public IApiRequestContent WithQuery<TQuery>(TQuery query, Expression<Func<TQuery, object>> selector)
+        public IApiRequestType WithQuery<TQuery>(TQuery query, Expression<Func<TQuery, object>> selector)
         {
             IQueryFactory queryFactory = _apiHandler.Options.Dependencies.GetDependency<IQueryFactory>();
 
@@ -142,7 +142,7 @@ namespace SereneApi.Requests.Builder
             return this;
         }
 
-        public IApiRequestResponseContent AddInBodyContent<TContent>(TContent content)
+        public IApiRequestResponseType AddInBodyContent<TContent>(TContent content)
         {
             if (content == null)
             {
@@ -157,7 +157,7 @@ namespace SereneApi.Requests.Builder
             return this;
         }
 
-        public IApiRequestPerformer<TContent> RespondsWithContent<TContent>()
+        public IApiRequestPerformer<TContent> RespondsWithType<TContent>()
         {
             _apiRequest.ResponseType = typeof(TContent);
 
