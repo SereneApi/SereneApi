@@ -51,7 +51,7 @@ namespace SereneApi
                     throw;
                 }
 
-                return ApiResponse.Failure(request, Status.Timeout, "The Request Timed Out; The retry limit was reached", exception);
+                return ApiResponse.Failure(request, Status.TimedOut, "The Request Timed Out; The retry limit was reached", exception);
             }
             catch (Exception exception)
             {
@@ -114,7 +114,7 @@ namespace SereneApi
                     throw;
                 }
 
-                return ApiResponse<TResponse>.Failure(request, Status.Timeout, "The Request Timed Out; The retry limit was reached", exception);
+                return ApiResponse<TResponse>.Failure(request, Status.TimedOut, "The Request Timed Out; The retry limit was reached", exception);
             }
             catch (Exception exception)
             {
@@ -192,12 +192,10 @@ namespace SereneApi
                         responseMessage = request.Method switch
                         {
                             Method.Post => await client.PostAsync(request.Route, content, cancellationToken),
-                            Method.Get => throw new ArgumentException(
-                                "A GET request may not have in body content"),
+                            Method.Get => throw new ArgumentException("A GET request may not have in body content"),
                             Method.Put => await client.PutAsync(request.Route, content, cancellationToken),
                             Method.Patch => await client.PatchAsync(request.Route, content, cancellationToken),
-                            Method.Delete => throw new ArgumentException(
-                                "A DELETE request may not have in body content"),
+                            Method.Delete => throw new ArgumentException("A DELETE request may not have in body content"),
                             Method.None => throw new ArgumentException("None is an invalid method for a request"),
                             _ => throw new ArgumentOutOfRangeException(nameof(request.Method), request.Method,
                                 "An unknown Method Value was supplied provided")

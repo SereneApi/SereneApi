@@ -10,7 +10,7 @@
 
         Unknown = 0,
         None = 1,
-        Timeout = 2,
+        TimedOut = 2,
 
         #endregion
         #region 2XX - Success
