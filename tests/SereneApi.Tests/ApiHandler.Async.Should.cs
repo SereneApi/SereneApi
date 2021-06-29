@@ -566,9 +566,9 @@ namespace SereneApi.Tests
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(true);
-            response.Message.ShouldBe("The Request Timed Out; Retry limit reached");
+            response.Message.ShouldBe("The Request Timed Out; The retry limit was reached");
             response.Exception.ShouldBeOfType<TimeoutException>();
-            response.Status.ShouldBe(Status.None);
+            response.Status.ShouldBe(Status.Timeout);
 
             #endregion
         }
@@ -624,9 +624,9 @@ namespace SereneApi.Tests
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(true);
-            response.Message.ShouldBe("The Request Timed Out; Retry limit reached");
+            response.Message.ShouldBe("The Request Timed Out; The retry limit was reached");
             response.Exception.ShouldBeOfType<TimeoutException>();
-            response.Status.ShouldBe(Status.None);
+            response.Status.ShouldBe(Status.Timeout);
             response.Data.ShouldBeNull();
 
             #endregion
