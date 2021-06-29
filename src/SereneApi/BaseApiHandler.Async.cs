@@ -23,22 +23,13 @@ namespace SereneApi
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         protected internal virtual async Task<IApiResponse> PerformRequestAsync(IApiRequest request, CancellationToken cancellationToken = default)
         {
-            CheckIfDisposed();
-
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
-            _eventManager?.PublishAsync(new RequestEvent(this, request)).FireAndForget();
-
             HttpResponseMessage responseMessage = null;
 
             try
             {
                 responseMessage = await PerformRequestWithRetryAsync(request, cancellationToken);
 
-                IApiResponse response = ResponseHandler.ProcessResponse(request, responseMessage);
+                IApiResponse response = await ResponseHandler.ProcessResponseAsync(request, responseMessage);
 
                 _eventManager?.PublishAsync(new ResponseEvent(this, response)).FireAndForget();
 
@@ -72,7 +63,7 @@ namespace SereneApi
                 {
                     responseMessage.Dispose();
 
-                    _logger?.LogDebug(Logging.Messages.DisposedHttpResponseMessage, request.Method.ToString(), GetRequestRoute(request));
+                    _logger?.LogDebug(Logging.EventIds.DisposedEvent, Logging.Messages.DisposedHttpResponseMessage, request.Method.ToString(), GetRequestRoute(request));
                 }
             }
         }
@@ -86,22 +77,13 @@ namespace SereneApi
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         protected internal virtual async Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(IApiRequest request, CancellationToken cancellationToken = default)
         {
-            CheckIfDisposed();
-
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
-            _eventManager?.PublishAsync(new RequestEvent(this, request)).FireAndForget();
-
             HttpResponseMessage responseMessage = null;
 
             try
             {
                 responseMessage = await PerformRequestWithRetryAsync(request, cancellationToken);
 
-                IApiResponse<TResponse> response = ResponseHandler.ProcessResponse<TResponse>(request, responseMessage);
+                IApiResponse<TResponse> response = ResponseHandler.ProcessResponseAsync<TResponse>(request, responseMessage).GetAwaiter().GetResult();
 
                 _eventManager?.PublishAsync(new ResponseEvent(this, response)).FireAndForget();
 
@@ -118,7 +100,7 @@ namespace SereneApi
             }
             catch (Exception exception)
             {
-                _logger?.LogError(exception, Logging.Messages.RequestEncounteredException, request.Method.ToString(), GetRequestRoute(request));
+                _logger?.LogError(Logging.EventIds.ExceptionEvent, exception, Logging.Messages.RequestEncounteredException, request.Method.ToString(), GetRequestRoute(request));
 
                 if (Options.ThrowExceptions)
                 {
@@ -135,7 +117,7 @@ namespace SereneApi
                 {
                     responseMessage.Dispose();
 
-                    _logger?.LogDebug(Logging.Messages.DisposedHttpResponseMessage, request.Method.ToString(), GetRequestRoute(request));
+                    _logger?.LogDebug(Logging.EventIds.DisposedEvent, Logging.Messages.DisposedHttpResponseMessage, request.Method.ToString(), GetRequestRoute(request));
                 }
             }
         }
@@ -147,6 +129,15 @@ namespace SereneApi
         /// <param name="cancellationToken">Cancels an ongoing request.</param>
         private async Task<HttpResponseMessage> PerformRequestWithRetryAsync(IApiRequest request, CancellationToken cancellationToken = default)
         {
+            CheckIfDisposed();
+
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            _eventManager?.PublishAsync(new RequestEvent(this, request)).FireAndForget();
+
             bool retryingRequest = false;
             int requestsAttempted = 0;
 
@@ -162,7 +153,7 @@ namespace SereneApi
 
                     if (request.Content == null)
                     {
-                        _logger?.LogInformation(Logging.Messages.PerformingRequest, request.Method.ToString(), GetRequestRoute(request));
+                        _logger?.LogInformation(Logging.EventIds.PerformRequestEvent, Logging.Messages.PerformingRequest, request.Method.ToString(), GetRequestRoute(request));
 
                         responseMessage = request.Method switch
                         {
@@ -180,11 +171,11 @@ namespace SereneApi
                     {
                         if (request.Method is Method.Get or Method.Delete or Method.None)
                         {
-                            _logger?.LogError(Logging.Messages.InvalidMethodForInBodyContent, request.Method.ToString());
+                            _logger?.LogError(Logging.EventIds.InvalidMethodForRequestEvent, Logging.Messages.InvalidMethodForInBodyContent, request.Method.ToString());
                         }
                         else
                         {
-                            _logger?.LogDebug(Logging.Messages.PerformingRequestWithContent, request.Method.ToString(), GetRequestRoute(request), request.Content.GetContent());
+                            _logger?.LogDebug(Logging.EventIds.PerformRequestEvent, Logging.Messages.PerformingRequestWithContent, request.Method.ToString(), GetRequestRoute(request), request.Content.GetContent());
                         }
 
                         HttpContent content = (HttpContent)request.Content.GetContent();
@@ -204,23 +195,25 @@ namespace SereneApi
 
                     retryingRequest = false;
 
-                    _logger?.LogInformation(Logging.Messages.ReceivedResponse, request.Method.ToString(), GetRequestRoute(request), responseMessage.StatusCode);
+                    _logger?.LogInformation(Logging.EventIds.ResponseReceivedEvent, Logging.Messages.ReceivedResponse, request.Method.ToString(), GetRequestRoute(request), responseMessage.StatusCode);
 
                     return responseMessage;
                 }
                 catch (TaskCanceledException canceledException)
                 {
+                    // TODO: This may be thrown if a task is cancelled by the CancellationToken.
+
                     requestsAttempted++;
 
                     if (Connection.RetryAttempts == 0 || requestsAttempted == Connection.RetryAttempts)
                     {
-                        _logger?.LogWarning(canceledException, Logging.Messages.TimeoutNoRetry, request.Method, GetRequestRoute(request), requestsAttempted);
+                        _logger?.LogWarning(Logging.EventIds.RetryEvent, canceledException, Logging.Messages.TimeoutNoRetry, request.Method, GetRequestRoute(request), requestsAttempted);
 
                         retryingRequest = false;
                     }
                     else
                     {
-                        _logger?.LogWarning(Logging.Messages.TimeoutRetry, request.Method, GetRequestRoute(request), Connection.RetryAttempts - requestsAttempted);
+                        _logger?.LogWarning(Logging.EventIds.RetryEvent, Logging.Messages.TimeoutRetry, request.Method, GetRequestRoute(request), Connection.RetryAttempts - requestsAttempted);
 
                         _eventManager?.PublishAsync(new RetryEvent(this, request)).FireAndForget();
 
@@ -233,7 +226,7 @@ namespace SereneApi
                     {
                         client.Dispose();
 
-                        _logger?.LogDebug(Logging.Messages.DisposedHttpClient, request.Method, GetRequestRoute(request));
+                        _logger?.LogDebug(Logging.EventIds.DisposedEvent, Logging.Messages.DisposedHttpClient, request.Method, GetRequestRoute(request));
                     }
                 }
             } while (retryingRequest);

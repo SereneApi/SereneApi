@@ -67,7 +67,7 @@ namespace SereneApi
 
             ResponseHandler = _dependencies.GetDependency<IResponseHandler>();
 
-            _logger?.LogTrace(Logging.Messages.HandlerInstantiated, nameof(GetType));
+            _logger?.LogTrace(Logging.EventIds.InstantiatedEvent ,Logging.Messages.HandlerInstantiated, nameof(GetType));
         }
 
         #endregion
@@ -85,12 +85,14 @@ namespace SereneApi
         /// </summary>
         protected void CheckIfDisposed()
         {
-            if (_disposed)
+            if (!_disposed)
             {
-                _logger?.LogWarning("{ApiHandler} was accessed after being disposed of.", nameof(GetType));
-
-                throw new ObjectDisposedException(nameof(GetType));
+                return;
             }
+
+            _logger?.LogError(Logging.EventIds.ExceptionEvent, Logging.Messages.AccessOfDisposedHandler, nameof(GetType));
+
+            throw new ObjectDisposedException(nameof(GetType));
         }
 
         /// <summary>
@@ -102,7 +104,7 @@ namespace SereneApi
 
             GC.SuppressFinalize(this);
 
-            _logger?.LogDebug(Logging.Messages.DisposedHandler, nameof(GetType));
+            _logger?.LogDebug(Logging.EventIds.DisposedEvent, Logging.Messages.DisposedHandler, nameof(GetType));
         }
 
         /// <summary>

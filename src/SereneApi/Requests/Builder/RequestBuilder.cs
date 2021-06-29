@@ -164,13 +164,6 @@ namespace SereneApi.Requests.Builder
             return new RequestBuilder<TContent>(_apiHandler, _apiRequest);
         }
 
-        public IApiResponse Execute()
-        {
-            GenerateRoute();
-
-            return _apiHandler.PerformRequest(_apiRequest);
-        }
-
         public Task<IApiResponse> ExecuteAsync()
         {
             GenerateRoute();

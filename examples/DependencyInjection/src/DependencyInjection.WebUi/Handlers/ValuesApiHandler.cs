@@ -23,14 +23,14 @@ namespace DependencyInjection.WebUi.Handlers
                 .ExecuteAsync();
         }
 
-        public IApiResponse<string> Get(string value)
+        public Task<IApiResponse<string>> GetAsync(string value)
         {
             return MakeRequest
                 .UsingMethod(Method.Get)
                 .WithEndpoint("string/{0}")
                 .WithParameter(value)
                 .RespondsWithType<string>()
-                .Execute();
+                .ExecuteAsync();
         }
     }
 }

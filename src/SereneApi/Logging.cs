@@ -50,9 +50,14 @@
             public const string DisposedHttpResponseMessage = "The HttpResponseMessage received by the [{HttpMethod}] request to \"{Route}\" has been disposed";
 
             /// <summary>
-            /// DEBUG - Params (Handler Type)
+            /// DEBUG - Params(Method, Route)
             /// </summary>
             public const string DisposedHandler = "[{ApiHandler}] has been disposed";
+
+            /// <summary>
+            /// ERROR - Params (Handler Type)
+            /// </summary>
+            public const string AccessOfDisposedHandler = "[{ApiHandler}] was accessed after being disposed";
 
             /// <summary>
             /// ERROR - Params(Method, Route)
@@ -62,7 +67,17 @@
 
         internal static class EventIds
         {
+            public const int InstantiatedEvent = 1000;
+            public const int DisposedEvent = 1001;
 
+            public const int PerformRequestEvent = 2000;
+            public const int ResponseReceivedEvent = 2001;
+
+            public const int RetryEvent = 3000;
+
+            public const int InvalidMethodForRequestEvent = 4000;
+
+            public const int ExceptionEvent = 5000;
         }
     }
 }
