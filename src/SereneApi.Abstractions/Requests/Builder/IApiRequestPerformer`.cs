@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using SereneApi.Abstractions.Response;
+﻿using SereneApi.Abstractions.Response;
+using System.Threading.Tasks;
 
 namespace SereneApi.Abstractions.Requests.Builder
 {

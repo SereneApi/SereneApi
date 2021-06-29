@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
-using SereneApi.Abstractions.Requests.Builder;
+﻿using SereneApi.Abstractions.Requests.Builder;
 using SereneApi.Abstractions.Response;
 using SereneApi.Abstractions.Routing;
 using SereneApi.Requests.Types;
+using System.Threading.Tasks;
 
 namespace SereneApi.Requests.Builder
 {

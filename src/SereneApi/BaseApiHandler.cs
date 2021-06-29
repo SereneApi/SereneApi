@@ -4,12 +4,12 @@ using SereneApi.Abstractions.Connection;
 using SereneApi.Abstractions.Events;
 using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Options;
+using SereneApi.Abstractions.Requests;
+using SereneApi.Abstractions.Requests.Builder;
 using SereneApi.Abstractions.Response.Handlers;
-using SereneApi.Requests;
+using SereneApi.Requests.Builder;
 using System;
 using System.Diagnostics;
-using SereneApi.Abstractions.Requests.Builder;
-using SereneApi.Requests.Builder;
 
 namespace SereneApi
 {
@@ -65,7 +65,7 @@ namespace SereneApi
 
             ResponseHandler = _dependencies.GetDependency<IResponseHandler>();
 
-            _logger?.LogInformation($"{GetType()} has been instantiated");
+            _logger?.LogTrace("{ApiHandler} has been instantiated", nameof(GetType));
         }
 
         #endregion
@@ -85,6 +85,8 @@ namespace SereneApi
         {
             if (_disposed)
             {
+                _logger?.LogWarning("{ApiHandler} was accessed after being disposed of.", nameof(GetType));
+
                 throw new ObjectDisposedException(nameof(GetType));
             }
         }
@@ -94,7 +96,7 @@ namespace SereneApi
         /// </summary>
         public void Dispose()
         {
-            _logger?.LogInformation($"{GetType()} is being disposed");
+            _logger?.LogDebug("{ApiHandler} is being disposed", nameof(GetType));
 
             Dispose(true);
 
@@ -124,9 +126,9 @@ namespace SereneApi
 
         #endregion
 
-        private string GetRequestRoute(Uri endpoint)
+        private string GetRequestRoute(IApiRequest request)
         {
-            return $"{Options.Connection.BaseAddress}{endpoint}";
+            return $"{Options.Connection.BaseAddress}{request.Route}";
         }
 
         public IApiRequestBuilder MakeRequest => new RequestBuilder(this);

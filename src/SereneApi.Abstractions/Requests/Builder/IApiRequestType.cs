@@ -1,5 +1,5 @@
-﻿using System;
-using SereneApi.Abstractions.Serialization;
+﻿using SereneApi.Abstractions.Serialization;
+using System;
 
 namespace SereneApi.Abstractions.Requests.Builder
 {

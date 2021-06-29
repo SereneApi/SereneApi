@@ -1,6 +1,6 @@
-﻿using System;
+﻿using SereneApi.Abstractions.Queries;
+using System;
 using System.Linq.Expressions;
-using SereneApi.Abstractions.Queries;
 
 namespace SereneApi.Abstractions.Requests.Builder
 {

@@ -5,6 +5,7 @@ using SereneApi.Abstractions.Requests;
 using SereneApi.Abstractions.Response;
 using System;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SereneApi
@@ -18,7 +19,7 @@ namespace SereneApi
         /// </summary>
         /// <param name="request">The request to be performed.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        protected internal virtual IApiResponse PerformRequest(IApiRequest request)
+        protected internal virtual IApiResponse PerformRequest(IApiRequest request, CancellationToken cancellationToken = default)
         {
             CheckIfDisposed();
 
@@ -31,56 +32,11 @@ namespace SereneApi
 
             HttpResponseMessage responseMessage = null;
 
-            Uri endpoint = request.Route;
-
-            Method method = request.Method;
-
             try
             {
-                if (request.Content == null)
-                {
-                    _logger?.LogInformation("Performing a {httpMethod} request against {RequestRoute}", method.ToString(), GetRequestRoute(endpoint));
+                responseMessage = PerformRequestWithRetry(request, cancellationToken);
 
-                    responseMessage = PerformRequestWithRetry(async client =>
-                    {
-                        return method switch
-                        {
-                            Method.Post => await client.PostAsync(endpoint, null),
-                            Method.Get => await client.GetAsync(endpoint),
-                            Method.Put => await client.PutAsync(endpoint, null),
-                            Method.Patch => await client.PatchAsync(endpoint, null),
-                            Method.Delete => await client.DeleteAsync(endpoint),
-                            Method.None => throw new ArgumentException("None is not a valid method for a request."),
-                            _ => throw new ArgumentOutOfRangeException(nameof(endpoint), method,
-                                "An incorrect Method Value was supplied.")
-                        };
-                    }, request);
-                }
-                else
-                {
-                    _logger?.LogInformation("Performing a {httpMethod} request with in body content against {RequestRoute}", method.ToString(), GetRequestRoute(endpoint));
-
-                    HttpContent content = (HttpContent)request.Content.GetContent();
-
-                    responseMessage = PerformRequestWithRetry(async client =>
-                    {
-                        return method switch
-                        {
-                            Method.Post => await client.PostAsync(endpoint, content),
-                            Method.Get => throw new ArgumentException(
-                                "Get cannot be used in conjunction with an InBody Request"),
-                            Method.Put => await client.PutAsync(endpoint, content),
-                            Method.Patch => await client.PatchAsync(endpoint, content),
-                            Method.Delete => throw new ArgumentException(
-                                "Delete cannot be used in conjunction with an InBody Request"),
-                            Method.None => throw new ArgumentException("None is not a valid method for a request."),
-                            _ => throw new ArgumentOutOfRangeException(nameof(method), method,
-                                "An incorrect Method Value was supplied.")
-                        };
-                    }, request);
-                }
-
-                _logger?.LogInformation("The {httpMethod} request against {RequestRoute} completed successfully.", method.ToString(), GetRequestRoute(endpoint));
+                _logger?.LogInformation("The {httpMethod} request against {RequestRoute} completed successfully.", request.Method.ToString(), GetRequestRoute(request));
 
                 IApiResponse response = ResponseHandler.ProcessResponse(request, responseMessage);
 
@@ -90,9 +46,9 @@ namespace SereneApi
             }
             catch (ArgumentException exception)
             {
-                if (method == Method.Get || method == Method.Delete || method == Method.None)
+                if (request.Method == Method.Get || request.Method == Method.Delete || request.Method == Method.None)
                 {
-                    _logger?.LogWarning("An invalid method [{httpMethod}] was provided.", method.ToString());
+                    _logger?.LogWarning("An invalid method [{httpMethod}] was provided.", request.Method.ToString());
 
                     // An incorrect Method value was supplied. So we want this exception to bubble up to the caller.
                     throw;
@@ -100,7 +56,7 @@ namespace SereneApi
 
                 _logger?.LogError(exception,
                     "An Exception occurred whilst performing a HTTP {httpMethod} Request to {RequestRoute}",
-                    method.ToString(), GetRequestRoute(endpoint));
+                    request.Method.ToString(), GetRequestRoute(request));
 
                 if (Options.ThrowExceptions)
                 {
@@ -108,7 +64,7 @@ namespace SereneApi
                 }
 
                 return ApiResponse.Failure(request, Status.None,
-                    $"An Exception occurred whilst performing a HTTP {method} Request",
+                    $"An Exception occurred whilst performing a HTTP {request.Method} Request",
                     exception);
             }
             catch (TimeoutException exception)
@@ -126,7 +82,7 @@ namespace SereneApi
             {
                 _logger?.LogError(exception,
                     "An Exception occurred whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
-                    method.ToString(), GetRequestRoute(endpoint));
+                    request.Method.ToString(), GetRequestRoute(request));
 
                 if (Options.ThrowExceptions)
                 {
@@ -134,14 +90,14 @@ namespace SereneApi
                 }
 
                 return ApiResponse.Failure(request, Status.None,
-                    $"An Exception occurred whilst performing a HTTP {method} Request",
+                    $"An Exception occurred whilst performing a HTTP {request.Method} Request",
                     exception);
             }
             finally
             {
                 if (responseMessage != null)
                 {
-                    _logger?.LogInformation("Disposing response for the HTTP {httpMethod} Request to {RequestRoute}", method.ToString(), GetRequestRoute(endpoint));
+                    _logger?.LogInformation("Disposing response for the HTTP {httpMethod} Request to {RequestRoute}", request.Method.ToString(), GetRequestRoute(request));
 
                     responseMessage.Dispose();
                 }
@@ -154,7 +110,7 @@ namespace SereneApi
         /// <typeparam name="TResponse">The <see cref="Type"/> to be deserialized from the body of the response.</typeparam>
         /// <param name="request">The request to be performed.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        protected internal virtual IApiResponse<TResponse> PerformRequest<TResponse>(IApiRequest request)
+        protected internal virtual IApiResponse<TResponse> PerformRequest<TResponse>(IApiRequest request, CancellationToken cancellationToken = default)
         {
             CheckIfDisposed();
 
@@ -167,56 +123,11 @@ namespace SereneApi
 
             HttpResponseMessage responseMessage = null;
 
-            Uri endpoint = request.Route;
-
-            Method method = request.Method;
-
             try
             {
-                if (request.Content == null)
-                {
-                    _logger?.LogInformation("Performing a {httpMethod} request against {RequestRoute}", method.ToString(), GetRequestRoute(endpoint));
+                responseMessage = PerformRequestWithRetry(request, cancellationToken);
 
-                    responseMessage = PerformRequestWithRetry(async client =>
-                    {
-                        return method switch
-                        {
-                            Method.Post => await client.PostAsync(endpoint, null),
-                            Method.Get => await client.GetAsync(endpoint),
-                            Method.Put => await client.PutAsync(endpoint, null),
-                            Method.Patch => await client.PatchAsync(endpoint, null),
-                            Method.Delete => await client.DeleteAsync(endpoint),
-                            Method.None => throw new ArgumentException("None is not a valid method for a request."),
-                            _ => throw new ArgumentOutOfRangeException(nameof(endpoint), method,
-                                "An incorrect Method Value was supplied.")
-                        };
-                    }, request);
-                }
-                else
-                {
-                    _logger?.LogInformation("Performing a {httpMethod} request with in body content against {RequestRoute}", method.ToString(), GetRequestRoute(endpoint));
-
-                    HttpContent content = (HttpContent)request.Content.GetContent();
-
-                    responseMessage = PerformRequestWithRetry(async client =>
-                    {
-                        return method switch
-                        {
-                            Method.Post => await client.PostAsync(endpoint, content),
-                            Method.Get => throw new ArgumentException(
-                                "Get cannot be used in conjunction with an InBody Request"),
-                            Method.Put => await client.PutAsync(endpoint, content),
-                            Method.Patch => await client.PatchAsync(endpoint, content),
-                            Method.Delete => throw new ArgumentException(
-                                "Delete cannot be used in conjunction with an InBody Request"),
-                            Method.None => throw new ArgumentException("None is not a valid method for a request."),
-                            _ => throw new ArgumentOutOfRangeException(nameof(method), method,
-                                "An incorrect Method Value was supplied.")
-                        };
-                    }, request);
-                }
-
-                _logger?.LogInformation("The {httpMethod} request against {RequestRoute} completed successfully.", method.ToString(), GetRequestRoute(endpoint));
+                _logger?.LogInformation("The {httpMethod} request against {RequestRoute} completed successfully.", request.Method.ToString(), GetRequestRoute(request));
 
                 IApiResponse<TResponse> response = ResponseHandler.ProcessResponse<TResponse>(request, responseMessage);
 
@@ -226,9 +137,9 @@ namespace SereneApi
             }
             catch (ArgumentException exception)
             {
-                if (method == Method.Get || method == Method.Delete || method == Method.None)
+                if (request.Method == Method.Get || request.Method == Method.Delete || request.Method == Method.None)
                 {
-                    _logger?.LogWarning("An invalid method [{httpMethod}] was provided.", method.ToString());
+                    _logger?.LogWarning("An invalid method [{httpMethod}] was provided.", request.Method.ToString());
 
                     // An incorrect Method value was supplied. So we want this exception to bubble up to the caller.
                     throw;
@@ -236,7 +147,7 @@ namespace SereneApi
 
                 _logger?.LogError(exception,
                     "An Exception occurred whilst performing a HTTP {httpMethod} Request to {RequestRoute}",
-                    method.ToString(), GetRequestRoute(endpoint));
+                    request.Method.ToString(), GetRequestRoute(request));
 
                 if (Options.ThrowExceptions)
                 {
@@ -244,7 +155,7 @@ namespace SereneApi
                 }
 
                 return ApiResponse<TResponse>.Failure(request, Status.None,
-                    $"An Exception occurred whilst performing a HTTP {method} Request",
+                    $"An Exception occurred whilst performing a HTTP {request.Method} Request",
                     exception);
             }
             catch (TimeoutException exception)
@@ -262,7 +173,7 @@ namespace SereneApi
             {
                 _logger?.LogError(exception,
                     "An Exception occurred whilst performing a HTTP {httpMethod} Request to \"{RequestRoute}\"",
-                    method.ToString(), GetRequestRoute(endpoint));
+                    request.Method.ToString(), GetRequestRoute(request));
 
                 if (Options.ThrowExceptions)
                 {
@@ -270,14 +181,14 @@ namespace SereneApi
                 }
 
                 return ApiResponse<TResponse>.Failure(request, Status.None,
-                    $"An Exception occurred whilst performing a HTTP {method} Request",
+                    $"An Exception occurred whilst performing a HTTP {request.Method} Request",
                     exception);
             }
             finally
             {
                 if (responseMessage != null)
                 {
-                    _logger?.LogInformation("Disposing response for the HTTP {httpMethod} Request to {RequestRoute}", method.ToString(), GetRequestRoute(endpoint));
+                    _logger?.LogInformation("Disposing response for the HTTP {httpMethod} Request to {RequestRoute}", request.Method.ToString(), GetRequestRoute(request));
 
                     responseMessage.Dispose();
                 }
@@ -289,7 +200,7 @@ namespace SereneApi
         /// </summary>
         /// <param name="requestAction">The request to be performed.</param>
         /// <param name="request">The request that will be performed.</param>
-        private HttpResponseMessage PerformRequestWithRetry(Func<HttpClient, Task<HttpResponseMessage>> requestAction, IApiRequest request)
+        private HttpResponseMessage PerformRequestWithRetry(IApiRequest request, CancellationToken cancellationToken = default)
         {
             bool retryingRequest = false;
             int requestsAttempted = 0;
@@ -306,7 +217,44 @@ namespace SereneApi
                     // This means the Try Catch inside of PerformRequestWithRetry does not catch the TaskCanceledException.
                     // The Try Catch in this method IS REQUIRED for the retry to functionality to work.
                     // To get around this, Task.GetAwaiter().GetResult() is necessary.
-                    HttpResponseMessage responseMessage = requestAction.Invoke(client).GetAwaiter().GetResult();
+                    HttpResponseMessage responseMessage;
+
+                    if (request.Content == null)
+                    {
+                        _logger?.LogInformation("Performing a {httpMethod} request against {RequestRoute}", request.Method.ToString(), GetRequestRoute(request));
+
+                        responseMessage = request.Method switch
+                        {
+                            Method.Post => client.PostAsync(request.Route, null, cancellationToken).GetAwaiter().GetResult(),
+                            Method.Get => client.GetAsync(request.Route, cancellationToken).GetAwaiter().GetResult(),
+                            Method.Put => client.PutAsync(request.Route, null, cancellationToken).GetAwaiter().GetResult(),
+                            Method.Patch => client.PatchAsync(request.Route, null, cancellationToken).GetAwaiter().GetResult(),
+                            Method.Delete => client.DeleteAsync(request.Route, cancellationToken).GetAwaiter().GetResult(),
+                            Method.None => throw new ArgumentException("None is not a valid method for a request."),
+                            _ => throw new ArgumentOutOfRangeException(nameof(request.Method), request.Method,
+                                "An incorrect Method Value was supplied.")
+                        };
+                    }
+                    else
+                    {
+                        _logger?.LogInformation("Performing a {httpMethod} request with in body content against {RequestRoute}", request.Method.ToString(), GetRequestRoute(request));
+
+                        HttpContent content = (HttpContent)request.Content.GetContent();
+
+                        responseMessage = request.Method switch
+                        {
+                            Method.Post => client.PostAsync(request.Route, content, cancellationToken).GetAwaiter().GetResult(),
+                            Method.Get => throw new ArgumentException(
+                                "Get cannot be used in conjunction with an InBody Request"),
+                            Method.Put => client.PutAsync(request.Route, content, cancellationToken).GetAwaiter().GetResult(),
+                            Method.Patch => client.PatchAsync(request.Route, content, cancellationToken).GetAwaiter().GetResult(),
+                            Method.Delete => throw new ArgumentException(
+                                "Delete cannot be used in conjunction with an InBody Request"),
+                            Method.None => throw new ArgumentException("None is not a valid method for a request."),
+                            _ => throw new ArgumentOutOfRangeException(nameof(request.Method), request.Method,
+                                "An incorrect Method Value was supplied.")
+                        };
+                    }
 
                     retryingRequest = false;
 
@@ -320,7 +268,7 @@ namespace SereneApi
                     {
                         _logger?.LogError(canceledException,
                             "The Request to \"{RequestRoute}\" has Timed Out; Retry limit reached. Retired {count}",
-                            GetRequestRoute(request.Route), requestsAttempted);
+                            GetRequestRoute(request), requestsAttempted);
 
                         retryingRequest = false;
                     }
@@ -328,7 +276,7 @@ namespace SereneApi
                     {
                         _logger?.LogWarning(
                             "Request to \"{RequestRoute}\" has Timed out, retrying. Attempts Remaining {count}",
-                            GetRequestRoute(request.Route), Connection.RetryAttempts - requestsAttempted);
+                            GetRequestRoute(request), Connection.RetryAttempts - requestsAttempted);
 
                         _eventManager?.PublishAsync(new RetryEvent(this, request)).FireAndForget();
 
@@ -346,7 +294,7 @@ namespace SereneApi
                 }
             } while (retryingRequest);
 
-            throw new TimeoutException($"The Request to \"{GetRequestRoute(request.Route)}\" has Timed Out; Retry limit reached. Retired {requestsAttempted}");
+            throw new TimeoutException($"The Request to \"{GetRequestRoute(request)}\" has Timed Out; Retry limit reached. Retired {requestsAttempted}");
         }
 
         #endregion

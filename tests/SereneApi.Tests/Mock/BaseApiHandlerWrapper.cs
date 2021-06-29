@@ -1,6 +1,5 @@
 ﻿using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Requests.Builder;
-using SereneApi.Requests;
 using SereneApi.Tests.Interfaces;
 
 namespace SereneApi.Tests.Mock
