@@ -8,8 +8,9 @@
     {
         #region Supporting
 
-        None = 0,
-        Unknown = 1,
+        Unknown = 0,
+        None = 1,
+        Timeout = 2,
 
         #endregion
         #region 2XX - Success

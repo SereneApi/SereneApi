@@ -19,6 +19,7 @@ namespace SereneApi
         /// Performs an API Request Asynchronously.
         /// </summary>
         /// <param name="request">The request to be performed.</param>
+        /// <param name="cancellationToken">Cancels an ongoing request.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         protected internal virtual async Task<IApiResponse> PerformRequestAsync(IApiRequest request, CancellationToken cancellationToken = default)
         {
@@ -37,53 +38,24 @@ namespace SereneApi
             {
                 responseMessage = await PerformRequestWithRetryAsync(request, cancellationToken);
 
-                _logger?.LogInformation("The {httpMethod} request against {RequestRoute} completed successfully.", request.Method.ToString(), GetRequestRoute(request));
-
                 IApiResponse response = ResponseHandler.ProcessResponse(request, responseMessage);
 
                 _eventManager?.PublishAsync(new ResponseEvent(this, response)).FireAndForget();
 
                 return response;
             }
-            catch (ArgumentException exception)
-            {
-                if (request.Method == Method.Get || request.Method == Method.Delete || request.Method == Method.None)
-                {
-                    _logger?.LogWarning("An invalid method [{httpMethod}] was provided.", request.Method.ToString());
-
-                    // An incorrect Method value was supplied. So we want this exception to bubble up to the caller.
-                    throw;
-                }
-
-                _logger?.LogError(exception,
-                    "An Exception occurred whilst performing a HTTP {httpMethod} Request to {RequestRoute}",
-                    request.Method.ToString(), GetRequestRoute(request));
-
-                if (Options.ThrowExceptions)
-                {
-                    throw;
-                }
-
-                return ApiResponse.Failure(request, Status.None,
-                    $"An Exception occurred whilst performing a HTTP {request.Method} Request",
-                    exception);
-            }
             catch (TimeoutException exception)
             {
-                _logger?.LogWarning(exception, "The Request Timed Out; Retry limit reach");
-
                 if (Options.ThrowExceptions)
                 {
                     throw;
                 }
 
-                return ApiResponse.Failure(request, Status.None, "The Request Timed Out; Retry limit reached", exception);
+                return ApiResponse.Failure(request, Status.Timeout, "The Request Timed Out; The retry limit was reached", exception);
             }
             catch (Exception exception)
             {
-                _logger?.LogError(exception,
-                    "An Exception occurred whilst performing a HTTP {httpMethod} Request to {RequestRoute",
-                    request.Method.ToString(), GetRequestRoute(request));
+                _logger?.LogError(exception, Logging.Messages.RequestEncounteredException, request.Method.ToString(), GetRequestRoute(request));
 
                 if (Options.ThrowExceptions)
                 {
@@ -98,9 +70,9 @@ namespace SereneApi
             {
                 if (responseMessage != null)
                 {
-                    _logger?.LogInformation("Disposing response for the HTTP {httpMethod} Request to {RequestRoute}", request.Method.ToString(), GetRequestRoute(request));
-
                     responseMessage.Dispose();
+
+                    _logger?.LogDebug(Logging.Messages.DisposedHttpResponseMessage, request.Method.ToString(), GetRequestRoute(request));
                 }
             }
         }
@@ -110,6 +82,7 @@ namespace SereneApi
         /// </summary>
         /// <typeparam name="TResponse">The <see cref="Type"/> to be deserialized from the body of the response.</typeparam>
         /// <param name="request">The request to be performed.</param>
+        /// <param name="cancellationToken">Cancels an ongoing request.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         protected internal virtual async Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(IApiRequest request, CancellationToken cancellationToken = default)
         {
@@ -128,53 +101,24 @@ namespace SereneApi
             {
                 responseMessage = await PerformRequestWithRetryAsync(request, cancellationToken);
 
-                _logger?.LogInformation("The {httpMethod} request against {RequestRoute} completed successfully.", request.Method.ToString(), GetRequestRoute(request));
-
                 IApiResponse<TResponse> response = ResponseHandler.ProcessResponse<TResponse>(request, responseMessage);
 
                 _eventManager?.PublishAsync(new ResponseEvent(this, response)).FireAndForget();
 
                 return response;
             }
-            catch (ArgumentException exception)
-            {
-                if (request.Method == Method.Get || request.Method == Method.Delete || request.Method == Method.None)
-                {
-                    _logger?.LogWarning("An invalid method [{httpMethod}] was provided.", request.Method.ToString());
-
-                    // An incorrect Method value was supplied. So we want this exception to bubble up to the caller.
-                    throw;
-                }
-
-                _logger?.LogError(exception,
-                    "An Exception occurred whilst performing a HTTP {httpMethod} Request to {RequestRoute}",
-                    request.Method.ToString(), GetRequestRoute(request));
-
-                if (Options.ThrowExceptions)
-                {
-                    throw;
-                }
-
-                return ApiResponse<TResponse>.Failure(request, Status.None,
-                    $"An Exception occurred whilst performing a HTTP {request.Method} Request",
-                    exception);
-            }
             catch (TimeoutException exception)
             {
-                _logger?.LogWarning(exception, "The Request Timed Out; Retry limit reach");
-
                 if (Options.ThrowExceptions)
                 {
                     throw;
                 }
 
-                return ApiResponse<TResponse>.Failure(request, Status.None, "The Request Timed Out; Retry limit reached", exception);
+                return ApiResponse<TResponse>.Failure(request, Status.Timeout, "The Request Timed Out; The retry limit was reached", exception);
             }
             catch (Exception exception)
             {
-                _logger?.LogError(exception,
-                    "An Exception occurred whilst performing a HTTP {httpMethod} Request to {RequestRoute}",
-                    request.Method.ToString(), GetRequestRoute(request));
+                _logger?.LogError(exception, Logging.Messages.RequestEncounteredException, request.Method.ToString(), GetRequestRoute(request));
 
                 if (Options.ThrowExceptions)
                 {
@@ -189,9 +133,9 @@ namespace SereneApi
             {
                 if (responseMessage != null)
                 {
-                    _logger?.LogInformation("Disposing response for the HTTP {httpMethod} Request to {RequestRoute}", request.Method.ToString(), GetRequestRoute(request));
-
                     responseMessage.Dispose();
+
+                    _logger?.LogDebug(Logging.Messages.DisposedHttpResponseMessage, request.Method.ToString(), GetRequestRoute(request));
                 }
             }
         }
@@ -200,7 +144,7 @@ namespace SereneApi
         /// Retries the request to the specified retry count.
         /// </summary>
         /// <param name="request">The request that will be performed.</param>
-        /// <param name="cancellationToken">Cancels the ongoing request.</param>
+        /// <param name="cancellationToken">Cancels an ongoing request.</param>
         private async Task<HttpResponseMessage> PerformRequestWithRetryAsync(IApiRequest request, CancellationToken cancellationToken = default)
         {
             bool retryingRequest = false;
@@ -218,7 +162,7 @@ namespace SereneApi
 
                     if (request.Content == null)
                     {
-                        _logger?.LogInformation("Performing a {httpMethod} request against {RequestRoute}", request.Method.ToString(), GetRequestRoute(request));
+                        _logger?.LogInformation(Logging.Messages.PerformingRequest, request.Method.ToString(), GetRequestRoute(request));
 
                         responseMessage = request.Method switch
                         {
@@ -227,14 +171,21 @@ namespace SereneApi
                             Method.Put => await client.PutAsync(request.Route, null, cancellationToken),
                             Method.Patch => await client.PatchAsync(request.Route, null, cancellationToken),
                             Method.Delete => await client.DeleteAsync(request.Route, cancellationToken),
-                            Method.None => throw new ArgumentException("None is not a valid method for a request."),
+                            Method.None => throw new ArgumentException("None is an invalid method for a request"),
                             _ => throw new ArgumentOutOfRangeException(nameof(request.Method), request.Method,
-                                "An incorrect Method Value was supplied.")
+                                "An unknown Method Value was supplied provided")
                         };
                     }
                     else
                     {
-                        _logger?.LogInformation("Performing a {httpMethod} request with in body content against {RequestRoute}", request.Method.ToString(), GetRequestRoute(request));
+                        if (request.Method is Method.Get or Method.Delete or Method.None)
+                        {
+                            _logger?.LogError(Logging.Messages.InvalidMethodForInBodyContent, request.Method.ToString());
+                        }
+                        else
+                        {
+                            _logger?.LogDebug(Logging.Messages.PerformingRequestWithContent, request.Method.ToString(), GetRequestRoute(request), request.Content.GetContent());
+                        }
 
                         HttpContent content = (HttpContent)request.Content.GetContent();
 
@@ -242,20 +193,22 @@ namespace SereneApi
                         {
                             Method.Post => await client.PostAsync(request.Route, content, cancellationToken),
                             Method.Get => throw new ArgumentException(
-                                "Get cannot be used in conjunction with an InBody Request"),
+                                "A GET request may not have in body content"),
                             Method.Put => await client.PutAsync(request.Route, content, cancellationToken),
                             Method.Patch => await client.PatchAsync(request.Route, content, cancellationToken),
                             Method.Delete => throw new ArgumentException(
-                                "Delete cannot be used in conjunction with an InBody Request"),
-                            Method.None => throw new ArgumentException("None is not a valid method for a request."),
+                                "A DELETE request may not have in body content"),
+                            Method.None => throw new ArgumentException("None is an invalid method for a request"),
                             _ => throw new ArgumentOutOfRangeException(nameof(request.Method), request.Method,
-                                "An incorrect Method Value was supplied.")
+                                "An unknown Method Value was supplied provided")
                         };
                     }
 
                     retryingRequest = false;
 
-                    return responseMessage ?? throw new NullReferenceException(nameof(responseMessage));
+                    _logger?.LogInformation(Logging.Messages.ReceivedResponse, request.Method.ToString(), GetRequestRoute(request), responseMessage.StatusCode);
+
+                    return responseMessage;
                 }
                 catch (TaskCanceledException canceledException)
                 {
@@ -263,13 +216,13 @@ namespace SereneApi
 
                     if (Connection.RetryAttempts == 0 || requestsAttempted == Connection.RetryAttempts)
                     {
-                        _logger?.LogError(canceledException, "The Request to \"{RequestRoute}\" has Timed Out; Retry limit reached. Retired {count}", GetRequestRoute(request), requestsAttempted);
+                        _logger?.LogWarning(canceledException, Logging.Messages.TimeoutNoRetry, request.Method, GetRequestRoute(request), requestsAttempted);
 
                         retryingRequest = false;
                     }
                     else
                     {
-                        _logger?.LogWarning("Request to \"{RequestRoute}\" has Timed out, retrying. Attempts Remaining {count}", GetRequestRoute(request), Connection.RetryAttempts - requestsAttempted);
+                        _logger?.LogWarning(Logging.Messages.TimeoutRetry, request.Method, GetRequestRoute(request), Connection.RetryAttempts - requestsAttempted);
 
                         _eventManager?.PublishAsync(new RetryEvent(this, request)).FireAndForget();
 
@@ -280,14 +233,14 @@ namespace SereneApi
                 {
                     if (retryingRequest == false)
                     {
-                        _logger?.LogDebug("Disposing HttpClient");
-
                         client.Dispose();
+
+                        _logger?.LogDebug(Logging.Messages.DisposedHttpClient, request.Method, GetRequestRoute(request));
                     }
                 }
             } while (retryingRequest);
 
-            throw new TimeoutException($"The Request to \"{GetRequestRoute(request)}\" has Timed Out; Retry limit reached. Retired {requestsAttempted}");
+            throw new TimeoutException($"The [{request.Method}] request to \"{GetRequestRoute(request)}\" has Timed out; The retry limit has been reached after attempting {requestsAttempted} times");
         }
 
         #endregion

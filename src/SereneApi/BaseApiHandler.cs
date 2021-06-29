@@ -37,6 +37,8 @@ namespace SereneApi
 
         protected internal IResponseHandler ResponseHandler { get; }
 
+        protected IApiRequestBuilder MakeRequest => new RequestBuilder(this);
+
         /// <inheritdoc cref="IApiHandler.Connection"/>
         public IConnectionSettings Connection { get; }
 
@@ -65,7 +67,7 @@ namespace SereneApi
 
             ResponseHandler = _dependencies.GetDependency<IResponseHandler>();
 
-            _logger?.LogTrace("{ApiHandler} has been instantiated", nameof(GetType));
+            _logger?.LogTrace(Logging.Messages.HandlerInstantiated, nameof(GetType));
         }
 
         #endregion
@@ -96,11 +98,11 @@ namespace SereneApi
         /// </summary>
         public void Dispose()
         {
-            _logger?.LogDebug("{ApiHandler} is being disposed", nameof(GetType));
-
             Dispose(true);
 
             GC.SuppressFinalize(this);
+
+            _logger?.LogDebug(Logging.Messages.DisposedHandler, nameof(GetType));
         }
 
         /// <summary>
@@ -130,7 +132,5 @@ namespace SereneApi
         {
             return $"{Options.Connection.BaseAddress}{request.Route}";
         }
-
-        public IApiRequestBuilder MakeRequest => new RequestBuilder(this);
     }
 }
