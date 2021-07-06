@@ -8,6 +8,7 @@ namespace SereneApi.Abstractions.Requests
     public interface IRequestHandler
     {
         Task<IApiResponse> PerformAsync(IApiRequest request, IApiHandler caller, CancellationToken cancellationToken = default);
+
         Task<IApiResponse<TResponse>> PerformAsync<TResponse>(IApiRequest request, IApiHandler caller, CancellationToken cancellationToken = default);
     }
 }

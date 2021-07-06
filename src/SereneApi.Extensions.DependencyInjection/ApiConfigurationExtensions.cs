@@ -41,8 +41,5 @@ namespace SereneApi.Extensions.DependencyInjection
 
             return extensions;
         }
-
-
-
     }
 }

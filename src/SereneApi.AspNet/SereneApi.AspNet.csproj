@@ -7,7 +7,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageId>SereneApi.AspNet</PackageId>
-    <Version>1.5.0.1</Version>
+    <Version>1.5.0.2</Version>
     <Authors>Bradley Clarke</Authors>
     <Company>DeltaWare</Company>
     <Product>SereneApi</Product>
@@ -23,6 +23,8 @@
     <NeutralLanguage>English (Australia)</NeutralLanguage>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageReleaseNotes>ADDED - EnableUserImpersonation() to impersonate a WindowsIdentity. [Windows Platform ONLY]
+ADDED - ImpersonatedRequestHandler which is used to process all outgoing requests.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -40,6 +42,11 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
   </ItemGroup>
 
 </Project>

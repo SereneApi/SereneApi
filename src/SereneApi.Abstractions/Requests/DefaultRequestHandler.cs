@@ -1,6 +1,7 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Connection;
+using SereneApi.Abstractions.Content;
 using SereneApi.Abstractions.Events;
 using SereneApi.Abstractions.Events.Types;
 using SereneApi.Abstractions.Factories;
@@ -105,42 +106,23 @@ namespace SereneApi.Abstractions.Requests
                     {
                         _logger?.LogInformation(Logging.EventIds.PerformRequestEvent, Logging.Messages.PerformingRequest, request.Method.ToString(), GetRequestRoute(request));
 
-                        response = request.Method switch
-                        {
-                            Method.Post => await client.PostAsync(request.Route, null, cancellationToken),
-                            Method.Get => await client.GetAsync(request.Route, cancellationToken),
-                            Method.Put => await client.PutAsync(request.Route, null, cancellationToken),
-                            Method.Patch => await client.PatchAsync(request.Route, null, cancellationToken),
-                            Method.Delete => await client.DeleteAsync(request.Route, cancellationToken),
-                            Method.None => throw new ArgumentException("None is an invalid method for a request"),
-                            _ => throw new ArgumentOutOfRangeException(nameof(request.Method), request.Method,
-                                "An unknown Method Value was supplied provided")
-                        };
+                        response = await HandleRequestAsync(client, request.Route, request.Method, cancellationToken);
                     }
                     else
                     {
                         if (request.Method is Method.Get or Method.Delete or Method.None)
                         {
-                            _logger?.LogError(Logging.EventIds.InvalidMethodForRequestEvent, Logging.Messages.InvalidMethodForInBodyContent, request.Method.ToString());
+                            _logger?.LogError(Logging.EventIds.InvalidMethodForRequestEvent,
+                                Logging.Messages.InvalidMethodForInBodyContent, request.Method.ToString());
                         }
                         else
                         {
-                            _logger?.LogDebug(Logging.EventIds.PerformRequestEvent, Logging.Messages.PerformingRequestWithContent, request.Method.ToString(), GetRequestRoute(request), request.Content.GetContent());
+                            _logger?.LogDebug(Logging.EventIds.PerformRequestEvent,
+                                Logging.Messages.PerformingRequestWithContent, request.Method.ToString(),
+                                GetRequestRoute(request), request.Content.GetContent());
                         }
 
-                        HttpContent content = (HttpContent)request.Content.GetContent();
-
-                        response = request.Method switch
-                        {
-                            Method.Post => await client.PostAsync(request.Route, content, cancellationToken),
-                            Method.Get => throw new ArgumentException("A GET request may not have in body content"),
-                            Method.Put => await client.PutAsync(request.Route, content, cancellationToken),
-                            Method.Patch => await client.PatchAsync(request.Route, content, cancellationToken),
-                            Method.Delete => throw new ArgumentException("A DELETE request may not have in body content"),
-                            Method.None => throw new ArgumentException("None is an invalid method for a request"),
-                            _ => throw new ArgumentOutOfRangeException(nameof(request.Method), request.Method,
-                                "An unknown Method Value was supplied provided")
-                        };
+                        response = await HandleRequestAsync(client, request.Route, request.Method, request.Content, cancellationToken);
                     }
 
                     retryingRequest = false;
@@ -189,6 +171,36 @@ namespace SereneApi.Abstractions.Requests
             return $"{_connection.BaseAddress}{request.Route}";
         }
 
-        private Task<HttpResponseMessage>
+        protected virtual async Task<HttpResponseMessage> HandleRequestAsync(HttpClient client, Uri route, Method method, IRequestContent content, CancellationToken cancellationToken = default)
+        {
+            HttpContent httpContent = (HttpContent)content.GetContent();
+
+            return method switch
+            {
+                Method.Post => await client.PostAsync(route, httpContent, cancellationToken),
+                Method.Get => throw new ArgumentException("A GET request may not have in body content"),
+                Method.Put => await client.PutAsync(route, httpContent, cancellationToken),
+                Method.Patch => await client.PatchAsync(route, httpContent, cancellationToken),
+                Method.Delete => throw new ArgumentException("A DELETE request may not have in body content"),
+                Method.None => throw new ArgumentException("None is an invalid method for a request"),
+                _ => throw new ArgumentOutOfRangeException(nameof(method), method,
+                    "An unknown Method Value was supplied provided")
+            };
+        }
+
+        protected virtual async Task<HttpResponseMessage> HandleRequestAsync(HttpClient client, Uri route, Method method, CancellationToken cancellationToken = default)
+        {
+            return method switch
+            {
+                Method.Post => await client.PostAsync(route, null, cancellationToken),
+                Method.Get => await client.GetAsync(route, cancellationToken),
+                Method.Put => await client.PutAsync(route, null, cancellationToken),
+                Method.Patch => await client.PatchAsync(route, null, cancellationToken),
+                Method.Delete => await client.DeleteAsync(route, cancellationToken),
+                Method.None => throw new ArgumentException("None is an invalid method for a request"),
+                _ => throw new ArgumentOutOfRangeException(nameof(method), method,
+                    "An unknown Method Value was supplied provided")
+            };
+        }
     }
 }
