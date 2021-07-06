@@ -20,7 +20,7 @@ namespace SereneApi.Abstractions.Response.Handlers
 
             _dependencyProvider.TryGetDependency(out _logger);
         }
-        
+
         public async Task<IApiResponse> ProcessFailedRequestAsync(IApiRequest request, Status status, HttpContent content)
         {
             if (content == null)
@@ -30,7 +30,7 @@ namespace SereneApi.Abstractions.Response.Handlers
 
             if (!_dependencyProvider.TryGetDependency(out ISerializer serializer))
             {
-                _logger?.LogWarning("Could not retrieve ISerializer dependency.");
+                _logger?.LogError(Logging.EventIds.DependencyNotFound, Logging.Messages.DependencyNotFound, nameof(ISerializer));
 
                 return ApiResponse.Failure(request, status, string.Empty);
             }
@@ -52,7 +52,7 @@ namespace SereneApi.Abstractions.Response.Handlers
 
             return ApiResponse.Failure(request, status, string.Empty);
         }
-        
+
         public async Task<IApiResponse<TResponse>> ProcessFailedRequestAsync<TResponse>(IApiRequest request, Status status, HttpContent content)
         {
             if (content == null)
@@ -62,7 +62,7 @@ namespace SereneApi.Abstractions.Response.Handlers
 
             if (!_dependencyProvider.TryGetDependency(out ISerializer serializer))
             {
-                _logger?.LogWarning("Could not retrieve ISerializer dependency.");
+                _logger?.LogError(Logging.EventIds.DependencyNotFound, Logging.Messages.DependencyNotFound, nameof(ISerializer));
 
                 return ApiResponse<TResponse>.Failure(request, status, string.Empty);
             }

@@ -21,7 +21,9 @@
 	  <PackageIcon>nuget_logo.png</PackageIcon>
 	  <PackageId>SereneApi.Abstractions</PackageId>
 	  <PackageReleaseNotes>CHANGED - RespondsWtihContent&lt;T&gt;() method to ResponseWithType&lt;T&gt;() to make it more clear
-CHANGED - Method Enum to use Pascal case instead of capitalised.</PackageReleaseNotes>
+CHANGED - Method Enum to use Pascal case instead of capitalised.
+
+FIXED - Issues with TokenAuthorizer and locking the cache during multithreaded operation.</PackageReleaseNotes>
       <IncludeSymbols>true</IncludeSymbols>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
       <ApplicationIcon>nuget_logo.ico</ApplicationIcon>

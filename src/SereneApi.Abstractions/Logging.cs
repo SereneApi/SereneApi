@@ -1,9 +1,24 @@
-﻿namespace SereneApi
+﻿namespace SereneApi.Abstractions
 {
-    internal static class Logging
+    public static class Logging
     {
-        internal static class Messages
+        public static class Messages
         {
+            /// <summary>
+            /// ERROR - Params(Type)
+            /// </summary>
+            public static string DependencyNotFound = "Could not retrieve the dependency for [{DependencyType}]";
+
+            /// <summary>
+            /// DEBUG
+            /// </summary>
+            public static string AuthorizationTokenCached = "Using Cached authorization token";
+
+            /// <summary>
+            /// DEBUG
+            /// </summary>
+            public static string AuthorizationTokenRenewal = "Renewing Cached authorization token";
+
             /// <summary>
             /// TRACE - Params (Handler Type)
             /// </summary>
@@ -65,17 +80,20 @@
             public const string RequestEncounteredException = "An exception was encountered when performing a [{HttpMethod}] request to \"{Route}\"";
         }
 
-        internal static class EventIds
+        public static class EventIds
         {
             public const int InstantiatedEvent = 1000;
             public const int DisposedEvent = 1001;
+
+            public const int AuthorizationEvent = 1050;
 
             public const int PerformRequestEvent = 2000;
             public const int ResponseReceivedEvent = 2001;
 
             public const int RetryEvent = 3000;
 
-            public const int InvalidMethodForRequestEvent = 4000;
+            public const int DependencyNotFound = 4000;
+            public const int InvalidMethodForRequestEvent = 4001;
 
             public const int ExceptionEvent = 5000;
         }

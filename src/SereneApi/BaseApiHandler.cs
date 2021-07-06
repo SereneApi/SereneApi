@@ -1,12 +1,10 @@
-﻿using DeltaWare.Dependencies.Abstractions;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using SereneApi.Abstractions;
 using SereneApi.Abstractions.Connection;
-using SereneApi.Abstractions.Events;
 using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Requests;
 using SereneApi.Abstractions.Requests.Builder;
-using SereneApi.Abstractions.Response.Handlers;
 using SereneApi.Requests.Builder;
 using System;
 using System.Diagnostics;
@@ -23,9 +21,7 @@ namespace SereneApi
 
         private readonly ILogger _logger;
 
-        private readonly IDependencyProvider _dependencies;
-
-        private readonly IEventManager _eventManager;
+        private readonly IRequestHandler _requestHandler;
 
         #endregion
         #region Properties
@@ -34,8 +30,6 @@ namespace SereneApi
         /// The dependencies that may be used by this API.
         /// </summary>
         protected internal IApiOptions Options { get; }
-
-        protected internal IResponseHandler ResponseHandler { get; }
 
         protected IApiRequestBuilder MakeRequest => new RequestBuilder(this);
 
@@ -61,13 +55,11 @@ namespace SereneApi
 
             Options = options;
 
-            _dependencies = Options.Dependencies;
-            _dependencies.TryGetDependency(out _logger);
-            _dependencies.TryGetDependency(out _eventManager);
+            Options.Dependencies.TryGetDependency(out _logger);
 
-            ResponseHandler = _dependencies.GetDependency<IResponseHandler>();
+            _requestHandler = Options.Dependencies.GetDependency<IRequestHandler>();
 
-            _logger?.LogTrace(Logging.EventIds.InstantiatedEvent ,Logging.Messages.HandlerInstantiated, nameof(GetType));
+            _logger?.LogTrace(Logging.EventIds.InstantiatedEvent, Logging.Messages.HandlerInstantiated, nameof(GetType));
         }
 
         #endregion

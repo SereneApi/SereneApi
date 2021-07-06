@@ -49,21 +49,6 @@ namespace SereneApi.Abstractions.Serialization
         }
 
         /// <inheritdoc>
-        ///     <cref>ISerializer.Deserialize</cref>
-        /// </inheritdoc>
-        public TObject Deserialize<TObject>(IResponseContent content)
-        {
-            if (content == null)
-            {
-                throw new ArgumentNullException(nameof(content));
-            }
-
-            string contentString = content.GetContentString();
-
-            return JsonSerializer.Deserialize<TObject>(contentString, _deserializerOptions);
-        }
-
-        /// <inheritdoc>
         ///     <cref>ISerializer.DeserializeAsync</cref>
         /// </inheritdoc>
         public async Task<TObject> DeserializeAsync<TObject>(IResponseContent content)
