@@ -13,18 +13,22 @@
         <Product>SereneApi</Product>
         <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>1.5.0.1</Version>
+        <Version>1.5.0.2</Version>
         <NeutralLanguage>en-AU</NeutralLanguage>
         <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
         <Copyright>Copyright (c) 2020 DeltaWare</Copyright>
         <PackageIcon>nuget_logo.png</PackageIcon>
         <PackageId>SereneApi</PackageId>
-        <PackageReleaseNotes>MIGRATED - To .Net5
+        <PackageReleaseNotes>IMPROVED - Logging Text to improve readability
 
-IMPROVED - Request speed by ~39% [0.04ms to 0.029ms]
+CHANGED - Status of timed out requests from None to TimedOut
+CHANGED - MakeRequest Property to Procted instead of Public
+CHANGED - RespondsWtihContent&lt;T&gt;() method to ResponseWithType&lt;T&gt;() to make it more clear
+CHANGED - Method Enum to use Pascal case instead of capitalised.
+CHANGED - How requests are processed, giving more control to end user.
 
-CHANGED - How requests are made. Request creation is now done using Fluent API.</PackageReleaseNotes>
+REMOVED - Synchronous operation from BaseApiHandler</PackageReleaseNotes>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <AssemblyVersion>1.1.0.5</AssemblyVersion>

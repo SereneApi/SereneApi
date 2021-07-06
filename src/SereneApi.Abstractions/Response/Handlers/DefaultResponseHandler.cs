@@ -31,7 +31,7 @@ namespace SereneApi.Abstractions.Response.Handlers
         /// Processes the returned <see cref="HttpResponseMessage"/>
         /// </summary>
         /// <param name="responseMessage">The <see cref="HttpResponseMessage"/> to process</param>
-        public IApiResponse ProcessResponse(IApiRequest request, [AllowNull] HttpResponseMessage responseMessage)
+        public async Task<IApiResponse> ProcessResponseAsync(IApiRequest request, [AllowNull] HttpResponseMessage responseMessage)
         {
             if (request == null)
             {
@@ -59,75 +59,7 @@ namespace SereneApi.Abstractions.Response.Handlers
             {
                 _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}", responseMessage.StatusCode, responseMessage.ReasonPhrase);
 
-                response = _failedResponseHandler.ProcessFailedRequest(request, status, responseMessage.Content);
-            }
-
-            return response;
-        }
-
-        /// <summary>
-        /// Processes the returned <see cref="HttpResponseMessage"/> deserializing the contained <see cref="TResponse"/>
-        /// </summary>
-        /// <typeparam name="TResponse">The type to be deserialized from the response</typeparam>
-        /// <param name="responseMessage">The <see cref="HttpResponseMessage"/> to process</param>
-        public IApiResponse<TResponse> ProcessResponse<TResponse>(IApiRequest request, HttpResponseMessage responseMessage)
-        {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
-            if (responseMessage == null)
-            {
-                _logger?.LogWarning("Received an Empty Http Response");
-
-                return ApiResponse<TResponse>.Failure(request, Status.None, "Received an Empty Http Response");
-            }
-
-            IApiResponse<TResponse> response;
-
-            Status status = responseMessage.StatusCode.ToStatus();
-
-            if (!responseMessage.IsSuccessStatusCode)
-            {
-                _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}", responseMessage.StatusCode, responseMessage.ReasonPhrase);
-
-                response = _failedResponseHandler.ProcessFailedRequest<TResponse>(request, status, responseMessage.Content);
-            }
-            else
-            {
-                if (responseMessage.Content == null)
-                {
-                    _logger.LogWarning("No content was received in the response.");
-
-                    response = ApiResponse<TResponse>.Failure(request, status, "No content was received in the response.");
-                }
-                else
-                {
-                    try
-                    {
-                        ISerializer serializer = _dependencyProvider.GetDependency<ISerializer>();
-
-                        TResponse responseData =
-                            serializer.Deserialize<TResponse>(responseMessage.Content);
-
-                        response = ApiResponse<TResponse>.Success(request, status, responseData);
-                    }
-                    catch (JsonException jsonException)
-                    {
-                        _logger?.LogError(jsonException, "Could not deserialize the returned value");
-
-                        response = ApiResponse<TResponse>.Failure(request, status, "Could not deserialize returned value.",
-                            jsonException);
-                    }
-                    catch (Exception exception)
-                    {
-                        _logger?.LogError(exception, "An Exception occurred whilst processing the response.");
-
-                        response = ApiResponse<TResponse>.Failure(request, status,
-                            "An Exception occurred whilst processing the response.", exception);
-                    }
-                }
+                response = await _failedResponseHandler.ProcessFailedRequestAsync(request, status, responseMessage.Content);
             }
 
             return response;

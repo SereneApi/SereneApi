@@ -5,6 +5,7 @@ using SereneApi.Abstractions.Events;
 using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Options;
 using SereneApi.Abstractions.Queries;
+using SereneApi.Abstractions.Requests;
 using SereneApi.Abstractions.Response.Handlers;
 using SereneApi.Abstractions.Routing;
 using SereneApi.Abstractions.Serialization;
@@ -90,6 +91,7 @@ namespace SereneApi.Abstractions.Configuration
                     dependencies.TryAddScoped<IClientFactory>(p => new DefaultClientFactory(p));
                     dependencies.TryAddScoped<IResponseHandler>(p => new DefaultResponseHandler(p));
                     dependencies.TryAddScoped<IFailedResponseHandler>(p => new DefaultFailedResponseHandler(p));
+                    dependencies.TryAddScoped<IRequestHandler>(p => new DefaultRequestHandler(p));
                 });
 
                 return configuration;

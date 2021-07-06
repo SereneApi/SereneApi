@@ -1,13 +1,14 @@
 ﻿using SereneApi.Abstractions.Serialization;
+using System;
 
 namespace SereneApi.Abstractions.Requests.Builder
 {
-    public interface IApiRequestResponseContent : IApiRequestPerformer
+    public interface IApiRequestResponseType : IApiRequestPerformer
     {
         /// <summary>
-        /// Specifies the content to be received by the request.
+        /// Specifies the <see cref="Type"/> that will be received in the content of the response.
         /// </summary>
         /// <remarks>Content is deserialized using the <see cref="ISerializer"/>.</remarks>
-        IApiRequestPerformer<TContent> RespondsWithContent<TContent>();
+        IApiRequestPerformer<TContent> RespondsWithType<TContent>();
     }
 }

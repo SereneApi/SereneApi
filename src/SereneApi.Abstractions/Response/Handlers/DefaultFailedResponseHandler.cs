@@ -21,38 +21,6 @@ namespace SereneApi.Abstractions.Response.Handlers
             _dependencyProvider.TryGetDependency(out _logger);
         }
 
-        public IApiResponse ProcessFailedRequest(IApiRequest request, Status status, HttpContent content)
-        {
-            if (content == null)
-            {
-                return ApiResponse.Failure(request, status, string.Empty);
-            }
-
-            if (!_dependencyProvider.TryGetDependency(out ISerializer serializer))
-            {
-                _logger?.LogWarning("Could not retrieve ISerializer dependency.");
-
-                return ApiResponse.Failure(request, status, string.Empty);
-            }
-
-            _logger?.LogInformation("Endpoint returned in body content for failed request, attempting deserialization.");
-
-            try
-            {
-                DefaultFailureResponse defaultFailureResponse = serializer.Deserialize<DefaultFailureResponse>(content);
-
-                _logger?.LogInformation("Deserialization completed successfully.");
-
-                return ApiResponse.Failure(request, status, defaultFailureResponse.Message);
-            }
-            catch (Exception exception)
-            {
-                _logger?.LogWarning(exception, "Could not deserialize in body content.");
-            }
-
-            return ApiResponse.Failure(request, status, string.Empty);
-        }
-
         public async Task<IApiResponse> ProcessFailedRequestAsync(IApiRequest request, Status status, HttpContent content)
         {
             if (content == null)
@@ -62,7 +30,7 @@ namespace SereneApi.Abstractions.Response.Handlers
 
             if (!_dependencyProvider.TryGetDependency(out ISerializer serializer))
             {
-                _logger?.LogWarning("Could not retrieve ISerializer dependency.");
+                _logger?.LogError(Logging.EventIds.DependencyNotFound, Logging.Messages.DependencyNotFound, nameof(ISerializer));
 
                 return ApiResponse.Failure(request, status, string.Empty);
             }
@@ -85,38 +53,6 @@ namespace SereneApi.Abstractions.Response.Handlers
             return ApiResponse.Failure(request, status, string.Empty);
         }
 
-        public IApiResponse<TResponse> ProcessFailedRequest<TResponse>(IApiRequest request, Status status, HttpContent content)
-        {
-            if (content == null)
-            {
-                return ApiResponse<TResponse>.Failure(request, status, string.Empty);
-            }
-
-            if (!_dependencyProvider.TryGetDependency(out ISerializer serializer))
-            {
-                _logger?.LogWarning("Could not retrieve ISerializer dependency.");
-
-                return ApiResponse<TResponse>.Failure(request, status, string.Empty);
-            }
-
-            _logger?.LogInformation("Endpoint returned in body content for failed request, attempting deserialization.");
-
-            try
-            {
-                DefaultFailureResponse defaultFailureResponse = serializer.Deserialize<DefaultFailureResponse>(content);
-
-                _logger?.LogInformation("Deserialization completed successfully.");
-
-                return ApiResponse<TResponse>.Failure(request, status, defaultFailureResponse.Message);
-            }
-            catch (Exception exception)
-            {
-                _logger?.LogWarning(exception, "Could not deserialize in body content.");
-            }
-
-            return ApiResponse<TResponse>.Failure(request, status, string.Empty);
-        }
-
         public async Task<IApiResponse<TResponse>> ProcessFailedRequestAsync<TResponse>(IApiRequest request, Status status, HttpContent content)
         {
             if (content == null)
@@ -126,7 +62,7 @@ namespace SereneApi.Abstractions.Response.Handlers
 
             if (!_dependencyProvider.TryGetDependency(out ISerializer serializer))
             {
-                _logger?.LogWarning("Could not retrieve ISerializer dependency.");
+                _logger?.LogError(Logging.EventIds.DependencyNotFound, Logging.Messages.DependencyNotFound, nameof(ISerializer));
 
                 return ApiResponse<TResponse>.Failure(request, status, string.Empty);
             }
