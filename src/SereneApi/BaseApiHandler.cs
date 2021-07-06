@@ -1,15 +1,13 @@
-﻿using DeltaWare.Dependencies.Abstractions;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using SereneApi.Abstractions;
 using SereneApi.Abstractions.Connection;
-using SereneApi.Abstractions.Events;
 using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Options;
-using SereneApi.Abstractions.Response.Handlers;
-using SereneApi.Requests;
-using System;
-using System.Diagnostics;
+using SereneApi.Abstractions.Requests;
 using SereneApi.Abstractions.Requests.Builder;
 using SereneApi.Requests.Builder;
+using System;
+using System.Diagnostics;
 
 namespace SereneApi
 {
@@ -23,9 +21,7 @@ namespace SereneApi
 
         private readonly ILogger _logger;
 
-        private readonly IDependencyProvider _dependencies;
-
-        private readonly IEventManager _eventManager;
+        private readonly IRequestHandler _requestHandler;
 
         #endregion
         #region Properties
@@ -35,7 +31,7 @@ namespace SereneApi
         /// </summary>
         protected internal IApiOptions Options { get; }
 
-        protected internal IResponseHandler ResponseHandler { get; }
+        protected IApiRequestBuilder MakeRequest => new RequestBuilder(this);
 
         /// <inheritdoc cref="IApiHandler.Connection"/>
         public IConnectionSettings Connection { get; }
@@ -59,13 +55,11 @@ namespace SereneApi
 
             Options = options;
 
-            _dependencies = Options.Dependencies;
-            _dependencies.TryGetDependency(out _logger);
-            _dependencies.TryGetDependency(out _eventManager);
+            Options.Dependencies.TryGetDependency(out _logger);
 
-            ResponseHandler = _dependencies.GetDependency<IResponseHandler>();
+            _requestHandler = Options.Dependencies.GetDependency<IRequestHandler>();
 
-            _logger?.LogInformation($"{GetType()} has been instantiated");
+            _logger?.LogTrace(Logging.EventIds.InstantiatedEvent, Logging.Messages.HandlerInstantiated, nameof(GetType));
         }
 
         #endregion
@@ -83,10 +77,14 @@ namespace SereneApi
         /// </summary>
         protected void CheckIfDisposed()
         {
-            if (_disposed)
+            if (!_disposed)
             {
-                throw new ObjectDisposedException(nameof(GetType));
+                return;
             }
+
+            _logger?.LogError(Logging.EventIds.ExceptionEvent, Logging.Messages.AccessOfDisposedHandler, nameof(GetType));
+
+            throw new ObjectDisposedException(nameof(GetType));
         }
 
         /// <summary>
@@ -94,11 +92,11 @@ namespace SereneApi
         /// </summary>
         public void Dispose()
         {
-            _logger?.LogInformation($"{GetType()} is being disposed");
-
             Dispose(true);
 
             GC.SuppressFinalize(this);
+
+            _logger?.LogDebug(Logging.EventIds.DisposedEvent, Logging.Messages.DisposedHandler, nameof(GetType));
         }
 
         /// <summary>
@@ -124,11 +122,9 @@ namespace SereneApi
 
         #endregion
 
-        private string GetRequestRoute(Uri endpoint)
+        private string GetRequestRoute(IApiRequest request)
         {
-            return $"{Options.Connection.BaseAddress}{endpoint}";
+            return $"{Options.Connection.BaseAddress}{request.Route}";
         }
-
-        public IApiRequestBuilder MakeRequest => new RequestBuilder(this);
     }
 }

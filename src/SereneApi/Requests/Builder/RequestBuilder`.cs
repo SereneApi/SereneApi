@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
-using SereneApi.Abstractions.Requests.Builder;
+﻿using SereneApi.Abstractions.Requests.Builder;
 using SereneApi.Abstractions.Response;
 using SereneApi.Abstractions.Routing;
 using SereneApi.Requests.Types;
+using System.Threading.Tasks;
 
 namespace SereneApi.Requests.Builder
 {
@@ -16,13 +16,6 @@ namespace SereneApi.Requests.Builder
         {
             _apiHandler = apiHandler;
             _apiRequest = request;
-        }
-
-        public IApiResponse<TContent> Execute()
-        {
-            GenerateRoute();
-
-            return _apiHandler.PerformRequest<TContent>(_apiRequest);
         }
 
         public Task<IApiResponse<TContent>> ExecuteAsync()

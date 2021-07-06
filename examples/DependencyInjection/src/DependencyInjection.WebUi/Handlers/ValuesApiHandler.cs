@@ -16,21 +16,21 @@ namespace DependencyInjection.WebUi.Handlers
         public Task<IApiResponse<int>> GetAsync(int value)
         {
             return MakeRequest
-                .UsingMethod(Method.GET)
+                .UsingMethod(Method.Get)
                 .WithEndpoint("int/{0}")
                 .WithParameter(value)
-                .RespondsWithContent<int>()
+                .RespondsWithType<int>()
                 .ExecuteAsync();
         }
 
-        public IApiResponse<string> Get(string value)
+        public Task<IApiResponse<string>> GetAsync(string value)
         {
             return MakeRequest
-                .UsingMethod(Method.GET)
+                .UsingMethod(Method.Get)
                 .WithEndpoint("string/{0}")
                 .WithParameter(value)
-                .RespondsWithContent<string>()
-                .Execute();
+                .RespondsWithType<string>()
+                .ExecuteAsync();
         }
     }
 }

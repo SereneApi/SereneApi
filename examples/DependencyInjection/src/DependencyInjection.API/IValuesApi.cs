@@ -7,6 +7,6 @@ namespace DependencyInjection.API
     {
         Task<IApiResponse<int>> GetAsync(int value);
 
-        IApiResponse<string> Get(string value);
+        Task<IApiResponse<string>> GetAsync(string value);
     }
 }

@@ -261,7 +261,7 @@ namespace SereneApi.Extensions.DependencyInjection
             builder.Invoke(factory);
 
             factory.Dependencies.AddSingleton(() => services, Binding.Unbound);
-            factory.Dependencies.AddTransient<IServiceProvider>(p => p.GetDependency<IServiceCollection>().BuildServiceProvider());
+            factory.Dependencies.AddScoped<IServiceProvider>(p => p.GetDependency<IServiceCollection>().BuildServiceProvider());
 
             if (services.Any(x => x.ServiceType == typeof(ILoggerFactory)))
             {

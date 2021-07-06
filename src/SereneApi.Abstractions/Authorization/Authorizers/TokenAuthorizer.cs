@@ -88,19 +88,14 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
         /// <exception cref="NullReferenceException">Thrown when the specified API could not be found.</exception>
         protected virtual TApi GetApi()
         {
-            TApi api = null;
-
-            if (!Dependencies.TryGetDependency(out IApiFactory handlerFactory))
+            if (Dependencies.TryGetDependency(out IApiFactory handlerFactory))
             {
-                api = handlerFactory.Build<TApi>();
+                return handlerFactory.Build<TApi>();
             }
 
-            if (api == null)
-            {
-                throw new NullReferenceException($"Could not find any registered instances of {typeof(TApi).Name} in the ApiHandler");
-            }
+            _logger?.LogError(Logging.EventIds.DependencyNotFound, Logging.Messages.DependencyNotFound, nameof(IApiFactory));
 
-            return api;
+            throw new NullReferenceException($"Could not retrieve an instance of {nameof(IApiFactory)}");
         }
 
         /// <summary>
@@ -117,66 +112,58 @@ namespace SereneApi.Abstractions.Authorization.Authorizers
             {
                 Monitor.Exit(_authorizationLock);
 
-                _logger?.LogDebug("Using cached authorization");
+                _logger?.LogDebug(Logging.EventIds.AuthorizationEvent, Logging.Messages.AuthorizationTokenCached);
 
                 return Authorization;
             }
 
-            TApi api;
-
             try
             {
-                api = GetApi();
+                TApi api = GetApi();
+
+                IApiResponse<TDto> response = await _apiCall.Invoke(api);
+
+                if (disposeApi)
+                {
+                    api.Dispose();
+                }
+
+                if (!response.WasSuccessful || response.HasNullData())
+                {
+                    if (response.HasException)
+                    {
+                        throw response.Exception;
+                    }
+
+                    throw new Exception(response.Message);
+                }
+
+                TokenAuthResult token = _extractTokenFunction.Invoke(response.Data);
+
+                if (token == null)
+                {
+                    throw new NullReferenceException("No token was retrieved.");
+                }
+
+                // Not sure if this is really the best way to achieve this...
+                TokenExpiryTime = TimeSpan.FromSeconds(token.ExpiryTime + _expiryLeewaySeconds);
+
+                _tokenRenew.Interval = TokenExpiryTime.Milliseconds;
+                _tokenExpired = false;
+
+                return new BearerAuthorization(token.Token);
             }
             finally
             {
                 Monitor.Exit(_authorizationLock);
             }
-
-            IApiResponse<TDto> response = await _apiCall.Invoke(api);
-
-            if (disposeApi)
-            {
-                api.Dispose();
-            }
-
-            if (!response.WasSuccessful || response.HasNullResult())
-            {
-                Monitor.Exit(_authorizationLock);
-
-                if (response.HasException)
-                {
-                    throw response.Exception;
-                }
-
-                throw new Exception(response.Message);
-            }
-
-            TokenAuthResult token = _extractTokenFunction.Invoke(response.Data);
-
-            if (token == null)
-            {
-                Monitor.Exit(_authorizationLock);
-
-                throw new NullReferenceException("No token was retrieved.");
-            }
-
-            // Not sure if this is really the best way to achieve this...
-            TokenExpiryTime = TimeSpan.FromSeconds(token.ExpiryTime + _expiryLeewaySeconds);
-
-            _tokenRenew.Interval = TokenExpiryTime.Milliseconds;
-            _tokenExpired = false;
-
-            Monitor.Exit(_authorizationLock);
-
-            return new BearerAuthorization(token.Token); ;
         }
 
         private async Task OnTimedEventAsync(object source, ElapsedEventArgs e)
         {
             if (WillAutoRenew)
             {
-                _logger?.LogDebug("Auto renewing authorization token");
+                _logger?.LogDebug(Logging.EventIds.AuthorizationEvent, Logging.Messages.AuthorizationTokenRenewal);
 
                 Authorization = await RetrieveTokenAsync();
 

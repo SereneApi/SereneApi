@@ -23,9 +23,9 @@ namespace SereneApi
         public virtual Task<IApiResponse<TResource>> GetAsync(TIdentifier identifier)
         {
             return MakeRequest
-                .UsingMethod(Method.GET)
+                .UsingMethod(Method.Get)
                 .WithParameter(identifier)
-                .RespondsWithContent<TResource>()
+                .RespondsWithType<TResource>()
                 .ExecuteAsync();
         }
 
@@ -33,8 +33,8 @@ namespace SereneApi
         public virtual Task<IApiResponse<List<TResource>>> GetAllAsync()
         {
             return MakeRequest
-                .UsingMethod(Method.GET)
-                .RespondsWithContent<List<TResource>>()
+                .UsingMethod(Method.Get)
+                .RespondsWithType<List<TResource>>()
                 .ExecuteAsync();
         }
 
@@ -47,9 +47,9 @@ namespace SereneApi
             }
 
             return MakeRequest
-                .UsingMethod(Method.POST)
+                .UsingMethod(Method.Post)
                 .AddInBodyContent(resource)
-                .RespondsWithContent<TResource>()
+                .RespondsWithType<TResource>()
                 .ExecuteAsync();
         }
 
@@ -57,7 +57,7 @@ namespace SereneApi
         public virtual Task<IApiResponse> DeleteAsync(TIdentifier identifier)
         {
             return MakeRequest
-                .UsingMethod(Method.DELETE)
+                .UsingMethod(Method.Delete)
                 .WithParameter(identifier)
                 .ExecuteAsync();
         }
@@ -71,9 +71,9 @@ namespace SereneApi
             }
 
             return MakeRequest
-                .UsingMethod(Method.PUT)
+                .UsingMethod(Method.Put)
                 .AddInBodyContent(resource)
-                .RespondsWithContent<TResource>()
+                .RespondsWithType<TResource>()
                 .ExecuteAsync();
         }
 
@@ -86,9 +86,9 @@ namespace SereneApi
             }
 
             return MakeRequest
-                .UsingMethod(Method.PATCH)
+                .UsingMethod(Method.Patch)
                 .AddInBodyContent(resource)
-                .RespondsWithContent<TResource>()
+                .RespondsWithType<TResource>()
                 .ExecuteAsync();
         }
     }

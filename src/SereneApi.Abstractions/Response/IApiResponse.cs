@@ -24,6 +24,11 @@ namespace SereneApi.Abstractions.Response
         bool WasSuccessful { get; }
 
         /// <summary>
+        /// Specifies if the request was not successful.
+        /// </summary>
+        bool WasNotSuccessful { get; }
+
+        /// <summary>
         /// Specifies if the request encountered an exception.
         /// </summary>
         bool HasException { get; }

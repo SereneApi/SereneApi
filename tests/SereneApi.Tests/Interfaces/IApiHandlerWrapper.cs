@@ -1,7 +1,6 @@
 ﻿using SereneApi.Abstractions.Connection;
-using SereneApi.Requests;
-using System;
 using SereneApi.Abstractions.Requests.Builder;
+using System;
 
 namespace SereneApi.Tests.Interfaces
 {

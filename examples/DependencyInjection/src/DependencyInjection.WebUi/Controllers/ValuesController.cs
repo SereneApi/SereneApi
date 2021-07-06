@@ -25,9 +25,9 @@ namespace DependencyInjection.WebUi.Controllers
         }
 
         [HttpGet("string/{value}")]
-        public ActionResult<IApiResponse<string>> GetStringAsync(string value)
+        public async Task<ActionResult<IApiResponse<string>>> GetStringAsync(string value)
         {
-            IApiResponse<string> response = _valuesApi.Get(value);
+            IApiResponse<string> response = await _valuesApi.GetAsync(value);
 
             return Ok(response);
         }

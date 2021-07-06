@@ -25,7 +25,7 @@ namespace SereneApi.Benchmark
                     FirstName = "John",
                     LastName = "Smith",
                     Id = 0
-                }).RespondsToRequestsWith(Method.GET);
+                }).RespondsToRequestsWith(Method.Get);
             });
 
             Console.Write("Runs: ");
@@ -52,7 +52,7 @@ namespace SereneApi.Benchmark
 
                 runTime.Stop();
 
-                if (response.WasNotSuccessful() || response.Data == null)
+                if (response.WasNotSuccessful || response.HasNullData())
                 {
                     throw new NullReferenceException();
                 }

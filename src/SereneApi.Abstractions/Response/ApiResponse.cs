@@ -16,6 +16,9 @@ namespace SereneApi.Abstractions.Response
         /// <inheritdoc cref="IApiResponse.WasSuccessful"/>
         public bool WasSuccessful { get; }
 
+        /// <inheritdoc cref="IApiResponse.WasNotSuccessful"/>
+        public bool WasNotSuccessful => !WasSuccessful;
+
         /// <inheritdoc cref="IApiResponse.HasException"/>
         public bool HasException => Exception != null;
 

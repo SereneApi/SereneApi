@@ -7,14 +7,6 @@ namespace SereneApi.Abstractions.Serialization
     public interface ISerializer
     {
         /// <summary>
-        /// Deserializes the response content into <see cref="T"/>.
-        /// </summary>
-        /// <typeparam name="T">The object that the content will be deserialized into.</typeparam>
-        /// <param name="content">The content to be deserialized.</param>
-        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        T Deserialize<T>(IResponseContent content);
-
-        /// <summary>
         /// Deserializes the response content asynchronously into <see cref="T"/>.
         /// </summary>
         /// <typeparam name="T">The object that the content will be deserialized into.</typeparam>

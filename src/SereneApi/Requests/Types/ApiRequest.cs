@@ -23,6 +23,7 @@ namespace SereneApi.Requests.Types
         public Type ContentType { get; set; }
 
         public Type ResponseType { get; set; }
+
         /// <summary>
         /// An empty API request.
         /// </summary>
