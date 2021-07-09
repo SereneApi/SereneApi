@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SereneApi.Abstractions.Response
+namespace SereneApi.Abstractions.Response.Types
 {
     /// <summary>
     /// The default object used for HTTP failure messages.

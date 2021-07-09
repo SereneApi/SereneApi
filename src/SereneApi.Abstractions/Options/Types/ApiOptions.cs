@@ -1,10 +1,10 @@
-﻿using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Abstractions.Connection;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Abstractions.Connection;
 
-namespace SereneApi.Abstractions.Options
+namespace SereneApi.Abstractions.Options.Types
 {
     [DebuggerDisplay("Source: {Connection.Source}")]
     public class ApiOptions : IApiOptions

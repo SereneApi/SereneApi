@@ -11,6 +11,8 @@ using SereneApi.Abstractions.Routing;
 using SereneApi.Abstractions.Serialization;
 using System;
 using System.Net;
+using SereneApi.Abstractions.Options.Builder;
+using SereneApi.Abstractions.Requests.Handler;
 
 namespace SereneApi.Abstractions.Configuration
 {
@@ -91,7 +93,7 @@ namespace SereneApi.Abstractions.Configuration
                     dependencies.TryAddScoped<IClientFactory>(p => new DefaultClientFactory(p));
                     dependencies.TryAddScoped<IResponseHandler>(p => new DefaultResponseHandler(p));
                     dependencies.TryAddScoped<IFailedResponseHandler>(p => new DefaultFailedResponseHandler(p));
-                    dependencies.TryAddScoped<IRequestHandler>(p => new DefaultRequestHandler(p));
+                    dependencies.TryAddScoped<IRequestHandler>(p => new RetryingRequestHandler(p));
                 });
 
                 return configuration;

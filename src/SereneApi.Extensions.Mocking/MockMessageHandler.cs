@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Content.Types;
 
 namespace SereneApi.Extensions.Mocking
 {

@@ -1,6 +1,7 @@
 ﻿using SereneApi.Abstractions.Content;
 using System.Net;
 using System.Net.Http;
+using SereneApi.Abstractions.Content.Types;
 
 namespace SereneApi.Extensions.Caching
 {

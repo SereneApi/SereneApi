@@ -1,18 +1,22 @@
-﻿using DeltaWare.Dependencies;
+﻿using System;
+using System.Net;
+using System.Net.Mime;
+using DeltaWare.Dependencies;
 using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Authorization;
+using SereneApi.Abstractions.Authorization.Types;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Connection;
 using SereneApi.Abstractions.Helpers;
+using SereneApi.Abstractions.Options.Types;
 using SereneApi.Abstractions.Queries;
+using SereneApi.Abstractions.Requests.Handler;
+using SereneApi.Abstractions.Response.Handlers;
 using SereneApi.Abstractions.Routing;
 using SereneApi.Abstractions.Serialization;
-using System;
-using System.Net;
-using System.Net.Mime;
 
-namespace SereneApi.Abstractions.Options
+namespace SereneApi.Abstractions.Options.Builder
 {
     public class ApiOptionsFactory : IApiOptionsFactory
     {
@@ -226,6 +230,66 @@ namespace SereneApi.Abstractions.Options
         public void ThrowExceptions()
         {
             _throwExceptions = true;
+        }
+
+        public void UseRequestHandler(IRequestHandler handler)
+        {
+            if (handler == null)
+            {
+                throw new ArgumentNullException(nameof(handler));
+            }
+
+            Dependencies.AddScoped(() => handler);
+        }
+
+        public void UseRequestHandler(Func<IDependencyProvider, IRequestHandler> handlerBuilder)
+        {
+            if (handlerBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(handlerBuilder));
+            }
+
+            Dependencies.AddScoped(handlerBuilder.Invoke);
+        }
+
+        public void UseResponseHandler(IResponseHandler handler)
+        {
+            if (handler == null)
+            {
+                throw new ArgumentNullException(nameof(handler));
+            }
+
+            Dependencies.AddScoped(() => handler);
+        }
+
+        public void UseResponseHandler(Func<IDependencyProvider, IResponseHandler> handlerBuilder)
+        {
+            if (handlerBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(handlerBuilder));
+            }
+
+            Dependencies.AddScoped(handlerBuilder.Invoke);
+        }
+
+        public void UseFailedResponseHandler(IFailedResponseHandler handler)
+        {
+            if (handler == null)
+            {
+                throw new ArgumentNullException(nameof(handler));
+            }
+
+            Dependencies.AddScoped(() => handler);
+        }
+
+        public void UseFailedResponseHandler(Func<IDependencyProvider, IFailedResponseHandler> handlerBuilder)
+        {
+            if (handlerBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(handlerBuilder));
+            }
+
+            Dependencies.AddScoped(handlerBuilder.Invoke);
         }
 
         /// <inheritdoc cref="IApiOptionsBuilder.SetTimeout(int,int)"/>

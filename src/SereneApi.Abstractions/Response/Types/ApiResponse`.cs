@@ -1,13 +1,12 @@
-﻿using SereneApi.Abstractions.Requests;
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using SereneApi.Abstractions.Requests;
 
-namespace SereneApi.Abstractions.Response
+namespace SereneApi.Abstractions.Response.Types
 {
-    /// <inheritdoc cref="IApiResponse"/>
-    public class ApiResponse : IApiResponse
+    /// <inheritdoc cref="IApiResponse{TResult}"/>
+    public class ApiResponse<TResult> : IApiResponse<TResult>
     {
-        /// <inheritdoc cref="IApiRequest"/>
         public IApiRequest Request { get; }
 
         /// <inheritdoc cref="IApiResponse.Status"/>
@@ -28,10 +27,14 @@ namespace SereneApi.Abstractions.Response
         /// <inheritdoc cref="IApiResponse.Exception"/>
         public Exception Exception { get; }
 
-        private ApiResponse(IApiRequest request, Status status)
+        /// <inheritdoc cref="IApiResponse{TEntity}.Data"/>
+        public TResult Data { get; }
+
+        private ApiResponse(IApiRequest request, Status status, [AllowNull] TResult result)
         {
             Request = request ?? throw new ArgumentNullException(nameof(request));
             WasSuccessful = true;
+            Data = result;
             Message = null;
             Status = status;
             Exception = null;
@@ -41,13 +44,14 @@ namespace SereneApi.Abstractions.Response
         {
             Request = request ?? throw new ArgumentNullException(nameof(request));
             WasSuccessful = false;
+            Data = default;
             Message = message;
             Status = status;
             Exception = exception;
         }
 
-        public static IApiResponse Success(IApiRequest request, Status status) => new ApiResponse(request, status);
+        public static IApiResponse<TResult> Success(IApiRequest request, Status status, [AllowNull] TResult result) => new ApiResponse<TResult>(request, status, result);
 
-        public static IApiResponse Failure(IApiRequest request, Status status, [AllowNull] string message, [AllowNull] Exception exception = null) => new ApiResponse(request, status, message, exception);
+        public static IApiResponse<TResult> Failure(IApiRequest request, Status status, [AllowNull] string message, [AllowNull] Exception exception = null) => new ApiResponse<TResult>(request, status, message, exception);
     }
 }

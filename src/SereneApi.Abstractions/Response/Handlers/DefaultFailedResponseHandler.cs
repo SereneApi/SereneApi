@@ -5,6 +5,7 @@ using SereneApi.Abstractions.Serialization;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Response.Types;
 
 namespace SereneApi.Abstractions.Response.Handlers
 {

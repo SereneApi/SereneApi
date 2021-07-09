@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SereneApi.Abstractions.Authorization
+namespace SereneApi.Abstractions.Authorization.Types
 {
     /// <summary>
     /// Authorizes an API request using Bearer authorization.

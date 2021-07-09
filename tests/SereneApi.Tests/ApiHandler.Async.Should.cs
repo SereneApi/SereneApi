@@ -8,6 +8,7 @@ using SereneApi.Tests.Mock;
 using Shouldly;
 using System;
 using System.Text.Json;
+using SereneApi.Abstractions.Response.Types;
 using Xunit;
 
 namespace SereneApi.Tests

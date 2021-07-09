@@ -10,21 +10,22 @@ using System.Runtime.Versioning;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Requests.Handler;
 
 namespace SereneApi.AspNet.Requests
 {
     [SupportedOSPlatform("windows")]
-    public class ImpersonatedRequestHandler : DefaultRequestHandler
+    public class ImpersonatingRequestHandler : RetryingRequestHandler
     {
         private readonly IHttpContextAccessor _contextAccessor;
 
         private readonly ILogger _logger;
 
-        public ImpersonatedRequestHandler(IDependencyProvider dependencies) : base(dependencies)
+        public ImpersonatingRequestHandler(IDependencyProvider dependencies) : base(dependencies)
         {
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                throw new NotSupportedException("This class is only supported in windows");
+                throw new NotSupportedException("This class is only supported on the Windows platform");
             }
 
             _contextAccessor = dependencies.GetDependency<IHttpContextAccessor>();
@@ -38,11 +39,13 @@ namespace SereneApi.AspNet.Requests
             {
                 _logger.LogDebug("Impersonating the request as {UserName}", windowsIdentity.Name);
 
-                return await WindowsIdentity.RunImpersonated(windowsIdentity.AccessToken, async () =>
-                    await base.HandleRequestAsync(client, route, method, content, cancellationToken));
+                // Running the async version of RunImpersonated always throws a socket exception.
+                // Thus this request needs to be ran synchronously.
+                return WindowsIdentity.RunImpersonated(windowsIdentity.AccessToken, () =>
+                    base.HandleRequestAsync(client, route, method, content, cancellationToken).GetAwaiter().GetResult());
             }
 
-            _logger.LogWarning("Request will not be impersonated as no Windows Identity was found");
+            _logger.LogDebug("Request will not be impersonated as no Windows Identity was found");
 
             return await base.HandleRequestAsync(client, route, method, content, cancellationToken);
         }
@@ -53,11 +56,13 @@ namespace SereneApi.AspNet.Requests
             {
                 _logger.LogDebug("Impersonating the request as {UserName}", windowsIdentity.Name);
 
-                return await WindowsIdentity.RunImpersonated(windowsIdentity.AccessToken, async () =>
-                    await base.HandleRequestAsync(client, route, method, cancellationToken));
+                // Running the async version of RunImpersonated always throws a socket exception.
+                // Thus this request needs to be ran synchronously.
+                return WindowsIdentity.RunImpersonated(windowsIdentity.AccessToken, () =>
+                    base.HandleRequestAsync(client, route, method, cancellationToken).GetAwaiter().GetResult());
             }
 
-            _logger.LogWarning("Request will not be impersonated as no Windows Identity was found");
+            _logger.LogDebug("Request will not be impersonated as no Windows Identity was found");
 
             return await base.HandleRequestAsync(client, route, method, cancellationToken);
         }

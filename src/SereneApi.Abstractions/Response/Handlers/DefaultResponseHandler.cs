@@ -7,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Response.Types;
 
 namespace SereneApi.Abstractions.Response.Handlers
 {

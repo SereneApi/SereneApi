@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace SereneApi.Abstractions.Content
+namespace SereneApi.Abstractions.Content.Types
 {
     public class HttpContentResponse : IResponseContent
     {

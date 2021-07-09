@@ -6,6 +6,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using SereneApi.Abstractions.Authorization.Types;
 using Timer = System.Timers.Timer;
 
 namespace SereneApi.Abstractions.Authorization.Authorizers

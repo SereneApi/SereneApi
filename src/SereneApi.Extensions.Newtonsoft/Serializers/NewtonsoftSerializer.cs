@@ -4,6 +4,7 @@ using SereneApi.Abstractions.Serialization;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Content.Types;
 
 namespace SereneApi.Extensions.Newtonsoft.Serializers
 {

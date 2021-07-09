@@ -7,7 +7,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageId>SereneApi.AspNet</PackageId>
-    <Version>1.5.0.2</Version>
+    <Version>1.5.0.3</Version>
     <Authors>Bradley Clarke</Authors>
     <Company>DeltaWare</Company>
     <Product>SereneApi</Product>
@@ -23,8 +23,12 @@
     <NeutralLanguage>English (Australia)</NeutralLanguage>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <PackageReleaseNotes>ADDED - EnableUserImpersonation() to impersonate a WindowsIdentity. [Windows Platform ONLY]
-ADDED - ImpersonatedRequestHandler which is used to process all outgoing requests.</PackageReleaseNotes>
+    <PackageReleaseNotes>ADDED - UseWindowsImpersonation to ApiOptionsBuilder
+
+CHANGED - Impersonated request from async to sync due to Socket Exception when using a DNS name. Until this issue is resolved this will remain as a synchronous operation
+
+RENAMED - ImpersonatedRequestHandler to ImpersonatingRequestHandler
+RENAMED - EnableUserImpersonation to UseWindowsImpersonation</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
