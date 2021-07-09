@@ -12,13 +12,14 @@ After using the repository patter for many years. I decided to try fiddling with
 2.	Create your API definitions & implementations
 3.	Register your APIs in startup.cs
 4.	Consuming your APIs
+5.	Read the [documentation](https://github.com/SereneApi/SereneApi/documentation/Table_of_Contents.md)
 
 ### Creating your API Definitions & Implementations
 First you'll need to create you API definition, this is accomplished by creating an interface like what is demonstrated below. Each method should return a Task<IApiResponse>
 ``` csharp
 public interface IFooApi
 {
-	Task<IApiResponse<List<FooDto>> GetAsync();
+	Task<IApiResponse<List<FooDto>>> GetAsync();
 	Task<IApiResponse<FooDto>> GetAsync(long id);
 	Task<IApiResponse<FooDto>> CreateAsync(FooDto foo);
 	Task<IApiResponse> DeleteAsync(FooDto foo);
@@ -78,8 +79,6 @@ public void ConfigureServices(IServiceCollection services)
 	});
 }
 ```
-## Documentation
-More in depth documentation is coming soon. Which will go into more advanced functionality and configuration.
 ## Consuming your APIs
 ``` csharp
 public class MyService
@@ -123,6 +122,7 @@ public class MyService
 |**SereneApi.Extensions.DependencyInjection**|![Azure DevOps tests](https://img.shields.io/azure-devops/tests/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/15?style=for-the-badge)|![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/15?style=for-the-badge)|
 |**SereneApi.Extensions.Mocking**|![Azure DevOps tests](https://img.shields.io/azure-devops/tests/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/16?style=for-the-badge)|![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/16?style=for-the-badge)|
 |**SereneApi.Extensions.Newtonsoft**|![Azure DevOps tests](https://img.shields.io/azure-devops/tests/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/17?style=for-the-badge)|![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/DeltaWareAU/e18b43d4-35b6-4aa6-b09d-a50814de3303/17?style=for-the-badge)|
+
 
 
 

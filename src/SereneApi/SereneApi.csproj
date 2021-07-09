@@ -20,7 +20,9 @@
         <Copyright>Copyright (c) 2020 DeltaWare</Copyright>
         <PackageIcon>nuget_logo.png</PackageIcon>
         <PackageId>SereneApi</PackageId>
-        <PackageReleaseNotes>FIXED - Issue where ApiHandler logs where not displaying name.</PackageReleaseNotes>
+        <PackageReleaseNotes>FIXED - Issue where ApiHandler logs where not displaying name.
+
+RENAMED - ICurdApi GetAllAsync method to GetAsync</PackageReleaseNotes>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <AssemblyVersion>1.1.0.5</AssemblyVersion>

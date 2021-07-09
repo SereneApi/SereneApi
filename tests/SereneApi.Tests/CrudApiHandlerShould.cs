@@ -118,7 +118,7 @@ namespace SereneApi.Tests
         [Fact]
         public async Task GetAll()
         {
-            IApiResponse<List<MockPersonDto>> response = await _crudApiHandler.GetAllAsync();
+            IApiResponse<List<MockPersonDto>> response = await _crudApiHandler.GetAsync();
 
             response.Data.Count.ShouldBe(MockPersonDto.All.Count);
             response.Message.ShouldBeNull();
