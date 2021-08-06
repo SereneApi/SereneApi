@@ -19,7 +19,7 @@ namespace SereneApi
         {
         }
 
-        /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.GetAsync"/>
+        /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.GetAsync(TIdentifier)"/>
         public virtual Task<IApiResponse<TResource>> GetAsync(TIdentifier identifier)
         {
             return MakeRequest
@@ -29,8 +29,8 @@ namespace SereneApi
                 .ExecuteAsync();
         }
 
-        /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.GetAllAsync"/>
-        public virtual Task<IApiResponse<List<TResource>>> GetAllAsync()
+        /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.GetAsync()"/>
+        public virtual Task<IApiResponse<List<TResource>>> GetAsync()
         {
             return MakeRequest
                 .UsingMethod(Method.Get)

@@ -1,8 +1,8 @@
-﻿using DeltaWare.Dependencies.Abstractions;
+﻿using System;
+using DeltaWare.Dependencies.Abstractions;
 using SereneApi.Abstractions.Connection;
-using System;
 
-namespace SereneApi.Abstractions.Options
+namespace SereneApi.Abstractions.Options.Types
 {
     public class ApiOptions<TApi> : IApiOptions<TApi> where TApi : class
     {

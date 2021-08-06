@@ -1,6 +1,7 @@
 ﻿using SereneApi.Abstractions.Content;
 using System.Net.Http;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Content.Types;
 
 namespace SereneApi.Abstractions.Serialization
 {

@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Extensions.Newtonsoft
 {
-    public static class ApiOptionsConfiguratorExtensions
+    public static class ApiOptionsBuilderExtensions
     {
         /// <summary>
         /// Uses <seealso cref="NewtonsoftSerializer"/> for serialization.

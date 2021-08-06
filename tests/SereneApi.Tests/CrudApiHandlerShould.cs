@@ -8,6 +8,7 @@ using SereneApi.Tests.Mock;
 using Shouldly;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Response.Types;
 using Xunit;
 
 namespace SereneApi.Tests
@@ -46,7 +47,7 @@ namespace SereneApi.Tests
                     .RespondsToRequestsWith("http://localhost:8080/api/Person/0");
 
                 builder
-                    .AddMockResponse(new DefaultFailureResponse("Could not find a Person with an Id of 2"), Status.NotFound)
+                    .AddMockResponse(new FailureResponse("Could not find a Person with an Id of 2"), Status.NotFound)
                     .RespondsToRequestsWith(Method.Delete)
                     .RespondsToRequestsWith("http://localhost:8080/api/Person/2");
 
@@ -57,7 +58,7 @@ namespace SereneApi.Tests
                     .RespondsToRequestsWith(MockPersonDto.BenJerry);
 
                 builder
-                    .AddMockResponse(new DefaultFailureResponse("This person has already been added."), Status.BadRequest)
+                    .AddMockResponse(new FailureResponse("This person has already been added."), Status.BadRequest)
                     .RespondsToRequestsWith(Method.Post)
                     .RespondsToRequestsWith("http://localhost:8080/api/Person")
                     .RespondsToRequestsWith(MockPersonDto.JohnSmith);
@@ -75,7 +76,7 @@ namespace SereneApi.Tests
                     .RespondsToRequestsWith(MockPersonDto.BenJerry);
 
                 builder
-                    .AddMockResponse(new DefaultFailureResponse("Could not find the specified user"), Status.NotFound)
+                    .AddMockResponse(new FailureResponse("Could not find the specified user"), Status.NotFound)
                     .RespondsToRequestsWith(Method.Patch)
                     .RespondsToRequestsWith("http://localhost:8080/api/Person")
                     .RespondsToRequestsWith(MockPersonDto.JohnSmith);
@@ -117,7 +118,7 @@ namespace SereneApi.Tests
         [Fact]
         public async Task GetAll()
         {
-            IApiResponse<List<MockPersonDto>> response = await _crudApiHandler.GetAllAsync();
+            IApiResponse<List<MockPersonDto>> response = await _crudApiHandler.GetAsync();
 
             response.Data.Count.ShouldBe(MockPersonDto.All.Count);
             response.Message.ShouldBeNull();

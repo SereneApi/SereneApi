@@ -17,7 +17,7 @@ namespace DependencyInjection.WebUi.Handlers
         {
             return MakeRequest
                 .UsingMethod(Method.Get)
-                .WithEndpoint("int/{0}")
+                .AgainstEndpoint("int/{0}")
                 .WithParameter(value)
                 .RespondsWithType<int>()
                 .ExecuteAsync();
@@ -27,7 +27,7 @@ namespace DependencyInjection.WebUi.Handlers
         {
             return MakeRequest
                 .UsingMethod(Method.Get)
-                .WithEndpoint("string/{0}")
+                .AgainstEndpoint("string/{0}")
                 .WithParameter(value)
                 .RespondsWithType<string>()
                 .ExecuteAsync();

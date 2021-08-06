@@ -1,9 +1,9 @@
-﻿using SereneApi.Abstractions.Handler;
-using SereneApi.Abstractions.Response;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Handler;
+using SereneApi.Abstractions.Response;
 
-namespace SereneApi.Abstractions.Requests
+namespace SereneApi.Abstractions.Requests.Handler
 {
     public interface IRequestHandler
     {

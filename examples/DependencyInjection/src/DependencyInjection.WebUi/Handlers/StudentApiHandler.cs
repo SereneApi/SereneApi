@@ -45,7 +45,7 @@ namespace DependencyInjection.WebUi.Handlers
             // http://localhost:8080/api/Students?GivenName=value&LastName=value
             return MakeRequest
                 .UsingMethod(Method.Get)
-                .WithEndpoint("SearchBy/GivenAndLastName")
+                .AgainstEndpoint("SearchBy/GivenAndLastName")
                 .WithQuery(student, s => new { s.GivenName, s.LastName })
                 .RespondsWithType<List<StudentDto>>()
                 .ExecuteAsync();
@@ -68,7 +68,7 @@ namespace DependencyInjection.WebUi.Handlers
             // http://localhost:8080/api/Students/{studentId}/Classes
             return MakeRequest
                 .UsingMethod(Method.Get)
-                .WithEndpoint("{0}/Classes")
+                .AgainstEndpoint("{0}/Classes")
                 .WithParameter(studentId)
                 .RespondsWithType<List<ClassDto>>()
                 .ExecuteAsync();

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SereneApi.Abstractions.Content
+namespace SereneApi.Abstractions.Content.Types
 {
     public class FormUrlEncodedContent : IRequestContent
     {

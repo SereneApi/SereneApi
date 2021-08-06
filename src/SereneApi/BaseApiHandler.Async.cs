@@ -5,6 +5,7 @@ using SereneApi.Abstractions.Response;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Response.Types;
 
 namespace SereneApi
 {
