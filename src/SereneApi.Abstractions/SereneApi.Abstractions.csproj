@@ -22,6 +22,8 @@
 	  <PackageId>SereneApi.Abstractions</PackageId>
 	  <PackageReleaseNotes>RENAMED - DefaultRequestHandler to RetryingRequestHandler
 
+REMOVED - Default from all names where possible
+
 ADDED - UseRequestHandler to IApiOptionsBuilder
 ADDED - UseResponseHandler to IApiOptionsBuilder
 ADDED - UseFailedResponseHandler to IApiOptionsBuilder</PackageReleaseNotes>

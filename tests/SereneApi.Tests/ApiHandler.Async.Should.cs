@@ -788,7 +788,7 @@ namespace SereneApi.Tests
 
             IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.Get)
-                .WithEndpoint(endpoint)
+                .AgainstEndpoint(endpoint)
                 .ExecuteAsync());
 
             #endregion
@@ -842,7 +842,7 @@ namespace SereneApi.Tests
 
             IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.Get)
-                .WithEndpoint(endpoint)
+                .AgainstEndpoint(endpoint)
                 .RespondsWithType<MockPersonDto>()
                 .ExecuteAsync());
 

@@ -86,6 +86,25 @@ namespace SereneApi.Requests.Builder
             return this;
         }
 
+        public IApiRequestParameters AgainstEndpoint(string endpoint)
+        {
+            if (endpoint == null)
+            {
+                throw new ArgumentNullException(nameof(endpoint));
+            }
+
+            if (string.IsNullOrWhiteSpace(endpoint))
+            {
+                throw new ArgumentException(nameof(endpoint));
+            }
+
+            _apiRequest.EndpointTemplate = endpoint;
+
+            return this;
+        }
+
+        // TODO: Remove in future update
+        [Obsolete("This has been superseded by AgainstEndpoint and will soon be removed.")]
         public IApiRequestParameters WithEndpoint(string endpoint)
         {
             if (endpoint == null)

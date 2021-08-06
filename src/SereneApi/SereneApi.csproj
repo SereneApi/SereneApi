@@ -21,6 +21,9 @@
         <PackageIcon>nuget_logo.png</PackageIcon>
         <PackageId>SereneApi</PackageId>
         <PackageReleaseNotes>FIXED - Issue where ApiHandler logs where not displaying name.
+FIXED - Issue where when using WithParameters
+
+RENAMED - WithEndpoint to AgainstEndpoint to improve readability of code and to prepare for future additions. WithEndpoint will still be temporarily available.
 
 RENAMED - ICurdApi GetAllAsync method to GetAsync</PackageReleaseNotes>
         <IncludeSymbols>true</IncludeSymbols>

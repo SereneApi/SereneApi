@@ -26,7 +26,9 @@
     <PackageReleaseNotes>CHANGED - Impersonated request from async to sync due to Socket Exception when using a DNS name. Until this issue is resolved this will remain as a synchronous operation
 
 RENAMED - ImpersonatedRequestHandler to ImpersonatingRequestHandler
-RENAMED - EnableUserImpersonation to UseWindowsImpersonation</PackageReleaseNotes>
+RENAMED - EnableUserImpersonation to UseWindowsImpersonation
+
+REMOVED - EnableUserImpersonation for ApiOptions. Meaning this action will only be possible on ALL apis. This may be returned if required.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
