@@ -3,6 +3,7 @@ using SereneApi.Abstractions.Connection;
 using SereneApi.Abstractions.Options;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using SereneApi.Abstractions.Options.Types;
 
 namespace SereneApi.Extensions.DependencyInjection.Options
 {

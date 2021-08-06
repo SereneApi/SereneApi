@@ -21,7 +21,7 @@ namespace SereneApi.Abstractions.Handler
         /// <summary>
         /// Performs a GET request against the API returning all resources.
         /// </summary>
-        Task<IApiResponse<List<TResource>>> GetAllAsync();
+        Task<IApiResponse<List<TResource>>> GetAsync();
 
         /// <summary>
         /// Performs a POST request against the API.

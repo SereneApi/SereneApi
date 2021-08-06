@@ -8,6 +8,7 @@ using SereneApi.Abstractions.Serialization;
 using SereneApi.Extensions;
 using SereneApi.Requests.Types;
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -85,6 +86,25 @@ namespace SereneApi.Requests.Builder
             return this;
         }
 
+        public IApiRequestParameters AgainstEndpoint(string endpoint)
+        {
+            if (endpoint == null)
+            {
+                throw new ArgumentNullException(nameof(endpoint));
+            }
+
+            if (string.IsNullOrWhiteSpace(endpoint))
+            {
+                throw new ArgumentException(nameof(endpoint));
+            }
+
+            _apiRequest.EndpointTemplate = endpoint;
+
+            return this;
+        }
+
+        // TODO: Remove in future update
+        [Obsolete("This has been superseded by AgainstEndpoint and will soon be removed.")]
         public IApiRequestParameters WithEndpoint(string endpoint)
         {
             if (endpoint == null)
@@ -114,7 +134,7 @@ namespace SereneApi.Requests.Builder
                 throw new ArgumentException(nameof(parameters));
             }
 
-            if (string.IsNullOrWhiteSpace(_apiRequest.Endpoint))
+            if (string.IsNullOrWhiteSpace(_apiRequest.EndpointTemplate))
             {
                 throw new MethodAccessException("An EndPoint must be specified before parameters can be added.");
             }

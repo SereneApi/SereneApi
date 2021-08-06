@@ -7,17 +7,17 @@ using System.Linq;
 namespace SereneApi.Abstractions.Routing
 {
     /// <inheritdoc cref="IRouteFactory"/>
-    internal class DefaultRouteFactory : IRouteFactory
+    internal class RouteFactory : IRouteFactory
     {
         private readonly IDependencyProvider _dependencies;
 
         #region Constructors
 
         /// <summary>
-        /// Instantiates a new instance of <see cref="DefaultRouteFactory"/>.
+        /// Instantiates a new instance of <see cref="RouteFactory"/>.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public DefaultRouteFactory(IDependencyProvider dependencies)
+        public RouteFactory(IDependencyProvider dependencies)
         {
             _dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
         }
@@ -68,7 +68,7 @@ namespace SereneApi.Abstractions.Routing
                 route += $"/{request.Endpoint}";
             }
 
-            if (request.Query != null && request.Query.Count > 0)
+            if (request.Query is {Count: > 0})
             {
                 IQueryFactory queryFactory = _dependencies.GetDependency<IQueryFactory>();
 

@@ -6,6 +6,7 @@ using SereneApi.Abstractions.Helpers;
 using SereneApi.Abstractions.Options;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using SereneApi.Abstractions.Options.Builder;
 
 namespace SereneApi.Extensions.DependencyInjection.Options
 {

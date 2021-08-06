@@ -1,4 +1,8 @@
-﻿using DeltaWare.Dependencies.Abstractions;
+﻿using System;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Connection;
 using SereneApi.Abstractions.Content;
@@ -8,14 +12,10 @@ using SereneApi.Abstractions.Factories;
 using SereneApi.Abstractions.Handler;
 using SereneApi.Abstractions.Response;
 using SereneApi.Abstractions.Response.Handlers;
-using System;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace SereneApi.Abstractions.Requests
+namespace SereneApi.Abstractions.Requests.Handler
 {
-    public class DefaultRequestHandler : IRequestHandler
+    public class RetryingRequestHandler : IRequestHandler
     {
         private readonly ILogger _logger;
 
@@ -27,7 +27,7 @@ namespace SereneApi.Abstractions.Requests
 
         private readonly IEventManager _eventManager;
 
-        public DefaultRequestHandler(IDependencyProvider dependencies)
+        public RetryingRequestHandler(IDependencyProvider dependencies)
         {
             _clientFactory = dependencies.GetDependency<IClientFactory>();
             _connection = dependencies.GetDependency<IConnectionSettings>();

@@ -7,10 +7,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using SereneApi.Abstractions.Response.Types;
 
 namespace SereneApi.Abstractions.Response.Handlers
 {
-    public class DefaultResponseHandler : IResponseHandler
+    public class ResponseHandler : IResponseHandler
     {
         private readonly IDependencyProvider _dependencyProvider;
 
@@ -18,7 +19,7 @@ namespace SereneApi.Abstractions.Response.Handlers
 
         private readonly ILogger _logger;
 
-        public DefaultResponseHandler(IDependencyProvider dependencyProvider)
+        public ResponseHandler(IDependencyProvider dependencyProvider)
         {
             _dependencyProvider = dependencyProvider ?? throw new ArgumentNullException(nameof(dependencyProvider));
 

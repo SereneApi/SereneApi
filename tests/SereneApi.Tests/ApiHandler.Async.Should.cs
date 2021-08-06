@@ -8,6 +8,7 @@ using SereneApi.Tests.Mock;
 using Shouldly;
 using System;
 using System.Text.Json;
+using SereneApi.Abstractions.Response.Types;
 using Xunit;
 
 namespace SereneApi.Tests
@@ -313,7 +314,7 @@ namespace SereneApi.Tests
 
             apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
-                r.AddMockResponse(new DefaultFailureResponse(message), status)
+                r.AddMockResponse(new FailureResponse(message), status)
                     .RespondsToRequestsWith(Method.Get)
                     .RespondsToRequestsWith(finalSource);
             });
@@ -368,7 +369,7 @@ namespace SereneApi.Tests
 
             apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
-                r.AddMockResponse(new DefaultFailureResponse(message), status)
+                r.AddMockResponse(new FailureResponse(message), status)
                     .RespondsToRequestsWith(Method.Get)
                     .RespondsToRequestsWith(finalSource);
             });
@@ -425,7 +426,7 @@ namespace SereneApi.Tests
 
             apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
-                r.AddMockResponse(new DefaultFailureResponse(message), status)
+                r.AddMockResponse(new FailureResponse(message), status)
                     .ResponseIsDelayed(timeoutSeconds + 2, retryCount - 1)
                     .RespondsToRequestsWith(Method.Get)
                     .RespondsToRequestsWith(finalSource);
@@ -481,7 +482,7 @@ namespace SereneApi.Tests
 
             apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
-                r.AddMockResponse(new DefaultFailureResponse(message), status)
+                r.AddMockResponse(new FailureResponse(message), status)
                     .ResponseIsDelayed(timeoutSeconds + 2, retryCount - 1)
                     .RespondsToRequestsWith(Method.Get)
                     .RespondsToRequestsWith(finalSource);
@@ -787,7 +788,7 @@ namespace SereneApi.Tests
 
             IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.Get)
-                .WithEndpoint(endpoint)
+                .AgainstEndpoint(endpoint)
                 .ExecuteAsync());
 
             #endregion
@@ -841,7 +842,7 @@ namespace SereneApi.Tests
 
             IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.Get)
-                .WithEndpoint(endpoint)
+                .AgainstEndpoint(endpoint)
                 .RespondsWithType<MockPersonDto>()
                 .ExecuteAsync());
 

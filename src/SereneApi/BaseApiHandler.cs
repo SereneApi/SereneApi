@@ -8,6 +8,7 @@ using SereneApi.Abstractions.Requests.Builder;
 using SereneApi.Requests.Builder;
 using System;
 using System.Diagnostics;
+using SereneApi.Abstractions.Requests.Handler;
 
 namespace SereneApi
 {
@@ -59,7 +60,7 @@ namespace SereneApi
 
             _requestHandler = Options.Dependencies.GetDependency<IRequestHandler>();
 
-            _logger?.LogTrace(Logging.EventIds.InstantiatedEvent, Logging.Messages.HandlerInstantiated, nameof(GetType));
+            _logger?.LogTrace(Logging.EventIds.InstantiatedEvent, Logging.Messages.HandlerInstantiated, GetType().Name);
         }
 
         #endregion
@@ -82,9 +83,9 @@ namespace SereneApi
                 return;
             }
 
-            _logger?.LogError(Logging.EventIds.ExceptionEvent, Logging.Messages.AccessOfDisposedHandler, nameof(GetType));
+            _logger?.LogError(Logging.EventIds.ExceptionEvent, Logging.Messages.AccessOfDisposedHandler, GetType().Name);
 
-            throw new ObjectDisposedException(nameof(GetType));
+            throw new ObjectDisposedException(GetType().Name);
         }
 
         /// <summary>
@@ -96,7 +97,7 @@ namespace SereneApi
 
             GC.SuppressFinalize(this);
 
-            _logger?.LogDebug(Logging.EventIds.DisposedEvent, Logging.Messages.DisposedHandler, nameof(GetType));
+            _logger?.LogDebug(Logging.EventIds.DisposedEvent, Logging.Messages.DisposedHandler, GetType().Name);
         }
 
         /// <summary>
