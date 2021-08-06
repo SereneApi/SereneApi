@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net;
-using System.Net.Mime;
 using DeltaWare.Dependencies;
 using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.Logging;
@@ -8,6 +7,7 @@ using SereneApi.Abstractions.Authorization;
 using SereneApi.Abstractions.Authorization.Types;
 using SereneApi.Abstractions.Configuration;
 using SereneApi.Abstractions.Connection;
+using SereneApi.Abstractions.Content;
 using SereneApi.Abstractions.Helpers;
 using SereneApi.Abstractions.Options.Types;
 using SereneApi.Abstractions.Queries;
