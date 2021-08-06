@@ -314,7 +314,7 @@ namespace SereneApi.Tests
 
             apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
-                r.AddMockResponse(new DefaultFailureResponse(message), status)
+                r.AddMockResponse(new FailureResponse(message), status)
                     .RespondsToRequestsWith(Method.Get)
                     .RespondsToRequestsWith(finalSource);
             });
@@ -369,7 +369,7 @@ namespace SereneApi.Tests
 
             apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
-                r.AddMockResponse(new DefaultFailureResponse(message), status)
+                r.AddMockResponse(new FailureResponse(message), status)
                     .RespondsToRequestsWith(Method.Get)
                     .RespondsToRequestsWith(finalSource);
             });
@@ -426,7 +426,7 @@ namespace SereneApi.Tests
 
             apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
-                r.AddMockResponse(new DefaultFailureResponse(message), status)
+                r.AddMockResponse(new FailureResponse(message), status)
                     .ResponseIsDelayed(timeoutSeconds + 2, retryCount - 1)
                     .RespondsToRequestsWith(Method.Get)
                     .RespondsToRequestsWith(finalSource);
@@ -482,7 +482,7 @@ namespace SereneApi.Tests
 
             apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
             {
-                r.AddMockResponse(new DefaultFailureResponse(message), status)
+                r.AddMockResponse(new FailureResponse(message), status)
                     .ResponseIsDelayed(timeoutSeconds + 2, retryCount - 1)
                     .RespondsToRequestsWith(Method.Get)
                     .RespondsToRequestsWith(finalSource);

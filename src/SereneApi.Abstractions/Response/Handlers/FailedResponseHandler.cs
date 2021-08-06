@@ -9,13 +9,13 @@ using SereneApi.Abstractions.Response.Types;
 
 namespace SereneApi.Abstractions.Response.Handlers
 {
-    public class DefaultFailedResponseHandler : IFailedResponseHandler
+    public class FailedResponseHandler : IFailedResponseHandler
     {
         private readonly IDependencyProvider _dependencyProvider;
 
         private readonly ILogger _logger;
 
-        public DefaultFailedResponseHandler(IDependencyProvider dependencyProvider)
+        public FailedResponseHandler(IDependencyProvider dependencyProvider)
         {
             _dependencyProvider = dependencyProvider ?? throw new ArgumentNullException(nameof(dependencyProvider));
 
@@ -40,11 +40,21 @@ namespace SereneApi.Abstractions.Response.Handlers
 
             try
             {
-                DefaultFailureResponse defaultFailureResponse = await serializer.DeserializeAsync<DefaultFailureResponse>(content);
+                FailureResponse failureResponse = await serializer.DeserializeAsync<FailureResponse>(content);
 
-                _logger?.LogInformation("Deserialization completed successfully.");
+                if (failureResponse != null)
+                {
+                    _logger?.LogInformation("Deserialization completed successfully.");
 
-                return ApiResponse.Failure(request, status, defaultFailureResponse.Message);
+                    return ApiResponse.Failure(request, status, failureResponse.Message);
+                }
+
+                string message = await content.ReadAsStringAsync();
+
+                if (!string.IsNullOrWhiteSpace(message))
+                {
+                    return ApiResponse.Failure(request, status, message);
+                }
             }
             catch (Exception exception)
             {
@@ -72,11 +82,21 @@ namespace SereneApi.Abstractions.Response.Handlers
 
             try
             {
-                DefaultFailureResponse defaultFailureResponse = await serializer.DeserializeAsync<DefaultFailureResponse>(content);
+                FailureResponse failureResponse = await serializer.DeserializeAsync<FailureResponse>(content);
 
-                _logger?.LogInformation("Deserialization completed successfully.");
+                if (failureResponse != null)
+                {
+                    _logger?.LogInformation("Deserialization completed successfully.");
 
-                return ApiResponse<TResponse>.Failure(request, status, defaultFailureResponse.Message);
+                    return ApiResponse<TResponse>.Failure(request, status, failureResponse.Message);
+                }
+
+                string message = await content.ReadAsStringAsync();
+
+                if (!string.IsNullOrWhiteSpace(message))
+                {
+                    return ApiResponse<TResponse>.Failure(request, status, message);
+                }
             }
             catch (Exception exception)
             {

@@ -13,18 +13,18 @@ using System.Threading.Tasks;
 namespace SereneApi.Abstractions.Factories
 {
     /// <inheritdoc cref="IClientFactory"/>
-    internal class DefaultClientFactory : IClientFactory
+    internal class ClientFactory : IClientFactory
     {
         private readonly IDependencyProvider _dependencies;
 
         private readonly ILogger _logger;
 
         /// <summary>
-        /// Creates a new instance of <see cref="DefaultClientFactory"/>.
+        /// Creates a new instance of <see cref="ClientFactory"/>.
         /// </summary>
-        /// <param name="dependencies">The dependencies the <see cref="DefaultClientFactory"/> may use when creating clients.</param>
+        /// <param name="dependencies">The dependencies the <see cref="ClientFactory"/> may use when creating clients.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public DefaultClientFactory(IDependencyProvider dependencies)
+        public ClientFactory(IDependencyProvider dependencies)
         {
             _dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
             _dependencies.TryGetDependency(out _logger);

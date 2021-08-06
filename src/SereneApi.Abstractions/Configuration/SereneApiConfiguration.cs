@@ -86,13 +86,13 @@ namespace SereneApi.Abstractions.Configuration
                 SereneApiConfiguration configuration = new SereneApiConfiguration(dependencies =>
                 {
                     dependencies.TryAddScoped<IQueryFactory>(() => new QueryFactory());
-                    dependencies.TryAddScoped<ISerializer>(() => new DefaultJsonSerializer());
+                    dependencies.TryAddScoped<ISerializer>(() => new JsonSerializer());
                     dependencies.TryAddScoped(() => ContentType.Json);
                     dependencies.TryAddScoped(() => CredentialCache.DefaultCredentials);
-                    dependencies.TryAddScoped<IRouteFactory>(p => new DefaultRouteFactory(p));
-                    dependencies.TryAddScoped<IClientFactory>(p => new DefaultClientFactory(p));
-                    dependencies.TryAddScoped<IResponseHandler>(p => new DefaultResponseHandler(p));
-                    dependencies.TryAddScoped<IFailedResponseHandler>(p => new DefaultFailedResponseHandler(p));
+                    dependencies.TryAddScoped<IRouteFactory>(p => new RouteFactory(p));
+                    dependencies.TryAddScoped<IClientFactory>(p => new ClientFactory(p));
+                    dependencies.TryAddScoped<IResponseHandler>(p => new ResponseHandler(p));
+                    dependencies.TryAddScoped<IFailedResponseHandler>(p => new FailedResponseHandler(p));
                     dependencies.TryAddScoped<IRequestHandler>(p => new RetryingRequestHandler(p));
                 });
 

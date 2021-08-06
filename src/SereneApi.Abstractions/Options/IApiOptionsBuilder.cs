@@ -1,17 +1,16 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using DeltaWare.Dependencies.Abstractions;
+using Microsoft.Extensions.Logging;
 using SereneApi.Abstractions.Authorization;
 using SereneApi.Abstractions.Connection;
+using SereneApi.Abstractions.Content;
 using SereneApi.Abstractions.Queries;
+using SereneApi.Abstractions.Requests.Handler;
+using SereneApi.Abstractions.Response.Handlers;
 using SereneApi.Abstractions.Routing;
 using SereneApi.Abstractions.Serialization;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using System.Net.Mime;
-using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Abstractions.Requests;
-using SereneApi.Abstractions.Requests.Handler;
-using SereneApi.Abstractions.Response.Handlers;
 
 namespace SereneApi.Abstractions.Options
 {

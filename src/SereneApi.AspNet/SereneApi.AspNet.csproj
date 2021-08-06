@@ -23,9 +23,7 @@
     <NeutralLanguage>English (Australia)</NeutralLanguage>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <PackageReleaseNotes>ADDED - UseWindowsImpersonation to ApiOptionsBuilder
-
-CHANGED - Impersonated request from async to sync due to Socket Exception when using a DNS name. Until this issue is resolved this will remain as a synchronous operation
+    <PackageReleaseNotes>CHANGED - Impersonated request from async to sync due to Socket Exception when using a DNS name. Until this issue is resolved this will remain as a synchronous operation
 
 RENAMED - ImpersonatedRequestHandler to ImpersonatingRequestHandler
 RENAMED - EnableUserImpersonation to UseWindowsImpersonation</PackageReleaseNotes>

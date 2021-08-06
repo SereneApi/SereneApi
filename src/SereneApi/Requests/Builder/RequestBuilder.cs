@@ -8,6 +8,7 @@ using SereneApi.Abstractions.Serialization;
 using SereneApi.Extensions;
 using SereneApi.Requests.Types;
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -114,7 +115,7 @@ namespace SereneApi.Requests.Builder
                 throw new ArgumentException(nameof(parameters));
             }
 
-            if (string.IsNullOrWhiteSpace(_apiRequest.Endpoint))
+            if (string.IsNullOrWhiteSpace(_apiRequest.EndpointTemplate))
             {
                 throw new MethodAccessException("An EndPoint must be specified before parameters can be added.");
             }

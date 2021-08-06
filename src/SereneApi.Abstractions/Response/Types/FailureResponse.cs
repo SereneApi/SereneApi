@@ -5,7 +5,7 @@ namespace SereneApi.Abstractions.Response.Types
     /// <summary>
     /// The default object used for HTTP failure messages.
     /// </summary>
-    public class DefaultFailureResponse
+    public class FailureResponse
     {
         /// <summary>
         /// Specifies the messages received.
@@ -18,18 +18,18 @@ namespace SereneApi.Abstractions.Response.Types
         public string MessageDetail { get; set; }
 
         /// <summary>
-        /// Creates a new instance of <see cref="DefaultFailureResponse"/>.
+        /// Creates a new instance of <see cref="FailureResponse"/>.
         /// </summary>
-        public DefaultFailureResponse()
+        public FailureResponse()
         {
         }
 
         /// <summary>
-        /// Creates a new instance of <see cref="DefaultFailureResponse"/>.
+        /// Creates a new instance of <see cref="FailureResponse"/>.
         /// </summary>
         /// <param name="message">The failure message.</param>
         /// <param name="messageDetail">Further details of the message.</param>
-        public DefaultFailureResponse(string message, string messageDetail = null)
+        public FailureResponse(string message, string messageDetail = null)
         {
             if (string.IsNullOrWhiteSpace(message))
             {

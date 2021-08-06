@@ -20,7 +20,7 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <param name="callApi">Perform the authentication request.</param>
         /// <param name="extractToken">Extract the token information from the response.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public static IConfigurationExtensions AddDIAuthenticator<TApi, TDto>([NotNull] this IConfigurationExtensions extensions, [NotNull] Func<TApi, Task<IApiResponse<TDto>>> callApi, [NotNull] Func<TDto, TokenAuthResult> extractToken) where TApi : class, IDisposable where TDto : class
+        public static IConfigurationExtensions AddAuthenticator<TApi, TDto>([NotNull] this IConfigurationExtensions extensions, [NotNull] Func<TApi, Task<IApiResponse<TDto>>> callApi, [NotNull] Func<TDto, TokenAuthResult> extractToken) where TApi : class, IDisposable where TDto : class
         {
             if (extensions == null)
             {
