@@ -10,7 +10,31 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Core", "src\SereneApi.Core\SereneApi.Core.csproj", "{E62EE726-F4F6-48CD-A488-02B75BD1CABA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Handlers.Rest", "src\SereneApi.Handlers.Rest\SereneApi.Handlers.Rest.csproj", "{CBFBC1AB-817B-49CA-9908-06D3F88F16FE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Handlers.Soap", "src\SereneApi.Handlers.Soap\SereneApi.Handlers.Soap.csproj", "{460379DE-56AD-436D-8C15-B2A35136F6F6}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E62EE726-F4F6-48CD-A488-02B75BD1CABA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E62EE726-F4F6-48CD-A488-02B75BD1CABA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E62EE726-F4F6-48CD-A488-02B75BD1CABA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E62EE726-F4F6-48CD-A488-02B75BD1CABA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBFBC1AB-817B-49CA-9908-06D3F88F16FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBFBC1AB-817B-49CA-9908-06D3F88F16FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBFBC1AB-817B-49CA-9908-06D3F88F16FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBFBC1AB-817B-49CA-9908-06D3F88F16FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{460379DE-56AD-436D-8C15-B2A35136F6F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{460379DE-56AD-436D-8C15-B2A35136F6F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{460379DE-56AD-436D-8C15-B2A35136F6F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{460379DE-56AD-436D-8C15-B2A35136F6F6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
