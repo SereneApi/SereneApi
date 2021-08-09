@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Version>1.5.0.3</Version>
+    <Authors>Bradley Clarke</Authors>
+    <Company>DeltaWare</Company>
+    <Product>SereneApi</Product>
+    <Description>SereneApi is a .NET Library that introduces an intuitive way of consuming your REST APIs while combining a robust set of extensible tools. This package adds support for AspNet DI and Configuration.
+</Description>
+    <Copyright>Copyright (c) 2020 DeltaWare</Copyright>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
+    <PackageIcon>nuget_logo.png</PackageIcon>
+    <RepositoryUrl>https://github.com/DeltaWareAU/SereneApi</RepositoryUrl>
+    <RepositoryType>GIT</RepositoryType>
+    <PackageTags>REST; RESTful; DI; DependencyInjection; AspNet; Extensions</PackageTags>
+    <NeutralLanguage>en-AU</NeutralLanguage>
+    <PackageReleaseNotes>CHANGED - IServiceProvider from transient to scoped.
+
+RENAME - AddDiAuthenticator to AddAuthenticator</PackageReleaseNotes>
+    <PackageId>SereneApi.Extensions.DependencyInjection</PackageId>
+    <AssemblyName>DeltaWare.SereneApi.Extensions.DependencyInjection</AssemblyName>
+      <IncludeSymbols>true</IncludeSymbols>
+      <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+      <ApplicationIcon>nuget_logo.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\..\nuget_logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SereneApi.Core\SereneApi.Core.csproj" />
+  </ItemGroup>
+
+</Project>

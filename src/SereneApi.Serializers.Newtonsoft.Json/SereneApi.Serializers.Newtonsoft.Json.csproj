@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <AssemblyName>DeltaWare.SereneApi.Extensions.Newtonsoft</AssemblyName>
+    <PackageId>SereneApi.Extensions.Newtonsoft</PackageId>
+    <Authors>Bradley Clarke</Authors>
+    <Company>DeltaWare</Company>
+    <Product>SereneApi</Product>
+    <Version>1.5.0.3</Version>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageIcon>nuget_logo.png</PackageIcon>
+    <RepositoryUrl>https://github.com/DeltaWareAU/SereneApi</RepositoryUrl>
+    <RepositoryType>GIT</RepositoryType>
+    <PackageTags>REST; RESTful; Extensions; Newtonsoft; Json; Serialization</PackageTags>
+    <NeutralLanguage>en-AU</NeutralLanguage>
+    <Copyright>Copyright (c) 2020 DeltaWare</Copyright>
+    <Description>SereneApi is a .NET Library that introduces an intuitive way of consuming your REST APIs while combining a robust set of extensible tools. This package adds support for Newtonsoft.Json</Description>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+      <IncludeSymbols>true</IncludeSymbols>
+      <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+      <PackageReleaseNotes>MIGRATED - To .Net5</PackageReleaseNotes>
+      <PackageProjectUrl>https://www.sereneapi.org</PackageProjectUrl>
+      <ApplicationIcon>nuget_logo.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SereneApi.Core\SereneApi.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\..\nuget_logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

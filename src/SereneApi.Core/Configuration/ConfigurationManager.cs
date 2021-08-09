@@ -1,6 +1,6 @@
 ﻿using SereneApi.Core.Configuration.Attributes;
 using SereneApi.Core.Handler;
-using SereneApi.Core.Options.Builder;
+using SereneApi.Core.Options.Factory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace SereneApi.Core.Configuration
 {
     public static class ConfigurationManager
     {
-        private static readonly Dictionary<string, IHandlerConfigurationFactory> _configurationStore = new();
+        private static readonly Dictionary<string, IHandlerConfigurationBuilder> _configurationStore = new();
 
         static ConfigurationManager()
         {
@@ -22,20 +22,20 @@ namespace SereneApi.Core.Configuration
             };
         }
 
-        public static IApiOptionsFactory<TApiHandler> BuildApiOptionsFactory<TApiHandler>() where TApiHandler : IApiHandler
+        public static ApiOptionsFactory<TApiHandler> BuildApiOptionsFactory<TApiHandler>() where TApiHandler : IApiHandler
         {
             string providerName = GetProviderName<TApiHandler>();
 
             return _configurationStore[providerName].BuildOptionsFactory<TApiHandler>();
         }
 
-        public static void AmendConfiguration<TApiHandler>(Action<IHandlerConfigurationBuilder> factory) where TApiHandler : IApiHandler
+        public static void AmendConfiguration<TApiHandler>(Action<IHandlerConfigurationFactory> factory) where TApiHandler : IApiHandler
         {
             string providerName = GetProviderName<TApiHandler>();
 
-            IHandlerConfigurationBuilder configurationBuilder = (IHandlerConfigurationBuilder)_configurationStore[providerName];
+            IHandlerConfigurationFactory configurationFactory = (IHandlerConfigurationFactory)_configurationStore[providerName];
 
-            factory.Invoke(configurationBuilder);
+            factory.Invoke(configurationFactory);
         }
 
         private static void GetConfigurationProviders(params Assembly[] assemblies)

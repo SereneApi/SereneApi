@@ -1,5 +1,5 @@
 ﻿using SereneApi.Core.Content;
-using SereneApi.Core.Versions;
+using SereneApi.Core.Versioning;
 using System;
 
 namespace SereneApi.Core.Requests

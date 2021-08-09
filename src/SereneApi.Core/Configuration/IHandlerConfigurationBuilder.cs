@@ -1,16 +1,10 @@
-﻿using DeltaWare.Dependencies.Abstractions;
-using System;
+﻿using SereneApi.Core.Handler;
+using SereneApi.Core.Options.Factory;
 
 namespace SereneApi.Core.Configuration
 {
-    public interface IHandlerConfigurationBuilder : IHandlerConfiguration
+    internal interface IHandlerConfigurationBuilder
     {
-        new string ResourcePath { get; set; }
-
-        new int Timeout { get; set; }
-
-        new int RetryCount { get; set; }
-
-        void AddDependency<TDependency>(Func<TDependency> dependency, Lifetime lifetime, Binding binding = Binding.Bound);
+        ApiOptionsFactory<TApiHandler> BuildOptionsFactory<TApiHandler>() where TApiHandler : IApiHandler;
     }
 }

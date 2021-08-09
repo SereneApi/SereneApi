@@ -1,12 +1,12 @@
 ﻿using DeltaWare.Dependencies;
 using DeltaWare.Dependencies.Abstractions;
 using SereneApi.Core.Handler;
-using SereneApi.Core.Options.Builder;
+using SereneApi.Core.Options.Factory;
 using System;
 
 namespace SereneApi.Core.Configuration
 {
-    public abstract class ConfigurationProvider : IHandlerConfigurationFactory, IHandlerConfigurationBuilder
+    public abstract class ConfigurationProvider : IHandlerConfigurationBuilder, IHandlerConfigurationFactory
     {
         protected Action<IDependencyCollection> Dependencies { get; set; }
 
@@ -26,7 +26,7 @@ namespace SereneApi.Core.Configuration
             Dependencies += d => d.AddSingleton(() => this);
         }
 
-        public IApiOptionsFactory<TApiHandler> BuildOptionsFactory<TApiHandler>() where TApiHandler : IApiHandler
+        public ApiOptionsFactory<TApiHandler> BuildOptionsFactory<TApiHandler>() where TApiHandler : IApiHandler
         {
             IDependencyCollection dependencies = new DependencyCollection();
 

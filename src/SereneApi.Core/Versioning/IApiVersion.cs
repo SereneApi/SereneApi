@@ -1,4 +1,4 @@
-﻿namespace SereneApi.Core.Versions
+﻿namespace SereneApi.Core.Versioning
 {
     public interface IApiVersion
     {

@@ -1,5 +1,5 @@
 ﻿using SereneApi.Core.Configuration;
-using SereneApi.Core.Options.Builder;
+using SereneApi.Core.Options.Factory;
 using System;
 
 namespace SereneApi.Core.Handler.Factories
@@ -23,9 +23,9 @@ namespace SereneApi.Core.Handler.Factories
         /// <param name="builder">Configures the API Handler using the provided configuration.</param>
         /// <exception cref="ArgumentException">Thrown when the specified API has already been registered.</exception>
         /// <exception cref="ArgumentNullException">Thrown when a null value has been provided.</exception>
-        public void RegisterApi<TApi, TApiHandler>(Action<IApiOptionsBuilder> builder = null) where TApiHandler : IApiHandler, TApi
+        public void RegisterApi<TApi, TApiHandler>(Action<IApiOptionsFactory> builder = null) where TApiHandler : IApiHandler, TApi
         {
-            IApiOptionsFactory<TApiHandler> optionsFactory = ConfigurationManager.BuildApiOptionsFactory<TApiHandler>();
+            IApiOptionsBuilder<TApiHandler> optionsBuilder = ConfigurationManager.BuildApiOptionsFactory<TApiHandler>();
         }
 
         #region IDisposable
