@@ -1,24 +1,23 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Core.Handler;
-using System;
-using System.Net;
-using DeltaWare.Dependencies;
 using Microsoft.Extensions.Logging;
 using SereneApi.Core.Authorization;
 using SereneApi.Core.Authorization.Types;
 using SereneApi.Core.Configuration;
 using SereneApi.Core.Connection;
 using SereneApi.Core.Content;
+using SereneApi.Core.Handler;
 using SereneApi.Core.Helpers;
 using SereneApi.Core.Queries;
 using SereneApi.Core.Requests.Handler;
 using SereneApi.Core.Responses.Handlers;
 using SereneApi.Core.Routing;
 using SereneApi.Core.Serialization;
+using System;
+using System.Net;
 
 namespace SereneApi.Core.Options.Factory
 {
-    public class ApiOptionsFactory<TApiHandler> : IApiOptionsBuilder<TApiHandler>, IApiOptionsFactory where TApiHandler : IApiHandler
+    public class ApiOptionsFactory<TApiHandler> : IApiOptionsBuilder, IApiOptionsFactory, IApiOptionsExtensions, IDisposable where TApiHandler : IApiHandler
     {
         private bool _throwExceptions = false;
 
@@ -31,7 +30,7 @@ namespace SereneApi.Core.Options.Factory
 
         public ApiOptionsFactory(IDependencyCollection dependencies)
         {
-            Dependencies = dependencies;
+            Dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
         }
 
         /// <inheritdoc cref="IApiOptionsBuilder.AddConfiguration"/>
@@ -326,7 +325,7 @@ namespace SereneApi.Core.Options.Factory
             Dependencies.AddScoped(() => serializer);
         }
 
-        public IApiOptions<TApiHandler> BuildOptions()
+        public IApiOptions BuildOptions()
         {
             Dependencies.AddScoped<IConnectionSettings>(() => ConnectionSettings);
 

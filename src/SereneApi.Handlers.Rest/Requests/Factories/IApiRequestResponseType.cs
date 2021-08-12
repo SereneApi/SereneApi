@@ -1,0 +1,14 @@
+﻿using System;
+using SereneApi.Core.Serialization;
+
+namespace SereneApi.Handlers.Rest.Requests.Factories
+{
+    public interface IApiRequestResponseType : IApiRequestPerformer
+    {
+        /// <summary>
+        /// Specifies the <see cref="Type"/> that will be received in the content of the response.
+        /// </summary>
+        /// <remarks>Content is deserialized using the <see cref="ISerializer"/>.</remarks>
+        IApiRequestPerformer<TContent> RespondsWithType<TContent>();
+    }
+}

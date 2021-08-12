@@ -21,9 +21,14 @@ namespace SereneApi.Core.Configuration
             Dependencies += d => d.AddDependency(dependency, lifetime, binding);
         }
 
+        public void AddDependency<TDependency>(Func<IDependencyProvider, TDependency> dependency, Lifetime lifetime, Binding binding = Binding.Bound)
+        {
+            Dependencies += d => d.AddDependency(dependency, lifetime, binding);
+        }
+
         protected ConfigurationProvider()
         {
-            Dependencies += d => d.AddSingleton(() => this);
+            Dependencies += d => d.AddSingleton<IHandlerConfiguration>(() => this);
         }
 
         public ApiOptionsFactory<TApiHandler> BuildOptionsFactory<TApiHandler>() where TApiHandler : IApiHandler

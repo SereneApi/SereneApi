@@ -8,4 +8,8 @@
     <ProjectReference Include="..\SereneApi.Core\SereneApi.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Requests\Factories\" />
+  </ItemGroup>
+
 </Project>

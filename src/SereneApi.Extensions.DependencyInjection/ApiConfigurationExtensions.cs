@@ -1,11 +1,11 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
 using SereneApi.Core.Authorization.Authorizers;
+using SereneApi.Core.Configuration;
 using SereneApi.Core.Responses;
 using SereneApi.Extensions.DependencyInjection.Authorizers;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using SereneApi.Core.Configuration;
 
 namespace SereneApi.Extensions.DependencyInjection
 {
@@ -37,7 +37,7 @@ namespace SereneApi.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(extractToken));
             }
 
-            factory.AddDependency(p => new InjectedTokenAuthorizer<TApi, TDto>(p, callApi, extractToken), Lifetime.Singleton, Binding.Bound);
+            factory.AddDependency<IAuthorizer>(p => new InjectedTokenAuthorizer<TApi, TDto>(p, callApi, extractToken), Lifetime.Singleton, Binding.Bound);
 
             return factory;
         }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Net;
-using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.Logging;
 using SereneApi.Core.Authorization;
 using SereneApi.Core.Connection;
@@ -11,6 +8,9 @@ using SereneApi.Core.Requests.Handler;
 using SereneApi.Core.Responses.Handlers;
 using SereneApi.Core.Routing;
 using SereneApi.Core.Serialization;
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Net;
 
 namespace SereneApi.Core.Options.Factory
 {

@@ -1,4 +1,5 @@
-﻿using SereneApi.Core.Configuration.Attributes;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Core.Configuration.Attributes;
 using SereneApi.Core.Handler;
 using SereneApi.Core.Options.Factory;
 using System;
@@ -8,37 +9,34 @@ using System.Reflection;
 
 namespace SereneApi.Core.Configuration
 {
-    public static class ConfigurationManager
+    public class ConfigurationManager : IConfigurationManager, IDisposable
     {
-        private static readonly Dictionary<string, IHandlerConfigurationBuilder> _configurationStore = new();
+        private readonly Dictionary<string, ConfigurationProvider> _configurationStore = new();
 
-        static ConfigurationManager()
+        public ConfigurationManager()
         {
             GetConfigurationProviders(AppDomain.CurrentDomain.GetAssemblies());
 
-            AppDomain.CurrentDomain.AssemblyLoad += (sender, args) =>
-            {
-                GetConfigurationProviders(args.LoadedAssembly);
-            };
+            AppDomain.CurrentDomain.AssemblyLoad += OnAssemblyLoaded;
         }
 
-        public static ApiOptionsFactory<TApiHandler> BuildApiOptionsFactory<TApiHandler>() where TApiHandler : IApiHandler
+        public ApiOptionsFactory<TApiHandler> BuildApiOptionsFactory<TApiHandler>() where TApiHandler : IApiHandler
         {
             string providerName = GetProviderName<TApiHandler>();
 
             return _configurationStore[providerName].BuildOptionsFactory<TApiHandler>();
         }
 
-        public static void AmendConfiguration<TApiHandler>(Action<IHandlerConfigurationFactory> factory) where TApiHandler : IApiHandler
+        public void AmendConfiguration<TApiHandler>(Action<IHandlerConfigurationFactory> factory) where TApiHandler : IApiHandler
         {
             string providerName = GetProviderName<TApiHandler>();
 
-            IHandlerConfigurationFactory configurationFactory = (IHandlerConfigurationFactory)_configurationStore[providerName];
+            IHandlerConfigurationFactory configurationFactory = _configurationStore[providerName];
 
             factory.Invoke(configurationFactory);
         }
 
-        private static void GetConfigurationProviders(params Assembly[] assemblies)
+        private void GetConfigurationProviders(params Assembly[] assemblies)
         {
             Type providerType = typeof(ConfigurationProvider);
 
@@ -50,11 +48,18 @@ namespace SereneApi.Core.Configuration
             {
                 ConfigurationProvider provider = (ConfigurationProvider)Activator.CreateInstance(type);
 
+                provider.AddDependency<IConfigurationManager>(() => this, Lifetime.Singleton, Binding.Unbound);
+
                 _configurationStore.Add(type.Name, provider);
             }
         }
 
-        private static string GetProviderName<TApiHandler>() where TApiHandler : IApiHandler
+        private void OnAssemblyLoaded(object sender, AssemblyLoadEventArgs args)
+        {
+            GetConfigurationProviders(args.LoadedAssembly);
+        }
+
+        private string GetProviderName<TApiHandler>() where TApiHandler : IApiHandler
         {
             Type apiHandlerType = typeof(TApiHandler);
 
@@ -63,5 +68,33 @@ namespace SereneApi.Core.Configuration
 
             return attribute.ProviderName;
         }
+
+        #region IDisposable
+
+        private volatile bool _disposed;
+
+        public void Dispose()
+        {
+            Dispose(true);
+
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                AppDomain.CurrentDomain.AssemblyLoad -= OnAssemblyLoaded;
+            }
+
+            _disposed = true;
+        }
+
+        #endregion
     }
 }

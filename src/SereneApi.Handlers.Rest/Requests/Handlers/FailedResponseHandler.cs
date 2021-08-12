@@ -1,15 +1,14 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.Logging;
-using SereneApi.Abstractions.Response.Types;
 using SereneApi.Core;
 using SereneApi.Core.Requests;
 using SereneApi.Core.Responses;
 using SereneApi.Core.Responses.Handlers;
-using SereneApi.Core.Responses.Types;
 using SereneApi.Core.Serialization;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using SereneApi.Handlers.Rest.Responses.Types;
 
 namespace SereneApi.Handlers.Rest.Requests.Handlers
 {
@@ -30,14 +29,14 @@ namespace SereneApi.Handlers.Rest.Requests.Handlers
         {
             if (content == null)
             {
-                return ApiResponse.Failure(request, status, string.Empty);
+                return RestApiResponse.Failure(request, status, string.Empty);
             }
 
             if (!_dependencyProvider.TryGetDependency(out ISerializer serializer))
             {
                 _logger?.LogError(Logging.EventIds.DependencyNotFound, Logging.Messages.DependencyNotFound, nameof(ISerializer));
 
-                return ApiResponse.Failure(request, status, string.Empty);
+                return RestApiResponse.Failure(request, status, string.Empty);
             }
 
             _logger?.LogInformation("Endpoint returned in body content for failed request, attempting deserialization.");
@@ -50,14 +49,14 @@ namespace SereneApi.Handlers.Rest.Requests.Handlers
                 {
                     _logger?.LogInformation("Deserialization completed successfully.");
 
-                    return ApiResponse.Failure(request, status, failureResponse.Message);
+                    return RestApiResponse.Failure(request, status, failureResponse.Message);
                 }
 
                 string message = await content.ReadAsStringAsync();
 
                 if (!string.IsNullOrWhiteSpace(message))
                 {
-                    return ApiResponse.Failure(request, status, message);
+                    return RestApiResponse.Failure(request, status, message);
                 }
             }
             catch (Exception exception)
@@ -65,21 +64,21 @@ namespace SereneApi.Handlers.Rest.Requests.Handlers
                 _logger?.LogWarning(exception, "Could not deserialize in body content.");
             }
 
-            return ApiResponse.Failure(request, status, string.Empty);
+            return RestApiResponse.Failure(request, status, string.Empty);
         }
 
         public async Task<IApiResponse<TResponse>> ProcessFailedRequestAsync<TResponse>(IApiRequest request, Status status, HttpContent content)
         {
             if (content == null)
             {
-                return ApiResponse<TResponse>.Failure(request, status, string.Empty);
+                return RestApiResponse<TResponse>.Failure(request, status, string.Empty);
             }
 
             if (!_dependencyProvider.TryGetDependency(out ISerializer serializer))
             {
                 _logger?.LogError(Logging.EventIds.DependencyNotFound, Logging.Messages.DependencyNotFound, nameof(ISerializer));
 
-                return ApiResponse<TResponse>.Failure(request, status, string.Empty);
+                return RestApiResponse<TResponse>.Failure(request, status, string.Empty);
             }
 
             _logger?.LogInformation("Endpoint returned in body content for failed request, attempting deserialization.");
@@ -92,14 +91,14 @@ namespace SereneApi.Handlers.Rest.Requests.Handlers
                 {
                     _logger?.LogInformation("Deserialization completed successfully.");
 
-                    return ApiResponse<TResponse>.Failure(request, status, failureResponse.Message);
+                    return RestApiResponse<TResponse>.Failure(request, status, failureResponse.Message);
                 }
 
                 string message = await content.ReadAsStringAsync();
 
                 if (!string.IsNullOrWhiteSpace(message))
                 {
-                    return ApiResponse<TResponse>.Failure(request, status, message);
+                    return RestApiResponse<TResponse>.Failure(request, status, message);
                 }
             }
             catch (Exception exception)
@@ -107,7 +106,7 @@ namespace SereneApi.Handlers.Rest.Requests.Handlers
                 _logger?.LogWarning(exception, "Could not deserialize in body content.");
             }
 
-            return ApiResponse<TResponse>.Failure(request, status, string.Empty);
+            return RestApiResponse<TResponse>.Failure(request, status, string.Empty);
         }
     }
 }

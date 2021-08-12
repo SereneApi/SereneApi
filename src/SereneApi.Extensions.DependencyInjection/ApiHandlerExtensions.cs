@@ -1,5 +1,6 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
 using SereneApi.Core.Authorization.Authorizers;
+using SereneApi.Core.Options.Factory;
 using SereneApi.Core.Responses;
 using SereneApi.Extensions.DependencyInjection.Authorizers;
 using System;

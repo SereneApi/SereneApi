@@ -4,13 +4,13 @@ using SereneApi.Core.Requests;
 using SereneApi.Core.Response;
 using SereneApi.Core.Responses;
 using SereneApi.Core.Responses.Handlers;
-using SereneApi.Core.Responses.Types;
 using SereneApi.Core.Serialization;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using SereneApi.Handlers.Rest.Responses.Types;
 
 namespace SereneApi.Handlers.Rest.Requests.Handlers
 {
@@ -46,7 +46,7 @@ namespace SereneApi.Handlers.Rest.Requests.Handlers
             {
                 _logger?.LogError("Received an Empty Http Response");
 
-                return ApiResponse.Failure(request, Status.None, "Received an Empty Http Response");
+                return RestApiResponse.Failure(request, Status.None, "Received an Empty Http Response");
             }
 
             IApiResponse response;
@@ -57,7 +57,7 @@ namespace SereneApi.Handlers.Rest.Requests.Handlers
             {
                 _logger?.LogInformation("The request received a successful response.");
 
-                response = ApiResponse.Success(request, status);
+                response = RestApiResponse.Success(request, status);
             }
             else
             {
@@ -85,7 +85,7 @@ namespace SereneApi.Handlers.Rest.Requests.Handlers
             {
                 _logger?.LogError("Received an Empty Http Response");
 
-                return ApiResponse<TResponse>.Failure(request, Status.None, "Received an Empty Http Response");
+                return RestApiResponse<TResponse>.Failure(request, Status.None, "Received an Empty Http Response");
             }
 
             IApiResponse<TResponse> response;
@@ -109,20 +109,20 @@ namespace SereneApi.Handlers.Rest.Requests.Handlers
 
                     TResponse responseData = await serializer.DeserializeAsync<TResponse>(responseMessage.Content);
 
-                    response = ApiResponse<TResponse>.Success(request, status, responseData);
+                    response = RestApiResponse<TResponse>.Success(request, status, responseData);
                 }
                 catch (JsonException jsonException)
                 {
                     _logger?.LogError(jsonException, "Could not deserialize the returned value");
 
-                    response = ApiResponse<TResponse>
+                    response = RestApiResponse<TResponse>
                         .Failure(request, status, "Could not deserialize returned value.", jsonException);
                 }
                 catch (Exception exception)
                 {
                     _logger?.LogError(exception, "An Exception occurred whilst processing the response.");
 
-                    response = ApiResponse<TResponse>
+                    response = RestApiResponse<TResponse>
                         .Failure(request, status, "An Exception occurred whilst processing the response.", exception);
                 }
             }

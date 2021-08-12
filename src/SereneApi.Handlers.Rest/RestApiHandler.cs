@@ -7,12 +7,12 @@ using SereneApi.Core.Options;
 using SereneApi.Core.Requests;
 using SereneApi.Core.Requests.Handler;
 using SereneApi.Core.Responses;
-using SereneApi.Core.Responses.Types;
 using SereneApi.Handlers.Rest.Configuration;
-using SereneApi.Handlers.Rest.Requests.Factory;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SereneApi.Handlers.Rest.Requests.Factories;
+using SereneApi.Handlers.Rest.Responses.Types;
 
 namespace SereneApi.Handlers.Rest
 {
@@ -95,7 +95,7 @@ namespace SereneApi.Handlers.Rest
                     throw;
                 }
 
-                return ApiResponse.Failure(request, Status.TimedOut, "The Request Timed Out; The retry limit was reached", exception);
+                return RestApiResponse.Failure(request, Status.TimedOut, "The Request Timed Out; The retry limit was reached", exception);
             }
             catch (Exception exception)
             {
@@ -106,7 +106,7 @@ namespace SereneApi.Handlers.Rest
                     throw;
                 }
 
-                return ApiResponse.Failure(request, Status.None,
+                return RestApiResponse.Failure(request, Status.None,
                     $"An Exception occurred whilst performing a HTTP {request.Method} Request",
                     exception);
             }
@@ -141,7 +141,7 @@ namespace SereneApi.Handlers.Rest
                     throw;
                 }
 
-                return ApiResponse<TResponse>.Failure(request, Status.TimedOut, "The Request Timed Out; The retry limit was reached", exception);
+                return RestApiResponse<TResponse>.Failure(request, Status.TimedOut, "The Request Timed Out; The retry limit was reached", exception);
             }
             catch (Exception exception)
             {
@@ -152,7 +152,7 @@ namespace SereneApi.Handlers.Rest
                     throw;
                 }
 
-                return ApiResponse<TResponse>.Failure(request, Status.None,
+                return RestApiResponse<TResponse>.Failure(request, Status.None,
                     $"An Exception occurred whilst performing a HTTP {request.Method} Request",
                     exception);
             }

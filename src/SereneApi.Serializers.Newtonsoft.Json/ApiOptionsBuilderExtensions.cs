@@ -1,8 +1,8 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SereneApi.Core.Options.Factory;
 using SereneApi.Serializers.Newtonsoft.Json.Serializers;
+using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Serializers.Newtonsoft.Json
 {
@@ -11,9 +11,9 @@ namespace SereneApi.Serializers.Newtonsoft.Json
         /// <summary>
         /// Uses <seealso cref="NewtonsoftSerializer"/> for serialization.
         /// </summary>
-        public static void UseNewtonsoftSerializer(this IApiOptionsBuilder builder)
+        public static void UseNewtonsoftSerializer(this IApiOptionsFactory factory)
         {
-            builder.UseSerializer(new NewtonsoftSerializer());
+            factory.UseSerializer(new NewtonsoftSerializer());
         }
 
         /// <summary>
@@ -21,33 +21,33 @@ namespace SereneApi.Serializers.Newtonsoft.Json
         /// </summary>
         /// <param name="settings">The settings to be used by <see cref="NewtonsoftSerializer"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public static void UseNewtonsoftSerializer(this IApiOptionsBuilder builder, [NotNull] JsonSerializerSettings settings)
+        public static void UseNewtonsoftSerializer(this IApiOptionsFactory factory, [NotNull] JsonSerializerSettings settings)
         {
             if (settings == null)
             {
                 throw new ArgumentNullException(nameof(settings));
             }
 
-            builder.UseSerializer(new NewtonsoftSerializer(settings));
+            factory.UseSerializer(new NewtonsoftSerializer(settings));
         }
 
         /// <summary>
         /// Uses <seealso cref="NewtonsoftSerializer"/> for serialization.
         /// </summary>
-        /// <param name="factory">Builds to the settings to be used by <see cref="NewtonsoftSerializer"/>.</param>
+        /// <param name="builder">Builds to the settings to be used by <see cref="NewtonsoftSerializer"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public static void UseNewtonsoftSerializer(this IApiOptionsBuilder builder, [NotNull] Action<JsonSerializerSettings> factory)
+        public static void UseNewtonsoftSerializer(this IApiOptionsFactory factory, [NotNull] Action<JsonSerializerSettings> builder)
         {
-            if (factory == null)
+            if (builder == null)
             {
-                throw new ArgumentNullException(nameof(factory));
+                throw new ArgumentNullException(nameof(builder));
             }
 
             JsonSerializerSettings settings = new JsonSerializerSettings();
 
-            factory.Invoke(settings);
+            builder.Invoke(settings);
 
-            UseNewtonsoftSerializer(builder, settings);
+            UseNewtonsoftSerializer(factory, settings);
         }
     }
 }

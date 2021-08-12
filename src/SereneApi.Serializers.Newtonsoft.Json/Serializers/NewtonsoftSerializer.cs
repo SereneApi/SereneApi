@@ -1,10 +1,10 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SereneApi.Core.Content;
 using SereneApi.Core.Content.Types;
 using SereneApi.Core.Serialization;
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 
 namespace SereneApi.Serializers.Newtonsoft.Json.Serializers
 {

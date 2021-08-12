@@ -1,10 +1,10 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies.Abstractions;
 using Newtonsoft.Json;
 using SereneApi.Core.Configuration;
 using SereneApi.Core.Serialization;
 using SereneApi.Serializers.Newtonsoft.Json.Serializers;
+using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Serializers.Newtonsoft.Json
 {
@@ -15,7 +15,7 @@ namespace SereneApi.Serializers.Newtonsoft.Json
         /// </summary>
         public static IHandlerConfigurationFactory AddNewtonsoft(this IHandlerConfigurationFactory factory)
         {
-            factory.AddDependency(() => new NewtonsoftSerializer(), Lifetime.Scoped);
+            factory.AddDependency<ISerializer>(() => new NewtonsoftSerializer(), Lifetime.Scoped);
 
             return factory;
         }
@@ -32,7 +32,7 @@ namespace SereneApi.Serializers.Newtonsoft.Json
                 throw new ArgumentNullException(nameof(settings));
             }
 
-            factory.AddDependency(() => new NewtonsoftSerializer(settings), Lifetime.Scoped);
+            factory.AddDependency<ISerializer>(() => new NewtonsoftSerializer(settings), Lifetime.Scoped);
 
             return factory;
         }

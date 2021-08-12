@@ -12,5 +12,6 @@ namespace SereneApi.Core.Configuration
         new int RetryCount { get; set; }
 
         void AddDependency<TDependency>(Func<TDependency> dependency, Lifetime lifetime, Binding binding = Binding.Bound);
+        void AddDependency<TDependency>(Func<IDependencyProvider, TDependency> dependency, Lifetime lifetime, Binding binding = Binding.Bound);
     }
 }

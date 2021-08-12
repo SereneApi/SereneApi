@@ -1,9 +1,9 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Core.Connection;
 using SereneApi.Core.Handler;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using SereneApi.Core.Connection;
 
 namespace SereneApi.Core.Options
 {

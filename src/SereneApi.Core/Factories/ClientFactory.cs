@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace SereneApi.Core.Factories
 {
     /// <inheritdoc cref="IClientFactory"/>
-    internal class ClientFactory : IClientFactory
+    public class ClientFactory : IClientFactory
     {
         private readonly IDependencyProvider _dependencies;
 
