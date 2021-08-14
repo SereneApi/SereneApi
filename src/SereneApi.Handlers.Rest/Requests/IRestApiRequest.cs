@@ -5,6 +5,8 @@ namespace SereneApi.Handlers.Rest.Requests
 {
     public interface IRestApiRequest : IApiRequest
     {
+        string Endpoint { get; set; }
+
         public string EndpointTemplate { get; set; }
 
         /// <summary>

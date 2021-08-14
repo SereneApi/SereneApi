@@ -7,7 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using SereneApi.Extensions.DependencyInjection;
-using SereneApi.Extensions.Newtonsoft;
+using SereneApi.Handlers.Rest.Configuration;
+using SereneApi.Serializers.Newtonsoft.Json;
 
 namespace DependencyInjection.WebUi
 {
@@ -25,11 +26,12 @@ namespace DependencyInjection.WebUi
         {
             services.AddControllers().AddNewtonsoftJson();
 
-            services.ConfigureSereneApi(r =>
+            services.OverrideConfigurationProvider<RestConfigurationProvider>(c =>
             {
-                r.ResourcePath = "api/v2";
-            }).AddNewtonsoft();
-
+                c.ResourcePath = "api/v2";
+                c.AddNewtonsoft();
+            });
+            
             // Add an ApiHandler to the services collection, this enables dependency injection.
             // You are required to supply an interface for the definition and a class inheriting form ApiHandler and the interface as the definition.
             services.RegisterApi<IStudentApi, StudentApiHandler>(builder =>

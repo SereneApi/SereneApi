@@ -1,7 +1,6 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Core.Requests;
-using SereneApi.Core.Routing;
 using SereneApi.Handlers.Rest.Queries;
+using SereneApi.Handlers.Rest.Requests;
 using SereneApi.Handlers.Rest.Requests.Types;
 using System;
 using System.Linq;
@@ -26,39 +25,37 @@ namespace SereneApi.Handlers.Rest.Routing
 
         #endregion
 
-        public string BuildEndPoint(IApiRequest request)
+        public string BuildEndPoint(IRestApiRequest request)
         {
-            RestApiRequest apiRequest = (RestApiRequest)request;
-
-            if (apiRequest.Parameters != null)
+            if (request.Parameters != null)
             {
                 // If parameters are not empty, the route will need to have them added.
-                if (string.IsNullOrWhiteSpace(apiRequest.EndpointTemplate))
+                if (string.IsNullOrWhiteSpace(request.EndpointTemplate))
                 {
                     // No Endpoint was supplied, if one parameter was provided it will be appended.
                     // Else an exception will be thrown as a template is needed if more than one parameter is provided.
-                    if (apiRequest.Parameters.Length > 1)
+                    if (request.Parameters.Length > 1)
                     {
                         throw new ArgumentException("An endpoint template must be supplied to use multiple parameters.");
                     }
 
-                    return apiRequest.Parameters.First().ToString();
+                    return request.Parameters.First().ToString();
                 }
                 // An Endpoint was provided so it will be formatted.
-                return FormatEndpointTemplate(apiRequest.EndpointTemplate, apiRequest.Parameters);
+                return FormatEndpointTemplate(request.EndpointTemplate, request.Parameters);
             }
 
-            if (!string.IsNullOrWhiteSpace(apiRequest.EndpointTemplate))
+            if (!string.IsNullOrWhiteSpace(request.EndpointTemplate))
             {
                 // No parameter was provided so only the endpoint is appended.
-                return apiRequest.EndpointTemplate;
+                return request.EndpointTemplate;
             }
 
             return null;
         }
 
         /// <inheritdoc cref="IRouteFactory.BuildRoute"/>
-        public Uri BuildRoute(IApiRequest request)
+        public Uri BuildRoute(IRestApiRequest request)
         {
             RestApiRequest apiRequest = (RestApiRequest)request;
 

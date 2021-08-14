@@ -1,6 +1,6 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
 
-namespace SereneApi.Core.Options.Factory
+namespace SereneApi.Core.Options.Factories
 {
     public interface IApiOptionsExtensions
     {

@@ -1,6 +1,5 @@
 ﻿using SereneApi.Core.Requests;
 using SereneApi.Core.Responses;
-using SereneApi.Core.Routing;
 using SereneApi.Core.Serialization;
 using SereneApi.Core.Transformation;
 using SereneApi.Core.Versioning;
@@ -198,7 +197,7 @@ namespace SereneApi.Handlers.Rest.Requests.Factories
 
         private void GenerateRoute()
         {
-            RouteFactory routeFactory = (RouteFactory)_apiHandler.Options.Dependencies.GetDependency<IRouteFactory>();
+            IRouteFactory routeFactory = _apiHandler.Options.Dependencies.GetDependency<IRouteFactory>();
 
             _apiRequest.Endpoint = routeFactory.BuildEndPoint(_apiRequest);
             _apiRequest.Route = routeFactory.BuildRoute(_apiRequest);

@@ -1,4 +1,4 @@
-﻿using SereneApi.Abstractions.Response;
+﻿using SereneApi.Core.Responses;
 using System.Threading.Tasks;
 
 namespace DependencyInjection.API

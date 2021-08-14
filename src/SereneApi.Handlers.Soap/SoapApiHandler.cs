@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using SereneApi.Core;
 using SereneApi.Core.Configuration.Attributes;
 using SereneApi.Core.Connection;
@@ -13,6 +10,9 @@ using SereneApi.Core.Responses;
 using SereneApi.Handlers.Soap.Configuration;
 using SereneApi.Handlers.Soap.Requests.Factories;
 using SereneApi.Handlers.Soap.Responses.Types;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SereneApi.Handlers.Soap
 {

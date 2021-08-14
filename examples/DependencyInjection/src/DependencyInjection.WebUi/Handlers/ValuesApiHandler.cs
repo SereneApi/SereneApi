@@ -1,15 +1,15 @@
 ﻿using DependencyInjection.API;
-using SereneApi;
-using SereneApi.Abstractions.Options;
-using SereneApi.Abstractions.Requests;
-using SereneApi.Abstractions.Response;
+using SereneApi.Core.Options;
+using SereneApi.Core.Requests;
+using SereneApi.Core.Responses;
+using SereneApi.Handlers.Rest;
 using System.Threading.Tasks;
 
 namespace DependencyInjection.WebUi.Handlers
 {
-    public class ValuesApiHandler : BaseApiHandler, IValuesApi
+    public class ValuesApiHandler : RestApiHandler, IValuesApi
     {
-        public ValuesApiHandler(IApiOptions<IValuesApi> options) : base(options)
+        public ValuesApiHandler(IApiOptions<ValuesApiHandler> options) : base(options)
         {
         }
 
@@ -19,7 +19,7 @@ namespace DependencyInjection.WebUi.Handlers
                 .UsingMethod(Method.Get)
                 .AgainstEndpoint("int/{0}")
                 .WithParameter(value)
-                .RespondsWithType<int>()
+                .RespondsWith<int>()
                 .ExecuteAsync();
         }
 
@@ -29,7 +29,7 @@ namespace DependencyInjection.WebUi.Handlers
                 .UsingMethod(Method.Get)
                 .AgainstEndpoint("string/{0}")
                 .WithParameter(value)
-                .RespondsWithType<string>()
+                .RespondsWith<string>()
                 .ExecuteAsync();
         }
     }

@@ -1,7 +1,7 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
 using SereneApi.Core.Configuration;
 using SereneApi.Core.Options;
-using SereneApi.Core.Options.Factory;
+using SereneApi.Core.Options.Factories;
 using System;
 using System.Collections.Generic;
 

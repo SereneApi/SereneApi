@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using SereneApi.Core.Options.Factory;
+using SereneApi.Core.Options.Factories;
 using SereneApi.Serializers.Newtonsoft.Json.Serializers;
 using System;
 using System.Diagnostics.CodeAnalysis;

@@ -4,12 +4,12 @@ using SereneApi.Core.Configuration;
 using SereneApi.Core.Configuration.Attributes;
 using SereneApi.Core.Connection;
 using SereneApi.Core.Handler;
-using SereneApi.Core.Options.Factory;
 using SereneApi.Core.Serialization;
 using SereneApi.Serializers.Newtonsoft.Json;
 using SereneApi.Serializers.Newtonsoft.Json.Serializers;
 using Shouldly;
 using System;
+using SereneApi.Core.Options.Factories;
 using Xunit;
 
 namespace SereneApi.Serialization.Newtonsoft.Json.Tests
@@ -21,7 +21,7 @@ namespace SereneApi.Serialization.Newtonsoft.Json.Tests
         {
             ConfigurationManager configuration = new();
 
-            Should.NotThrow(() => configuration.AmendConfiguration<TestHandler>(c =>
+            Should.NotThrow(() => configuration.AmendConfiguration<TestProvider>(c =>
             {
                 c.AddNewtonsoft();
             }));
@@ -45,7 +45,7 @@ namespace SereneApi.Serialization.Newtonsoft.Json.Tests
 
             ConfigurationManager configuration = new();
 
-            Should.NotThrow(() => configuration.AmendConfiguration<TestHandler>(c =>
+            Should.NotThrow(() => configuration.AmendConfiguration<TestProvider>(c =>
             {
                 c.AddNewtonsoft(settings);
             }));
@@ -69,7 +69,7 @@ namespace SereneApi.Serialization.Newtonsoft.Json.Tests
 
             ConfigurationManager configuration = new();
 
-            Should.NotThrow(() => configuration.AmendConfiguration<TestHandler>(c =>
+            Should.NotThrow(() => configuration.AmendConfiguration<TestProvider>(c =>
             {
                 c.AddNewtonsoft(s => s.DateFormatString = dateFormat);
             }));
@@ -93,7 +93,7 @@ namespace SereneApi.Serialization.Newtonsoft.Json.Tests
 
             JsonSerializerSettings settings = null;
 
-            Should.Throw<ArgumentNullException>(() => configuration.AmendConfiguration<TestHandler>(c =>
+            Should.Throw<ArgumentNullException>(() => configuration.AmendConfiguration<TestProvider>(c =>
             {
                 c.AddNewtonsoft(settings);
             }));
@@ -106,7 +106,7 @@ namespace SereneApi.Serialization.Newtonsoft.Json.Tests
 
             Action<JsonSerializerSettings> builder = null;
 
-            Should.Throw<ArgumentNullException>(() => configuration.AmendConfiguration<TestHandler>(c =>
+            Should.Throw<ArgumentNullException>(() => configuration.AmendConfiguration<TestProvider>(c =>
             {
                 c.AddNewtonsoft(builder);
             }));

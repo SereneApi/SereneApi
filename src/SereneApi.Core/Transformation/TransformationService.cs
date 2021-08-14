@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace SereneApi.Core.Transformation
 {
-    public class TransformationService : ITransformationService, IDisposable
+    public class TransformationService : ITransformationService
     {
         private readonly IObjectToStringTransformer _defaultTransformer;
 
@@ -140,10 +140,6 @@ namespace SereneApi.Core.Transformation
             string queryKey = name == null ? property.Name : name.Value;
 
             return new KeyValuePair<string, string>(queryKey, transformedValue);
-        }
-
-        public void Dispose()
-        {
         }
     }
 }

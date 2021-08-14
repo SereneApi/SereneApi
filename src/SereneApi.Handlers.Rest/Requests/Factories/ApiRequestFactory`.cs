@@ -1,5 +1,4 @@
 ﻿using SereneApi.Core.Responses;
-using SereneApi.Core.Routing;
 using SereneApi.Handlers.Rest.Requests.Types;
 using SereneApi.Handlers.Rest.Routing;
 using System.Threading.Tasks;

@@ -1,7 +1,7 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
 using SereneApi.Core.Configuration.Attributes;
 using SereneApi.Core.Handler;
-using SereneApi.Core.Options.Factory;
+using SereneApi.Core.Options.Factories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,9 +27,9 @@ namespace SereneApi.Core.Configuration
             return _configurationStore[providerName].BuildOptionsFactory<TApiHandler>();
         }
 
-        public void AmendConfiguration<TApiHandler>(Action<IHandlerConfigurationFactory> factory) where TApiHandler : IApiHandler
+        public void AmendConfiguration<TApiHandler>(Action<IHandlerConfigurationFactory> factory) where TApiHandler : ConfigurationProvider
         {
-            string providerName = GetProviderName<TApiHandler>();
+            string providerName = typeof(TApiHandler).Name;
 
             IHandlerConfigurationFactory configurationFactory = _configurationStore[providerName];
 

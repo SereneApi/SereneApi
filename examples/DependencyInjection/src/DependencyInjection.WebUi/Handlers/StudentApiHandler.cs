@@ -1,20 +1,20 @@
 ﻿using DependencyInjection.API;
 using DependencyInjection.API.DTOs;
-using SereneApi;
-using SereneApi.Abstractions.Options;
-using SereneApi.Abstractions.Requests;
-using SereneApi.Abstractions.Response;
+using SereneApi.Core.Options;
+using SereneApi.Core.Requests;
+using SereneApi.Core.Responses;
+using SereneApi.Handlers.Rest;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DependencyInjection.WebUi.Handlers
 {
-    public class StudentApiHandler : BaseApiHandler, IStudentApi
+    public class StudentApiHandler : RestApiHandler, IStudentApi
     {
         // This is important for Dependency Injection to work!
         // The Handler interface must be set as the generic for IApiHandlerOptions.
         // This is required so AspNet gets the right options for the current handler.
-        public StudentApiHandler(IApiOptions<IStudentApi> options) : base(options)
+        public StudentApiHandler(IApiOptions<StudentApiHandler> options) : base(options)
         {
         }
 
@@ -25,7 +25,7 @@ namespace DependencyInjection.WebUi.Handlers
             return MakeRequest
                 .UsingMethod(Method.Get)
                 .WithParameter(studentId)
-                .RespondsWithType<StudentDto>()
+                .RespondsWith<StudentDto>()
                 .ExecuteAsync();
         }
 
@@ -35,7 +35,7 @@ namespace DependencyInjection.WebUi.Handlers
             // http://localhost:8080/api/Students
             return MakeRequest
                 .UsingMethod(Method.Get)
-                .RespondsWithType<List<StudentDto>>()
+                .RespondsWith<List<StudentDto>>()
                 .ExecuteAsync();
         }
 
@@ -47,7 +47,7 @@ namespace DependencyInjection.WebUi.Handlers
                 .UsingMethod(Method.Get)
                 .AgainstEndpoint("SearchBy/GivenAndLastName")
                 .WithQuery(student, s => new { s.GivenName, s.LastName })
-                .RespondsWithType<List<StudentDto>>()
+                .RespondsWith<List<StudentDto>>()
                 .ExecuteAsync();
         }
 
@@ -70,7 +70,7 @@ namespace DependencyInjection.WebUi.Handlers
                 .UsingMethod(Method.Get)
                 .AgainstEndpoint("{0}/Classes")
                 .WithParameter(studentId)
-                .RespondsWithType<List<ClassDto>>()
+                .RespondsWith<List<ClassDto>>()
                 .ExecuteAsync();
         }
     }

@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using SereneApi.Core.Requests;
+﻿using SereneApi.Core.Requests;
+using System.Collections.Generic;
 
 namespace SereneApi.Handlers.Soap.Requests
 {

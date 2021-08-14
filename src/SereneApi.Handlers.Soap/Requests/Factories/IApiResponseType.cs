@@ -2,6 +2,6 @@
 {
     public interface IApiResponseType
     {
-        IApiRequestPerformer<TResponds> RespondsWith<TResponds>() where TResponds : class;
+        IApiRequestPerformer<TResponse> RespondsWith<TResponse>() where TResponse : class;
     }
 }

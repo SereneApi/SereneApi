@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\src\SereneApi.Abstractions\SereneApi.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\..\src\SereneApi.Handlers.Rest\SereneApi.Handlers.Rest.csproj" />
   </ItemGroup>
 
 </Project>

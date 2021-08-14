@@ -1,5 +1,5 @@
 ﻿using SereneApi.Core.Handler;
-using SereneApi.Core.Options.Factory;
+using SereneApi.Core.Options.Factories;
 
 namespace SereneApi.Core.Configuration
 {

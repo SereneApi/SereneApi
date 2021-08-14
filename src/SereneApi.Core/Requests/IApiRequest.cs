@@ -34,7 +34,7 @@ namespace SereneApi.Core.Requests
         /// The address used to make the request. This is applied after the source.
         /// </summary>
         /// <remarks>This is applied after the Version [Resource/Version/Endpoint]</remarks>
-        string Endpoint { get; set; }
+        //string Endpoint { get; set; }
 
         /// <summary>
         /// The <see cref="Method"/> used when performing the request.

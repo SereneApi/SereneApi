@@ -4,7 +4,6 @@ using SereneApi.Core.Content;
 using SereneApi.Core.Factories;
 using SereneApi.Core.Requests.Handler;
 using SereneApi.Core.Responses.Handlers;
-using SereneApi.Core.Routing;
 using SereneApi.Core.Serialization;
 using SereneApi.Core.Transformation;
 using SereneApi.Handlers.Rest.Queries;

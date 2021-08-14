@@ -1,5 +1,5 @@
 ﻿using SereneApi.Core.Handler;
-using SereneApi.Core.Options.Factory;
+using SereneApi.Core.Options.Factories;
 using System;
 
 namespace SereneApi.Core.Configuration
@@ -8,6 +8,6 @@ namespace SereneApi.Core.Configuration
     {
         ApiOptionsFactory<TApiHandler> BuildApiOptionsFactory<TApiHandler>() where TApiHandler : IApiHandler;
 
-        void AmendConfiguration<TApiHandler>(Action<IHandlerConfigurationFactory> factory) where TApiHandler : IApiHandler;
+        void AmendConfiguration<THandler>(Action<IHandlerConfigurationFactory> factory) where THandler : ConfigurationProvider;
     }
 }

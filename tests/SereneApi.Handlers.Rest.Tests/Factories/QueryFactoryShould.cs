@@ -1,9 +1,9 @@
 ﻿using SereneApi.Core.Configuration;
-using SereneApi.Core.Options.Factory;
 using SereneApi.Handlers.Rest.Queries;
 using SereneApi.Handlers.Rest.Tests.Mock;
 using Shouldly;
 using System;
+using SereneApi.Core.Options.Factories;
 using Xunit;
 
 namespace SereneApi.Handlers.Rest.Tests.Factories

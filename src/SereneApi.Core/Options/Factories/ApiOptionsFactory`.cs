@@ -9,27 +9,18 @@ using SereneApi.Core.Handler;
 using SereneApi.Core.Helpers;
 using SereneApi.Core.Requests.Handler;
 using SereneApi.Core.Responses.Handlers;
-using SereneApi.Core.Routing;
 using SereneApi.Core.Serialization;
 using System;
 using System.Net;
 
-namespace SereneApi.Core.Options.Factory
+namespace SereneApi.Core.Options.Factories
 {
-    public class ApiOptionsFactory<TApiHandler> : IApiOptionsBuilder, IApiOptionsFactory, IApiOptionsExtensions, IDisposable where TApiHandler : IApiHandler
+    public class ApiOptionsFactory<TApiHandler> : ApiOptionsFactory, IApiOptionsBuilder, IApiOptionsFactory, IApiOptionsExtensions, IDisposable where TApiHandler : IApiHandler
     {
         private bool _throwExceptions = false;
 
-        public IDependencyCollection Dependencies { get; }
-
-        /// <summary>
-        /// Specifies the connection settings for the API.
-        /// </summary>
-        protected ConnectionSettings ConnectionSettings { get; set; }
-
-        public ApiOptionsFactory(IDependencyCollection dependencies)
+        public ApiOptionsFactory(IDependencyCollection dependencies) : base(dependencies)
         {
-            Dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
         }
 
         /// <inheritdoc cref="IApiOptionsBuilder.AddConfiguration"/>
@@ -292,15 +283,7 @@ namespace SereneApi.Core.Options.Factory
         }
 
         /// <inheritdoc cref="IApiOptionsBuilder.UseRouteFactory"/>
-        public void UseRouteFactory(IRouteFactory routeFactory)
-        {
-            if (routeFactory == null)
-            {
-                throw new ArgumentNullException(nameof(routeFactory));
-            }
 
-            Dependencies.AddScoped(() => routeFactory);
-        }
 
         /// <inheritdoc cref="IApiOptionsBuilder.UseSerializer"/>
         public void UseSerializer(ISerializer serializer)

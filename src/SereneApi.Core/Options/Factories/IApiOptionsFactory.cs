@@ -5,13 +5,12 @@ using SereneApi.Core.Connection;
 using SereneApi.Core.Content;
 using SereneApi.Core.Requests.Handler;
 using SereneApi.Core.Responses.Handlers;
-using SereneApi.Core.Routing;
 using SereneApi.Core.Serialization;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
-namespace SereneApi.Core.Options.Factory
+namespace SereneApi.Core.Options.Factories
 {
     public interface IApiOptionsFactory
     {
@@ -111,13 +110,6 @@ namespace SereneApi.Core.Options.Factory
         /// <param name="logger">The <see cref="ILogger"/> to be used for logging.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         void UseLogger(ILogger logger);
-
-        /// <summary>
-        /// Specifies an <see cref="IRouteFactory"/> to be when building routes.
-        /// </summary>
-        /// <param name="routeFactory">The <see cref="IRouteFactory"/> to be used for building routes.</param>
-        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        void UseRouteFactory(IRouteFactory routeFactory);
 
         /// <summary>
         /// Specifies an <see cref="ISerializer"/> to be used for serializing requests and deserializing responses.

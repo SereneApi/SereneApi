@@ -1,6 +1,6 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
 using SereneApi.Core.Factories;
-using SereneApi.Core.Options.Factory;
+using SereneApi.Core.Options.Factories;
 using SereneApi.Extensions.Mocking.Response;
 using System;
 using System.Collections.Generic;

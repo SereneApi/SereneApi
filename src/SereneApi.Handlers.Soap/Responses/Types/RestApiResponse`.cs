@@ -1,7 +1,7 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using SereneApi.Core.Requests;
+﻿using SereneApi.Core.Requests;
 using SereneApi.Core.Responses;
+using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Handlers.Soap.Responses.Types
 {

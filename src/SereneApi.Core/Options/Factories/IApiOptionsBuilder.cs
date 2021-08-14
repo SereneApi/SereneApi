@@ -1,4 +1,4 @@
-﻿namespace SereneApi.Core.Options.Factory
+﻿namespace SereneApi.Core.Options.Factories
 {
     public interface IApiOptionsBuilder
     {

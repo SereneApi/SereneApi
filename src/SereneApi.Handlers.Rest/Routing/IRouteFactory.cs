@@ -1,16 +1,18 @@
-﻿using SereneApi.Core.Requests;
+﻿using SereneApi.Handlers.Rest.Requests;
 using System;
 
-namespace SereneApi.Core.Routing
+namespace SereneApi.Handlers.Rest.Routing
 {
     /// <summary>
     /// Builds a route using the supplied values.
     /// </summary>
     public interface IRouteFactory
     {
+        string BuildEndPoint(IRestApiRequest request);
+
         /// <summary>
         /// The route will be built and returned as an <see cref="Uri"/>.
         /// </summary>
-        Uri BuildRoute(IApiRequest request);
+        Uri BuildRoute(IRestApiRequest request);
     }
 }

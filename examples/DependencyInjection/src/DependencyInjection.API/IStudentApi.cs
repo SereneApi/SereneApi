@@ -1,5 +1,5 @@
 ﻿using DependencyInjection.API.DTOs;
-using SereneApi.Abstractions.Response;
+using SereneApi.Core.Responses;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

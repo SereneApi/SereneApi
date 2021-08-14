@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Core.Transformation;
+using SereneApi.Core.Versioning;
 using SereneApi.Handlers.Soap.Extensions;
 using SereneApi.Handlers.Soap.Requests.Types;
+using System;
+using System.Collections.Generic;
 
 namespace SereneApi.Handlers.Soap.Requests.Factories
 {
-    public class ApiRequestFactory : IApiRequestFactory, IApiRequestParameters, IApiResponseType
+    public class ApiRequestFactory : IApiRequestFactory, IApiRequestParameters
     {
         private readonly IDependencyProvider _dependencies;
 
@@ -35,11 +36,6 @@ namespace SereneApi.Handlers.Soap.Requests.Factories
             return this;
         }
 
-        public IApiRequestPerformer<TResponds> RespondsWith<TResponds>() where TResponds : class
-        {
-            throw new System.NotImplementedException();
-        }
-
         public IApiResponseType WithParameters(Dictionary<string, object> parameters)
         {
             Dictionary<string, string> convertedParameters = new();
@@ -56,15 +52,27 @@ namespace SereneApi.Handlers.Soap.Requests.Factories
 
         public IApiResponseType WithParameters<TParam>(TParam parameters) where TParam : class
         {
-            PropertyInfo[] properties = typeof(TParam).GetProperties();
+            ITransformationService transformation = _dependencies.GetDependency<ITransformationService>();
 
-            Dictionary<string, string> convertedParameters = new();
+            _apiRequest.Parameters = transformation.BuildDictionary(parameters);
 
-            foreach (PropertyInfo property in properties)
-            {
-                property.GetValue()
-            }
+            return this;
+        }
 
+        public IApiRequestPerformer<TResponse> RespondsWith<TResponse>() where TResponse : class
+        {
+            _apiRequest.ResponseType = typeof(TResponse);
+
+            return new ApiRequestFactory<TResponse>(_apiHandler, _apiRequest);
+        }
+
+        public IApiRequestService AgainstVersion(string version)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IApiRequestService AgainstVersion(IApiVersion version)
+        {
             throw new NotImplementedException();
         }
     }

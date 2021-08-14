@@ -3,7 +3,6 @@ using SereneApi.Core.Requests;
 using SereneApi.Core.Versioning;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design.Serialization;
 
 namespace SereneApi.Handlers.Soap.Requests.Types
 {
