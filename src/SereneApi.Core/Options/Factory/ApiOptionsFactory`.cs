@@ -7,7 +7,6 @@ using SereneApi.Core.Connection;
 using SereneApi.Core.Content;
 using SereneApi.Core.Handler;
 using SereneApi.Core.Helpers;
-using SereneApi.Core.Queries;
 using SereneApi.Core.Requests.Handler;
 using SereneApi.Core.Responses.Handlers;
 using SereneApi.Core.Routing;
@@ -163,17 +162,6 @@ namespace SereneApi.Core.Options.Factory
             }
 
             Dependencies.AddScoped(() => logger);
-        }
-
-        /// <inheritdoc cref="IApiOptionsBuilder.UseQueryFactory"/>
-        public void UseQueryFactory(IQueryFactory queryFactory)
-        {
-            if (queryFactory == null)
-            {
-                throw new ArgumentNullException(nameof(queryFactory));
-            }
-
-            Dependencies.AddScoped(() => queryFactory);
         }
 
         /// <inheritdoc cref="IApiOptionsBuilder.AddCredentials"/>

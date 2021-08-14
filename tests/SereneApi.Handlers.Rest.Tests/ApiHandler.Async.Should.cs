@@ -4,14 +4,14 @@ using SereneApi.Core.Responses;
 using SereneApi.Extensions.Mocking;
 using SereneApi.Handlers.Rest.Configuration;
 using SereneApi.Handlers.Rest.Responses.Types;
-using SereneApi.Tests.Interfaces;
-using SereneApi.Tests.Mock;
+using SereneApi.Handlers.Rest.Tests.Interfaces;
+using SereneApi.Handlers.Rest.Tests.Mock;
 using Shouldly;
 using System;
 using System.Text.Json;
 using Xunit;
 
-namespace SereneApi.Tests
+namespace SereneApi.Handlers.Rest.Tests
 {
     public class ApiHandlerAsyncShould
     {
@@ -46,7 +46,7 @@ namespace SereneApi.Tests
 
             IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.Get)
-                .RespondsWithType<MockPersonDto>()
+                .RespondsWith<MockPersonDto>()
                 .ExecuteAsync());
 
             #endregion
@@ -154,7 +154,7 @@ namespace SereneApi.Tests
 
             IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.Get)
-                .RespondsWithType<MockPersonDto>()
+                .RespondsWith<MockPersonDto>()
                 .ExecuteAsync());
 
             #endregion
@@ -265,7 +265,7 @@ namespace SereneApi.Tests
 
             IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.Get)
-                .RespondsWithType<MockPersonDto>()
+                .RespondsWith<MockPersonDto>()
                 .ExecuteAsync());
 
             #endregion
@@ -383,7 +383,7 @@ namespace SereneApi.Tests
 
             IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.Get)
-                .RespondsWithType<MockPersonDto>()
+                .RespondsWith<MockPersonDto>()
                 .ExecuteAsync());
 
             #endregion
@@ -497,7 +497,7 @@ namespace SereneApi.Tests
 
             IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.Get)
-                .RespondsWithType<MockPersonDto>()
+                .RespondsWith<MockPersonDto>()
                 .ExecuteAsync());
 
             #endregion
@@ -613,7 +613,7 @@ namespace SereneApi.Tests
 
             IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.Get)
-                .RespondsWithType<MockPersonDto>()
+                .RespondsWith<MockPersonDto>()
                 .ExecuteAsync());
 
             #endregion
@@ -727,7 +727,7 @@ namespace SereneApi.Tests
             IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.Get)
                 .AgainstResource(resource)
-                .RespondsWithType<MockPersonDto>()
+                .RespondsWith<MockPersonDto>()
                 .ExecuteAsync());
 
             #endregion
@@ -845,7 +845,7 @@ namespace SereneApi.Tests
             IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
                 .UsingMethod(Method.Get)
                 .AgainstEndpoint(endpoint)
-                .RespondsWithType<MockPersonDto>()
+                .RespondsWith<MockPersonDto>()
                 .ExecuteAsync());
 
             #endregion

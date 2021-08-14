@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SereneApi.Extensions.Mocking\SereneApi.Extensions.Mocking.csproj" />
+    <ProjectReference Include="..\..\src\SereneApi.Handlers.Rest\SereneApi.Handlers.Rest.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,18 +1,18 @@
 using DeltaWare.Dependencies.Abstractions;
 using Newtonsoft.Json;
+using SereneApi.Core.Configuration;
+using SereneApi.Core.Configuration.Attributes;
+using SereneApi.Core.Connection;
+using SereneApi.Core.Handler;
 using SereneApi.Core.Options.Factory;
 using SereneApi.Core.Serialization;
+using SereneApi.Serializers.Newtonsoft.Json;
 using SereneApi.Serializers.Newtonsoft.Json.Serializers;
 using Shouldly;
 using System;
-using SereneApi.Core.Configuration;
-using SereneApi.Core.Configuration.Attributes;
-using SereneApi.Core.Handler;
-using SereneApi.Core.Options;
-using SereneApi.Serializers.Newtonsoft.Json;
 using Xunit;
 
-namespace SereneApi.Extensions.Newtonsoft.Tests
+namespace SereneApi.Serialization.Newtonsoft.Json.Tests
 {
     public class NewtonsoftShould
     {
@@ -115,9 +115,10 @@ namespace SereneApi.Extensions.Newtonsoft.Tests
         [ConfigurationProvider(typeof(TestProvider))]
         public class TestHandler : IApiHandler
         {
+            public IConnectionSettings Connection => throw new NotImplementedException();
         }
 
-        public class TestProvider: ConfigurationProvider
+        public class TestProvider : ConfigurationProvider
         {
         }
     }

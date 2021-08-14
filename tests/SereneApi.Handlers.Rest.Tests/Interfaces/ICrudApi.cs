@@ -1,7 +1,6 @@
-﻿using SereneApi.Handlers.Rest;
-using SereneApi.Tests.Mock;
+﻿using SereneApi.Handlers.Rest.Tests.Mock;
 
-namespace SereneApi.Tests.Interfaces
+namespace SereneApi.Handlers.Rest.Tests.Interfaces
 {
     public interface ICrudApi : ICrudApi<MockPersonDto, long>
     {

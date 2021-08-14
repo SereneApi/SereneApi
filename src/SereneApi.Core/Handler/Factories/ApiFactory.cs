@@ -45,7 +45,7 @@ namespace SereneApi.Core.Handler.Factories
         /// <exception cref="ArgumentNullException">Thrown when a null value has been provided.</exception>
         public IApiOptionsExtensions RegisterApi<TApi, TApiHandler>(Action<IApiOptionsFactory> builder = null) where TApiHandler : IApiHandler, TApi
         {
-             CheckIfDisposed();
+            CheckIfDisposed();
 
             if (builder == null)
             {

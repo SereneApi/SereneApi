@@ -1,6 +1,6 @@
-﻿using System;
-using SereneApi.Core.Handler;
+﻿using SereneApi.Core.Handler;
 using SereneApi.Core.Versioning;
+using System;
 
 namespace SereneApi.Handlers.Rest.Requests.Factories
 {

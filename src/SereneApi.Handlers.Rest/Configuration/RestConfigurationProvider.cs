@@ -1,15 +1,16 @@
-﻿using System.Net;
-using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies.Abstractions;
 using SereneApi.Core.Configuration;
 using SereneApi.Core.Content;
 using SereneApi.Core.Factories;
-using SereneApi.Core.Queries;
 using SereneApi.Core.Requests.Handler;
 using SereneApi.Core.Responses.Handlers;
 using SereneApi.Core.Routing;
 using SereneApi.Core.Serialization;
+using SereneApi.Core.Transformation;
+using SereneApi.Handlers.Rest.Queries;
 using SereneApi.Handlers.Rest.Requests.Handlers;
 using SereneApi.Handlers.Rest.Routing;
+using System.Net;
 
 namespace SereneApi.Handlers.Rest.Configuration
 {
@@ -21,7 +22,8 @@ namespace SereneApi.Handlers.Rest.Configuration
             RetryCount = 0;
             Timeout = 30;
 
-            Dependencies += d => d.TryAddScoped<IQueryFactory>(() => new QueryFactory());
+            Dependencies += d => d.TryAddScoped<ITransformationService>(() => new TransformationService());
+            Dependencies += d => d.TryAddScoped<IQueryFactory>(p => new QueryFactory(p));
             Dependencies += d => d.TryAddScoped<ISerializer>(() => new JsonSerializer());
             Dependencies += d => d.TryAddScoped(() => ContentType.Json);
             Dependencies += d => d.TryAddScoped(() => CredentialCache.DefaultCredentials);

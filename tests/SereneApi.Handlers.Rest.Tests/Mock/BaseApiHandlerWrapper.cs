@@ -1,9 +1,8 @@
 ﻿using SereneApi.Core.Options;
-using SereneApi.Handlers.Rest;
 using SereneApi.Handlers.Rest.Requests.Factories;
-using SereneApi.Tests.Interfaces;
+using SereneApi.Handlers.Rest.Tests.Interfaces;
 
-namespace SereneApi.Tests.Mock
+namespace SereneApi.Handlers.Rest.Tests.Mock
 {
     public class BaseApiHandlerWrapper : RestApiHandler, IApiHandlerWrapper
     {

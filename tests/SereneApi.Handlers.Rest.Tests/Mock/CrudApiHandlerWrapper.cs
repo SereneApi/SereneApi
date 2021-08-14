@@ -1,8 +1,7 @@
 ﻿using SereneApi.Core.Options;
-using SereneApi.Handlers.Rest;
-using SereneApi.Tests.Interfaces;
+using SereneApi.Handlers.Rest.Tests.Interfaces;
 
-namespace SereneApi.Tests.Mock
+namespace SereneApi.Handlers.Rest.Tests.Mock
 {
     public class CrudApiHandlerWrapper : CrudApiHandler<MockPersonDto, long>, ICrudApi
     {

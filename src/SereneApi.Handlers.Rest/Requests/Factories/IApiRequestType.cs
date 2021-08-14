@@ -1,5 +1,5 @@
-﻿using System;
-using SereneApi.Core.Serialization;
+﻿using SereneApi.Core.Serialization;
+using System;
 
 namespace SereneApi.Handlers.Rest.Requests.Factories
 {

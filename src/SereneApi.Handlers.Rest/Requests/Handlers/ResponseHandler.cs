@@ -5,12 +5,12 @@ using SereneApi.Core.Response;
 using SereneApi.Core.Responses;
 using SereneApi.Core.Responses.Handlers;
 using SereneApi.Core.Serialization;
+using SereneApi.Handlers.Rest.Responses.Types;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using SereneApi.Handlers.Rest.Responses.Types;
 
 namespace SereneApi.Handlers.Rest.Requests.Handlers
 {

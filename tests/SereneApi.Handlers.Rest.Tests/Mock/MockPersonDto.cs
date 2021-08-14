@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SereneApi.Tests.Mock
+namespace SereneApi.Handlers.Rest.Tests.Mock
 {
     public class MockPersonDto
     {

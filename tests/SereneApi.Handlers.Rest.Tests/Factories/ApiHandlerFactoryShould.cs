@@ -1,11 +1,11 @@
-﻿using SereneApi.Tests.Interfaces;
-using SereneApi.Tests.Mock;
+﻿using SereneApi.Core.Handler.Factories;
+using SereneApi.Handlers.Rest.Tests.Interfaces;
+using SereneApi.Handlers.Rest.Tests.Mock;
 using Shouldly;
 using System;
-using SereneApi.Core.Handler.Factories;
 using Xunit;
 
-namespace SereneApi.Tests.Factories
+namespace SereneApi.Handlers.Rest.Tests.Factories
 {
     public class ApiHandlerFactoryShould
     {

@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using SereneApi.Core.Authorization;
 using SereneApi.Core.Connection;
 using SereneApi.Core.Content;
-using SereneApi.Core.Queries;
 using SereneApi.Core.Requests.Handler;
 using SereneApi.Core.Responses.Handlers;
 using SereneApi.Core.Routing;
@@ -112,13 +111,6 @@ namespace SereneApi.Core.Options.Factory
         /// <param name="logger">The <see cref="ILogger"/> to be used for logging.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         void UseLogger(ILogger logger);
-
-        /// <summary>
-        /// Specifies an <see cref="IQueryFactory"/> to be when building queries.
-        /// </summary>
-        /// <param name="queryFactory">The <see cref="IQueryFactory"/> to be used for building queries.</param>
-        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        void UseQueryFactory(IQueryFactory queryFactory);
 
         /// <summary>
         /// Specifies an <see cref="IRouteFactory"/> to be when building routes.

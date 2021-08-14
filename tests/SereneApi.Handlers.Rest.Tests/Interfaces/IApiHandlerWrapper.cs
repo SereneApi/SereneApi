@@ -1,8 +1,8 @@
-﻿using System;
-using SereneApi.Core.Connection;
+﻿using SereneApi.Core.Connection;
 using SereneApi.Handlers.Rest.Requests.Factories;
+using System;
 
-namespace SereneApi.Tests.Interfaces
+namespace SereneApi.Handlers.Rest.Tests.Interfaces
 {
     public interface IApiHandlerWrapper : IDisposable
     {

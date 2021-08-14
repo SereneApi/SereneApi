@@ -24,7 +24,7 @@ namespace SereneApi.Handlers.Rest
             return MakeRequest
                 .UsingMethod(Method.Get)
                 .WithParameter(identifier)
-                .RespondsWithType<TResource>()
+                .RespondsWith<TResource>()
                 .ExecuteAsync();
         }
 
@@ -33,7 +33,7 @@ namespace SereneApi.Handlers.Rest
         {
             return MakeRequest
                 .UsingMethod(Method.Get)
-                .RespondsWithType<List<TResource>>()
+                .RespondsWith<List<TResource>>()
                 .ExecuteAsync();
         }
 
@@ -48,7 +48,7 @@ namespace SereneApi.Handlers.Rest
             return MakeRequest
                 .UsingMethod(Method.Post)
                 .AddInBodyContent(resource)
-                .RespondsWithType<TResource>()
+                .RespondsWith<TResource>()
                 .ExecuteAsync();
         }
 
@@ -72,7 +72,7 @@ namespace SereneApi.Handlers.Rest
             return MakeRequest
                 .UsingMethod(Method.Put)
                 .AddInBodyContent(resource)
-                .RespondsWithType<TResource>()
+                .RespondsWith<TResource>()
                 .ExecuteAsync();
         }
 
@@ -87,7 +87,7 @@ namespace SereneApi.Handlers.Rest
             return MakeRequest
                 .UsingMethod(Method.Patch)
                 .AddInBodyContent(resource)
-                .RespondsWithType<TResource>()
+                .RespondsWith<TResource>()
                 .ExecuteAsync();
         }
     }

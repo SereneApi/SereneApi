@@ -2,16 +2,15 @@
 using SereneApi.Core.Requests;
 using SereneApi.Core.Responses;
 using SereneApi.Extensions.Mocking;
-using SereneApi.Handlers.Rest;
-using SereneApi.Tests.Interfaces;
-using SereneApi.Tests.Mock;
+using SereneApi.Handlers.Rest.Responses.Types;
+using SereneApi.Handlers.Rest.Tests.Interfaces;
+using SereneApi.Handlers.Rest.Tests.Mock;
 using Shouldly;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SereneApi.Handlers.Rest.Responses.Types;
 using Xunit;
 
-namespace SereneApi.Tests
+namespace SereneApi.Handlers.Rest.Tests
 {
     public class CrudApiHandlerShould
     {

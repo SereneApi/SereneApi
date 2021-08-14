@@ -8,11 +8,11 @@ using SereneApi.Core.Requests;
 using SereneApi.Core.Requests.Handler;
 using SereneApi.Core.Responses;
 using SereneApi.Handlers.Rest.Configuration;
+using SereneApi.Handlers.Rest.Requests.Factories;
+using SereneApi.Handlers.Rest.Responses.Types;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SereneApi.Handlers.Rest.Requests.Factories;
-using SereneApi.Handlers.Rest.Responses.Types;
 
 namespace SereneApi.Handlers.Rest
 {
@@ -33,7 +33,7 @@ namespace SereneApi.Handlers.Rest
         /// </summary>
         protected internal IApiOptions Options { get; }
 
-        protected IApiRequestFactory MakeRequest => new RequestFactory(this);
+        protected IApiRequestFactory MakeRequest => new ApiRequestFactory(this);
 
         /// <inheritdoc cref="IApiHandler.Connection"/>
         public IConnectionSettings Connection { get; }

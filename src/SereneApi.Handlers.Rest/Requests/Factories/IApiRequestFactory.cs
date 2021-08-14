@@ -1,5 +1,5 @@
-﻿using System;
-using SereneApi.Core.Requests;
+﻿using SereneApi.Core.Requests;
+using System;
 
 namespace SereneApi.Handlers.Rest.Requests.Factories
 {

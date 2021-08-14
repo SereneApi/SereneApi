@@ -5,10 +5,10 @@ using SereneApi.Core.Requests;
 using SereneApi.Core.Responses;
 using SereneApi.Core.Responses.Handlers;
 using SereneApi.Core.Serialization;
+using SereneApi.Handlers.Rest.Responses.Types;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using SereneApi.Handlers.Rest.Responses.Types;
 
 namespace SereneApi.Handlers.Rest.Requests.Handlers
 {

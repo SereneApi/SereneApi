@@ -1,11 +1,11 @@
-﻿using Shouldly;
-using System;
-using SereneApi.Core.Responses;
+﻿using SereneApi.Core.Responses;
 using SereneApi.Handlers.Rest.Requests.Types;
 using SereneApi.Handlers.Rest.Responses.Types;
+using Shouldly;
+using System;
 using Xunit;
 
-namespace SereneApi.Tests.Types
+namespace SereneApi.Handlers.Rest.Tests.Types
 {
     public class ApiResponseTests
     {
