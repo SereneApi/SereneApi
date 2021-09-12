@@ -6,6 +6,8 @@ namespace SereneApi.Core.Serialization
 {
     public interface ISerializer
     {
+        T Deserialize<T>(IResponseContent content);
+
         /// <summary>
         /// Deserializes the response content asynchronously into <see cref="T"/>.
         /// </summary>

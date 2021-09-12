@@ -6,6 +6,11 @@ namespace SereneApi.Core.Serialization
 {
     public static class SerializerExtensions
     {
+        public static T Deserialize<T>(this ISerializer serializer, HttpContent content)
+        {
+            return serializer.Deserialize<T>(new HttpContentResponse(content));
+        }
+
         /// <inheritdoc cref="ISerializer.DeserializeAsync{T}"/>
         public static Task<T> DeserializeAsync<T>(this ISerializer serializer, HttpContent content)
         {

@@ -19,12 +19,12 @@ namespace SereneApi.Handlers.Soap
         {
         }
 
-        protected override IApiResponse GenerateFailureResponse(IApiRequest request, Status status, string message, Exception exception)
+        protected override IApiResponse BuildFailureResponse(IApiRequest request, Status status, string message, Exception exception)
         {
             return SoapApiResponse.Failure(request, status, TimeSpan.Zero, message, exception);
         }
 
-        protected override IApiResponse<TResponse> GenerateFailureResponse<TResponse>(IApiRequest request, Status status, string message, Exception exception)
+        protected override IApiResponse<TResponse> BuildFailureResponse<TResponse>(IApiRequest request, Status status, string message, Exception exception)
         {
             return SoapApiResponse<TResponse>.Failure(request, status, TimeSpan.Zero, message, exception);
         }

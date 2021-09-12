@@ -14,12 +14,12 @@ namespace SereneApi.Core.Tests.Configuration.Mocking
         {
         }
 
-        protected override IApiResponse GenerateFailureResponse(IApiRequest request, Status status, string message, Exception exception)
+        protected override IApiResponse BuildFailureResponse(IApiRequest request, Status status, string message, Exception exception)
         {
             throw new NotImplementedException();
         }
 
-        protected override IApiResponse<TResponse> GenerateFailureResponse<TResponse>(IApiRequest request, Status status, string message,
+        protected override IApiResponse<TResponse> BuildFailureResponse<TResponse>(IApiRequest request, Status status, string message,
             Exception exception)
         {
             throw new NotImplementedException();

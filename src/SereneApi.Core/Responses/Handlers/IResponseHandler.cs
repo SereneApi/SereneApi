@@ -12,6 +12,20 @@ namespace SereneApi.Core.Responses.Handlers
         /// Processes the returned <see cref="HttpResponseMessage"/>
         /// </summary>
         /// <param name="responseMessage">The <see cref="HttpResponseMessage"/> to process</param>
+        IApiResponse ProcessResponse(IApiRequest request, TimeSpan duration, [AllowNull] HttpResponseMessage responseMessage);
+
+        /// <summary>
+        /// Processes the returned <see cref="HttpResponseMessage"/> deserializing the contained
+        /// <see cref="TResponse"/>
+        /// </summary>
+        /// <typeparam name="TResponse">The type to be deserialized from the response</typeparam>
+        /// <param name="responseMessage">The <see cref="HttpResponseMessage"/> to process</param>
+        IApiResponse<TResponse> ProcessResponse<TResponse>(IApiRequest request, TimeSpan duration, HttpResponseMessage responseMessage);
+
+        /// <summary>
+        /// Processes the returned <see cref="HttpResponseMessage"/>
+        /// </summary>
+        /// <param name="responseMessage">The <see cref="HttpResponseMessage"/> to process</param>
         Task<IApiResponse> ProcessResponseAsync(IApiRequest request, TimeSpan duration, [AllowNull] HttpResponseMessage responseMessage);
 
         /// <summary>

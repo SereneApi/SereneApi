@@ -100,6 +100,13 @@ namespace SereneApi.Handlers.Rest.Requests.Factories
             return this;
         }
 
+        public IApiResponse Execute()
+        {
+            GenerateRoute();
+
+            return Handler.PerformRequest(_apiRequest);
+        }
+
         public Task<IApiResponse> ExecuteAsync()
         {
             GenerateRoute();

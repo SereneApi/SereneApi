@@ -8,6 +8,8 @@ namespace SereneApi.Core.Factories
     /// </summary>
     public interface IClientFactory
     {
+        HttpClient BuildClient();
+
         /// <summary>
         /// Builds an <see cref="HttpClient"/>. The returned <see cref="HttpClient"/> should not be disposed.
         /// </summary>

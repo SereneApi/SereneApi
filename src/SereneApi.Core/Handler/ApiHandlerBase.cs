@@ -47,7 +47,7 @@ namespace SereneApi.Core.Handler
             _logger?.LogTrace(Logging.EventIds.InstantiatedEvent, Logging.Messages.HandlerInstantiated, GetType().Name);
         }
 
-        #region Perform Methods
+        #region Asynchrounous Methods
 
         /// <summary>
         /// Performs an API Request Asynchronously.
@@ -77,7 +77,7 @@ namespace SereneApi.Core.Handler
                     throw;
                 }
 
-                return GenerateFailureResponse(request, Status.TimedOut, "The Request Timed Out; The retry limit was reached", exception);
+                return BuildFailureResponse(request, Status.TimedOut, "The Request Timed Out; The retry limit was reached", exception);
             }
             catch (Exception exception)
             {
@@ -88,7 +88,7 @@ namespace SereneApi.Core.Handler
                     throw;
                 }
 
-                return GenerateFailureResponse(request, Status.None,
+                return BuildFailureResponse(request, Status.None,
                     $"An Exception occurred whilst performing a HTTP {request.Method} Request",
                     exception);
             }
@@ -125,7 +125,7 @@ namespace SereneApi.Core.Handler
                     throw;
                 }
 
-                return GenerateFailureResponse<TResponse>(request, Status.TimedOut, "The Request Timed Out; The retry limit was reached", exception);
+                return BuildFailureResponse<TResponse>(request, Status.TimedOut, "The Request Timed Out; The retry limit was reached", exception);
             }
             catch (Exception exception)
             {
@@ -136,17 +136,99 @@ namespace SereneApi.Core.Handler
                     throw;
                 }
 
-                return GenerateFailureResponse<TResponse>(request, Status.None,
+                return BuildFailureResponse<TResponse>(request, Status.None,
                     $"An Exception occurred whilst performing a HTTP {request.Method} Request",
                     exception);
             }
         }
 
-        #endregion Perform Methods
+        #endregion Asynchrounous Methods
 
-        protected abstract IApiResponse GenerateFailureResponse(IApiRequest request, Status status, string message, Exception exception);
+        #region Synchrounous Methods
 
-        protected abstract IApiResponse<TResponse> GenerateFailureResponse<TResponse>(IApiRequest request, Status status, string message, Exception exception);
+        public virtual IApiResponse PerformRequest(IApiRequest request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            CheckIfDisposed();
+
+            try
+            {
+                IApiResponse response = _requestHandler.Perform(request, this);
+
+                return response;
+            }
+            catch (TimeoutException exception)
+            {
+                if (ThrowExceptions)
+                {
+                    throw;
+                }
+
+                return BuildFailureResponse(request, Status.TimedOut, "The Request Timed Out; The retry limit was reached", exception);
+            }
+            catch (Exception exception)
+            {
+                _logger?.LogError(exception, Logging.Messages.RequestEncounteredException, request.Method.ToString(), GetRequestRoute(request));
+
+                if (ThrowExceptions)
+                {
+                    throw;
+                }
+
+                return BuildFailureResponse(request, Status.None,
+                    $"An Exception occurred whilst performing a HTTP {request.Method} Request",
+                    exception);
+            }
+        }
+
+        public virtual IApiResponse<TResponse> PerformRequest<TResponse>(IApiRequest request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            CheckIfDisposed();
+
+            try
+            {
+                IApiResponse<TResponse> response = _requestHandler.Perform<TResponse>(request, this);
+
+                return response;
+            }
+            catch (TimeoutException exception)
+            {
+                if (ThrowExceptions)
+                {
+                    throw;
+                }
+
+                return BuildFailureResponse<TResponse>(request, Status.TimedOut, "The Request Timed Out; The retry limit was reached", exception);
+            }
+            catch (Exception exception)
+            {
+                _logger?.LogError(Logging.EventIds.ExceptionEvent, exception, Logging.Messages.RequestEncounteredException, request.Method.ToString(), GetRequestRoute(request));
+
+                if (ThrowExceptions)
+                {
+                    throw;
+                }
+
+                return BuildFailureResponse<TResponse>(request, Status.None,
+                    $"An Exception occurred whilst performing a HTTP {request.Method} Request",
+                    exception);
+            }
+        }
+
+        #endregion Synchrounous Methods
+
+        protected abstract IApiResponse BuildFailureResponse(IApiRequest request, Status status, string message, Exception exception);
+
+        protected abstract IApiResponse<TResponse> BuildFailureResponse<TResponse>(IApiRequest request, Status status, string message, Exception exception);
 
         #region IDisposable
 

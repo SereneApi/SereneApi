@@ -37,6 +37,39 @@ namespace SereneApi.Core.Factories
             _dependencies.TryGetDependency(out _logger);
         }
 
+        public HttpClient BuildClient()
+        {
+            Monitor.Enter(_buildLock);
+
+            if (_cachedClient != null)
+            {
+                Monitor.Exit(_buildLock);
+
+                return _cachedClient;
+            }
+
+            HttpClient client = InternalBuildClient();
+
+            if (_dependencies.TryGetDependency(out IAuthorizer authenticator))
+            {
+                IAuthorization authorization = authenticator.Authorize();
+
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue(authorization.Scheme, authorization.Parameter);
+            }
+            else if (_dependencies.TryGetDependency(out IAuthorization authentication))
+            {
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);
+            }
+
+            _cachedClient = client;
+
+            Monitor.Exit(_buildLock);
+
+            return client;
+        }
+
         /// <inheritdoc cref="IClientFactory.BuildClientAsync"/>
         public async Task<HttpClient> BuildClientAsync()
         {
@@ -49,6 +82,45 @@ namespace SereneApi.Core.Factories
                 return _cachedClient;
             }
 
+            HttpClient client = InternalBuildClient();
+
+            if (_dependencies.TryGetDependency(out IAuthorizer authenticator))
+            {
+                IAuthorization authorization = await authenticator.AuthorizeAsync();
+
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue(authorization.Scheme, authorization.Parameter);
+            }
+            else if (_dependencies.TryGetDependency(out IAuthorization authentication))
+            {
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);
+            }
+
+            _cachedClient = client;
+
+            Monitor.Exit(_buildLock);
+
+            return client;
+        }
+
+        public HttpMessageHandler BuildHttpMessageHandler()
+        {
+            ICredentials credentials = _dependencies.GetDependency<ICredentials>();
+
+            return new HttpClientHandler
+            {
+                Credentials = credentials
+            };
+        }
+
+        public void Dispose()
+        {
+            _cachedClient?.Dispose();
+        }
+
+        protected virtual HttpClient InternalBuildClient()
+        {
             _logger?.LogDebug("Building Client");
 
             bool handlerFound = _dependencies.TryGetDependency(out HttpMessageHandler messageHandler);
@@ -75,19 +147,6 @@ namespace SereneApi.Core.Factories
             client.Timeout = TimeSpan.FromSeconds(connection.Timeout);
             client.DefaultRequestHeaders.Accept.Clear();
 
-            if (_dependencies.TryGetDependency(out IAuthorizer authenticator))
-            {
-                IAuthorization authorization = await authenticator.AuthorizeAsync();
-
-                client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue(authorization.Scheme, authorization.Parameter);
-            }
-            else if (_dependencies.TryGetDependency(out IAuthorization authentication))
-            {
-                client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);
-            }
-
             if (_dependencies.TryGetDependency(out ContentType contentType))
             {
                 client.DefaultRequestHeaders.Accept.Add(
@@ -104,26 +163,7 @@ namespace SereneApi.Core.Factories
                 }
             }
 
-            _cachedClient = client;
-
-            Monitor.Exit(_buildLock);
-
             return client;
-        }
-
-        public HttpMessageHandler BuildHttpMessageHandler()
-        {
-            ICredentials credentials = _dependencies.GetDependency<ICredentials>();
-
-            return new HttpClientHandler
-            {
-                Credentials = credentials
-            };
-        }
-
-        public void Dispose()
-        {
-            _cachedClient?.Dispose();
         }
     }
 }

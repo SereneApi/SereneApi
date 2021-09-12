@@ -20,6 +20,13 @@ namespace SereneApi.Handlers.Soap.Requests.Factories
             _routeFactory = routeFactory;
         }
 
+        public IApiResponse<TResponse> Execute()
+        {
+            _apiRequest.Route = _routeFactory.BuildRoute(_apiRequest);
+
+            return _apiHandler.PerformRequest<TResponse>(_apiRequest);
+        }
+
         public Task<IApiResponse<TResponse>> ExecuteAsync()
         {
             _apiRequest.Route = _routeFactory.BuildRoute(_apiRequest);

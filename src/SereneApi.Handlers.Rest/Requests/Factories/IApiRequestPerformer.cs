@@ -5,6 +5,8 @@ namespace SereneApi.Handlers.Rest.Requests.Factories
 {
     public interface IApiRequestPerformer
     {
+        IApiResponse Execute();
+
         /// <summary>
         /// Performs the request Asynchronously.
         /// </summary>

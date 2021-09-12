@@ -7,6 +7,8 @@ namespace SereneApi.Core.Authorization.Authorizers
     /// </summary>
     public interface IAuthorizer
     {
+        IAuthorization Authorize();
+
         /// <summary>
         /// Authorizes a request asynchronously.
         /// </summary>

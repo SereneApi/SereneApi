@@ -5,6 +5,8 @@ namespace SereneApi.Handlers.Soap.Requests.Factories
 {
     public interface IRequestPerformer<TContent>
     {
+        IApiResponse<TContent> Execute();
+
         /// <summary>
         /// Performs the request Asynchronously.
         /// </summary>

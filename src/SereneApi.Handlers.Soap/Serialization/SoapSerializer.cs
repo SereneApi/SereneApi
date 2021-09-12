@@ -21,6 +21,28 @@ namespace SereneApi.Handlers.Soap.Serialization
             _settings = settings;
         }
 
+        public T Deserialize<T>(IResponseContent content)
+        {
+            Type[] extraTypes = new Type[_settings.ExtraTypes.Count + 1];
+
+            extraTypes[0] = typeof(T);
+
+            int index = 1;
+
+            foreach (Type extraType in _settings.ExtraTypes)
+            {
+                extraTypes[index] = extraType;
+
+                index++;
+            }
+
+            XmlSerializer serializer = new(_settings.ResponseEnvelopmentType, extraTypes);
+
+            ISoapEnvelope value = (ISoapEnvelope)serializer.Deserialize(content.GetContentStreamAsync().Result);
+
+            return _translator.Unpack<T>(value);
+        }
+
         public async Task<T> DeserializeAsync<T>(IResponseContent content)
         {
             Type[] extraTypes = new Type[_settings.ExtraTypes.Count + 1];

@@ -21,6 +21,30 @@ namespace SereneApi.Extensions.Mocking.Rest.Responses.Handlers
             }
         }
 
+        protected override HttpResponseMessage Send(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            HttpResponseMessage response = _responseManager.GetMockResponse(request, cancellationToken);
+
+            if (response != null)
+            {
+                return response;
+            }
+
+            if (InnerHandler == null)
+            {
+                // As outgoing requests are not enabled and we could not find a mock response. A 404
+                // status will be returned.
+                return new HttpResponseMessage(HttpStatusCode.NotFound);
+            }
+
+            return base.Send(request, cancellationToken);
+        }
+
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             if (request == null)

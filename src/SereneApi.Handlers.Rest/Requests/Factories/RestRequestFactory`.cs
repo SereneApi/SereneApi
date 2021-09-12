@@ -17,6 +17,13 @@ namespace SereneApi.Handlers.Rest.Requests.Factories
             _restApiRequest = request;
         }
 
+        public IApiResponse<TContent> Execute()
+        {
+            GenerateRoute();
+
+            return _apiHandler.PerformRequest<TContent>(_restApiRequest);
+        }
+
         public Task<IApiResponse<TContent>> ExecuteAsync()
         {
             GenerateRoute();

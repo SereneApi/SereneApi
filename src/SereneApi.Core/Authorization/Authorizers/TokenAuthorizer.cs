@@ -68,6 +68,11 @@ namespace SereneApi.Core.Authorization.Authorizers
             _tokenRenew.Elapsed += async (s, e) => await OnTimedEventAsync(s, e);
         }
 
+        public IAuthorization Authorize()
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Performs the specified authorization request, retrieving the <seealso cref="TokenAuthResult"/>.
         /// </summary>
