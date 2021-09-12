@@ -8,11 +8,11 @@ namespace SereneApi.Core.Authorization.Types
     /// </summary>
     public class BasicAuthorization : IAuthorization
     {
-        /// <inheritdoc cref="IAuthorization.Scheme"/>
-        public string Scheme { get; } = "Basic";
-
         /// <inheritdoc cref="IAuthorization.Parameter"/>
         public string Parameter { get; }
+
+        /// <inheritdoc cref="IAuthorization.Scheme"/>
+        public string Scheme { get; } = "Basic";
 
         /// <summary>
         /// Creates a new instance of <see cref="BasicAuthorization"/>.

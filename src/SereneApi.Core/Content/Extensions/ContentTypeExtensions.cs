@@ -10,6 +10,7 @@ namespace SereneApi.Core.Content
             return mediaType switch
             {
                 ContentType.Json => "application/json",
+                ContentType.TextXml => "text/xml",
                 ContentType.FormUrlEncoded => "application/x-www-form-urlencoded",
                 _ => throw new ArgumentOutOfRangeException(nameof(mediaType), mediaType, null)
             };

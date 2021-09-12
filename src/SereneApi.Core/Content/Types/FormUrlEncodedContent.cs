@@ -13,19 +13,19 @@ namespace SereneApi.Core.Content.Types
             Content = content.ToList();
         }
 
-        public object GetContent()
-        {
-            return new System.Net.Http.FormUrlEncodedContent(Content);
-        }
-
         public override bool Equals(object obj)
         {
-            if (!(obj is FormUrlEncodedContent content))
+            if (obj is not FormUrlEncodedContent content)
             {
                 return false;
             }
 
             return Content == content.Content;
+        }
+
+        public object GetContent()
+        {
+            return new System.Net.Http.FormUrlEncodedContent(Content);
         }
 
         public override int GetHashCode()

@@ -2,22 +2,41 @@
 {
     public static class Logging
     {
+        public static class EventIds
+        {
+            public const int AuthorizationEvent = 1050;
+            public const int DependencyNotFound = 4000;
+            public const int DisposedEvent = 1001;
+            public const int ExceptionEvent = 5000;
+            public const int InstantiatedEvent = 1000;
+            public const int InvalidMethodForRequestEvent = 4001;
+            public const int PerformRequestEvent = 2000;
+            public const int ResponseReceivedEvent = 2001;
+
+            public const int RetryEvent = 3000;
+        }
+
         public static class Messages
         {
             /// <summary>
-            /// ERROR - Params(Type)
+            /// ERROR - Params (Handler Type)
             /// </summary>
-            public static string DependencyNotFound = "Could not retrieve the dependency for [{DependencyType}]";
+            public const string AccessOfDisposedHandler = "[{ApiHandler}] was accessed after being disposed";
 
             /// <summary>
-            /// DEBUG
+            /// DEBUG - Params(Method, Route)
             /// </summary>
-            public static string AuthorizationTokenCached = "Using Cached authorization token";
+            public const string DisposedHandler = "[{ApiHandler}] has been disposed";
 
             /// <summary>
-            /// DEBUG
+            /// DEBUG - Params(Method, Route)
             /// </summary>
-            public static string AuthorizationTokenRenewal = "Renewing Cached authorization token";
+            public const string DisposedHttpClient = "The HttpClient used for the [{HttpMethod}] request to \"{Route}\" has been disposed";
+
+            /// <summary>
+            /// DEBUG - Params(Method, Route)
+            /// </summary>
+            public const string DisposedHttpResponseMessage = "The HttpResponseMessage received by the [{HttpMethod}] request to \"{Route}\" has been disposed";
 
             /// <summary>
             /// TRACE - Params (Handler Type)
@@ -45,9 +64,9 @@
             public const string ReceivedResponse = "Received response from [{HttpMethod}] request to \"{Route}\" with a status of [{HttpStatus}]";
 
             /// <summary>
-            /// WARNING - Params (Method, Route, Remaining Attempts)
+            /// ERROR - Params(Method, Route)
             /// </summary>
-            public const string TimeoutRetry = "The [{HttpMethod}] request to \"{Route}\" has Timed out, retrying request. {Count} attempts remaining";
+            public const string RequestEncounteredException = "An exception was encountered when performing a [{HttpMethod}] request to \"{Route}\"";
 
             /// <summary>
             /// ERROR - Params(Method, Route, Attempts)
@@ -55,47 +74,24 @@
             public const string TimeoutNoRetry = "The [{HttpMethod}] request to \"{Route}\" has Timed out; The retry limit has been reached after attempting {Count} times";
 
             /// <summary>
-            /// DEBUG - Params(Method, Route)
+            /// WARNING - Params (Method, Route, Remaining Attempts)
             /// </summary>
-            public const string DisposedHttpClient = "The HttpClient used for the [{HttpMethod}] request to \"{Route}\" has been disposed";
+            public const string TimeoutRetry = "The [{HttpMethod}] request to \"{Route}\" has Timed out, retrying request. {Count} attempts remaining";
 
             /// <summary>
-            /// DEBUG - Params(Method, Route)
+            /// DEBUG
             /// </summary>
-            public const string DisposedHttpResponseMessage = "The HttpResponseMessage received by the [{HttpMethod}] request to \"{Route}\" has been disposed";
+            public static string AuthorizationTokenCached = "Using Cached authorization token";
 
             /// <summary>
-            /// DEBUG - Params(Method, Route)
+            /// DEBUG
             /// </summary>
-            public const string DisposedHandler = "[{ApiHandler}] has been disposed";
+            public static string AuthorizationTokenRenewal = "Renewing Cached authorization token";
 
             /// <summary>
-            /// ERROR - Params (Handler Type)
+            /// ERROR - Params(Type)
             /// </summary>
-            public const string AccessOfDisposedHandler = "[{ApiHandler}] was accessed after being disposed";
-
-            /// <summary>
-            /// ERROR - Params(Method, Route)
-            /// </summary>
-            public const string RequestEncounteredException = "An exception was encountered when performing a [{HttpMethod}] request to \"{Route}\"";
-        }
-
-        public static class EventIds
-        {
-            public const int InstantiatedEvent = 1000;
-            public const int DisposedEvent = 1001;
-
-            public const int AuthorizationEvent = 1050;
-
-            public const int PerformRequestEvent = 2000;
-            public const int ResponseReceivedEvent = 2001;
-
-            public const int RetryEvent = 3000;
-
-            public const int DependencyNotFound = 4000;
-            public const int InvalidMethodForRequestEvent = 4001;
-
-            public const int ExceptionEvent = 5000;
+            public static string DependencyNotFound = "Could not retrieve the dependency for [{DependencyType}]";
         }
     }
 }

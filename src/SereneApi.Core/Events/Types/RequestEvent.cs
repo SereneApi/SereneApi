@@ -14,10 +14,8 @@ namespace SereneApi.Core.Events.Types
 
         public RequestEvent(IApiHandler reference, IApiRequest value)
         {
-
             Reference = reference;
             Value = value;
         }
-
     }
 }

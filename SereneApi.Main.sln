@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Extensions.Depend
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Extensions.Caching", "src\SereneApi.Extensions.Caching\SereneApi.Extensions.Caching.csproj", "{4FA77445-0C93-4550-BEBD-D242E3C01431}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Extensions.Mocking", "src\SereneApi.Extensions.Mocking\SereneApi.Extensions.Mocking.csproj", "{3F2750FD-C2E6-41F5-9A1A-750027E56723}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Extensions.Mocking.Rest", "src\SereneApi.Extensions.Mocking.Rest\SereneApi.Extensions.Mocking.Rest.csproj", "{FCAA8E5E-0020-4165-A763-63FA3F6D7D34}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,10 +54,10 @@ Global
 		{4FA77445-0C93-4550-BEBD-D242E3C01431}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FA77445-0C93-4550-BEBD-D242E3C01431}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4FA77445-0C93-4550-BEBD-D242E3C01431}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3F2750FD-C2E6-41F5-9A1A-750027E56723}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3F2750FD-C2E6-41F5-9A1A-750027E56723}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3F2750FD-C2E6-41F5-9A1A-750027E56723}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3F2750FD-C2E6-41F5-9A1A-750027E56723}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCAA8E5E-0020-4165-A763-63FA3F6D7D34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCAA8E5E-0020-4165-A763-63FA3F6D7D34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCAA8E5E-0020-4165-A763-63FA3F6D7D34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCAA8E5E-0020-4165-A763-63FA3F6D7D34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

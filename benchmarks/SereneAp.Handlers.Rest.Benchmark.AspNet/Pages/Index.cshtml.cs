@@ -13,15 +13,12 @@ namespace SereneAp.Handlers.Rest.Benchmark.AspNet.Pages
 
         private readonly IStudentApi _studentApi;
 
+        public double AverageExecutionTime { get; private set; }
+        public double AverageRunTime { get; private set; }
+        public double ExecutionTime { get; private set; }
         public int Iterations { get; private set; }
 
         public double RunTime { get; private set; }
-
-        public double ExecutionTime { get; private set; }
-
-        public double AverageRunTime { get; private set; }
-
-        public double AverageExecutionTime { get; private set; }
 
         public IndexModel(ILogger<IndexModel> logger, IStudentApi studentApi)
         {

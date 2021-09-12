@@ -1,7 +1,5 @@
-﻿
-using SereneApi.Core.Responses;
+﻿using SereneApi.Core.Responses;
 using System;
-using System.Diagnostics.CodeAnalysis;
 
 // ReSharper disable once CheckNamespace
 namespace SereneApi.Core.Response
@@ -11,7 +9,7 @@ namespace SereneApi.Core.Response
         /// <summary>
         /// Specifies if the response was not successful.
         /// </summary>
-        public static bool HasNullData<TResponse>([NotNull] this IApiResponse<TResponse> response)
+        public static bool HasNullData<TResponse>(this IApiResponse<TResponse> response)
         {
             if (response == null)
             {

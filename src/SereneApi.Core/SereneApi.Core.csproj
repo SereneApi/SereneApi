@@ -2,11 +2,35 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <Product>SereneApi</Product>
+    <Company>DeltaWare</Company>
+    <Authors>Bradley Clarke</Authors>
+    <Version>1.5.1.1</Version>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageIcon>nuget_logo.png</PackageIcon>
+    <PackageIconUrl />
+    <RepositoryType>GIT</RepositoryType>
+    <RepositoryUrl>https://github.com/SereneApi/SereneApi</RepositoryUrl>
+    <PackageProjectUrl>https://www.sereneapi.org/</PackageProjectUrl>
+    <NeutralLanguage>en-AU</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DeltaWare.Dependencies" Version="1.1.0.3" />
+    <PackageReference Include="DeltaWare.Dependencies" Version="1.5.0.4" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\..\nuget_logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

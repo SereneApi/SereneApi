@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ApiCommon.Core\ApiCommon.Core.csproj" />
+    <ProjectReference Include="..\ApiCommon.Extensions.DependencyInjection\ApiCommon.Extensions.DependencyInjection.csproj" />
+  </ItemGroup>
+
+</Project>

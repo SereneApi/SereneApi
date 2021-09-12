@@ -4,9 +4,8 @@ namespace SereneApi.Core.Helpers
 {
     public static class Rules
     {
-        public static uint MinimumRetryCount { get; } = 1;
-
         public static uint MaximumRetryCount { get; } = 5;
+        public static uint MinimumRetryCount { get; } = 1;
 
         /// <summary>
         /// Throws an <see cref="ArgumentException"/> if the Retry Count is invalid.

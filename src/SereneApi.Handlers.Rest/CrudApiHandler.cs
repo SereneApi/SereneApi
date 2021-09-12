@@ -18,25 +18,6 @@ namespace SereneApi.Handlers.Rest
         {
         }
 
-        /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.GetAsync(TIdentifier)"/>
-        public virtual Task<IApiResponse<TResource>> GetAsync(TIdentifier identifier)
-        {
-            return MakeRequest
-                .UsingMethod(Method.Get)
-                .WithParameter(identifier)
-                .RespondsWith<TResource>()
-                .ExecuteAsync();
-        }
-
-        /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.GetAsync()"/>
-        public virtual Task<IApiResponse<List<TResource>>> GetAsync()
-        {
-            return MakeRequest
-                .UsingMethod(Method.Get)
-                .RespondsWith<List<TResource>>()
-                .ExecuteAsync();
-        }
-
         /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.CreateAsync"/>
         public virtual Task<IApiResponse<TResource>> CreateAsync(TResource resource)
         {
@@ -58,6 +39,25 @@ namespace SereneApi.Handlers.Rest
             return MakeRequest
                 .UsingMethod(Method.Delete)
                 .WithParameter(identifier)
+                .ExecuteAsync();
+        }
+
+        /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.GetAsync(TIdentifier)"/>
+        public virtual Task<IApiResponse<TResource>> GetAsync(TIdentifier identifier)
+        {
+            return MakeRequest
+                .UsingMethod(Method.Get)
+                .WithParameter(identifier)
+                .RespondsWith<TResource>()
+                .ExecuteAsync();
+        }
+
+        /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}.GetAsync()"/>
+        public virtual Task<IApiResponse<List<TResource>>> GetAsync()
+        {
+            return MakeRequest
+                .UsingMethod(Method.Get)
+                .RespondsWith<List<TResource>>()
                 .ExecuteAsync();
         }
 

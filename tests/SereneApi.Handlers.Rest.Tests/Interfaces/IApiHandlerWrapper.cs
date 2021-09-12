@@ -8,7 +8,6 @@ namespace SereneApi.Handlers.Rest.Tests.Interfaces
     {
         IConnectionSettings Connection { get; }
 
-        IApiRequestFactory MakeRequest { get; }
-
+        IApiRequestMethod MakeRequest { get; }
     }
 }

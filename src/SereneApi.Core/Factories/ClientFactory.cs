@@ -2,27 +2,34 @@
 using Microsoft.Extensions.Logging;
 using SereneApi.Core.Authorization;
 using SereneApi.Core.Authorization.Authorizers;
+using SereneApi.Core.Configuration;
 using SereneApi.Core.Connection;
 using SereneApi.Core.Content;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SereneApi.Core.Factories
 {
     /// <inheritdoc cref="IClientFactory"/>
-    public class ClientFactory : IClientFactory
+    public class ClientFactory : IClientFactory, IDisposable
     {
+        private readonly object _buildLock = new();
         private readonly IDependencyProvider _dependencies;
 
         private readonly ILogger _logger;
+        private HttpClient _cachedClient;
 
         /// <summary>
         /// Creates a new instance of <see cref="ClientFactory"/>.
         /// </summary>
-        /// <param name="dependencies">The dependencies the <see cref="ClientFactory"/> may use when creating clients.</param>
+        /// <param name="dependencies">
+        /// The dependencies the <see cref="ClientFactory"/> may use when creating clients.
+        /// </param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         public ClientFactory(IDependencyProvider dependencies)
         {
@@ -33,6 +40,15 @@ namespace SereneApi.Core.Factories
         /// <inheritdoc cref="IClientFactory.BuildClientAsync"/>
         public async Task<HttpClient> BuildClientAsync()
         {
+            Monitor.Enter(_buildLock);
+
+            if (_cachedClient != null)
+            {
+                Monitor.Exit(_buildLock);
+
+                return _cachedClient;
+            }
+
             _logger?.LogDebug("Building Client");
 
             bool handlerFound = _dependencies.TryGetDependency(out HttpMessageHandler messageHandler);
@@ -44,7 +60,8 @@ namespace SereneApi.Core.Factories
                 messageHandler = BuildHttpMessageHandler();
             }
 
-            // If a handle was found, the handler is not disposed of as the Dependency Collection has ownership.
+            // If a handle was found, the handler is not disposed of as the Dependency Collection
+            // has ownership.
             HttpClient client = new HttpClient(messageHandler, !handlerFound);
 
             IConnectionSettings connection = _dependencies.GetDependency<IConnectionSettings>();
@@ -77,6 +94,20 @@ namespace SereneApi.Core.Factories
                     new MediaTypeWithQualityHeaderValue(contentType.ToTypeString()));
             }
 
+            if (_dependencies.TryGetDependency(out IConfiguration configuration) && configuration.Contains("RequestHeaders"))
+            {
+                Dictionary<string, string> headers = configuration.Get<Dictionary<string, string>>("RequestHeaders");
+
+                foreach (KeyValuePair<string, string> header in headers)
+                {
+                    client.DefaultRequestHeaders.Add(header.Key, header.Value);
+                }
+            }
+
+            _cachedClient = client;
+
+            Monitor.Exit(_buildLock);
+
             return client;
         }
 
@@ -88,6 +119,11 @@ namespace SereneApi.Core.Factories
             {
                 Credentials = credentials
             };
+        }
+
+        public void Dispose()
+        {
+            _cachedClient?.Dispose();
         }
     }
 }

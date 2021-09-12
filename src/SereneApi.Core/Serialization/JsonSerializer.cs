@@ -18,6 +18,22 @@ namespace SereneApi.Core.Serialization
         private readonly JsonSerializerOptions _serializerOptions;
 
         /// <summary>
+        /// The default options used for deserialization by <seealso cref="JsonSerializer"/>.
+        /// </summary>
+        public static JsonSerializerOptions DefaultDeserializerOptions { get; } = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        /// <summary>
+        /// The default options used for serialization by <seealso cref="JsonSerializer"/>.
+        /// </summary>
+        public static JsonSerializerOptions DefaultSerializerOptions { get; } = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        /// <summary>
         /// Creates a new instance of <see cref="JsonSerializer"/> using the default options.
         /// </summary>
         public JsonSerializer()
@@ -49,9 +65,7 @@ namespace SereneApi.Core.Serialization
             _serializerOptions = serializerOptions ?? throw new ArgumentNullException(nameof(serializerOptions));
         }
 
-        /// <inheritdoc>
-        ///     <cref>ISerializer.DeserializeAsync</cref>
-        /// </inheritdoc>
+        /// <inheritdoc><cref>ISerializer.DeserializeAsync</cref></inheritdoc>
         public async Task<TObject> DeserializeAsync<TObject>(IResponseContent content)
         {
             if (content == null)
@@ -64,10 +78,8 @@ namespace SereneApi.Core.Serialization
             return await System.Text.Json.JsonSerializer.DeserializeAsync<TObject>(contentStream, _deserializerOptions);
         }
 
-        /// <inheritdoc>
-        ///     <cref>ISerializer.Serialize</cref>
-        /// </inheritdoc>
-        public IRequestContent Serialize<TObject>(TObject value)
+        /// <inheritdoc><cref>ISerializer.Serialize</cref></inheritdoc>
+        public IRequestContent Serialize(object value)
         {
             if (value == null)
             {
@@ -78,39 +90,5 @@ namespace SereneApi.Core.Serialization
 
             return new JsonContent(jsonContent);
         }
-
-        /// <inheritdoc>
-        ///     <cref>ISerializer.SerializeAsync</cref>
-        /// </inheritdoc>
-        public Task<IRequestContent> SerializeAsync<TObject>(TObject value)
-        {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-
-            return Task.Factory.StartNew(() =>
-            {
-                string jsonContent = System.Text.Json.JsonSerializer.Serialize(value, _serializerOptions);
-
-                return (IRequestContent)new JsonContent(jsonContent);
-            });
-        }
-
-        /// <summary>
-        /// The default options used for deserialization by <seealso cref="JsonSerializer"/>.
-        /// </summary>
-        public static JsonSerializerOptions DefaultDeserializerOptions { get; } = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        };
-
-        /// <summary>
-        /// The default options used for serialization by <seealso cref="JsonSerializer"/>.
-        /// </summary>
-        public static JsonSerializerOptions DefaultSerializerOptions { get; } = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        };
     }
 }

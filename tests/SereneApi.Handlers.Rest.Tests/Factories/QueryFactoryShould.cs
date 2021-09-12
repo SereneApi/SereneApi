@@ -1,9 +1,9 @@
 ﻿using SereneApi.Core.Configuration;
+using SereneApi.Core.Options.Factories;
 using SereneApi.Handlers.Rest.Queries;
 using SereneApi.Handlers.Rest.Tests.Mock;
 using Shouldly;
 using System;
-using SereneApi.Core.Options.Factories;
 using Xunit;
 
 namespace SereneApi.Handlers.Rest.Tests.Factories
@@ -33,7 +33,7 @@ namespace SereneApi.Handlers.Rest.Tests.Factories
 
             string query = _queryFactory.Build(personDto);
 
-            query.ShouldBe("?Age=18&Name=John Smith&BirthDate=2000-05-15");
+            query.ShouldBe("?Age=18&BirthDate=2000-05-15&Name=John Smith");
         }
 
         [Fact]
@@ -48,7 +48,7 @@ namespace SereneApi.Handlers.Rest.Tests.Factories
 
             string query = _queryFactory.Build(personDto);
 
-            query.ShouldBe("?Age=18&Name=John Smith&BirthDate=2000-05-15 05:35:20");
+            query.ShouldBe("?Age=18&BirthDate=2000-05-15 05:35:20&Name=John Smith");
         }
 
         [Fact]

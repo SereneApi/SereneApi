@@ -1,8 +1,8 @@
 ﻿using SereneApi.Core.Handler.Factories;
 using SereneApi.Core.Requests;
 using SereneApi.Core.Responses;
-using SereneApi.Extensions.Mocking;
-using SereneApi.Handlers.Rest.Responses.Types;
+using SereneApi.Core.Responses.Types;
+using SereneApi.Extensions.Mocking.Rest;
 using SereneApi.Handlers.Rest.Tests.Interfaces;
 using SereneApi.Handlers.Rest.Tests.Mock;
 using Shouldly;
@@ -23,65 +23,110 @@ namespace SereneApi.Handlers.Rest.Tests
             factory.RegisterApi<ICrudApi, CrudApiHandlerWrapper>(builder =>
             {
                 builder.SetSource("http://localhost:8080", "Person");
-            }).WithMockResponse(builder =>
+            }).EnableRestMocking(c =>
             {
-                builder
-                    .AddMockResponse(MockPersonDto.BenJerry)
-                    .RespondsToRequestsWith(Method.Get)
-                    .RespondsToRequestsWith("http://localhost:8080/api/Person/0");
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Get)
+                    .ForEndpoints("http://localhost:8080/api/Person/0")
+                    .RespondsWith(MockPersonDto.BenJerry);
 
-                builder
-                    .AddMockResponse(MockPersonDto.JohnSmith)
-                    .RespondsToRequestsWith(Method.Get)
-                    .RespondsToRequestsWith("http://localhost:8080/api/Person/1");
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Get)
+                    .ForEndpoints("http://localhost:8080/api/Person/1")
+                    .RespondsWith(MockPersonDto.JohnSmith);
 
-                builder
-                    .AddMockResponse(MockPersonDto.All)
-                    .RespondsToRequestsWith(Method.Get)
-                    .RespondsToRequestsWith("http://localhost:8080/api/Person");
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Get)
+                    .ForEndpoints("http://localhost:8080/api/Person")
+                    .RespondsWith(MockPersonDto.All);
 
-                builder
-                    .AddMockResponse(Status.Ok)
-                    .RespondsToRequestsWith(Method.Delete)
-                    .RespondsToRequestsWith("http://localhost:8080/api/Person/0");
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Delete)
+                    .ForEndpoints("http://localhost:8080/api/Person/0")
+                    .RespondsWith(Status.Ok);
 
-                builder
-                    .AddMockResponse(new FailureResponse("Could not find a Person with an Id of 2"), Status.NotFound)
-                    .RespondsToRequestsWith(Method.Delete)
-                    .RespondsToRequestsWith("http://localhost:8080/api/Person/2");
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Delete)
+                    .ForEndpoints("http://localhost:8080/api/Person/2")
+                    .RespondsWith(new FailureResponse("Could not find a Person with an Id of 2"), Status.NotFound);
 
-                builder
-                    .AddMockResponse(MockPersonDto.BenJerry)
-                    .RespondsToRequestsWith(Method.Post)
-                    .RespondsToRequestsWith("http://localhost:8080/api/Person")
-                    .RespondsToRequestsWith(MockPersonDto.BenJerry);
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Post)
+                    .ForEndpoints("http://localhost:8080/api/Person")
+                    .ForContent(MockPersonDto.BenJerry)
+                    .RespondsWith(MockPersonDto.BenJerry);
 
-                builder
-                    .AddMockResponse(new FailureResponse("This person has already been added."), Status.BadRequest)
-                    .RespondsToRequestsWith(Method.Post)
-                    .RespondsToRequestsWith("http://localhost:8080/api/Person")
-                    .RespondsToRequestsWith(MockPersonDto.JohnSmith);
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Post)
+                    .ForEndpoints("http://localhost:8080/api/Person")
+                    .ForContent(MockPersonDto.JohnSmith)
+                    .RespondsWith(new FailureResponse("This person has already been added."), Status.BadRequest);
 
-                builder
-                    .AddMockResponse(MockPersonDto.BenJerry)
-                    .RespondsToRequestsWith(Method.Put)
-                    .RespondsToRequestsWith("http://localhost:8080/api/Person")
-                    .RespondsToRequestsWith(MockPersonDto.BenJerry);
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Put)
+                    .ForEndpoints("http://localhost:8080/api/Person")
+                    .ForContent(MockPersonDto.BenJerry)
+                    .RespondsWith(MockPersonDto.BenJerry);
 
-                builder
-                    .AddMockResponse(MockPersonDto.BenJerry)
-                    .RespondsToRequestsWith(Method.Patch)
-                    .RespondsToRequestsWith("http://localhost:8080/api/Person")
-                    .RespondsToRequestsWith(MockPersonDto.BenJerry);
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Patch)
+                    .ForEndpoints("http://localhost:8080/api/Person")
+                    .ForContent(MockPersonDto.BenJerry)
+                    .RespondsWith(MockPersonDto.BenJerry);
 
-                builder
-                    .AddMockResponse(new FailureResponse("Could not find the specified user"), Status.NotFound)
-                    .RespondsToRequestsWith(Method.Patch)
-                    .RespondsToRequestsWith("http://localhost:8080/api/Person")
-                    .RespondsToRequestsWith(MockPersonDto.JohnSmith);
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Patch)
+                    .ForEndpoints("http://localhost:8080/api/Person")
+                    .ForContent(MockPersonDto.JohnSmith)
+                    .RespondsWith(new FailureResponse("Could not find the specified user"), Status.NotFound);
             });
 
             _crudApiHandler = factory.Build<ICrudApi>();
+        }
+
+        [Fact]
+        public async Task Create()
+        {
+            IApiResponse<MockPersonDto> response = await _crudApiHandler.CreateAsync(MockPersonDto.BenJerry);
+
+            response.WasSuccessful.ShouldBe(true);
+            response.Message.ShouldBeNull();
+            response.HasException.ShouldBe(false);
+            response.Exception.ShouldBeNull();
+
+            MockPersonDto person = MockPersonDto.BenJerry;
+
+            person.BirthDate.ShouldBe(MockPersonDto.BenJerry.BirthDate);
+            person.Age.ShouldBe(MockPersonDto.BenJerry.Age);
+            person.Name.ShouldBe(MockPersonDto.BenJerry.Name);
+
+            response = await _crudApiHandler.CreateAsync(MockPersonDto.JohnSmith);
+
+            response.WasSuccessful.ShouldBe(false);
+            response.Status.ShouldBe(Status.BadRequest);
+            response.Message.ShouldBe("This person has already been added.");
+            response.Exception.ShouldBeNull();
+            response.HasException.ShouldBe(false);
+        }
+
+        [Fact]
+        public async Task Delete()
+        {
+            IApiResponse response = await _crudApiHandler.DeleteAsync(0);
+
+            response.WasSuccessful.ShouldBe(true);
+            response.Status.ShouldBe(Status.Ok);
+            response.Message.ShouldBeNull();
+            response.Exception.ShouldBeNull();
+            response.HasException.ShouldBe(false);
+
+            response = await _crudApiHandler.DeleteAsync(2);
+
+            response.WasSuccessful.ShouldBe(false);
+            response.Status.ShouldBe(Status.NotFound);
+            response.Message.ShouldBe("Could not find a Person with an Id of 2");
+            response.Exception.ShouldBeNull();
+            response.HasException.ShouldBe(false);
         }
 
         [Fact]
@@ -133,51 +178,6 @@ namespace SereneApi.Handlers.Rest.Tests
                 results[i].Age.ShouldBe(MockPersonDto.All[i].Age);
                 results[i].BirthDate.ShouldBe(MockPersonDto.All[i].BirthDate);
             }
-        }
-
-        [Fact]
-        public async Task Delete()
-        {
-            IApiResponse response = await _crudApiHandler.DeleteAsync(0);
-
-            response.WasSuccessful.ShouldBe(true);
-            response.Status.ShouldBe(Status.Ok);
-            response.Message.ShouldBeNull();
-            response.Exception.ShouldBeNull();
-            response.HasException.ShouldBe(false);
-
-            response = await _crudApiHandler.DeleteAsync(2);
-
-            response.WasSuccessful.ShouldBe(false);
-            response.Status.ShouldBe(Status.NotFound);
-            response.Message.ShouldBe("Could not find a Person with an Id of 2");
-            response.Exception.ShouldBeNull();
-            response.HasException.ShouldBe(false);
-        }
-
-        [Fact]
-        public async Task Create()
-        {
-            IApiResponse<MockPersonDto> response = await _crudApiHandler.CreateAsync(MockPersonDto.BenJerry);
-
-            response.WasSuccessful.ShouldBe(true);
-            response.Message.ShouldBeNull();
-            response.HasException.ShouldBe(false);
-            response.Exception.ShouldBeNull();
-
-            MockPersonDto person = MockPersonDto.BenJerry;
-
-            person.BirthDate.ShouldBe(MockPersonDto.BenJerry.BirthDate);
-            person.Age.ShouldBe(MockPersonDto.BenJerry.Age);
-            person.Name.ShouldBe(MockPersonDto.BenJerry.Name);
-
-            response = await _crudApiHandler.CreateAsync(MockPersonDto.JohnSmith);
-
-            response.WasSuccessful.ShouldBe(false);
-            response.Status.ShouldBe(Status.BadRequest);
-            response.Message.ShouldBe("This person has already been added.");
-            response.Exception.ShouldBeNull();
-            response.HasException.ShouldBe(false);
         }
 
         [Fact]

@@ -7,11 +7,11 @@ namespace SereneApi.Core.Authorization.Types
     /// </summary>
     public class BearerAuthorization : IAuthorization
     {
-        /// <inheritdoc cref="IAuthorization.Scheme"/>
-        public string Scheme { get; } = "Bearer";
-
         /// <inheritdoc cref="IAuthorization.Parameter"/>
         public string Parameter { get; }
+
+        /// <inheritdoc cref="IAuthorization.Scheme"/>
+        public string Scheme { get; } = "Bearer";
 
         /// <summary>
         /// Creates a new instance of <see cref="BearerAuthorization"/>.

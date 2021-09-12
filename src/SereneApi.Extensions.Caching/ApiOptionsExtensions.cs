@@ -15,10 +15,10 @@ namespace SereneApi.Extensions.Caching
 
             optionsAction?.Invoke(cacheOptionsBuilder);
 
-            ICacheOptions cacheOptions = cacheOptionsBuilder.BuildOptions();
+            extensions.Dependencies.AddSingleton(() => cacheOptionsBuilder.BuildOptions());
+            extensions.Dependencies.AddSingleton<Cache<Uri, ICachedResponse>>();
 
-            extensions.Dependencies.AddSingleton(() => new Cache<Uri, ICachedResponse>(cacheOptions));
-            extensions.Dependencies.AddScoped<HttpMessageHandler>(p => new CachedMessageHandler(p));
+            extensions.Dependencies.AddScoped<HttpMessageHandler, CachedMessageHandler>();
 
             return extensions;
         }

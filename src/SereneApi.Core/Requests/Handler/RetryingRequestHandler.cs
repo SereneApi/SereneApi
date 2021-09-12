@@ -1,5 +1,4 @@
-﻿using DeltaWare.Dependencies.Abstractions;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using SereneApi.Core.Connection;
 using SereneApi.Core.Content;
 using SereneApi.Core.Events;
@@ -10,6 +9,7 @@ using SereneApi.Core.Handler;
 using SereneApi.Core.Responses;
 using SereneApi.Core.Responses.Handlers;
 using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,24 +18,20 @@ namespace SereneApi.Core.Requests.Handler
 {
     public class RetryingRequestHandler : IRequestHandler
     {
-        private readonly ILogger _logger;
-
         private readonly IClientFactory _clientFactory;
-
+        private readonly IConnectionSettings _connection;
+        private readonly IEventManager _eventManager;
+        private readonly ILogger _logger;
         private readonly IResponseHandler _responseHandler;
 
-        private readonly IConnectionSettings _connection;
-
-        private readonly IEventManager _eventManager;
-
-        public RetryingRequestHandler(IDependencyProvider dependencies)
+        public RetryingRequestHandler(IClientFactory clientFactory, IConnectionSettings connection, IResponseHandler responseHandler, IEventManager eventManager = null, ILogger logger = null)
         {
-            _clientFactory = dependencies.GetDependency<IClientFactory>();
-            _connection = dependencies.GetDependency<IConnectionSettings>();
-            _responseHandler = dependencies.GetDependency<IResponseHandler>();
+            _clientFactory = clientFactory;
+            _connection = connection;
+            _responseHandler = responseHandler;
 
-            dependencies.TryGetDependency(out _logger);
-            dependencies.TryGetDependency(out _eventManager);
+            _logger = logger;
+            _eventManager = eventManager;
         }
 
         public async Task<IApiResponse> PerformAsync(IApiRequest request, IApiHandler caller, CancellationToken cancellationToken = default)
@@ -44,13 +40,21 @@ namespace SereneApi.Core.Requests.Handler
 
             try
             {
+                Stopwatch requestTimer = Stopwatch.StartNew();
+
                 response = await InternalPerformAsync(request, caller, cancellationToken);
 
-                IApiResponse apiResponse = await _responseHandler.ProcessResponseAsync(request, response);
+                requestTimer.Stop();
+
+                IApiResponse apiResponse = await _responseHandler.ProcessResponseAsync(request, requestTimer.Elapsed, response);
 
                 _eventManager?.PublishAsync(new ResponseEvent(caller, apiResponse)).FireAndForget();
 
                 return apiResponse;
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
             finally
             {
@@ -69,13 +73,22 @@ namespace SereneApi.Core.Requests.Handler
 
             try
             {
+                Stopwatch requestTimer = Stopwatch.StartNew();
+
                 response = await InternalPerformAsync(request, caller, cancellationToken);
 
-                IApiResponse<TResponse> apiResponse = await _responseHandler.ProcessResponseAsync<TResponse>(request, response);
+                requestTimer.Stop();
+
+                IApiResponse<TResponse> apiResponse =
+                    await _responseHandler.ProcessResponseAsync<TResponse>(request, requestTimer.Elapsed, response);
 
                 _eventManager?.PublishAsync(new ResponseEvent(caller, apiResponse)).FireAndForget();
 
                 return apiResponse;
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
             finally
             {
@@ -88,7 +101,39 @@ namespace SereneApi.Core.Requests.Handler
             }
         }
 
-        private async Task<HttpResponseMessage> InternalPerformAsync(IApiRequest request, IApiHandler caller, CancellationToken cancellationToken = default)
+        protected virtual async Task<HttpResponseMessage> HandleRequestAsync(HttpClient client, Uri route, Method method, IRequestContent content, CancellationToken cancellationToken = default)
+        {
+            HttpContent httpContent = (HttpContent)content.GetContent();
+
+            return method switch
+            {
+                Method.Post => await client.PostAsync(route, httpContent, cancellationToken),
+                Method.Get => throw new ArgumentException("A GET request may not have in body content"),
+                Method.Put => await client.PutAsync(route, httpContent, cancellationToken),
+                Method.Patch => await client.PatchAsync(route, httpContent, cancellationToken),
+                Method.Delete => throw new ArgumentException("A DELETE request may not have in body content"),
+                Method.None => throw new ArgumentException("None is an invalid method for a request"),
+                _ => throw new ArgumentOutOfRangeException(nameof(method), method,
+                    "An unknown Method Value was supplied provided")
+            };
+        }
+
+        protected virtual async Task<HttpResponseMessage> HandleRequestAsync(HttpClient client, Uri route, Method method, CancellationToken cancellationToken = default)
+        {
+            return method switch
+            {
+                Method.Post => await client.PostAsync(route, null, cancellationToken),
+                Method.Get => await client.GetAsync(route, cancellationToken),
+                Method.Put => await client.PutAsync(route, null, cancellationToken),
+                Method.Patch => await client.PatchAsync(route, null, cancellationToken),
+                Method.Delete => await client.DeleteAsync(route, cancellationToken),
+                Method.None => throw new ArgumentException("None is an invalid method for a request"),
+                _ => throw new ArgumentOutOfRangeException(nameof(method), method,
+                    "An unknown Method Value was supplied provided")
+            };
+        }
+
+        protected virtual async Task<HttpResponseMessage> InternalPerformAsync(IApiRequest request, IApiHandler caller, CancellationToken cancellationToken = default)
         {
             _eventManager?.PublishAsync(new RequestEvent(caller, request)).FireAndForget();
 
@@ -126,8 +171,6 @@ namespace SereneApi.Core.Requests.Handler
                         response = await HandleRequestAsync(client, request.Route, request.Method, request.Content, cancellationToken);
                     }
 
-                    retryingRequest = false;
-
                     _logger?.LogInformation(Logging.EventIds.ResponseReceivedEvent, Logging.Messages.ReceivedResponse, request.Method.ToString(), GetRequestRoute(request), response.StatusCode);
 
                     return response;
@@ -153,15 +196,6 @@ namespace SereneApi.Core.Requests.Handler
                         retryingRequest = true;
                     }
                 }
-                finally
-                {
-                    if (retryingRequest == false)
-                    {
-                        client.Dispose();
-
-                        _logger?.LogDebug(Logging.EventIds.DisposedEvent, Logging.Messages.DisposedHttpClient, request.Method, GetRequestRoute(request));
-                    }
-                }
             } while (retryingRequest);
 
             throw new TimeoutException($"The [{request.Method}] request to \"{GetRequestRoute(request)}\" has Timed out; The retry limit has been reached after attempting {requestsAttempted} times");
@@ -170,38 +204,6 @@ namespace SereneApi.Core.Requests.Handler
         private string GetRequestRoute(IApiRequest request)
         {
             return $"{_connection.BaseAddress}{request.Route}";
-        }
-
-        protected virtual async Task<HttpResponseMessage> HandleRequestAsync(HttpClient client, Uri route, Method method, IRequestContent content, CancellationToken cancellationToken = default)
-        {
-            HttpContent httpContent = (HttpContent)content.GetContent();
-
-            return method switch
-            {
-                Method.Post => await client.PostAsync(route, httpContent, cancellationToken),
-                Method.Get => throw new ArgumentException("A GET request may not have in body content"),
-                Method.Put => await client.PutAsync(route, httpContent, cancellationToken),
-                Method.Patch => await client.PatchAsync(route, httpContent, cancellationToken),
-                Method.Delete => throw new ArgumentException("A DELETE request may not have in body content"),
-                Method.None => throw new ArgumentException("None is an invalid method for a request"),
-                _ => throw new ArgumentOutOfRangeException(nameof(method), method,
-                    "An unknown Method Value was supplied provided")
-            };
-        }
-
-        protected virtual async Task<HttpResponseMessage> HandleRequestAsync(HttpClient client, Uri route, Method method, CancellationToken cancellationToken = default)
-        {
-            return method switch
-            {
-                Method.Post => await client.PostAsync(route, null, cancellationToken),
-                Method.Get => await client.GetAsync(route, cancellationToken),
-                Method.Put => await client.PutAsync(route, null, cancellationToken),
-                Method.Patch => await client.PatchAsync(route, null, cancellationToken),
-                Method.Delete => await client.DeleteAsync(route, cancellationToken),
-                Method.None => throw new ArgumentException("None is an invalid method for a request"),
-                _ => throw new ArgumentOutOfRangeException(nameof(method), method,
-                    "An unknown Method Value was supplied provided")
-            };
         }
     }
 }

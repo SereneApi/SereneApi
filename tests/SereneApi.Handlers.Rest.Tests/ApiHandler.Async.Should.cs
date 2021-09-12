@@ -1,9 +1,9 @@
 ﻿using SereneApi.Core.Handler.Factories;
 using SereneApi.Core.Requests;
 using SereneApi.Core.Responses;
-using SereneApi.Extensions.Mocking;
+using SereneApi.Core.Responses.Types;
+using SereneApi.Extensions.Mocking.Rest;
 using SereneApi.Handlers.Rest.Configuration;
-using SereneApi.Handlers.Rest.Responses.Types;
 using SereneApi.Handlers.Rest.Tests.Interfaces;
 using SereneApi.Handlers.Rest.Tests.Mock;
 using Shouldly;
@@ -15,7 +15,7 @@ namespace SereneApi.Handlers.Rest.Tests
 {
     public class ApiHandlerAsyncShould
     {
-        private readonly RestConfigurationProvider _configuration = new();
+        private readonly RestConfigurationFactory _configuration = new();
 
         #region Exceptions
 
@@ -30,16 +30,17 @@ namespace SereneApi.Handlers.Rest.Tests
 
             using ApiFactory apiFactory = new ApiFactory();
 
-            apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(
-                    o => o.SetSource(source, resource))
-                .WithMockResponse(r =>
+            apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(o => o.SetSource(source, resource))
+                .EnableRestMocking(c =>
                 {
-                    r.AddMockResponse(MockPersonDto.All)
-                        .RespondsToRequestsWith(Method.Get)
-                        .RespondsToRequestsWith(fullSource);
+                    c.RegisterMockResponse()
+                        .ForMethod(Method.Get)
+                        .ForEndpoints(fullSource)
+                        .RespondsWith(MockPersonDto.All);
                 });
 
-            #endregion
+            #endregion Arrange
+
             #region Act
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
@@ -49,14 +50,15 @@ namespace SereneApi.Handlers.Rest.Tests
                 .RespondsWith<MockPersonDto>()
                 .ExecuteAsync());
 
-            #endregion
+            #endregion Act
+
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
             apiHandlerWrapper.Connection.Source.ShouldBe(fullSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.ResourcePath);
-            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(_configuration.RetryCount);
-            apiHandlerWrapper.Connection.Timeout.ShouldBe(_configuration.Timeout);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.Configuration["ResourcePath"]);
+            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(_configuration.Configuration.Get<int>("RetryAttempts"));
+            apiHandlerWrapper.Connection.Timeout.ShouldBe(_configuration.Configuration.Get<int>("Timeout"));
 
             response.WasSuccessful.ShouldBe(false);
             response.HasException.ShouldBe(true);
@@ -64,10 +66,11 @@ namespace SereneApi.Handlers.Rest.Tests
             response.Exception.ShouldBeOfType<JsonException>();
             response.Status.ShouldBe(Status.Ok);
 
-            #endregion
+            #endregion Assert
         }
 
-        #endregion
+        #endregion Exceptions
+
         #region Basic Get Tests
 
         [Theory]
@@ -88,14 +91,16 @@ namespace SereneApi.Handlers.Rest.Tests
             apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(
                 o => o.SetSource(source, resource));
 
-            apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
+            apiFactory.ExtendApi<IApiHandlerWrapper>().EnableRestMocking(c =>
             {
-                r.AddMockResponse(Status.Ok)
-                    .RespondsToRequestsWith(Method.Get)
-                    .RespondsToRequestsWith(finalSource);
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Get)
+                    .ForEndpoints(finalSource)
+                    .RespondsWith(Status.Ok);
             });
 
-            #endregion
+            #endregion Arrange
+
             #region Act
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
@@ -104,14 +109,15 @@ namespace SereneApi.Handlers.Rest.Tests
                 .UsingMethod(Method.Get)
                 .ExecuteAsync());
 
-            #endregion
+            #endregion Act
+
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
             apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.ResourcePath);
-            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(_configuration.RetryCount);
-            apiHandlerWrapper.Connection.Timeout.ShouldBe(_configuration.Timeout);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.Configuration["ResourcePath"]);
+            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(_configuration.Configuration.Get<int>("RetryAttempts"));
+            apiHandlerWrapper.Connection.Timeout.ShouldBe(_configuration.Configuration.Get<int>("Timeout"));
 
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
@@ -119,7 +125,7 @@ namespace SereneApi.Handlers.Rest.Tests
             response.Exception.ShouldBeNull();
             response.Status.ShouldBe(Status.Ok);
 
-            #endregion
+            #endregion Assert
         }
 
         [Theory]
@@ -140,14 +146,16 @@ namespace SereneApi.Handlers.Rest.Tests
             apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(
                 o => o.SetSource(source, resource));
 
-            apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
+            apiFactory.ExtendApi<IApiHandlerWrapper>().EnableRestMocking(c =>
             {
-                r.AddMockResponse(MockPersonDto.JohnSmith)
-                    .RespondsToRequestsWith(Method.Get)
-                    .RespondsToRequestsWith(finalSource);
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Get)
+                    .ForEndpoints(finalSource)
+                    .RespondsWith(MockPersonDto.JohnSmith);
             });
 
-            #endregion
+            #endregion Arrange
+
             #region Act
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
@@ -157,14 +165,15 @@ namespace SereneApi.Handlers.Rest.Tests
                 .RespondsWith<MockPersonDto>()
                 .ExecuteAsync());
 
-            #endregion
+            #endregion Act
+
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
             apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.ResourcePath);
-            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(_configuration.RetryCount);
-            apiHandlerWrapper.Connection.Timeout.ShouldBe(_configuration.Timeout);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.Configuration["ResourcePath"]);
+            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(_configuration.Configuration.Get<int>("RetryAttempts"));
+            apiHandlerWrapper.Connection.Timeout.ShouldBe(_configuration.Configuration.Get<int>("Timeout"));
 
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
@@ -178,12 +187,12 @@ namespace SereneApi.Handlers.Rest.Tests
             person.BirthDate.ShouldBe(MockPersonDto.JohnSmith.BirthDate);
             person.Name.ShouldBe(MockPersonDto.JohnSmith.Name);
 
-            #endregion
+            #endregion Assert
         }
 
         [Theory]
         [InlineData("http://test.source.com", "resource", 2, 2)]
-        [InlineData("http://test.source.com:8080", "path/path/resource", 3, 2)]
+        [InlineData("http://test.source.com:8080", "path/path/resource", 3, 1)]
         public void SuccessfulBasicGetRequestWithTimeout(string source, string resource, int retryCount, int timeoutSeconds)
         {
             #region Arrange
@@ -199,27 +208,30 @@ namespace SereneApi.Handlers.Rest.Tests
                 o.SetRetryAttempts(retryCount);
             });
 
-            apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
+            apiFactory.ExtendApi<IApiHandlerWrapper>().EnableRestMocking(c =>
             {
-                r.AddMockResponse(Status.Ok)
-                    .ResponseIsDelayed(timeoutSeconds + 2, retryCount - 1)
-                    .RespondsToRequestsWith(Method.Get)
-                    .RespondsToRequestsWith(finalSource);
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Get)
+                    .ForEndpoints(finalSource)
+                    .RespondsWith(Status.Ok)
+                    .IsDelayed(timeoutSeconds + 2, retryCount - 1);
             });
 
-            #endregion
+            #endregion Arrange
+
             #region Act
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
             IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest.UsingMethod(Method.Get).ExecuteAsync());
 
-            #endregion
+            #endregion Act
+
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
             apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.ResourcePath);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.Configuration["ResourcePath"]);
             apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(retryCount);
             apiHandlerWrapper.Connection.Timeout.ShouldBe(timeoutSeconds);
 
@@ -229,12 +241,12 @@ namespace SereneApi.Handlers.Rest.Tests
             response.Exception.ShouldBeNull();
             response.Status.ShouldBe(Status.Ok);
 
-            #endregion
+            #endregion Assert
         }
 
         [Theory]
         [InlineData("http://test.source.com", "resource", 2, 2)]
-        [InlineData("http://test.source.com:8080", "path/path/resource", 3, 2)]
+        [InlineData("http://test.source.com:8080", "path/path/resource", 3, 1)]
         public void SuccessfulBasicGetRequestWithTimeoutGeneric(string source, string resource, int retryCount, int timeoutSeconds)
         {
             #region Arrange
@@ -250,15 +262,17 @@ namespace SereneApi.Handlers.Rest.Tests
                 o.SetRetryAttempts(retryCount);
             });
 
-            apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
+            apiFactory.ExtendApi<IApiHandlerWrapper>().EnableRestMocking(c =>
             {
-                r.AddMockResponse(MockPersonDto.JohnSmith)
-                    .ResponseIsDelayed(timeoutSeconds + 2, retryCount - 1)
-                    .RespondsToRequestsWith(Method.Get)
-                    .RespondsToRequestsWith(finalSource);
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Get)
+                    .ForEndpoints(finalSource)
+                    .RespondsWith(MockPersonDto.JohnSmith)
+                    .IsDelayed(timeoutSeconds + 2, retryCount - 1);
             });
 
-            #endregion
+            #endregion Arrange
+
             #region Act
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
@@ -268,12 +282,13 @@ namespace SereneApi.Handlers.Rest.Tests
                 .RespondsWith<MockPersonDto>()
                 .ExecuteAsync());
 
-            #endregion
+            #endregion Act
+
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
             apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.ResourcePath);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.Configuration["ResourcePath"]);
             apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(retryCount);
             apiHandlerWrapper.Connection.Timeout.ShouldBe(timeoutSeconds);
 
@@ -290,233 +305,7 @@ namespace SereneApi.Handlers.Rest.Tests
             person.BirthDate.ShouldBe(MockPersonDto.JohnSmith.BirthDate);
             person.Name.ShouldBe(MockPersonDto.JohnSmith.Name);
 
-            #endregion
-        }
-
-        [Theory]
-        [InlineData("http://test.source.com", "resource")]
-        [InlineData("http://test.source.com", "path/resource")]
-        [InlineData("http://test.source.com", "path/path/resource")]
-        [InlineData("http://test.source.com:443", "test/resource")]
-        [InlineData("http://test.source.com:443", "path/resource")]
-        [InlineData("http://test.source.com:8080", "path/path/resource")]
-        public void UnSuccessfulBasicGetRequest(string source, string resource)
-        {
-            #region Arrange
-
-            const string message = "Exception occurred whilst getting.";
-            const Status status = Status.InternalServerError;
-
-            string finalSource = $"{source}/api/{resource}";
-
-            using ApiFactory apiFactory = new ApiFactory();
-
-            apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(
-                o => o.SetSource(source, resource));
-
-            apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
-            {
-                r.AddMockResponse(new FailureResponse(message), status)
-                    .RespondsToRequestsWith(Method.Get)
-                    .RespondsToRequestsWith(finalSource);
-            });
-
-            #endregion
-            #region Act
-
-            using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
-
-            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
-                .ExecuteAsync());
-
-            #endregion
-            #region Assert
-
-            apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
-            apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.ResourcePath);
-            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(_configuration.RetryCount);
-            apiHandlerWrapper.Connection.Timeout.ShouldBe(_configuration.Timeout);
-
-            response.WasSuccessful.ShouldBe(false);
-            response.HasException.ShouldBe(false);
-            response.Message.ShouldBe(message);
-            response.Exception.ShouldBeNull();
-            response.Status.ShouldBe(status);
-
-            #endregion
-        }
-
-        [Theory]
-        [InlineData("http://test.source.com", "resource")]
-        [InlineData("http://test.source.com", "path/resource")]
-        [InlineData("http://test.source.com", "path/path/resource")]
-        [InlineData("http://test.source.com:443", "test/resource")]
-        [InlineData("http://test.source.com:443", "path/resource")]
-        [InlineData("http://test.source.com:8080", "path/path/resource")]
-        public void UnSuccessfulBasicGetRequestGeneric(string source, string resource)
-        {
-            #region Arrange
-
-            const string message = "Exception occurred whilst getting.";
-            const Status status = Status.InternalServerError;
-
-            string finalSource = $"{source}/api/{resource}";
-
-            using ApiFactory apiFactory = new ApiFactory();
-
-            apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(
-                o => o.SetSource(source, resource));
-
-            apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
-            {
-                r.AddMockResponse(new FailureResponse(message), status)
-                    .RespondsToRequestsWith(Method.Get)
-                    .RespondsToRequestsWith(finalSource);
-            });
-
-            #endregion
-            #region Act
-
-            using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
-
-            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
-                .RespondsWith<MockPersonDto>()
-                .ExecuteAsync());
-
-            #endregion
-            #region Assert
-
-            apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
-            apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.ResourcePath);
-            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(_configuration.RetryCount);
-            apiHandlerWrapper.Connection.Timeout.ShouldBe(_configuration.Timeout);
-
-            response.WasSuccessful.ShouldBe(false);
-            response.HasException.ShouldBe(false);
-            response.Message.ShouldBe(message);
-            response.Exception.ShouldBeNull();
-            response.Status.ShouldBe(status);
-            response.Data.ShouldBeNull();
-
-            #endregion
-        }
-
-        [Theory]
-        [InlineData("http://test.source.com", "resource", 2, 2)]
-        [InlineData("http://test.source.com:8080", "path/path/resource", 3, 2)]
-        public void UnSuccessfulBasicGetRequestWithTimeout(string source, string resource, int retryCount, int timeoutSeconds)
-        {
-            #region Arrange
-
-            const string message = "Exception occurred whilst getting.";
-            const Status status = Status.InternalServerError;
-
-            string finalSource = $"{source}/api/{resource}";
-
-            using ApiFactory apiFactory = new ApiFactory();
-
-            apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(o =>
-            {
-                o.SetSource(source, resource);
-                o.SetTimeout(timeoutSeconds);
-                o.SetRetryAttempts(retryCount);
-            });
-
-            apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
-            {
-                r.AddMockResponse(new FailureResponse(message), status)
-                    .ResponseIsDelayed(timeoutSeconds + 2, retryCount - 1)
-                    .RespondsToRequestsWith(Method.Get)
-                    .RespondsToRequestsWith(finalSource);
-            });
-
-            #endregion
-            #region Act
-
-            using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
-
-            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
-                .ExecuteAsync());
-
-            #endregion
-            #region Assert
-
-            apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
-            apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.ResourcePath);
-            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(retryCount);
-            apiHandlerWrapper.Connection.Timeout.ShouldBe(timeoutSeconds);
-
-            response.WasSuccessful.ShouldBe(false);
-            response.HasException.ShouldBe(false);
-            response.Message.ShouldBe(message);
-            response.Exception.ShouldBeNull();
-            response.Status.ShouldBe(status);
-
-            #endregion
-        }
-
-        [Theory]
-        [InlineData("http://test.source.com", "resource", 2, 2)]
-        [InlineData("http://test.source.com:8080", "path/path/resource", 3, 2)]
-        public void UnSuccessfulBasicGetRequestWithTimeoutGeneric(string source, string resource, int retryCount, int timeoutSeconds)
-        {
-            #region Arrange
-
-            const string message = "Exception occurred whilst getting.";
-            const Status status = Status.InternalServerError;
-
-            string finalSource = $"{source}/api/{resource}";
-
-            using ApiFactory apiFactory = new ApiFactory();
-
-            apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(o =>
-            {
-                o.SetSource(source, resource);
-                o.SetTimeout(timeoutSeconds);
-                o.SetRetryAttempts(retryCount);
-            });
-
-            apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
-            {
-                r.AddMockResponse(new FailureResponse(message), status)
-                    .ResponseIsDelayed(timeoutSeconds + 2, retryCount - 1)
-                    .RespondsToRequestsWith(Method.Get)
-                    .RespondsToRequestsWith(finalSource);
-            });
-
-            #endregion
-            #region Act
-
-            using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
-
-            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
-                .RespondsWith<MockPersonDto>()
-                .ExecuteAsync());
-
-            #endregion
-            #region Assert
-
-            apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
-            apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.ResourcePath);
-            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(retryCount);
-            apiHandlerWrapper.Connection.Timeout.ShouldBe(timeoutSeconds);
-
-            response.WasSuccessful.ShouldBe(false);
-            response.HasException.ShouldBe(false);
-            response.Message.ShouldBe(message);
-            response.Exception.ShouldBeNull();
-            response.Status.ShouldBe(status);
-            response.Data.ShouldBeNull();
-
-            #endregion
+            #endregion Assert
         }
 
         [Theory]
@@ -541,15 +330,17 @@ namespace SereneApi.Handlers.Rest.Tests
                 }
             });
 
-            apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
+            apiFactory.ExtendApi<IApiHandlerWrapper>().EnableRestMocking(c =>
             {
-                r.AddMockResponse(Status.Ok)
-                    .ResponseIsDelayed(timeoutSeconds + 2, retryCount)
-                    .RespondsToRequestsWith(Method.Get)
-                    .RespondsToRequestsWith(finalSource);
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Get)
+                    .ForEndpoints(finalSource)
+                    .RespondsWith(Status.Ok)
+                    .IsDelayed(timeoutSeconds + 2, retryCount);
             });
 
-            #endregion
+            #endregion Arrange
+
             #region Act
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
@@ -558,12 +349,13 @@ namespace SereneApi.Handlers.Rest.Tests
                 .UsingMethod(Method.Get)
                 .ExecuteAsync());
 
-            #endregion
+            #endregion Act
+
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
             apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.ResourcePath);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.Configuration["ResourcePath"]);
             apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(retryCount);
             apiHandlerWrapper.Connection.Timeout.ShouldBe(timeoutSeconds);
 
@@ -573,7 +365,7 @@ namespace SereneApi.Handlers.Rest.Tests
             response.Exception.ShouldBeOfType<TimeoutException>();
             response.Status.ShouldBe(Status.TimedOut);
 
-            #endregion
+            #endregion Assert
         }
 
         [Theory]
@@ -598,15 +390,17 @@ namespace SereneApi.Handlers.Rest.Tests
                 }
             });
 
-            apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
+            apiFactory.ExtendApi<IApiHandlerWrapper>().EnableRestMocking(c =>
             {
-                r.AddMockResponse(Status.Ok)
-                    .ResponseIsDelayed(timeoutSeconds + 2, retryCount)
-                    .RespondsToRequestsWith(Method.Get)
-                    .RespondsToRequestsWith(finalSource);
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Get)
+                    .ForEndpoints(finalSource)
+                    .RespondsWith(Status.Ok)
+                    .IsDelayed(timeoutSeconds + 2, retryCount);
             });
 
-            #endregion
+            #endregion Arrange
+
             #region Act
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
@@ -616,12 +410,13 @@ namespace SereneApi.Handlers.Rest.Tests
                 .RespondsWith<MockPersonDto>()
                 .ExecuteAsync());
 
-            #endregion
+            #endregion Act
+
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
             apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.ResourcePath);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.Configuration["ResourcePath"]);
             apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(retryCount);
             apiHandlerWrapper.Connection.Timeout.ShouldBe(timeoutSeconds);
 
@@ -632,11 +427,314 @@ namespace SereneApi.Handlers.Rest.Tests
             response.Status.ShouldBe(Status.TimedOut);
             response.Data.ShouldBeNull();
 
-            #endregion
+            #endregion Assert
         }
 
-        #endregion
+        [Theory]
+        [InlineData("http://test.source.com", "resource")]
+        [InlineData("http://test.source.com", "path/resource")]
+        [InlineData("http://test.source.com", "path/path/resource")]
+        [InlineData("http://test.source.com:443", "test/resource")]
+        [InlineData("http://test.source.com:443", "path/resource")]
+        [InlineData("http://test.source.com:8080", "path/path/resource")]
+        public void UnSuccessfulBasicGetRequest(string source, string resource)
+        {
+            #region Arrange
+
+            const string message = "Exception occurred whilst getting.";
+            const Status status = Status.InternalServerError;
+
+            string finalSource = $"{source}/api/{resource}";
+
+            using ApiFactory apiFactory = new ApiFactory();
+
+            apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(
+                o => o.SetSource(source, resource));
+
+            apiFactory.ExtendApi<IApiHandlerWrapper>().EnableRestMocking(c =>
+            {
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Get)
+                    .ForEndpoints(finalSource)
+                    .RespondsWith(new FailureResponse(message), status);
+            });
+
+            #endregion Arrange
+
+            #region Act
+
+            using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
+
+            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
+                .UsingMethod(Method.Get)
+                .ExecuteAsync());
+
+            #endregion Act
+
+            #region Assert
+
+            apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
+            apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.Configuration["ResourcePath"]);
+            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(_configuration.Configuration.Get<int>("RetryAttempts"));
+            apiHandlerWrapper.Connection.Timeout.ShouldBe(_configuration.Configuration.Get<int>("Timeout"));
+
+            response.WasSuccessful.ShouldBe(false);
+            response.HasException.ShouldBe(false);
+            response.Message.ShouldBe(message);
+            response.Exception.ShouldBeNull();
+            response.Status.ShouldBe(status);
+
+            #endregion Assert
+        }
+
+        [Theory]
+        [InlineData("http://test.source.com", "resource")]
+        [InlineData("http://test.source.com", "path/resource")]
+        [InlineData("http://test.source.com", "path/path/resource")]
+        [InlineData("http://test.source.com:443", "test/resource")]
+        [InlineData("http://test.source.com:443", "path/resource")]
+        [InlineData("http://test.source.com:8080", "path/path/resource")]
+        public void UnSuccessfulBasicGetRequestGeneric(string source, string resource)
+        {
+            #region Arrange
+
+            const string message = "Exception occurred whilst getting.";
+            const Status status = Status.InternalServerError;
+
+            string finalSource = $"{source}/api/{resource}";
+
+            using ApiFactory apiFactory = new ApiFactory();
+
+            apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(
+                o => o.SetSource(source, resource));
+
+            apiFactory.ExtendApi<IApiHandlerWrapper>().EnableRestMocking(c =>
+            {
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Get)
+                    .ForEndpoints(finalSource)
+                    .RespondsWith(new FailureResponse(message), status);
+            });
+
+            #endregion Arrange
+
+            #region Act
+
+            using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
+
+            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
+                .UsingMethod(Method.Get)
+                .RespondsWith<MockPersonDto>()
+                .ExecuteAsync());
+
+            #endregion Act
+
+            #region Assert
+
+            apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
+            apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.Configuration["ResourcePath"]);
+            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(_configuration.Configuration.Get<int>("RetryAttempts"));
+            apiHandlerWrapper.Connection.Timeout.ShouldBe(_configuration.Configuration.Get<int>("Timeout"));
+
+            response.WasSuccessful.ShouldBe(false);
+            response.HasException.ShouldBe(false);
+            response.Message.ShouldBe(message);
+            response.Exception.ShouldBeNull();
+            response.Status.ShouldBe(status);
+            response.Data.ShouldBeNull();
+
+            #endregion Assert
+        }
+
+        [Theory]
+        [InlineData("http://test.source.com", "resource", 2, 2)]
+        [InlineData("http://test.source.com:8080", "path/path/resource", 3, 1)]
+        public void UnSuccessfulBasicGetRequestWithTimeout(string source, string resource, int retryCount, int timeoutSeconds)
+        {
+            #region Arrange
+
+            const string message = "Exception occurred whilst getting.";
+            const Status status = Status.InternalServerError;
+
+            string finalSource = $"{source}/api/{resource}";
+
+            using ApiFactory apiFactory = new ApiFactory();
+
+            apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(o =>
+            {
+                o.SetSource(source, resource);
+                o.SetTimeout(timeoutSeconds);
+                o.SetRetryAttempts(retryCount);
+            });
+
+            apiFactory.ExtendApi<IApiHandlerWrapper>().EnableRestMocking(c =>
+            {
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Get)
+                    .ForEndpoints(finalSource)
+                    .RespondsWith(new FailureResponse(message), status)
+                    .IsDelayed(timeoutSeconds + 2, retryCount - 1);
+            });
+
+            #endregion Arrange
+
+            #region Act
+
+            using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
+
+            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
+                .UsingMethod(Method.Get)
+                .ExecuteAsync());
+
+            #endregion Act
+
+            #region Assert
+
+            apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
+            apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.Configuration["ResourcePath"]);
+            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(retryCount);
+            apiHandlerWrapper.Connection.Timeout.ShouldBe(timeoutSeconds);
+
+            response.WasSuccessful.ShouldBe(false);
+            response.HasException.ShouldBe(false);
+            response.Message.ShouldBe(message);
+            response.Exception.ShouldBeNull();
+            response.Status.ShouldBe(status);
+
+            #endregion Assert
+        }
+
+        [Theory]
+        [InlineData("http://test.source.com", "resource", 2, 2)]
+        [InlineData("http://test.source.com:8080", "path/path/resource", 3, 1)]
+        public void UnSuccessfulBasicGetRequestWithTimeoutGeneric(string source, string resource, int retryCount, int timeoutSeconds)
+        {
+            #region Arrange
+
+            const string message = "Exception occurred whilst getting.";
+            const Status status = Status.InternalServerError;
+
+            string finalSource = $"{source}/api/{resource}";
+
+            using ApiFactory apiFactory = new ApiFactory();
+
+            apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(o =>
+            {
+                o.SetSource(source, resource);
+                o.SetTimeout(timeoutSeconds);
+                o.SetRetryAttempts(retryCount);
+            });
+
+            apiFactory.ExtendApi<IApiHandlerWrapper>().EnableRestMocking(c =>
+            {
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Get)
+                    .ForEndpoints(finalSource)
+                    .RespondsWith(new FailureResponse(message), status)
+                    .IsDelayed(timeoutSeconds + 2, retryCount - 1);
+            });
+
+            #endregion Arrange
+
+            #region Act
+
+            using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
+
+            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
+                .UsingMethod(Method.Get)
+                .RespondsWith<MockPersonDto>()
+                .ExecuteAsync());
+
+            #endregion Act
+
+            #region Assert
+
+            apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
+            apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.Configuration["ResourcePath"]);
+            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(retryCount);
+            apiHandlerWrapper.Connection.Timeout.ShouldBe(timeoutSeconds);
+
+            response.WasSuccessful.ShouldBe(false);
+            response.HasException.ShouldBe(false);
+            response.Message.ShouldBe(message);
+            response.Exception.ShouldBeNull();
+            response.Status.ShouldBe(status);
+            response.Data.ShouldBeNull();
+
+            #endregion Assert
+        }
+
+        #endregion Basic Get Tests
+
         #region Get Against Resource Tests
+
+        [Theory]
+        [InlineData("http://test.source.com", "resource")]
+        [InlineData("http://test.source.com", "path/resource")]
+        [InlineData("http://test.source.com", "path/path/resource")]
+        [InlineData("http://test.source.com:443", "test/resource")]
+        [InlineData("http://test.source.com:443", "path/resource")]
+        [InlineData("http://test.source.com:8080", "path/path/resource")]
+        public void SuccessfulBasicGetRequestAgainstResourceGeneric(string source, string resource)
+        {
+            #region Arrange
+
+            string fullSource = $"{source}/api/{resource}";
+            string finalSource = $"{source}/api";
+
+            using ApiFactory apiFactory = new ApiFactory();
+
+            apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(
+                o => o.SetSource(source));
+
+            apiFactory.ExtendApi<IApiHandlerWrapper>().EnableRestMocking(c =>
+            {
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Get)
+                    .ForEndpoints(fullSource)
+                    .RespondsWith(MockPersonDto.JohnSmith);
+            });
+
+            #endregion Arrange
+
+            #region Act
+
+            using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
+
+            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
+                .UsingMethod(Method.Get)
+                .AgainstResource(resource)
+                .RespondsWith<MockPersonDto>()
+                .ExecuteAsync());
+
+            #endregion Act
+
+            #region Assert
+
+            apiHandlerWrapper.Connection.Resource.ShouldBeNull();
+            apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.Configuration["ResourcePath"]);
+            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(_configuration.Configuration.Get<int>("RetryAttempts"));
+            apiHandlerWrapper.Connection.Timeout.ShouldBe(_configuration.Configuration.Get<int>("Timeout"));
+
+            response.WasSuccessful.ShouldBe(true);
+            response.HasException.ShouldBe(false);
+            response.Message.ShouldBeNull();
+            response.Exception.ShouldBeNull();
+            response.Status.ShouldBe(Status.Ok);
+
+            MockPersonDto person = response.Data;
+
+            person.Age.ShouldBe(MockPersonDto.JohnSmith.Age);
+            person.BirthDate.ShouldBe(MockPersonDto.JohnSmith.BirthDate);
+            person.Name.ShouldBe(MockPersonDto.JohnSmith.Name);
+
+            #endregion Assert
+        }
 
         [Theory]
         [InlineData("http://test.source.com", "resource")]
@@ -657,14 +755,16 @@ namespace SereneApi.Handlers.Rest.Tests
             apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(
                 o => o.SetSource(source));
 
-            apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
+            apiFactory.ExtendApi<IApiHandlerWrapper>().EnableRestMocking(c =>
             {
-                r.AddMockResponse(Status.Ok)
-                    .RespondsToRequestsWith(Method.Get)
-                    .RespondsToRequestsWith(fullSource);
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Get)
+                    .ForEndpoints(fullSource)
+                    .RespondsWith(Status.Ok);
             });
 
-            #endregion
+            #endregion Arrange
+
             #region Act
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
@@ -674,14 +774,15 @@ namespace SereneApi.Handlers.Rest.Tests
                 .AgainstResource(resource)
                 .ExecuteAsync());
 
-            #endregion
+            #endregion Act
+
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBeNull();
             apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.ResourcePath);
-            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(_configuration.RetryCount);
-            apiHandlerWrapper.Connection.Timeout.ShouldBe(_configuration.Timeout);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.Configuration["ResourcePath"]);
+            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(_configuration.Configuration.Get<int>("RetryAttempts"));
+            apiHandlerWrapper.Connection.Timeout.ShouldBe(_configuration.Configuration.Get<int>("Timeout"));
 
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
@@ -689,72 +790,11 @@ namespace SereneApi.Handlers.Rest.Tests
             response.Exception.ShouldBeNull();
             response.Status.ShouldBe(Status.Ok);
 
-            #endregion
+            #endregion Assert
         }
 
-        [Theory]
-        [InlineData("http://test.source.com", "resource")]
-        [InlineData("http://test.source.com", "path/resource")]
-        [InlineData("http://test.source.com", "path/path/resource")]
-        [InlineData("http://test.source.com:443", "test/resource")]
-        [InlineData("http://test.source.com:443", "path/resource")]
-        [InlineData("http://test.source.com:8080", "path/path/resource")]
-        public void SuccessfulBasicGetRequestAgainstResourceGeneric(string source, string resource)
-        {
-            #region Arrange
+        #endregion Get Against Resource Tests
 
-            string fullSource = $"{source}/api/{resource}";
-            string finalSource = $"{source}/api";
-
-
-            using ApiFactory apiFactory = new ApiFactory();
-
-            apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(
-                o => o.SetSource(source));
-
-            apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
-            {
-                r.AddMockResponse(MockPersonDto.JohnSmith)
-                    .RespondsToRequestsWith(Method.Get)
-                    .RespondsToRequestsWith(fullSource);
-            });
-
-            #endregion
-            #region Act
-
-            using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
-
-            IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
-                .AgainstResource(resource)
-                .RespondsWith<MockPersonDto>()
-                .ExecuteAsync());
-
-            #endregion
-            #region Assert
-
-            apiHandlerWrapper.Connection.Resource.ShouldBeNull();
-            apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.ResourcePath);
-            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(_configuration.RetryCount);
-            apiHandlerWrapper.Connection.Timeout.ShouldBe(_configuration.Timeout);
-
-            response.WasSuccessful.ShouldBe(true);
-            response.HasException.ShouldBe(false);
-            response.Message.ShouldBeNull();
-            response.Exception.ShouldBeNull();
-            response.Status.ShouldBe(Status.Ok);
-
-            MockPersonDto person = response.Data;
-
-            person.Age.ShouldBe(MockPersonDto.JohnSmith.Age);
-            person.BirthDate.ShouldBe(MockPersonDto.JohnSmith.BirthDate);
-            person.Name.ShouldBe(MockPersonDto.JohnSmith.Name);
-
-            #endregion
-        }
-
-        #endregion
         #region Get With Endpoint Tests
 
         [Theory]
@@ -776,14 +816,16 @@ namespace SereneApi.Handlers.Rest.Tests
             apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(
                 o => o.SetSource(source, resource));
 
-            apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
+            apiFactory.ExtendApi<IApiHandlerWrapper>().EnableRestMocking(c =>
             {
-                r.AddMockResponse(Status.Ok)
-                    .RespondsToRequestsWith(Method.Get)
-                    .RespondsToRequestsWith(fullSource);
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Get)
+                    .ForEndpoints(fullSource)
+                    .RespondsWith(Status.Ok);
             });
 
-            #endregion
+            #endregion Arrange
+
             #region Act
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
@@ -793,14 +835,15 @@ namespace SereneApi.Handlers.Rest.Tests
                 .AgainstEndpoint(endpoint)
                 .ExecuteAsync());
 
-            #endregion
+            #endregion Act
+
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
             apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.ResourcePath);
-            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(_configuration.RetryCount);
-            apiHandlerWrapper.Connection.Timeout.ShouldBe(_configuration.Timeout);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.Configuration["ResourcePath"]);
+            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(_configuration.Configuration.Get<int>("RetryAttempts"));
+            apiHandlerWrapper.Connection.Timeout.ShouldBe(_configuration.Configuration.Get<int>("Timeout"));
 
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
@@ -808,7 +851,7 @@ namespace SereneApi.Handlers.Rest.Tests
             response.Exception.ShouldBeNull();
             response.Status.ShouldBe(Status.Ok);
 
-            #endregion
+            #endregion Assert
         }
 
         [Theory]
@@ -830,14 +873,16 @@ namespace SereneApi.Handlers.Rest.Tests
             apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(
                 o => o.SetSource(source, resource));
 
-            apiFactory.ExtendApi<IApiHandlerWrapper>().WithMockResponse(r =>
+            apiFactory.ExtendApi<IApiHandlerWrapper>().EnableRestMocking(c =>
             {
-                r.AddMockResponse(MockPersonDto.JohnSmith)
-                    .RespondsToRequestsWith(Method.Get)
-                    .RespondsToRequestsWith(fullSource);
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Get)
+                    .ForEndpoints(fullSource)
+                    .RespondsWith(MockPersonDto.JohnSmith);
             });
 
-            #endregion
+            #endregion Arrange
+
             #region Act
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
@@ -848,14 +893,15 @@ namespace SereneApi.Handlers.Rest.Tests
                 .RespondsWith<MockPersonDto>()
                 .ExecuteAsync());
 
-            #endregion
+            #endregion Act
+
             #region Assert
 
             apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
             apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
-            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.ResourcePath);
-            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(_configuration.RetryCount);
-            apiHandlerWrapper.Connection.Timeout.ShouldBe(_configuration.Timeout);
+            apiHandlerWrapper.Connection.ResourcePath.ShouldBe(_configuration.Configuration["ResourcePath"]);
+            apiHandlerWrapper.Connection.RetryAttempts.ShouldBe(_configuration.Configuration.Get<int>("RetryAttempts"));
+            apiHandlerWrapper.Connection.Timeout.ShouldBe(_configuration.Configuration.Get<int>("Timeout"));
 
             response.WasSuccessful.ShouldBe(true);
             response.HasException.ShouldBe(false);
@@ -869,9 +915,9 @@ namespace SereneApi.Handlers.Rest.Tests
             person.BirthDate.ShouldBe(MockPersonDto.JohnSmith.BirthDate);
             person.Name.ShouldBe(MockPersonDto.JohnSmith.Name);
 
-            #endregion
+            #endregion Assert
         }
 
-        #endregion
+        #endregion Get With Endpoint Tests
     }
 }

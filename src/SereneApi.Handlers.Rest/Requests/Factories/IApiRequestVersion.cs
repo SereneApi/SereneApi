@@ -12,7 +12,9 @@ namespace SereneApi.Handlers.Rest.Requests.Factories
         /// <remarks>This overrides the default value provided by the <see cref="IApiHandler"/>.</remarks>
         /// <param name="version">The version to be used.</param>
         /// <exception cref="ArgumentException">Thrown when a null value is provided.</exception>
-        /// <exception cref="IApiHandler">Thrown when a string is either empty or only contains null spaces.</exception>
+        /// <exception cref="IApiHandler">
+        /// Thrown when a string is either empty or only contains null spaces.
+        /// </exception>
         IApiRequestEndpoint AgainstVersion(string version);
 
         /// <summary>

@@ -59,6 +59,6 @@ namespace SereneApi.Extensions.Caching.Types
             _disposed = true;
         }
 
-        #endregion
+        #endregion IDisposable
     }
 }

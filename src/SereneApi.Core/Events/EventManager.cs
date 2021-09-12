@@ -7,7 +7,7 @@ namespace SereneApi.Core.Events
 {
     public class EventManager : IEventManager
     {
-        private readonly Dictionary<Type, List<object>> _events = new Dictionary<Type, List<object>>();
+        private readonly Dictionary<Type, List<object>> _events = new();
 
         public void Publish<TEvent>(TEvent sender) where TEvent : IEventListener
         {
@@ -16,9 +16,7 @@ namespace SereneApi.Core.Events
                 throw new ArgumentNullException(nameof(sender));
             }
 
-            Type eventType = typeof(TEvent);
-
-            if (!_events.TryGetValue(eventType, out List<object> listeners) || listeners.Count <= 0)
+            if (!_events.TryGetValue(typeof(TEvent), out List<object> listeners) || listeners.Count <= 0)
             {
                 return;
             }
@@ -41,9 +39,7 @@ namespace SereneApi.Core.Events
                 throw new ArgumentNullException(nameof(listener));
             }
 
-            Type eventType = typeof(TEvent);
-
-            if (_events.TryGetValue(eventType, out List<object> listeners))
+            if (_events.TryGetValue(typeof(TEvent), out List<object> listeners))
             {
                 if (!listeners.Contains(listener))
                 {
@@ -54,7 +50,7 @@ namespace SereneApi.Core.Events
             {
                 listeners = new List<object> { listener };
 
-                _events.Add(eventType, listeners);
+                _events.Add(typeof(TEvent), listeners);
             }
         }
 
@@ -65,9 +61,7 @@ namespace SereneApi.Core.Events
                 throw new ArgumentNullException(nameof(listener));
             }
 
-            Type eventType = typeof(TEvent);
-
-            if (!_events.TryGetValue(eventType, out List<object> listeners))
+            if (!_events.TryGetValue(typeof(TEvent), out List<object> listeners))
             {
                 return;
             }

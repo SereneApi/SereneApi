@@ -3,89 +3,110 @@ using SereneApi.Benchmark.API;
 using SereneApi.Core.Handler.Factories;
 using SereneApi.Core.Requests;
 using SereneApi.Core.Response;
-using SereneApi.Extensions.Mocking;
+using SereneApi.Core.Responses;
+using SereneApi.Extensions.Mocking.Rest;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace SereneAp.Handlers.Rest.Benchmark
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             ApiFactory factory = new ApiFactory();
 
             factory.RegisterApi<IStudentApi, StudentApiHandler>(o =>
             {
-                o.SetSource("http://localhost", "Student");
-            }).WithMockResponse(m =>
+                o.SetSource("http://localhost:52279", "Students");
+            });
+
+            factory.ExtendApi<StudentApiHandler>().EnableRestMocking(c =>
             {
-                m.AddMockResponse(new StudentDto
-                {
-                    Email = "John.Smith@gmail.com",
-                    FirstName = "John",
-                    LastName = "Smith",
-                    Id = 0
-                }).RespondsToRequestsWith(Method.Get);
+                c.RegisterMockResponse()
+                    .ForMethod(Method.Get)
+                    .RespondsWith(new List<StudentDto>
+                    {
+                        new StudentDto
+                        {
+                            Email = "John.Smith@gmail.com",
+                            GivenName = "John",
+                            LastName = "Smith",
+                            Id = 0
+                        }
+                    }
+                );
             });
 
             Console.Write("Runs: ");
 
-            int runs = int.Parse(Console.ReadLine() ?? "1");
+            int iterations = int.Parse(Console.ReadLine() ?? "1");
 
-            Stopwatch total = Stopwatch.StartNew();
+            decimal buildTime = 0;
+            decimal executionTime = 0;
+            decimal disposeTime = 0;
 
-            double runMs = 0;
-            double buildMs = 0;
-            double disposeMs = 0;
-
-            for (int i = 0; i < runs; i++)
+            for (int i = 0; i < iterations; i++)
             {
-                Stopwatch buildTime = Stopwatch.StartNew();
+                Stopwatch stopwatch = Stopwatch.StartNew();
 
                 IStudentApi studentApi = factory.Build<IStudentApi>();
 
-                buildTime.Stop();
+                stopwatch.Stop();
 
-                Stopwatch runTime = Stopwatch.StartNew();
+                buildTime += stopwatch.ElapsedTicks;
 
-                var response = studentApi.GetStudentsAsync().GetAwaiter().GetResult();
+                stopwatch.Restart();
 
-                runTime.Stop();
+                IApiResponse<List<StudentDto>> response = studentApi.GetStudentsAsync().GetAwaiter().GetResult();
+
+                stopwatch.Stop();
+
+                executionTime += stopwatch.ElapsedTicks;
 
                 if (response.WasNotSuccessful || response.HasNullData())
                 {
                     throw new NullReferenceException();
                 }
 
-                Stopwatch disposeTime = Stopwatch.StartNew();
+                stopwatch.Restart();
 
                 studentApi.Dispose();
 
-                disposeTime.Stop();
+                stopwatch.Stop();
 
-                buildMs += buildTime.Elapsed.TotalMilliseconds;
-                runMs += runTime.Elapsed.TotalMilliseconds;
-                disposeMs += disposeTime.Elapsed.TotalMilliseconds;
+                disposeTime += stopwatch.ElapsedTicks;
             }
 
-            total.Stop();
+            decimal totalTime = buildTime + executionTime + disposeTime;
 
             Console.WriteLine();
             Console.WriteLine();
             Console.WriteLine("--------------------------Benchmark Completed---------------------------");
-            Console.WriteLine($"Total Time: {Math.Round(total.Elapsed.TotalMilliseconds, 3)}ms");
-            Console.WriteLine($"Total Build Time: {Math.Round(buildMs, 3)}ms");
-            Console.WriteLine($"Total Execution Time: {Math.Round(runMs, 3)}ms");
-            Console.WriteLine($"Total Dispose Time: {Math.Round(disposeMs, 3)}ms");
+            Console.WriteLine($"Total Time: [{Math.Round(totalTime / 10000)}ms] | [{Math.Round(totalTime)} ticks]");
+            Console.WriteLine($"Total Build Time: [{Math.Round(buildTime / 10000)}ms] | [{Math.Round(buildTime)} ticks]");
+            Console.WriteLine($"Total Execution Time: [{Math.Round(executionTime / 10000)}ms] | [{Math.Round(executionTime)} ticks]");
+            Console.WriteLine($"Total Dispose Time: [{Math.Round(disposeTime / 10000)}ms] | [{Math.Round(disposeTime)} ticks]");
             Console.WriteLine("------------------------------------------------------------------------");
-            Console.WriteLine($"Average Time: {Math.Round(total.Elapsed.TotalMilliseconds / runs, 3)}ms");
-            Console.WriteLine($"Average Build Time: {Math.Round(buildMs / runs, 3)}ms");
-            Console.WriteLine($"Average Execution Time: {Math.Round(runMs / runs, 3)}ms");
-            Console.WriteLine($"Average Dispose Time: {Math.Round(disposeMs / runs, 3)}ms");
+
+            totalTime /= iterations;
+            buildTime /= iterations;
+            executionTime /= iterations;
+            disposeTime /= iterations;
+
+            Console.WriteLine($"Average Time: [{Math.Round(ToMicroseconds(totalTime), 1)}us] | [{Math.Round(totalTime)} ticks]");
+            Console.WriteLine($"Average Build Time: [{Math.Round(ToMicroseconds(buildTime), 1)}us] | [{Math.Round(buildTime)} ticks]");
+            Console.WriteLine($"Average Execution Time: [{Math.Round(ToMicroseconds(executionTime), 1)}us] | [{Math.Round(executionTime)} ticks]");
+            Console.WriteLine($"Average Dispose Time: [{Math.Round(ToMicroseconds(disposeTime), 1)}us] | [{Math.Round(disposeTime)} ticks]");
             Console.WriteLine("------------------------------------------------------------------------");
 
             Console.ReadKey();
+        }
+
+        private static decimal ToMicroseconds(decimal ticks)
+        {
+            return ticks / (TimeSpan.TicksPerMillisecond / 1000);
         }
     }
 }

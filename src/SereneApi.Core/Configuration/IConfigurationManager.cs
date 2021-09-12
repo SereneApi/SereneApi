@@ -6,8 +6,8 @@ namespace SereneApi.Core.Configuration
 {
     public interface IConfigurationManager
     {
-        ApiOptionsFactory<TApiHandler> BuildApiOptionsFactory<TApiHandler>() where TApiHandler : IApiHandler;
+        void AmendConfiguration<THandler>(Action<IHandlerConfigurationFactory> factory) where THandler : ConfigurationFactory;
 
-        void AmendConfiguration<THandler>(Action<IHandlerConfigurationFactory> factory) where THandler : ConfigurationProvider;
+        ApiOptionsFactory<TApiHandler> BuildApiOptionsFactory<TApiHandler>() where TApiHandler : IApiHandler;
     }
 }

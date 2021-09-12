@@ -4,16 +4,6 @@ namespace DependencyInjection.API.DTOs
 {
     public class StudentDto
     {
-        public long Id { get; set; }
-
-        public string GivenName { get; set; }
-
-        public string LastName { get; set; }
-
-        public string Email { get; set; }
-
-        public DateTime BirthDate { get; set; }
-
         public static StudentDto JohnSmith { get; } = new StudentDto
         {
             Id = 0,
@@ -22,5 +12,11 @@ namespace DependencyInjection.API.DTOs
             Email = "John.Smith@SomeSchool.com",
             BirthDate = new DateTime(2005, 06, 13)
         };
+
+        public DateTime BirthDate { get; set; }
+        public string Email { get; set; }
+        public string GivenName { get; set; }
+        public long Id { get; set; }
+        public string LastName { get; set; }
     }
 }

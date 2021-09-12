@@ -1,5 +1,4 @@
-﻿
-using SereneApi.Core.Responses;
+﻿using SereneApi.Core.Responses;
 
 // ReSharper disable once CheckNamespace
 namespace SereneApi.Core.Response

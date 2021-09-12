@@ -1,8 +1,9 @@
 ﻿using SereneApi.Core.Connection;
+using System;
 
 namespace SereneApi.Core.Handler
 {
-    public interface IApiHandler
+    public interface IApiHandler : IDisposable
     {
         IConnectionSettings Connection { get; }
     }

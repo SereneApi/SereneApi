@@ -3,6 +3,7 @@ using SereneApi.Core.Options;
 using SereneApi.Core.Requests;
 using SereneApi.Core.Responses;
 using SereneApi.Handlers.Rest;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SereneAp.Handlers.Rest.Benchmark.API
@@ -13,11 +14,12 @@ namespace SereneAp.Handlers.Rest.Benchmark.API
         {
         }
 
-        public Task<IApiResponse<StudentDto>> GetStudentsAsync()
+        public Task<IApiResponse<List<StudentDto>>> GetStudentsAsync()
         {
             return MakeRequest
                 .UsingMethod(Method.Get)
-                .RespondsWith<StudentDto>()
+                .AgainstVersion("V2")
+                .RespondsWith<List<StudentDto>>()
                 .ExecuteAsync();
         }
     }

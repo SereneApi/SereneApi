@@ -1,5 +1,4 @@
-﻿using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Core.Transformation;
+﻿using SereneApi.Core.Transformation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,14 +12,12 @@ namespace SereneApi.Handlers.Rest.Queries
     {
         private readonly ITransformationService _transformer;
 
-        public QueryFactory(IDependencyProvider dependencies)
+        public QueryFactory(ITransformationService transformer)
         {
-            _transformer = dependencies.GetDependency<ITransformationService>();
+            _transformer = transformer;
         }
 
-        /// <inheritdoc>
-        ///     <cref>IQueryFactory.Build</cref>
-        /// </inheritdoc>
+        /// <inheritdoc><cref>IQueryFactory.Build</cref></inheritdoc>
         public string Build<TQueryable>(TQueryable query) where TQueryable : class
         {
             Dictionary<string, string> querySections = _transformer.BuildDictionary(query);
@@ -28,9 +25,7 @@ namespace SereneApi.Handlers.Rest.Queries
             return BuildQueryString(querySections);
         }
 
-        /// <inheritdoc>
-        ///     <cref>IQueryFactory.Build</cref>
-        /// </inheritdoc>
+        /// <inheritdoc><cref>IQueryFactory.Build</cref></inheritdoc>
         public string Build<TQueryable>(TQueryable query, Expression<Func<TQueryable, object>> selector) where TQueryable : class
         {
             Dictionary<string, string> querySections = _transformer.BuildDictionary(query, selector);
@@ -41,6 +36,14 @@ namespace SereneApi.Handlers.Rest.Queries
         public string Build(Dictionary<string, string> query)
         {
             return BuildQueryString(query);
+        }
+
+        /// <summary>
+        /// Builds the query section.
+        /// </summary>
+        private static string BuildQuerySection(KeyValuePair<string, string> querySection)
+        {
+            return $"{querySection.Key}={querySection.Value}";
         }
 
         /// <summary>
@@ -88,14 +91,6 @@ namespace SereneApi.Handlers.Rest.Queries
             }
 
             return queryString;
-        }
-
-        /// <summary>
-        /// Builds the query section.
-        /// </summary>
-        private static string BuildQuerySection(KeyValuePair<string, string> querySection)
-        {
-            return $"{querySection.Key}={querySection.Value}";
         }
     }
 }

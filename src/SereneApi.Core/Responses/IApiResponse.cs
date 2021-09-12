@@ -8,25 +8,12 @@ namespace SereneApi.Core.Responses
     /// </summary>
     public interface IApiResponse
     {
-        /// <summary>
-        /// Specifies the request.
-        /// </summary>
-        IApiRequest Request { get; }
+        TimeSpan Duration { get; }
 
         /// <summary>
-        /// Specifies the status received.
+        /// The exception that was encountered whilst processing the request.
         /// </summary>
-        Status Status { get; }
-
-        /// <summary>
-        /// Specifies if the request was successful.
-        /// </summary>
-        bool WasSuccessful { get; }
-
-        /// <summary>
-        /// Specifies if the request was not successful.
-        /// </summary>
-        bool WasNotSuccessful { get; }
+        Exception Exception { get; }
 
         /// <summary>
         /// Specifies if the request encountered an exception.
@@ -39,8 +26,23 @@ namespace SereneApi.Core.Responses
         string Message { get; }
 
         /// <summary>
-        /// The exception that was encountered whilst processing the request.
+        /// Specifies the request.
         /// </summary>
-        Exception Exception { get; }
+        IApiRequest Request { get; }
+
+        /// <summary>
+        /// Specifies the status received.
+        /// </summary>
+        Status Status { get; }
+
+        /// <summary>
+        /// Specifies if the request was not successful.
+        /// </summary>
+        bool WasNotSuccessful { get; }
+
+        /// <summary>
+        /// Specifies if the request was successful.
+        /// </summary>
+        bool WasSuccessful { get; }
     }
 }

@@ -4,8 +4,6 @@ namespace SereneApi.Core.Transformation.Transformers
 {
     public abstract class ObjectToStringTransformer<T> : IObjectToStringTransformer
     {
-        protected abstract string Transform(T value);
-
         public string TransformValue(object value)
         {
             if (value == null)
@@ -20,5 +18,7 @@ namespace SereneApi.Core.Transformation.Transformers
 
             throw new ArgumentException($"An incorrect value was provided for {GetType().FullName}");
         }
+
+        protected abstract string Transform(T value);
     }
 }

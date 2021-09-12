@@ -3,7 +3,6 @@ using SereneApi.Core.Connection;
 using SereneApi.Core.Handler;
 using System;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SereneApi.Core.Options
 {
@@ -17,24 +16,26 @@ namespace SereneApi.Core.Options
 
         public IDependencyProvider Dependencies { get; }
 
-        public bool ThrowExceptions { get; set; }
+        #endregion Properties
 
-        #endregion
         #region Constructors
 
         /// <summary>
         /// Creates a new instance of <see cref="ApiOptions"/>
         /// </summary>
         /// <param name="dependencies">The dependencies that can be used when making an API request.</param>
-        /// <param name="connection">The <see cref="IConnectionSettings"/> used to make requests to the API.</param>
+        /// <param name="connection">
+        /// The <see cref="IConnectionSettings"/> used to make requests to the API.
+        /// </param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public ApiOptions([NotNull] IDependencyProvider dependencies, [NotNull] IConnectionSettings connection)
+        public ApiOptions(IDependencyProvider dependencies, IConnectionSettings connection)
         {
             Dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
             Connection = connection ?? throw new ArgumentNullException(nameof(connection));
         }
 
-        #endregion
+        #endregion Constructors
+
         #region IDisposable
 
         private volatile bool _disposed;
@@ -61,6 +62,6 @@ namespace SereneApi.Core.Options
             _disposed = true;
         }
 
-        #endregion
+        #endregion IDisposable
     }
 }

@@ -8,23 +8,23 @@ namespace SereneApi.Core.Tests.Helper
     public class RulesHelperShould
     {
         [Theory]
-        [InlineData(1)]
-        [InlineData(3)]
-        [InlineData(5)]
-        public void ValidRetryCountPass(int count)
+        [InlineData(0)]
+        [InlineData(6)]
+        public void ValidRetryCountFail(int count)
         {
-            Should.NotThrow(() =>
+            Should.Throw<ArgumentException>(() =>
             {
                 Rules.ValidateRetryAttempts(count);
             });
         }
 
         [Theory]
-        [InlineData(0)]
-        [InlineData(6)]
-        public void ValidRetryCountFail(int count)
+        [InlineData(1)]
+        [InlineData(3)]
+        [InlineData(5)]
+        public void ValidRetryCountPass(int count)
         {
-            Should.Throw<ArgumentException>(() =>
+            Should.NotThrow(() =>
             {
                 Rules.ValidateRetryAttempts(count);
             });

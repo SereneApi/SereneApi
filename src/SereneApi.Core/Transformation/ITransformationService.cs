@@ -9,5 +9,7 @@ namespace SereneApi.Core.Transformation
         Dictionary<string, string> BuildDictionary<T>(T value) where T : class;
 
         Dictionary<string, string> BuildDictionary<T>(T value, Expression<Func<T, object>> propertySelector) where T : class;
+
+        T BuildObject<T>(Dictionary<string, string> property);
     }
 }

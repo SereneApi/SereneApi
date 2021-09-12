@@ -7,7 +7,7 @@ namespace SereneApi.Core.Transformation.Attributes
     [AttributeUsage(AttributeTargets.Property)]
     public class ObjectToStringTransformerAttribute : Attribute
     {
-        public IObjectToStringTransformer Transformer { get; }
+        private readonly IObjectToStringTransformer _transformer;
 
         public ObjectToStringTransformerAttribute(Type converter)
         {
@@ -26,7 +26,12 @@ namespace SereneApi.Core.Transformation.Attributes
                 throw new ArgumentException($"{converter.FullName} must implement {nameof(IObjectToStringTransformer)}");
             }
 
-            Transformer = (IObjectToStringTransformer)Activator.CreateInstance(converter);
+            _transformer = (IObjectToStringTransformer)Activator.CreateInstance(converter);
+        }
+
+        public string Transform(object value)
+        {
+            return _transformer.TransformValue(value);
         }
     }
 }

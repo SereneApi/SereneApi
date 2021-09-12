@@ -12,7 +12,8 @@
         None = 1,
         TimedOut = 2,
 
-        #endregion
+        #endregion Supporting
+
         #region 2XX - Success
 
         /// <summary>
@@ -31,48 +32,50 @@
         Accepted = 202,
 
         /// <summary>
-        /// 204 - 
+        /// 204 -
         /// </summary>
         NoContent = 204,
 
-        #endregion
+        #endregion 2XX - Success
+
         #region 3XX - Redirection
 
         /// <summary>
-        /// 301 - 
+        /// 301 -
         /// </summary>
         MovedPermanently = 301,
 
         /// <summary>
-        /// 302 - 
+        /// 302 -
         /// </summary>
         Found = 302,
 
         /// <summary>
-        /// 303 - 
+        /// 303 -
         /// </summary>
         SeeOther = 303,
 
         /// <summary>
-        /// 304 - 
+        /// 304 -
         /// </summary>
         NotModified = 304,
 
         /// <summary>
-        /// 307 - 
+        /// 307 -
         /// </summary>
         TemporaryRedirect = 307,
 
-        #endregion
+        #endregion 3XX - Redirection
+
         #region 4XX - Client Error
 
         /// <summary>
-        /// 400 - 
+        /// 400 -
         /// </summary>
         BadRequest = 400,
 
         /// <summary>
-        /// 401 - 
+        /// 401 -
         /// </summary>
         Unauthorized = 401,
 
@@ -106,7 +109,8 @@
         /// </summary>
         UnsupportedMediaType = 415,
 
-        #endregion
+        #endregion 4XX - Client Error
+
         #region 5XX - Server Error
 
         /// <summary>
@@ -119,6 +123,6 @@
         /// </summary>
         NotImplemented = 501,
 
-        #endregion
+        #endregion 5XX - Server Error
     }
 }

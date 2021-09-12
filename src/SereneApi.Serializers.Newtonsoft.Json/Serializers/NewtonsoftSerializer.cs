@@ -3,7 +3,6 @@ using SereneApi.Core.Content;
 using SereneApi.Core.Content.Types;
 using SereneApi.Core.Serialization;
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace SereneApi.Serializers.Newtonsoft.Json.Serializers
@@ -13,6 +12,16 @@ namespace SereneApi.Serializers.Newtonsoft.Json.Serializers
     /// </summary>
     public class NewtonsoftSerializer : ISerializer
     {
+        /// <summary>
+        /// The default settings used for Deserialization by <seealso cref="NewtonsoftSerializer"/>.
+        /// </summary>
+        public static JsonSerializerSettings DefaultDeserializerSettings { get; } = new JsonSerializerSettings();
+
+        /// <summary>
+        /// The default settings used for serialization by <seealso cref="NewtonsoftSerializer"/>.
+        /// </summary>
+        public static JsonSerializerSettings DefaultSerializerSettings { get; } = new JsonSerializerSettings();
+
         public JsonSerializerSettings DeserializerSettings { get; }
 
         public JsonSerializerSettings SerializerSettings { get; }
@@ -31,7 +40,7 @@ namespace SereneApi.Serializers.Newtonsoft.Json.Serializers
         /// </summary>
         /// <param name="settings">the settings to be used for serialization and deserialization.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public NewtonsoftSerializer([NotNull] JsonSerializerSettings settings)
+        public NewtonsoftSerializer(JsonSerializerSettings settings)
         {
             DeserializerSettings = settings ?? throw new ArgumentNullException(nameof(settings));
             SerializerSettings = settings;
@@ -43,16 +52,14 @@ namespace SereneApi.Serializers.Newtonsoft.Json.Serializers
         /// <param name="deserializerSettings">the settings to be used for deserialization.</param>
         /// <param name="serializerSettings">the settings to be used for serialization.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public NewtonsoftSerializer([NotNull] JsonSerializerSettings deserializerSettings, [NotNull] JsonSerializerSettings serializerSettings)
+        public NewtonsoftSerializer(JsonSerializerSettings deserializerSettings, JsonSerializerSettings serializerSettings)
         {
             DeserializerSettings = deserializerSettings ?? throw new ArgumentNullException(nameof(deserializerSettings));
             SerializerSettings = serializerSettings ?? throw new ArgumentNullException(nameof(serializerSettings));
         }
 
-        /// <inheritdoc>
-        ///     <cref>ISerializer.Deserialize</cref>
-        /// </inheritdoc>
-        public TObject Deserialize<TObject>([NotNull] IResponseContent content)
+        /// <inheritdoc><cref>ISerializer.Deserialize</cref></inheritdoc>
+        public TObject Deserialize<TObject>(IResponseContent content)
         {
             if (content == null)
             {
@@ -64,10 +71,8 @@ namespace SereneApi.Serializers.Newtonsoft.Json.Serializers
             return JsonConvert.DeserializeObject<TObject>(contentString, DeserializerSettings);
         }
 
-        /// <inheritdoc>
-        ///     <cref>ISerializer.DeserializeAsync</cref>
-        /// </inheritdoc>
-        public async Task<TObject> DeserializeAsync<TObject>([NotNull] IResponseContent content)
+        /// <inheritdoc><cref>ISerializer.DeserializeAsync</cref></inheritdoc>
+        public async Task<TObject> DeserializeAsync<TObject>(IResponseContent content)
         {
             if (content == null)
             {
@@ -79,10 +84,8 @@ namespace SereneApi.Serializers.Newtonsoft.Json.Serializers
             return JsonConvert.DeserializeObject<TObject>(contentString, DeserializerSettings);
         }
 
-        /// <inheritdoc>
-        ///     <cref>ISerializer.Serialize</cref>
-        /// </inheritdoc>
-        public IRequestContent Serialize<T>([NotNull] T value)
+        /// <inheritdoc><cref>ISerializer.Serialize</cref></inheritdoc>
+        public IRequestContent Serialize(object value)
         {
             if (value == null)
             {
@@ -93,33 +96,5 @@ namespace SereneApi.Serializers.Newtonsoft.Json.Serializers
 
             return new JsonContent(jsonContent);
         }
-
-        /// <inheritdoc>
-        ///     <cref>ISerializer.SerializeAsync</cref>
-        /// </inheritdoc>
-        public Task<IRequestContent> SerializeAsync<T>([NotNull] T value)
-        {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-
-            return Task.Factory.StartNew(() =>
-            {
-                string jsonContent = JsonConvert.SerializeObject(value, SerializerSettings);
-
-                return (IRequestContent)new JsonContent(jsonContent);
-            });
-        }
-
-        /// <summary>
-        /// The default settings used for Deserialization by <seealso cref="NewtonsoftSerializer"/>.
-        /// </summary>
-        public static JsonSerializerSettings DefaultDeserializerSettings { get; } = new JsonSerializerSettings();
-
-        /// <summary>
-        /// The default settings used for serialization by <seealso cref="NewtonsoftSerializer"/>.
-        /// </summary>
-        public static JsonSerializerSettings DefaultSerializerSettings { get; } = new JsonSerializerSettings();
     }
 }

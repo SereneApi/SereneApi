@@ -19,19 +19,18 @@ namespace SereneApi.Core.Authorization.Authorizers
     /// <typeparam name="TDto">The method in which the token will be retrieved.</typeparam>
     public class TokenAuthorizer<TApi, TDto> : IAuthorizer, IDisposable where TApi : class, IDisposable where TDto : class
     {
+        private const int _expiryLeewaySeconds = -60;
+        private readonly Func<TApi, Task<IApiResponse<TDto>>> _apiCall;
+        private readonly object _authorizationLock = new object();
+        private readonly Func<TDto, TokenAuthResult> _extractTokenFunction;
+        private readonly ILogger _logger;
+        private readonly Timer _tokenRenew = new Timer();
         private bool _tokenExpired = false;
 
-        private const int _expiryLeewaySeconds = -60;
-
-        private readonly Func<TApi, Task<IApiResponse<TDto>>> _apiCall;
-
-        private readonly Func<TDto, TokenAuthResult> _extractTokenFunction;
-
-        private readonly ILogger _logger;
-
-        private readonly object _authorizationLock = new object();
-
-        private readonly Timer _tokenRenew = new Timer();
+        /// <summary>
+        /// The authorization result.
+        /// </summary>
+        protected BearerAuthorization Authorization { get; private set; }
 
         /// <summary>
         /// The dependencies that can be used to authorize with.
@@ -43,17 +42,14 @@ namespace SereneApi.Core.Authorization.Authorizers
         /// </summary>
         protected TimeSpan TokenExpiryTime { get; private set; }
 
-        /// <summary> 
-        /// The authorization result.
-        /// </summary>
-        protected BearerAuthorization Authorization { get; private set; }
-
         protected bool WillAutoRenew { get; set; }
 
         /// <summary>
         /// Creates a new instance of <seealso cref="TokenAuthorizer{TApi,TDto}"/>.
         /// </summary>
-        /// <param name="dependencies">The dependencies the <see cref="TokenAuthorizer{TApi,TDto}"/> can use to authorize with.</param>
+        /// <param name="dependencies">
+        /// The dependencies the <see cref="TokenAuthorizer{TApi,TDto}"/> can use to authorize with.
+        /// </param>
         /// <param name="apiCall">The API call to authorize with.</param>
         /// <param name="retrieveToken">The method in which the token will be retrieved.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
@@ -67,8 +63,8 @@ namespace SereneApi.Core.Authorization.Authorizers
 
             WillAutoRenew = autoRenew;
 
-            // This may not be needed, but we're adding a default time so it doesn't continue to throw events.
-            // This value will changed after a token is retrieved.
+            // This may not be needed, but we're adding a default time so it doesn't continue to
+            // throw events. This value will changed after a token is retrieved.
             _tokenRenew.Elapsed += async (s, e) => await OnTimedEventAsync(s, e);
         }
 
@@ -87,7 +83,9 @@ namespace SereneApi.Core.Authorization.Authorizers
         /// <summary>
         /// Get ths specified API.
         /// </summary>
-        /// <exception cref="NullReferenceException">Thrown when the specified API could not be found.</exception>
+        /// <exception cref="NullReferenceException">
+        /// Thrown when the specified API could not be found.
+        /// </exception>
         protected virtual TApi GetApi()
         {
             if (Dependencies.TryGetDependency(out IApiFactory handlerFactory))
@@ -213,6 +211,6 @@ namespace SereneApi.Core.Authorization.Authorizers
             _disposed = true;
         }
 
-        #endregion
+        #endregion IDisposable
     }
 }

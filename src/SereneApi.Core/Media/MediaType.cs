@@ -6,12 +6,18 @@
     public enum MediaType
     {
         /// <summary>
-        /// JSON content.
+        /// JSON Content.
         /// </summary>
         Json,
+
         /// <summary>
         /// Form URL Encoded content.
         /// </summary>
-        FormUrlEncoded
+        FormUrlEncoded,
+
+        /// <summary>
+        /// XML Content.
+        /// </summary>
+        Xml
     }
 }

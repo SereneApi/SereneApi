@@ -17,44 +17,84 @@ namespace SereneApi.Core.Options.Factories
 {
     public class ApiOptionsFactory<TApiHandler> : ApiOptionsFactory, IApiOptionsBuilder, IApiOptionsFactory, IApiOptionsExtensions, IDisposable where TApiHandler : IApiHandler
     {
-        private bool _throwExceptions = false;
+        public override Type HandlerType { get; }
 
         public ApiOptionsFactory(IDependencyCollection dependencies) : base(dependencies)
         {
+            HandlerType = typeof(TApiHandler);
         }
 
-        /// <inheritdoc cref="IApiOptionsBuilder.AddConfiguration"/>
-        public void AddConfiguration(IConnectionSettings configuration)
+        public void AcceptContentType(ContentType type)
         {
-            if (configuration == null)
+            Dependencies.AddScoped(() => type);
+        }
+
+        public void AddAuthentication(IAuthorization authorization)
+        {
+            if (authorization == null)
             {
-                throw new ArgumentNullException(nameof(configuration));
+                throw new ArgumentNullException(nameof(authorization));
+            }
+
+            Dependencies.AddScoped(() => authorization);
+        }
+
+        public void AddBasicAuthentication(string username, string password)
+        {
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                throw new ArgumentNullException(nameof(username));
+            }
+
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                throw new ArgumentNullException(nameof(password));
+            }
+
+            Dependencies.AddTransient<IAuthorization>(() => new BasicAuthorization(username, password));
+        }
+
+        public void AddBearerAuthentication(string token)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                throw new ArgumentNullException(nameof(token));
+            }
+
+            Dependencies.AddTransient<IAuthorization>(() => new BearerAuthorization(token));
+        }
+
+        public void AddConfiguration(IConnectionSettings connectionSettings)
+        {
+            if (connectionSettings == null)
+            {
+                throw new ArgumentNullException(nameof(connectionSettings));
             }
 
             using IDependencyProvider provider = Dependencies.BuildProvider();
 
-            IHandlerConfiguration apiConfiguration = provider.GetDependency<IHandlerConfiguration>();
+            IConfiguration configuration = provider.GetDependency<IConfiguration>();
 
-            string resourcePath = configuration.ResourcePath;
+            string resourcePath = connectionSettings.ResourcePath;
 
             if (string.IsNullOrWhiteSpace(resourcePath))
             {
                 if (resourcePath != string.Empty)
                 {
-                    resourcePath = apiConfiguration.ResourcePath;
+                    resourcePath = configuration["ResourcePath"];
                 }
             }
 
             ConnectionSettings connection =
-                new ConnectionSettings(configuration.BaseAddress, configuration.Resource, resourcePath)
+                new ConnectionSettings(connectionSettings.BaseAddress, connectionSettings.Resource, resourcePath)
                 {
-                    Timeout = apiConfiguration.Timeout,
-                    RetryAttempts = apiConfiguration.RetryCount
+                    Timeout = configuration.Get<int>("Timeout"),
+                    RetryAttempts = configuration.Get<int>("RetryAttempts")
                 };
 
             #region Timeout
 
-            int timeout = configuration.Timeout;
+            int timeout = connectionSettings.Timeout;
 
             if (timeout < 0)
             {
@@ -66,10 +106,11 @@ namespace SereneApi.Core.Options.Factories
                 connection.Timeout = timeout;
             }
 
-            #endregion
+            #endregion Timeout
+
             #region Retry Count
 
-            int retryCount = configuration.RetryAttempts;
+            int retryCount = connectionSettings.RetryAttempts;
 
             if (retryCount != default)
             {
@@ -78,52 +119,28 @@ namespace SereneApi.Core.Options.Factories
                 connection.RetryAttempts = retryCount;
             }
 
-            #endregion
+            #endregion Retry Count
 
             ConnectionSettings = connection;
         }
 
-        /// <inheritdoc cref="IApiOptionsBuilder.SetSource"/>
-        public void SetSource(string baseAddress, string resource = null, string resourcePath = null)
+        public void AddCredentials(ICredentials credentials)
         {
-            if (string.IsNullOrWhiteSpace(baseAddress))
+            if (credentials == null)
             {
-                throw new ArgumentNullException(nameof(baseAddress));
+                throw new ArgumentNullException(nameof(credentials));
             }
 
-            using IDependencyProvider provider = Dependencies.BuildProvider();
-
-            IHandlerConfiguration configuration = provider.GetDependency<IHandlerConfiguration>();
-
-            if (string.IsNullOrWhiteSpace(resourcePath))
-            {
-                if (resourcePath != string.Empty)
-                {
-                    resourcePath = configuration.ResourcePath;
-                }
-            }
-
-            ConnectionSettings = new ConnectionSettings(baseAddress, resource, resourcePath)
-            {
-                Timeout = configuration.Timeout,
-                RetryAttempts = configuration.RetryCount
-            };
+            Dependencies.AddScoped(() => credentials);
         }
 
-        /// <inheritdoc cref="IApiOptionsBuilder.SetTimeout(int)"/>
-        public void SetTimeout(int seconds)
+        public IApiOptions BuildOptions()
         {
-            if (seconds <= 0)
-            {
-                throw new ArgumentException("A timeout value must be greater than 0.");
-            }
+            Dependencies.AddScoped<IConnectionSettings>(() => ConnectionSettings);
 
-            if (ConnectionSettings == null)
-            {
-                throw new MethodAccessException("Source information must be supplied fired.");
-            }
+            IApiOptions<TApiHandler> apiOptions = new ApiOptions<TApiHandler>(Dependencies.BuildProvider(), ConnectionSettings);
 
-            ConnectionSettings.Timeout = seconds;
+            return apiOptions;
         }
 
         /// <inheritdoc cref="IApiOptionsBuilder.SetRetryAttempts(int)"/>
@@ -144,7 +161,82 @@ namespace SereneApi.Core.Options.Factories
             ConnectionSettings.RetryAttempts = attemptCount;
         }
 
-        /// <inheritdoc cref="IApiOptionsBuilder.UseLogger"/>
+        public void SetSource(string baseAddress, string resource = null, string resourcePath = null)
+        {
+            if (string.IsNullOrWhiteSpace(baseAddress))
+            {
+                throw new ArgumentNullException(nameof(baseAddress));
+            }
+
+            using IDependencyProvider provider = Dependencies.BuildProvider();
+
+            IConfiguration configuration = provider.GetDependency<IConfiguration>();
+
+            if (string.IsNullOrWhiteSpace(resourcePath))
+            {
+                if (resourcePath != string.Empty)
+                {
+                    resourcePath = configuration["ResourcePath"];
+                }
+            }
+
+            ConnectionSettings = new ConnectionSettings(baseAddress, resource, resourcePath)
+            {
+                Timeout = configuration.Get<int>("Timeout"),
+                RetryAttempts = configuration.Get<int>("RetryAttempts")
+            };
+        }
+
+        public void SetTimeout(int seconds)
+        {
+            if (seconds <= 0)
+            {
+                throw new ArgumentException("A timeout value must be greater than 0.");
+            }
+
+            if (ConnectionSettings == null)
+            {
+                throw new MethodAccessException("Source information must be supplied fired.");
+            }
+
+            ConnectionSettings.Timeout = seconds;
+        }
+
+        public void SetTimeout(int seconds, int attempts)
+        {
+            ConnectionSettings.Timeout = seconds;
+            ConnectionSettings.RetryAttempts = attempts;
+        }
+
+        public void ThrowExceptions()
+        {
+            using IDependencyProvider dependencies = Dependencies.BuildProvider();
+
+            Configuration.Configuration configuration = (Configuration.Configuration)dependencies.GetDependency<IConfiguration>();
+
+            configuration.Add("ThrowExceptions", true);
+        }
+
+        public void UseFailedResponseHandler(IFailedResponseHandler handler)
+        {
+            if (handler == null)
+            {
+                throw new ArgumentNullException(nameof(handler));
+            }
+
+            Dependencies.AddScoped(() => handler);
+        }
+
+        public void UseFailedResponseHandler(Func<IDependencyProvider, IFailedResponseHandler> handlerBuilder)
+        {
+            if (handlerBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(handlerBuilder));
+            }
+
+            Dependencies.AddScoped(handlerBuilder.Invoke);
+        }
+
         public void UseLogger(ILogger logger)
         {
             if (logger == null)
@@ -153,66 +245,6 @@ namespace SereneApi.Core.Options.Factories
             }
 
             Dependencies.AddScoped(() => logger);
-        }
-
-        /// <inheritdoc cref="IApiOptionsBuilder.AddCredentials"/>
-        public void AddCredentials(ICredentials credentials)
-        {
-            if (credentials == null)
-            {
-                throw new ArgumentNullException(nameof(credentials));
-            }
-
-            Dependencies.AddScoped(() => credentials);
-        }
-
-        /// <inheritdoc cref="IApiOptionsBuilder.AddAuthentication"/>
-        public void AddAuthentication(IAuthorization authorization)
-        {
-            if (authorization == null)
-            {
-                throw new ArgumentNullException(nameof(authorization));
-            }
-
-            Dependencies.AddScoped(() => authorization);
-        }
-
-        /// <inheritdoc cref="IApiOptionsBuilder.AddBasicAuthentication"/>
-        public void AddBasicAuthentication(string username, string password)
-        {
-            if (string.IsNullOrWhiteSpace(username))
-            {
-                throw new ArgumentNullException(nameof(username));
-            }
-
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                throw new ArgumentNullException(nameof(password));
-            }
-
-            Dependencies.AddTransient<IAuthorization>(() => new BasicAuthorization(username, password));
-        }
-
-        /// <inheritdoc cref="IApiOptionsBuilder.AddBearerAuthentication"/>
-        public void AddBearerAuthentication(string token)
-        {
-            if (string.IsNullOrWhiteSpace(token))
-            {
-                throw new ArgumentNullException(nameof(token));
-            }
-
-            Dependencies.AddTransient<IAuthorization>(() => new BearerAuthorization(token));
-        }
-
-        /// <inheritdoc cref="IApiOptionsBuilder.AcceptContentType"/>
-        public void AcceptContentType(ContentType type)
-        {
-            Dependencies.AddScoped(() => type);
-        }
-
-        public void ThrowExceptions()
-        {
-            _throwExceptions = true;
         }
 
         public void UseRequestHandler(IRequestHandler handler)
@@ -255,37 +287,6 @@ namespace SereneApi.Core.Options.Factories
             Dependencies.AddScoped(handlerBuilder.Invoke);
         }
 
-        public void UseFailedResponseHandler(IFailedResponseHandler handler)
-        {
-            if (handler == null)
-            {
-                throw new ArgumentNullException(nameof(handler));
-            }
-
-            Dependencies.AddScoped(() => handler);
-        }
-
-        public void UseFailedResponseHandler(Func<IDependencyProvider, IFailedResponseHandler> handlerBuilder)
-        {
-            if (handlerBuilder == null)
-            {
-                throw new ArgumentNullException(nameof(handlerBuilder));
-            }
-
-            Dependencies.AddScoped(handlerBuilder.Invoke);
-        }
-
-        /// <inheritdoc cref="IApiOptionsBuilder.SetTimeout(int,int)"/>
-        public void SetTimeout(int seconds, int attempts)
-        {
-            ConnectionSettings.Timeout = seconds;
-            ConnectionSettings.RetryAttempts = attempts;
-        }
-
-        /// <inheritdoc cref="IApiOptionsBuilder.UseRouteFactory"/>
-
-
-        /// <inheritdoc cref="IApiOptionsBuilder.UseSerializer"/>
         public void UseSerializer(ISerializer serializer)
         {
             if (serializer == null)
@@ -294,18 +295,6 @@ namespace SereneApi.Core.Options.Factories
             }
 
             Dependencies.AddScoped(() => serializer);
-        }
-
-        public IApiOptions BuildOptions()
-        {
-            Dependencies.AddScoped<IConnectionSettings>(() => ConnectionSettings);
-
-            IApiOptions<TApiHandler> apiOptions = new ApiOptions<TApiHandler>(Dependencies.BuildProvider(), ConnectionSettings)
-            {
-                ThrowExceptions = _throwExceptions
-            };
-
-            return apiOptions;
         }
 
         #region IDisposable
@@ -334,6 +323,6 @@ namespace SereneApi.Core.Options.Factories
             _disposed = true;
         }
 
-        #endregion
+        #endregion IDisposable
     }
 }

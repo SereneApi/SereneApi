@@ -6,6 +6,14 @@ namespace SereneApi.Extensions.Caching.Options
     {
         private TimeSpan _lifeSpan;
 
+        public ICacheOptions BuildOptions()
+        {
+            return new CacheOptions
+            {
+                LifeSpan = _lifeSpan
+            };
+        }
+
         public void SetCacheLifeSpan(TimeSpan lifeSpan)
         {
             if (lifeSpan.TotalMilliseconds <= 0)
@@ -14,14 +22,6 @@ namespace SereneApi.Extensions.Caching.Options
             }
 
             _lifeSpan = lifeSpan;
-        }
-
-        public ICacheOptions BuildOptions()
-        {
-            return new CacheOptions
-            {
-                LifeSpan = _lifeSpan
-            };
         }
     }
 }

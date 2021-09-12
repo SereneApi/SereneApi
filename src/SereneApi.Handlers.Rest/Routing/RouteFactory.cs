@@ -1,5 +1,4 @@
-﻿using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Handlers.Rest.Queries;
+﻿using SereneApi.Handlers.Rest.Queries;
 using SereneApi.Handlers.Rest.Requests;
 using SereneApi.Handlers.Rest.Requests.Types;
 using System;
@@ -10,7 +9,7 @@ namespace SereneApi.Handlers.Rest.Routing
     /// <inheritdoc cref="IRouteFactory"/>
     internal class RouteFactory : IRouteFactory
     {
-        private readonly IDependencyProvider _dependencies;
+        private readonly IQueryFactory _queryFactory;
 
         #region Constructors
 
@@ -18,12 +17,12 @@ namespace SereneApi.Handlers.Rest.Routing
         /// Instantiates a new instance of <see cref="RouteFactory"/>.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public RouteFactory(IDependencyProvider dependencies)
+        public RouteFactory(IQueryFactory queryFactory)
         {
-            _dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
+            _queryFactory = queryFactory ?? throw new ArgumentNullException(nameof(queryFactory));
         }
 
-        #endregion
+        #endregion Constructors
 
         public string BuildEndPoint(IRestApiRequest request)
         {
@@ -33,7 +32,8 @@ namespace SereneApi.Handlers.Rest.Routing
                 if (string.IsNullOrWhiteSpace(request.EndpointTemplate))
                 {
                     // No Endpoint was supplied, if one parameter was provided it will be appended.
-                    // Else an exception will be thrown as a template is needed if more than one parameter is provided.
+                    // Else an exception will be thrown as a template is needed if more than one
+                    // parameter is provided.
                     if (request.Parameters.Length > 1)
                     {
                         throw new ArgumentException("An endpoint template must be supplied to use multiple parameters.");
@@ -59,26 +59,46 @@ namespace SereneApi.Handlers.Rest.Routing
         {
             RestApiRequest apiRequest = (RestApiRequest)request;
 
-            string route = $"{request.ResourcePath}/{request.Resource}";
+            string route = string.Empty;
+
+            if (!string.IsNullOrWhiteSpace(request.ResourcePath))
+            {
+                route += request.ResourcePath;
+            }
 
             if (request.Version != null)
             {
-                route += $"/{request.Version.GetVersionString()}";
+                if (route.Length > 0 && route.Last() != '/')
+                {
+                    route += '/';
+                }
+
+                route += request.Version.GetVersionString();
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.Resource))
+            {
+                if (route.Length > 0 && route.Last() != '/')
+                {
+                    route += '/';
+                }
+
+                route += request.Resource;
             }
 
             if (!string.IsNullOrWhiteSpace(request.Endpoint))
             {
-                route += $"/{request.Endpoint}";
+                if (route.Length > 0 && route.Last() != '/')
+                {
+                    route += '/';
+                }
+
+                route += request.Endpoint;
             }
 
             if (apiRequest.Query is { Count: > 0 })
             {
-                IQueryFactory queryFactory = _dependencies.GetDependency<IQueryFactory>();
-
-                string queryString = queryFactory.Build(apiRequest.Query);
-
-                // If a query is provided it will be appended.
-                route += queryString;
+                route += _queryFactory.Build(apiRequest.Query);
             }
 
             return new Uri(route, UriKind.Relative);
@@ -94,7 +114,8 @@ namespace SereneApi.Handlers.Rest.Routing
         {
             #region Format Check Logic
 
-            // This should not need to be done, but if it is not done a format that only support 1 parameter but is supplied more than 1 parameter will not fail.
+            // This should not need to be done, but if it is not done a format that only support 1
+            // parameter but is supplied more than 1 parameter will not fail.
             int expectedFormatLength = endpointTemplate.Length - templateParameters.Length * 3;
 
             foreach (object parameter in templateParameters)
@@ -102,7 +123,7 @@ namespace SereneApi.Handlers.Rest.Routing
                 expectedFormatLength += parameter.ToString().Length;
             }
 
-            #endregion
+            #endregion Format Check Logic
 
             string endpoint = string.Format(endpointTemplate, templateParameters);
 
@@ -120,7 +141,8 @@ namespace SereneApi.Handlers.Rest.Routing
 
             endpoint = endpointTemplate;
 
-            // Return an endpoint without formatting the template and appending the only parameter to the end.
+            // Return an endpoint without formatting the template and appending the only parameter
+            // to the end.
             return $"{endpoint}/{templateParameters.First()}";
         }
     }

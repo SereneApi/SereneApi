@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\SereneApi.Extensions.Mocking\SereneApi.Extensions.Mocking.csproj" />
+    <ProjectReference Include="..\..\src\SereneApi.Extensions.Mocking.Rest\SereneApi.Extensions.Mocking.Rest.csproj" />
     <ProjectReference Include="..\..\src\SereneApi.Handlers.Rest\SereneApi.Handlers.Rest.csproj" />
   </ItemGroup>
 

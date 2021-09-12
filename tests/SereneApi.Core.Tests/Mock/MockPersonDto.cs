@@ -1,21 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SereneApi.Abstractions.Tests.Mock
+namespace SereneApi.Core.Tests.Mock
 {
     public class MockPersonDto
     {
-        public int Age { get; set; }
-
-        public string Name { get; set; }
-
-        public DateTime BirthDate { get; set; }
-
-        public static MockPersonDto JohnSmith { get; } = new MockPersonDto
+        public static List<MockPersonDto> All { get; } = new List<MockPersonDto>
         {
-            Age = 18,
-            Name = "John Smith",
-            BirthDate = new DateTime(2000, 05, 15, 05, 35, 20)
+            BenJerry,
+            JohnSmith
         };
 
         public static MockPersonDto BenJerry { get; } = new MockPersonDto
@@ -25,10 +18,16 @@ namespace SereneApi.Abstractions.Tests.Mock
             BirthDate = new DateTime(2002, 08, 20)
         };
 
-        public static List<MockPersonDto> All { get; } = new List<MockPersonDto>
+        public static MockPersonDto JohnSmith { get; } = new MockPersonDto
         {
-            BenJerry,
-            JohnSmith
+            Age = 18,
+            Name = "John Smith",
+            BirthDate = new DateTime(2000, 05, 15, 05, 35, 20)
         };
+
+        public int Age { get; set; }
+
+        public DateTime BirthDate { get; set; }
+        public string Name { get; set; }
     }
 }

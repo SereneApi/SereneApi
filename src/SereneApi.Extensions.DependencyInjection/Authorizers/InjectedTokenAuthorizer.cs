@@ -4,7 +4,6 @@ using SereneApi.Core.Authorization;
 using SereneApi.Core.Authorization.Authorizers;
 using SereneApi.Core.Responses;
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace SereneApi.Extensions.DependencyInjection.Authorizers
@@ -22,7 +21,7 @@ namespace SereneApi.Extensions.DependencyInjection.Authorizers
         /// <param name="dependencies">The dependencies that can be used.</param>
         /// <param name="apiCall">Perform the authorization request.</param>
         /// <param name="retrieveToken">Extract the token information from the response.</param>
-        public InjectedTokenAuthorizer([NotNull] IDependencyProvider dependencies, [NotNull] Func<TApi, Task<IApiResponse<TDto>>> apiCall, [NotNull] Func<TDto, TokenAuthResult> retrieveToken) : base(dependencies, apiCall, retrieveToken)
+        public InjectedTokenAuthorizer(IDependencyProvider dependencies, Func<TApi, Task<IApiResponse<TDto>>> apiCall, Func<TDto, TokenAuthResult> retrieveToken) : base(dependencies, apiCall, retrieveToken)
         {
         }
 

@@ -13,11 +13,6 @@ namespace SereneApi.Core.Connection
         Uri BaseAddress { get; }
 
         /// <summary>
-        /// The correlated source of the API.
-        /// </summary>
-        public string Source { get; }
-
-        /// <summary>
         /// Specifies the resource that will be consumed.
         /// </summary>
         /// <remarks>This value is optional and can be overriden when making a request.</remarks>
@@ -30,13 +25,18 @@ namespace SereneApi.Core.Connection
         string ResourcePath { get; }
 
         /// <summary>
-        /// Specifies the amount of time in seconds the connection will be kept alive before being timed-out.
-        /// </summary>
-        int Timeout { get; }
-
-        /// <summary>
         /// Specifies how many times the connection will be retried after it has timed-out.
         /// </summary>
         int RetryAttempts { get; }
+
+        /// <summary>
+        /// The correlated source of the API.
+        /// </summary>
+        public string Source { get; }
+
+        /// <summary>
+        /// Specifies the amount of time in seconds the connection will be kept alive before being timed-out.
+        /// </summary>
+        int Timeout { get; }
     }
 }

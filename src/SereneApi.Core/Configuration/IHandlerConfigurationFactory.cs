@@ -1,17 +1,11 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
-using System;
 
 namespace SereneApi.Core.Configuration
 {
-    public interface IHandlerConfigurationFactory : IHandlerConfiguration
+    public interface IHandlerConfigurationFactory
     {
-        new string ResourcePath { get; set; }
+        Configuration Configuration { get; }
 
-        new int Timeout { get; set; }
-
-        new int RetryCount { get; set; }
-
-        void AddDependency<TDependency>(Func<TDependency> dependency, Lifetime lifetime, Binding binding = Binding.Bound);
-        void AddDependency<TDependency>(Func<IDependencyProvider, TDependency> dependency, Lifetime lifetime, Binding binding = Binding.Bound);
+        IDependencyCollection Dependencies { get; }
     }
 }

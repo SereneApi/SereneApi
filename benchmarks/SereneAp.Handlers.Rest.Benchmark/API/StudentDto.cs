@@ -1,13 +1,13 @@
-﻿namespace SereneApi.Benchmark.API
+﻿using System;
+
+namespace SereneApi.Benchmark.API
 {
     public class StudentDto
     {
-        public long Id { get; set; }
-
-        public string FirstName { get; set; }
-
-        public string LastName { get; set; }
-
+        public DateTime BirthDate { get; set; }
         public string Email { get; set; }
+        public string GivenName { get; set; }
+        public long Id { get; set; }
+        public string LastName { get; set; }
     }
 }

@@ -1,5 +1,4 @@
-﻿using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Handlers.Soap.Requests;
+﻿using SereneApi.Handlers.Soap.Requests;
 using System;
 
 namespace SereneApi.Handlers.Soap.Routing
@@ -7,20 +6,16 @@ namespace SereneApi.Handlers.Soap.Routing
     /// <inheritdoc cref="IRouteFactory"/>
     internal class RouteFactory : IRouteFactory
     {
-        private readonly IDependencyProvider _dependencies;
-
         #region Constructors
 
         /// <summary>
         /// Instantiates a new instance of <see cref="RouteFactory"/>.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public RouteFactory(IDependencyProvider dependencies)
+        public RouteFactory()
         {
-            _dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
         }
 
-        #endregion
+        #endregion Constructors
 
         /// <inheritdoc cref="IRouteFactory.BuildRoute"/>
         public Uri BuildRoute(ISoapApiRequest request)
@@ -30,11 +25,6 @@ namespace SereneApi.Handlers.Soap.Routing
             if (request.Version != null)
             {
                 route += $"/{request.Version.GetVersionString()}";
-            }
-
-            if (!string.IsNullOrWhiteSpace(request.Service))
-            {
-                route += $"/{request.Service}";
             }
 
             return new Uri(route, UriKind.Relative);

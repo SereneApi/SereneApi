@@ -4,10 +4,6 @@ namespace DependencyInjection.API.DTOs
 {
     public class ClassDto
     {
-        public long Id { get; set; }
-        public string Name { get; set; }
-        public string State { get; set; }
-
         public static ClassDto ClassA { get; } = new ClassDto
         {
             Id = 0,
@@ -27,5 +23,9 @@ namespace DependencyInjection.API.DTOs
             ClassA,
             ClassB
         };
+
+        public long Id { get; set; }
+        public string Name { get; set; }
+        public string State { get; set; }
     }
 }

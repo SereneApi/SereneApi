@@ -12,13 +12,10 @@ namespace SereneApi.Core.Handler.Factories
     {
         private readonly IConfigurationManager _configurationManager = new ConfigurationManager();
 
+        private readonly Dictionary<Type, IApiOptionsBuilder> _optionsBuilders = new();
         private readonly Dictionary<Type, Type> _registeredHandlers = new();
 
-        private readonly Dictionary<Type, IApiOptionsBuilder> _optionsBuilders = new();
-
-        /// <inheritdoc>
-        ///     <cref>IApiHandlerFactory.Build</cref>
-        /// </inheritdoc>
+        /// <inheritdoc><cref>IApiHandlerFactory.Build</cref></inheritdoc>
         public TApi Build<TApi>() where TApi : class
         {
             CheckIfDisposed();
@@ -33,35 +30,6 @@ namespace SereneApi.Core.Handler.Factories
             TApi handler = (TApi)Activator.CreateInstance(_registeredHandlers[typeof(TApi)], options);
 
             return handler;
-        }
-
-        /// <summary>
-        /// Registers an API definition to an API handler allowing for Dependency Injection of the specified API.
-        /// </summary>
-        /// <typeparam name="TApi">The API to be associated to a Handler.</typeparam>
-        /// <typeparam name="TApiHandler">The Handler which will be configured and perform API calls.</typeparam>
-        /// <param name="builder">Configures the API Handler using the provided configuration.</param>
-        /// <exception cref="ArgumentException">Thrown when the specified API has already been registered.</exception>
-        /// <exception cref="ArgumentNullException">Thrown when a null value has been provided.</exception>
-        public IApiOptionsExtensions RegisterApi<TApi, TApiHandler>(Action<IApiOptionsFactory> builder = null) where TApiHandler : IApiHandler, TApi
-        {
-            CheckIfDisposed();
-
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
-            ApiOptionsFactory<TApiHandler> factory = _configurationManager.BuildApiOptionsFactory<TApiHandler>();
-
-            factory.Dependencies.AddSingleton<IApiFactory>(() => this, Binding.Unbound);
-
-            builder.Invoke(factory);
-
-            _registeredHandlers.Add(typeof(TApi), typeof(TApiHandler));
-            _optionsBuilders.Add(typeof(TApi), factory);
-
-            return factory;
         }
 
         public IApiOptionsExtensions ExtendApi<TApi>()
@@ -86,9 +54,50 @@ namespace SereneApi.Core.Handler.Factories
             builder.Invoke(ExtendApi<TApi>());
         }
 
+        /// <summary>
+        /// Registers an API definition to an API handler allowing for Dependency Injection of the
+        /// specified API.
+        /// </summary>
+        /// <typeparam name="TApi">The API to be associated to a Handler.</typeparam>
+        /// <typeparam name="TApiHandler">
+        /// The Handler which will be configured and perform API calls.
+        /// </typeparam>
+        /// <param name="builder">Configures the API Handler using the provided configuration.</param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when the specified API has already been registered.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">Thrown when a null value has been provided.</exception>
+        public IApiOptionsExtensions RegisterApi<TApi, TApiHandler>(Action<IApiOptionsFactory> builder = null) where TApiHandler : IApiHandler, TApi
+        {
+            CheckIfDisposed();
+
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            ApiOptionsFactory<TApiHandler> factory = _configurationManager.BuildApiOptionsFactory<TApiHandler>();
+
+            factory.Dependencies.AddSingleton<IApiFactory>(() => this, Binding.Unbound);
+
+            builder.Invoke(factory);
+
+            _registeredHandlers.Add(typeof(TApi), typeof(TApiHandler));
+            _optionsBuilders.Add(typeof(TApi), factory);
+
+            return factory;
+        }
+
         #region IDisposable
 
         private volatile bool _disposed;
+
+        public void Dispose()
+        {
+            Dispose(true);
+
+            GC.SuppressFinalize(this);
+        }
 
         protected void CheckIfDisposed()
         {
@@ -96,13 +105,6 @@ namespace SereneApi.Core.Handler.Factories
             {
                 throw new ObjectDisposedException(nameof(GetType));
             }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-
-            GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -131,6 +133,6 @@ namespace SereneApi.Core.Handler.Factories
             _disposed = true;
         }
 
-        #endregion
+        #endregion IDisposable
     }
 }

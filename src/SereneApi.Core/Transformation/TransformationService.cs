@@ -11,11 +11,14 @@ namespace SereneApi.Core.Transformation
 {
     public class TransformationService : ITransformationService
     {
-        private readonly IObjectToStringTransformer _defaultTransformer;
+        private readonly IObjectToStringTransformer _defaultObjectToStringTransformer;
 
-        public TransformationService(IObjectToStringTransformer transformer = null)
+        private readonly IStringToObjectTransformer _defaultStringToObjectTransformer;
+
+        public TransformationService(IObjectToStringTransformer objectTransformer, IStringToObjectTransformer stringTransformer)
         {
-            _defaultTransformer = transformer ?? new BasicObjectToStringTransformer();
+            _defaultObjectToStringTransformer = objectTransformer;
+            _defaultStringToObjectTransformer = stringTransformer;
         }
 
         public Dictionary<string, string> BuildDictionary<T>(T value) where T : class
@@ -25,7 +28,7 @@ namespace SereneApi.Core.Transformation
                 throw new ArgumentNullException(nameof(value));
             }
 
-            Dictionary<string, string> propertySections = new Dictionary<string, string>();
+            SortedDictionary<string, string> propertySections = new SortedDictionary<string, string>();
 
             PropertyInfo[] properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
@@ -41,7 +44,7 @@ namespace SereneApi.Core.Transformation
                 propertySections.Add(querySection.Key, querySection.Value);
             }
 
-            return propertySections;
+            return new Dictionary<string, string>(propertySections);
         }
 
         public Dictionary<string, string> BuildDictionary<T>(T value, Expression<Func<T, object>> propertySelector) where T : class
@@ -51,7 +54,7 @@ namespace SereneApi.Core.Transformation
                 throw new ArgumentException($"{nameof(propertySelector)} must be a {nameof(MemberExpression)}");
             }
 
-            Dictionary<string, string> propertySections = new Dictionary<string, string>();
+            SortedDictionary<string, string> propertySections = new SortedDictionary<string, string>();
 
             foreach (Expression expression in body.Arguments)
             {
@@ -72,7 +75,50 @@ namespace SereneApi.Core.Transformation
                 propertySections.Add(querySection.Key, querySection.Value);
             }
 
-            return propertySections;
+            return new Dictionary<string, string>(propertySections);
+        }
+
+        public T BuildObject<T>(Dictionary<string, string> values)
+        {
+            T instance = Activator.CreateInstance<T>();
+
+            PropertyInfo[] properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (PropertyInfo property in properties)
+            {
+                NameAttribute name = property.GetCustomAttribute<NameAttribute>();
+
+                string propertyName = property.Name;
+
+                if (name != null)
+                {
+                    propertyName = name.Value;
+                }
+
+                object value = null;
+
+                if (values.TryGetValue(propertyName, out string stringValue))
+                {
+                    StringToObjectTransformerAttribute transformer = property.GetCustomAttribute<StringToObjectTransformerAttribute>();
+
+                    if (transformer == null)
+                    {
+                        value = _defaultStringToObjectTransformer.TransformValue(stringValue, property.PropertyType);
+                    }
+                    else
+                    {
+                        value = transformer.Transform(stringValue, property.PropertyType);
+                    }
+                }
+
+                RequiredAttribute requiredAttribute = property.GetCustomAttribute<RequiredAttribute>();
+
+                requiredAttribute?.Validate(stringValue, propertyName);
+
+                property.SetValue(instance, value);
+            }
+
+            return instance;
         }
 
         private KeyValuePair<string, string> GetPropertyKeyValuePair<T>(T value, PropertyInfo property) where T : class
@@ -109,11 +155,11 @@ namespace SereneApi.Core.Transformation
 
                 if (attribute == null)
                 {
-                    transformedValue = _defaultTransformer.TransformValue(objectValue);
+                    transformedValue = _defaultObjectToStringTransformer.TransformValue(objectValue);
                 }
                 else
                 {
-                    transformedValue = attribute.Transformer.TransformValue(objectValue);
+                    transformedValue = attribute.Transform(objectValue);
                 }
 
                 if (string.IsNullOrWhiteSpace(transformedValue))

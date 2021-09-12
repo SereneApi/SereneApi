@@ -8,14 +8,14 @@ namespace SereneApi.Core.Authorization.Authorizers
     public class TokenAuthResult
     {
         /// <summary>
-        /// Specifies the token to be used for authorization.
-        /// </summary>
-        public string Token { get; }
-
-        /// <summary>
         /// Specifies the amount of time in seconds before the token expires.
         /// </summary>
         public int ExpiryTime { get; }
+
+        /// <summary>
+        /// Specifies the token to be used for authorization.
+        /// </summary>
+        public string Token { get; }
 
         /// <param name="token">The token to be used for authorization.</param>
         /// <param name="expiryTime">The amount of time in seconds before the token expires.</param>

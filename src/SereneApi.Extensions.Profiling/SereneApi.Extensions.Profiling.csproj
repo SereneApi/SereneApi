@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<Version>1.0.1.8</Version>
+		<Authors>Bradley Clarke</Authors>
+		<Company>Maritime Superanutation</Company>
+		<Product>SereneApi</Product>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\SereneApi.Core\SereneApi.Core.csproj" />
+	</ItemGroup>
+</Project>
