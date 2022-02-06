@@ -1,5 +1,5 @@
 ﻿using SereneApi.Core.Handler;
-using SereneApi.Core.Requests;
+using SereneApi.Core.Http.Requests;
 using System;
 
 namespace SereneApi.Core.Events.Types

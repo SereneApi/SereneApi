@@ -1,13 +1,14 @@
-﻿using SereneApi.Core.Connection;
+﻿using SereneApi.Core.Http;
+using SereneApi.Core.Http.Requests.Options;
+using SereneApi.Core.Http.Responses;
 using SereneApi.Core.Requests;
-using SereneApi.Core.Responses;
 using SereneApi.Core.Serialization;
 using SereneApi.Core.Transformation;
 using SereneApi.Core.Versioning;
-using SereneApi.Handlers.Rest.Requests.Types;
 using SereneApi.Handlers.Rest.Routing;
 using System;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SereneApi.Handlers.Rest.Requests.Factories
@@ -18,6 +19,7 @@ namespace SereneApi.Handlers.Rest.Requests.Factories
         private readonly IRouteFactory _routeFactory;
         private readonly ISerializer _serializer;
         private readonly ITransformationService _transformation;
+
         public RestApiHandler Handler { get; set; }
 
         public RestRequestFactory(ITransformationService transformation, ISerializer serializer, IConnectionSettings connection, IRouteFactory routeFactory)
@@ -100,18 +102,22 @@ namespace SereneApi.Handlers.Rest.Requests.Factories
             return this;
         }
 
-        public IApiResponse Execute()
+        public Task<IApiResponse> ExecuteAsync(CancellationToken cancellationToken = default)
         {
             GenerateRoute();
 
-            return Handler.PerformRequest(_apiRequest);
+            return Handler.PerformRequestAsync(_apiRequest, ApiRequestOptions.Default, cancellationToken);
         }
 
-        public Task<IApiResponse> ExecuteAsync()
+        public Task<IApiResponse> ExecuteAsync(Action<IApiRequestOptionsBuilder> optionsBuilder, CancellationToken cancellationToken = default)
         {
             GenerateRoute();
 
-            return Handler.PerformRequestAsync(_apiRequest);
+            ApiRequestOptions options = ApiRequestOptions.Default;
+
+            optionsBuilder.Invoke(options);
+
+            return Handler.PerformRequestAsync(_apiRequest, options, cancellationToken);
         }
 
         public IApiRequestPerformer<TContent> RespondsWith<TContent>()
@@ -172,6 +178,17 @@ namespace SereneApi.Handlers.Rest.Requests.Factories
         public IApiRequestType WithQuery<TQuery>(TQuery query, Expression<Func<TQuery, object>> selector) where TQuery : class
         {
             _apiRequest.Query = _transformation.BuildDictionary(query, selector);
+
+            return this;
+        }
+
+        public IApiRequestType WithQuery<TQuery>(Action<TQuery> builder) where TQuery : class
+        {
+            TQuery query = Activator.CreateInstance<TQuery>();
+
+            builder.Invoke(query);
+
+            _apiRequest.Query = _transformation.BuildDictionary(query);
 
             return this;
         }

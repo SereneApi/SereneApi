@@ -1,6 +1,9 @@
-﻿using SereneApi.Core.Responses;
+﻿using SereneApi.Core.Http.Requests.Options;
+using SereneApi.Core.Http.Responses;
 using SereneApi.Handlers.Soap.Requests.Types;
 using SereneApi.Handlers.Soap.Routing;
+using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SereneApi.Handlers.Soap.Requests.Factories
@@ -20,18 +23,22 @@ namespace SereneApi.Handlers.Soap.Requests.Factories
             _routeFactory = routeFactory;
         }
 
-        public IApiResponse<TResponse> Execute()
+        public Task<IApiResponse<TResponse>> ExecuteAsync(CancellationToken cancellationToken = default)
         {
             _apiRequest.Route = _routeFactory.BuildRoute(_apiRequest);
 
-            return _apiHandler.PerformRequest<TResponse>(_apiRequest);
+            return _apiHandler.PerformRequestAsync<TResponse>(_apiRequest, ApiRequestOptions.Default, cancellationToken);
         }
 
-        public Task<IApiResponse<TResponse>> ExecuteAsync()
+        public Task<IApiResponse<TResponse>> ExecuteAsync(Action<IApiRequestOptionsBuilder> optionsBuilder, CancellationToken cancellationToken = default)
         {
             _apiRequest.Route = _routeFactory.BuildRoute(_apiRequest);
 
-            return _apiHandler.PerformRequestAsync<TResponse>(_apiRequest);
+            ApiRequestOptions options = ApiRequestOptions.Default;
+
+            optionsBuilder.Invoke(options);
+
+            return _apiHandler.PerformRequestAsync<TResponse>(_apiRequest, options, cancellationToken);
         }
     }
 }

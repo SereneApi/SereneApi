@@ -9,40 +9,19 @@ namespace SereneApi.Extensions.Mocking.Rest.Responses.Handlers
 {
     internal class MockMessageHandler : DelegatingHandler
     {
+        private readonly bool _enableOutgoing;
         private readonly IMockResponseManager _responseManager;
 
-        public MockMessageHandler(IMockResponseManager manager, HttpMessageHandler messageHandler = null)
+        public MockMessageHandler(IMockResponseManager manager, bool enableOutgoing)
         {
             _responseManager = manager ?? throw new ArgumentNullException(nameof(manager));
 
-            if (messageHandler != null)
-            {
-                InnerHandler = messageHandler;
-            }
+            _enableOutgoing = enableOutgoing;
         }
 
-        protected override HttpResponseMessage Send(HttpRequestMessage request, CancellationToken cancellationToken)
+        protected override void Dispose(bool disposing)
         {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
-            HttpResponseMessage response = _responseManager.GetMockResponse(request, cancellationToken);
-
-            if (response != null)
-            {
-                return response;
-            }
-
-            if (InnerHandler == null)
-            {
-                // As outgoing requests are not enabled and we could not find a mock response. A 404
-                // status will be returned.
-                return new HttpResponseMessage(HttpStatusCode.NotFound);
-            }
-
-            return base.Send(request, cancellationToken);
+            base.Dispose(disposing);
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -59,14 +38,14 @@ namespace SereneApi.Extensions.Mocking.Rest.Responses.Handlers
                 return response;
             }
 
-            if (InnerHandler == null)
+            if (_enableOutgoing)
             {
-                // As outgoing requests are not enabled and we could not find a mock response. A 404
-                // status will be returned.
-                return new HttpResponseMessage(HttpStatusCode.NotFound);
+                return await base.SendAsync(request, cancellationToken);
             }
 
-            return await base.SendAsync(request, cancellationToken);
+            // As outgoing requests are not enabled and we could not find a mock response. A 404
+            // status will be returned.
+            return new HttpResponseMessage(HttpStatusCode.NotFound);
         }
     }
 }

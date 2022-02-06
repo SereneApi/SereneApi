@@ -1,8 +1,8 @@
-﻿using SereneApi.Core.Content;
+﻿using SereneApi.Core.Http.Content;
+using SereneApi.Core.Http.Responses;
 using SereneApi.Core.Requests;
-using SereneApi.Core.Responses;
 using SereneApi.Core.Serialization;
-using SereneApi.Extensions.Mocking.Rest.Configuration;
+using SereneApi.Extensions.Mocking.Rest.Responses.Configuration;
 using System;
 
 namespace SereneApi.Extensions.Mocking.Rest.Responses.Factories

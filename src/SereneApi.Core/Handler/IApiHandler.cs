@@ -1,4 +1,4 @@
-﻿using SereneApi.Core.Connection;
+﻿using SereneApi.Core.Http;
 using System;
 
 namespace SereneApi.Core.Handler

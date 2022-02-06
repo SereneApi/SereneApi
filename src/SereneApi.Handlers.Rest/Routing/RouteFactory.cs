@@ -1,6 +1,5 @@
 ﻿using SereneApi.Handlers.Rest.Queries;
 using SereneApi.Handlers.Rest.Requests;
-using SereneApi.Handlers.Rest.Requests.Types;
 using System;
 using System.Linq;
 
@@ -66,16 +65,6 @@ namespace SereneApi.Handlers.Rest.Routing
                 route += request.ResourcePath;
             }
 
-            if (request.Version != null)
-            {
-                if (route.Length > 0 && route.Last() != '/')
-                {
-                    route += '/';
-                }
-
-                route += request.Version.GetVersionString();
-            }
-
             if (!string.IsNullOrWhiteSpace(request.Resource))
             {
                 if (route.Length > 0 && route.Last() != '/')
@@ -84,6 +73,16 @@ namespace SereneApi.Handlers.Rest.Routing
                 }
 
                 route += request.Resource;
+            }
+
+            if (request.Version != null)
+            {
+                if (route.Length > 0 && route.Last() != '/')
+                {
+                    route += '/';
+                }
+
+                route += request.Version.GetVersionString();
             }
 
             if (!string.IsNullOrWhiteSpace(request.Endpoint))

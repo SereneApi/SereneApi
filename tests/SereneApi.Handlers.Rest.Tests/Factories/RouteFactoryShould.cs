@@ -1,7 +1,7 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Core.Connection;
+using SereneApi.Core.Http;
 using SereneApi.Handlers.Rest.Configuration;
-using SereneApi.Handlers.Rest.Requests.Types;
+using SereneApi.Handlers.Rest.Requests;
 using SereneApi.Handlers.Rest.Routing;
 using Shouldly;
 using System;
@@ -19,11 +19,11 @@ namespace SereneApi.Handlers.Rest.Tests.Factories
 
         public RouteFactoryShould()
         {
-            RestConfigurationFactory configuration = new RestConfigurationFactory();
+            RestHandlerConfigurationProvider configuration = new RestHandlerConfigurationProvider();
 
             _dependencies = configuration.Dependencies.BuildProvider();
 
-            _routeFactory = _dependencies.GetDependency<IRouteFactory>();
+            _routeFactory = _dependencies.GetRequiredDependency<IRouteFactory>();
         }
 
         [Theory]

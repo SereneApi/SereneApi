@@ -1,5 +1,5 @@
-﻿using SereneApi.Core.Content;
-using SereneApi.Core.Responses;
+﻿using SereneApi.Core.Http.Content;
+using SereneApi.Core.Http.Responses;
 using SereneApi.Extensions.Mocking.Rest.Settings;
 
 namespace SereneApi.Extensions.Mocking.Rest.Responses

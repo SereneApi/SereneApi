@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\SereneApi.Serializers.Newtonsoft.Json\SereneApi.Serializers.Newtonsoft.Json.csproj" />
+    <ProjectReference Include="..\..\src\SereneApi.Serializers.Newtonsoft.Json\SereneApi.Serializers.Newtonsoft.Json.csproj" />
   </ItemGroup>
 
 </Project>

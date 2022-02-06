@@ -1,26 +1,30 @@
-﻿using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Core.Options.Factories;
+﻿using SereneApi.Core.Configuration;
+using SereneApi.Core.Http.Client.Handler;
 using SereneApi.Extensions.Caching.Options;
 using SereneApi.Extensions.Caching.Types;
+using DeltaWare.Dependencies.Abstractions;
+using Microsoft.Extensions.Logging;
 using System;
-using System.Net.Http;
 
 namespace SereneApi.Extensions.Caching
 {
     public static class ApiOptionsExtensions
     {
-        public static IApiOptionsExtensions EnableCaching(this IApiOptionsExtensions extensions, Action<ICacheOptionsBuilder> optionsAction = null)
+        public static void EnableCaching(this IApiConfiguration configuration, Action<ICacheOptionsBuilder> optionsAction = null)
         {
-            CacheOptionsBuilder cacheOptionsBuilder = new CacheOptionsBuilder();
+            CacheOptionsBuilder cacheOptionsBuilder = new();
 
             optionsAction?.Invoke(cacheOptionsBuilder);
 
-            extensions.Dependencies.AddSingleton(() => cacheOptionsBuilder.BuildOptions());
-            extensions.Dependencies.AddSingleton<Cache<Uri, ICachedResponse>>();
+            configuration.Dependencies.AddSingleton(() => cacheOptionsBuilder.BuildOptions());
+            configuration.Dependencies.AddSingleton<Cache<Uri, ICachedResponse>>();
 
-            extensions.Dependencies.AddScoped<HttpMessageHandler, CachedMessageHandler>();
+            configuration.Dependencies.Configure<IHandlerFactory>((p, f) =>
+            {
+                p.TryGetDependency(out ILogger logger);
 
-            return extensions;
+                f.AddHandler(new CachedMessageHandler(p.GetRequiredDependency<Cache<Uri, ICachedResponse>>(), logger));
+            });
         }
     }
 }

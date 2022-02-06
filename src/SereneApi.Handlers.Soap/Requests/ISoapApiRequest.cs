@@ -1,4 +1,4 @@
-﻿using SereneApi.Core.Requests;
+﻿using SereneApi.Core.Http.Requests;
 
 namespace SereneApi.Handlers.Soap.Requests
 {

@@ -1,5 +1,5 @@
-﻿using SereneApi.Core.Content;
-using SereneApi.Core.Content.Types;
+﻿using SereneApi.Core.Http.Content;
+using SereneApi.Core.Http.Content.Types;
 using System;
 using System.IO;
 using System.Text.Json;
@@ -18,7 +18,7 @@ namespace SereneApi.Core.Serialization
         private readonly JsonSerializerOptions _serializerOptions;
 
         /// <summary>
-        /// The default options used for deserialization by <seealso cref="JsonSerializer"/>.
+        /// The default settings used for deserialization by <seealso cref="JsonSerializer"/>.
         /// </summary>
         public static JsonSerializerOptions DefaultDeserializerOptions { get; } = new JsonSerializerOptions
         {
@@ -26,7 +26,7 @@ namespace SereneApi.Core.Serialization
         };
 
         /// <summary>
-        /// The default options used for serialization by <seealso cref="JsonSerializer"/>.
+        /// The default settings used for serialization by <seealso cref="JsonSerializer"/>.
         /// </summary>
         public static JsonSerializerOptions DefaultSerializerOptions { get; } = new JsonSerializerOptions
         {
@@ -34,7 +34,7 @@ namespace SereneApi.Core.Serialization
         };
 
         /// <summary>
-        /// Creates a new instance of <see cref="JsonSerializer"/> using the default options.
+        /// Creates a new instance of <see cref="JsonSerializer"/> using the default settings.
         /// </summary>
         public JsonSerializer()
         {
@@ -43,9 +43,9 @@ namespace SereneApi.Core.Serialization
         }
 
         /// <summary>
-        /// Creates a new instance of <see cref="JsonSerializer"/> using the specified options.
+        /// Creates a new instance of <see cref="JsonSerializer"/> using the specified settings.
         /// </summary>
-        /// <param name="options">the options to be used for serialization and deserialization.</param>
+        /// <param name="options">the settings to be used for serialization and deserialization.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         public JsonSerializer(JsonSerializerOptions options)
         {
@@ -54,27 +54,15 @@ namespace SereneApi.Core.Serialization
         }
 
         /// <summary>
-        /// Creates a new instance of <see cref="JsonSerializer"/> using the specified options.
+        /// Creates a new instance of <see cref="JsonSerializer"/> using the specified settings.
         /// </summary>
-        /// <param name="deserializerOptions">the options to be used for deserialization.</param>
-        /// <param name="serializerOptions">the options to be used for serialization.</param>
+        /// <param name="deserializerOptions">the settings to be used for deserialization.</param>
+        /// <param name="serializerOptions">the settings to be used for serialization.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         public JsonSerializer(JsonSerializerOptions deserializerOptions, JsonSerializerOptions serializerOptions)
         {
             _deserializerOptions = deserializerOptions ?? throw new ArgumentNullException(nameof(deserializerOptions));
             _serializerOptions = serializerOptions ?? throw new ArgumentNullException(nameof(serializerOptions));
-        }
-
-        public TObject Deserialize<TObject>(IResponseContent content)
-        {
-            if (content == null)
-            {
-                throw new ArgumentNullException(nameof(content));
-            }
-
-            string contentString = content.GetContentString();
-
-            return System.Text.Json.JsonSerializer.Deserialize<TObject>(contentString, _deserializerOptions);
         }
 
         /// <inheritdoc><cref>ISerializer.DeserializeAsync</cref></inheritdoc>

@@ -24,6 +24,21 @@
             public const string AccessOfDisposedHandler = "[{ApiHandler}] was accessed after being disposed";
 
             /// <summary>
+            /// DEBUG
+            /// </summary>
+            public const string AuthorizationTokenCached = "Using Cached authorization token";
+
+            /// <summary>
+            /// DEBUG
+            /// </summary>
+            public const string AuthorizationTokenRenewal = "Renewing Cached authorization token";
+
+            /// <summary>
+            /// ERROR - Params(Type)
+            /// </summary>
+            public const string DependencyNotFound = "Could not retrieve the dependency for [{DependencyType}]";
+
+            /// <summary>
             /// DEBUG - Params(Method, Route)
             /// </summary>
             public const string DisposedHandler = "[{ApiHandler}] has been disposed";
@@ -77,21 +92,6 @@
             /// WARNING - Params (Method, Route, Remaining Attempts)
             /// </summary>
             public const string TimeoutRetry = "The [{HttpMethod}] request to \"{Route}\" has Timed out, retrying request. {Count} attempts remaining";
-
-            /// <summary>
-            /// DEBUG
-            /// </summary>
-            public static string AuthorizationTokenCached = "Using Cached authorization token";
-
-            /// <summary>
-            /// DEBUG
-            /// </summary>
-            public static string AuthorizationTokenRenewal = "Renewing Cached authorization token";
-
-            /// <summary>
-            /// ERROR - Params(Type)
-            /// </summary>
-            public static string DependencyNotFound = "Could not retrieve the dependency for [{DependencyType}]";
         }
     }
 }

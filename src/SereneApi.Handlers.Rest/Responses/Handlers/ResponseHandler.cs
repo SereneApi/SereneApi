@@ -1,12 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
-using SereneApi.Core.Requests;
-using SereneApi.Core.Response;
-using SereneApi.Core.Responses;
-using SereneApi.Core.Responses.Handlers;
+﻿using SereneApi.Core.Http.Requests;
+using SereneApi.Core.Http.Responses;
+using SereneApi.Core.Http.Responses.Handlers;
 using SereneApi.Core.Serialization;
-using SereneApi.Handlers.Rest.Responses.Types;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -27,8 +26,6 @@ namespace SereneApi.Handlers.Rest.Responses.Handlers
             _logger = logger;
         }
 
-        #region Asynchronous Methods
-
         /// <summary>
         /// Processes the returned <see cref="HttpResponseMessage"/>
         /// </summary>
@@ -47,24 +44,18 @@ namespace SereneApi.Handlers.Rest.Responses.Handlers
                 return RestApiResponse.Failure(request, Status.None, duration, "Received an Empty Http Response");
             }
 
-            IApiResponse response;
-
             Status status = responseMessage.StatusCode.ToStatus();
 
             if (status.IsSuccessCode())
             {
-                _logger?.LogInformation("The request received a successful response.");
+                _logger?.LogTrace("The request received a successful response.");
 
-                response = RestApiResponse.Success(request, status, duration);
-            }
-            else
-            {
-                _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}", responseMessage.StatusCode, responseMessage.ReasonPhrase);
-
-                response = await _failedResponseHandler.ProcessFailedRequestAsync(request, status, duration, responseMessage.Content);
+                return RestApiResponse.Success(request, status, duration);
             }
 
-            return response;
+            _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}", responseMessage.StatusCode, responseMessage.ReasonPhrase);
+
+            return await _failedResponseHandler.ProcessFailedRequestAsync(request, status, duration, responseMessage.Content);
         }
 
         /// <summary>
@@ -87,8 +78,6 @@ namespace SereneApi.Handlers.Rest.Responses.Handlers
                 return RestApiResponse<TResponse>.Failure(request, Status.None, duration, "Received an Empty Http Response");
             }
 
-            IApiResponse<TResponse> response;
-
             Status status = responseMessage.StatusCode.ToStatus();
 
             if (!status.IsSuccessCode())
@@ -96,139 +85,48 @@ namespace SereneApi.Handlers.Rest.Responses.Handlers
                 _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}",
                     responseMessage.StatusCode, responseMessage.ReasonPhrase);
 
-                response = await _failedResponseHandler.ProcessFailedRequestAsync<TResponse>(request, status, duration, responseMessage.Content);
+                return await _failedResponseHandler.ProcessFailedRequestAsync<TResponse>(request, status, duration, responseMessage.Content);
             }
-            else
+
+            _logger?.LogTrace("The request received a successful response.");
+
+            try
             {
-                _logger?.LogInformation("The request received a successful response.");
+                TResponse responseData;
 
-                try
+                if (typeof(TResponse).IsAssignableFrom(typeof(MemoryStream)))
                 {
-                    TResponse responseData = await _serializer.DeserializeAsync<TResponse>(responseMessage.Content);
+                    Stream stream = await responseMessage.Content.ReadAsStreamAsync();
 
-                    response = RestApiResponse<TResponse>.Success(request, status, duration, responseData);
+                    MemoryStream memoryStream = new MemoryStream();
+
+                    await stream.CopyToAsync(memoryStream);
+
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+
+                    responseData = (TResponse)(object)memoryStream;
                 }
-                catch (JsonException jsonException)
+                else
                 {
-                    _logger?.LogError(jsonException, "Could not deserialize the returned value");
-
-                    response = RestApiResponse<TResponse>
-                        .Failure(request, status, duration, "Could not deserialize returned value.", jsonException);
+                    responseData = await _serializer.DeserializeAsync<TResponse>(responseMessage.Content);
                 }
-                catch (Exception exception)
-                {
-                    _logger?.LogError(exception, "An Exception occurred whilst processing the response.");
 
-                    response = RestApiResponse<TResponse>
-                        .Failure(request, status, duration, "An Exception occurred whilst processing the response.", exception);
-                }
+                return RestApiResponse<TResponse>.Success(request, status, duration, responseData);
             }
+            catch (JsonException jsonException)
+            {
+                _logger?.LogError(jsonException, "Could not deserialize the returned value");
 
-            return response;
+                return RestApiResponse<TResponse>
+                    .Failure(request, status, duration, "Could not deserialize returned value.", jsonException);
+            }
+            catch (Exception exception)
+            {
+                _logger?.LogError(exception, "An Exception occurred whilst processing the response.");
+
+                return RestApiResponse<TResponse>
+                    .Failure(request, status, duration, "An Exception occurred whilst processing the response.", exception);
+            }
         }
-
-        #endregion Asynchronous Methods
-
-        #region Synchronous Methods
-
-        /// <summary>
-        /// Processes the returned <see cref="HttpResponseMessage"/>
-        /// </summary>
-        /// <param name="responseMessage">The <see cref="HttpResponseMessage"/> to process</param>
-        public IApiResponse ProcessResponse(IApiRequest request, TimeSpan duration, [AllowNull] HttpResponseMessage responseMessage)
-        {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
-            if (responseMessage == null)
-            {
-                _logger?.LogError("Received an Empty Http Response");
-
-                return RestApiResponse.Failure(request, Status.None, duration, "Received an Empty Http Response");
-            }
-
-            IApiResponse response;
-
-            Status status = responseMessage.StatusCode.ToStatus();
-
-            if (status.IsSuccessCode())
-            {
-                _logger?.LogInformation("The request received a successful response.");
-
-                response = RestApiResponse.Success(request, status, duration);
-            }
-            else
-            {
-                _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}", responseMessage.StatusCode, responseMessage.ReasonPhrase);
-
-                response = _failedResponseHandler.ProcessFailedRequest(request, status, duration, responseMessage.Content);
-            }
-
-            return response;
-        }
-
-        /// <summary>
-        /// Processes the returned <see cref="HttpResponseMessage"/> deserializing the contained
-        /// <see cref="TResponse"/>
-        /// </summary>
-        /// <typeparam name="TResponse">The type to be deserialized from the response</typeparam>
-        /// <param name="responseMessage">The <see cref="HttpResponseMessage"/> to process</param>
-        public IApiResponse<TResponse> ProcessResponse<TResponse>(IApiRequest request, TimeSpan duration, HttpResponseMessage responseMessage)
-        {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
-            if (responseMessage == null)
-            {
-                _logger?.LogError("Received an Empty Http Response");
-
-                return RestApiResponse<TResponse>.Failure(request, Status.None, duration, "Received an Empty Http Response");
-            }
-
-            IApiResponse<TResponse> response;
-
-            Status status = responseMessage.StatusCode.ToStatus();
-
-            if (!status.IsSuccessCode())
-            {
-                _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}",
-                    responseMessage.StatusCode, responseMessage.ReasonPhrase);
-
-                response = _failedResponseHandler.ProcessFailedRequest<TResponse>(request, status, duration, responseMessage.Content);
-            }
-            else
-            {
-                _logger?.LogInformation("The request received a successful response.");
-
-                try
-                {
-                    TResponse responseData = _serializer.Deserialize<TResponse>(responseMessage.Content);
-
-                    response = RestApiResponse<TResponse>.Success(request, status, duration, responseData);
-                }
-                catch (JsonException jsonException)
-                {
-                    _logger?.LogError(jsonException, "Could not deserialize the returned value");
-
-                    response = RestApiResponse<TResponse>
-                        .Failure(request, status, duration, "Could not deserialize returned value.", jsonException);
-                }
-                catch (Exception exception)
-                {
-                    _logger?.LogError(exception, "An Exception occurred whilst processing the response.");
-
-                    response = RestApiResponse<TResponse>
-                        .Failure(request, status, duration, "An Exception occurred whilst processing the response.", exception);
-                }
-            }
-
-            return response;
-        }
-
-        #endregion Synchronous Methods
     }
 }

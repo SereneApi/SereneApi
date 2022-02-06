@@ -1,5 +1,4 @@
-﻿using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Core.Requests;
+﻿using SereneApi.Core.Requests;
 using SereneApi.Core.Transformation;
 using SereneApi.Core.Versioning;
 using SereneApi.Handlers.Soap.Envelopment;
@@ -7,6 +6,7 @@ using SereneApi.Handlers.Soap.Models;
 using SereneApi.Handlers.Soap.Requests.Types;
 using SereneApi.Handlers.Soap.Routing;
 using SereneApi.Handlers.Soap.Serialization;
+using DeltaWare.Dependencies.Abstractions;
 using System;
 using System.Collections.Generic;
 
@@ -25,7 +25,7 @@ namespace SereneApi.Handlers.Soap.Requests.Factories
             _apiRequest = SoapApiRequest.Create(apiHandler.Connection);
             _apiRequest.Method = Method.Post;
 
-            _dependencies = apiHandler.Options.Dependencies;
+            _dependencies = apiHandler.Settings.Dependencies;
         }
 
         public IRequestParameters AgainstService(string serviceName)
@@ -58,12 +58,12 @@ namespace SereneApi.Handlers.Soap.Requests.Factories
         {
             _apiRequest.ResponseType = typeof(TResponse);
 
-            return new SoapRequestFactory<TResponse>(_apiHandler, _apiRequest, _dependencies.GetDependency<IRouteFactory>());
+            return new SoapRequestFactory<TResponse>(_apiHandler, _apiRequest, _dependencies.GetRequiredDependency<IRouteFactory>());
         }
 
         public IEnvelopeFactory<TEnvelope> UsingEnvelope<TEnvelope>()
         {
-            return new EnvelopeFactory<TEnvelope>(this, _apiRequest, _dependencies.GetDependency<ISoapSerializer>());
+            return new EnvelopeFactory<TEnvelope>(this, _apiRequest, _dependencies.GetRequiredDependency<ISoapSerializer>());
         }
 
         public IResponseType UsingEnvelope<TEnvelope>(TEnvelope envelope)
@@ -73,7 +73,7 @@ namespace SereneApi.Handlers.Soap.Requests.Factories
                 Body = envelope
             };
 
-            ISoapSerializer serializer = _dependencies.GetDependency<ISoapSerializer>();
+            ISoapSerializer serializer = _dependencies.GetRequiredDependency<ISoapSerializer>();
 
             _apiRequest.Content = serializer.Serialize(soapEnvelope);
 
@@ -82,7 +82,7 @@ namespace SereneApi.Handlers.Soap.Requests.Factories
 
         public IResponseType WithParameters(Dictionary<string, object> parameters)
         {
-            ITransformationService transformation = _dependencies.GetDependency<ITransformationService>();
+            ITransformationService transformation = _dependencies.GetRequiredDependency<ITransformationService>();
 
             Dictionary<string, string> convertedParameters = transformation.BuildDictionary(parameters);
 
@@ -91,7 +91,7 @@ namespace SereneApi.Handlers.Soap.Requests.Factories
 
         public IResponseType WithParameters(Dictionary<string, string> parameters)
         {
-            IEnvelopmentService envelopment = _dependencies.GetDependency<IEnvelopmentService>();
+            IEnvelopmentService envelopment = _dependencies.GetRequiredDependency<IEnvelopmentService>();
 
             _apiRequest.Content = envelopment.Envelop(parameters, _service, "ser", "http://services.acuritywebservices.finsyn.com.au/");
 
@@ -100,7 +100,7 @@ namespace SereneApi.Handlers.Soap.Requests.Factories
 
         public IResponseType WithParameters<TParam>(TParam parameters) where TParam : class
         {
-            ITransformationService transformation = _dependencies.GetDependency<ITransformationService>();
+            ITransformationService transformation = _dependencies.GetRequiredDependency<ITransformationService>();
 
             Dictionary<string, string> convertedParameters = transformation.BuildDictionary(parameters);
 

@@ -1,4 +1,4 @@
-﻿using SereneApi.Core.Responses;
+﻿using SereneApi.Core.Http.Responses;
 
 namespace SereneApi.Extensions.Mocking.Rest.Responses.Factories
 {

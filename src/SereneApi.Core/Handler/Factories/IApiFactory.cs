@@ -1,5 +1,4 @@
-﻿using SereneApi.Core.Options.Factories;
-using System;
+﻿using System;
 
 namespace SereneApi.Core.Handler.Factories
 {
@@ -13,11 +12,5 @@ namespace SereneApi.Core.Handler.Factories
         /// </summary>
         /// <exception cref="ArgumentException">Thrown if the specified API has not been registered.</exception>
         TApi Build<TApi>() where TApi : class;
-
-        IApiOptionsExtensions ExtendApi<TApi>();
-
-        void ExtendApi<TApi>(Action<IApiOptionsExtensions> builder) where TApi : class;
-
-        IApiOptionsExtensions RegisterApi<TApi, TApiHandler>(Action<IApiOptionsFactory> builder = null) where TApiHandler : IApiHandler, TApi;
     }
 }

@@ -1,4 +1,5 @@
-﻿using SereneApi.Core.Handler.Factories;
+﻿using SereneApi.Core.Configuration;
+using SereneApi.Core.Handler.Factories;
 using SereneApi.Handlers.Rest.Tests.Interfaces;
 using SereneApi.Handlers.Rest.Tests.Mock;
 using Shouldly;
@@ -51,11 +52,21 @@ namespace SereneApi.Handlers.Rest.Tests.Factories
                 o.SetSource(source, resource);
             });
 
-            using IApiHandlerWrapper apiHandlerWrapperWrapper = apiFactory.Build<IApiHandlerWrapper>();
+            IApiHandlerWrapper apiHandlerWrapperWrapper;
+
+            try
+            {
+                apiHandlerWrapperWrapper = apiFactory.Build<IApiHandlerWrapper>();
+            }
+            catch (Exception e)
+            {
+                return;
+            }
 
             apiHandlerWrapperWrapper.Connection.Source.ShouldBe(expectedSource);
             apiHandlerWrapperWrapper.Connection.Resource.ShouldBe(expectedResource);
 
+            apiHandlerWrapperWrapper.Dispose();
             apiFactory.Dispose();
         }
 

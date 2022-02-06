@@ -1,5 +1,5 @@
 ﻿using SereneApi.Core.Configuration;
-using SereneApi.Core.Options.Factories;
+using SereneApi.Core.Configuration.Settings;
 using SereneApi.Core.Tests.Configuration.Mocking;
 using Shouldly;
 using Xunit;
@@ -11,11 +11,16 @@ namespace SereneApi.Core.Tests.Configuration
         [Fact]
         public void ContainTestConfigurationFactory()
         {
-            ConfigurationManager configuration = new ConfigurationManager();
+            ApiConfigurationManager configuration = new ApiConfigurationManager();
 
-            ApiOptionsFactory<TestApiHandler> options = Should.NotThrow(() => configuration.BuildApiOptionsFactory<TestApiHandler>());
+            configuration.AddApiConfiguration<TestApiHandler>(c =>
+            {
+                c.SetSource("http://localhost", "Client", "api/");
+            });
 
-            options.ShouldNotBeNull();
+            IApiSettings<TestApiHandler> settings = Should.NotThrow(configuration.BuildApiOptions<TestApiHandler>);
+
+            settings.ShouldNotBeNull();
         }
     }
 }

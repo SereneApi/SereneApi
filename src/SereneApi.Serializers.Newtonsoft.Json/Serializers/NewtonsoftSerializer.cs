@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using SereneApi.Core.Content;
-using SereneApi.Core.Content.Types;
+﻿using SereneApi.Core.Http.Content;
+using SereneApi.Core.Http.Content.Types;
 using SereneApi.Core.Serialization;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 

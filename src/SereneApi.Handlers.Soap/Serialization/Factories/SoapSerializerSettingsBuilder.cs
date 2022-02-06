@@ -1,5 +1,4 @@
-﻿using SereneApi.Core.Extensions;
-using SereneApi.Handlers.Soap.Envelopment.Attributes;
+﻿using SereneApi.Handlers.Soap.Envelopment.Attributes;
 using System;
 using System.Linq;
 using System.Reflection;

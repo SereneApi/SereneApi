@@ -1,10 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
-using SereneApi.Core.Configuration;
-using SereneApi.Core.Connection;
-using SereneApi.Core.Options;
-using SereneApi.Core.Requests;
-using SereneApi.Core.Requests.Handler;
-using SereneApi.Core.Responses;
+﻿using SereneApi.Core.Configuration;
+using SereneApi.Core.Configuration.Settings;
+using SereneApi.Core.Http;
+using SereneApi.Core.Http.Requests;
+using SereneApi.Core.Http.Requests.Handler;
+using SereneApi.Core.Http.Requests.Options;
+using SereneApi.Core.Http.Responses;
+using DeltaWare.Dependencies.Abstractions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,31 +25,34 @@ namespace SereneApi.Core.Handler
         /// <summary>
         /// The dependencies that may be used by this API.
         /// </summary>
-        public IApiOptions Options { get; }
+        public IApiSettings Settings { get; }
 
         protected bool ThrowExceptions { get; }
 
-        protected ApiHandlerBase(IApiOptions options)
+        protected bool ThrowOnFailure { get; }
+
+        protected ApiHandlerBase(IApiSettings settings)
         {
-            if (options == null)
+            if (settings == null)
             {
-                throw new ArgumentNullException(nameof(options));
+                throw new ArgumentNullException(nameof(settings));
             }
 
-            Connection = options.Connection;
+            Connection = settings.Connection;
 
-            Options = options;
+            Settings = settings;
 
-            Options.Dependencies.TryGetDependency(out _logger);
+            Settings.Dependencies.TryGetDependency(out _logger);
 
-            _requestHandler = Options.Dependencies.GetDependency<IRequestHandler>();
+            _requestHandler = Settings.Dependencies.GetRequiredDependency<IRequestHandler>();
 
-            ThrowExceptions = Options.Dependencies.GetDependency<IConfiguration>().Get<bool>("ThrowExceptions");
+            ThrowExceptions = Settings.Dependencies.GetRequiredDependency<HandlerConfiguration>().GetThrowExceptions();
+            ThrowOnFailure = Settings.Dependencies.GetRequiredDependency<HandlerConfiguration>().GetThrowOnFailure();
 
             _logger?.LogTrace(Logging.EventIds.InstantiatedEvent, Logging.Messages.HandlerInstantiated, GetType().Name);
         }
 
-        #region Asynchrounous Methods
+        #region Perform Methods
 
         /// <summary>
         /// Performs an API Request Asynchronously.
@@ -55,43 +60,36 @@ namespace SereneApi.Core.Handler
         /// <param name="request">The request to be performed.</param>
         /// <param name="cancellationToken">Cancels an ongoing request.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public virtual async Task<IApiResponse> PerformRequestAsync(IApiRequest request, CancellationToken cancellationToken = default)
+        public virtual async Task<IApiResponse> PerformRequestAsync(IApiRequest request, IApiRequestOptions options, CancellationToken cancellationToken = default)
         {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
+            OnRequest(request, options);
 
-            CheckIfDisposed();
+            IApiResponse response;
 
             try
             {
-                IApiResponse response = await _requestHandler.PerformAsync(request, this, cancellationToken);
-
-                return response;
+                response = await _requestHandler.PerformAsync(request, this, cancellationToken); ;
             }
             catch (TimeoutException exception)
             {
-                if (ThrowExceptions)
-                {
-                    throw;
-                }
+                OnTimeout(request, options, exception);
 
-                return BuildFailureResponse(request, Status.TimedOut, "The Request Timed Out; The retry limit was reached", exception);
+                response = GenerateFailureResponse(request, Status.TimedOut, "The Request Timed Out; The retry limit was reached", exception);
             }
             catch (Exception exception)
             {
-                _logger?.LogError(exception, Logging.Messages.RequestEncounteredException, request.Method.ToString(), GetRequestRoute(request));
+                _logger?.LogError(exception, Logging.Messages.RequestEncounteredException, request.Method.ToString(), BuildRequestRoute(request));
 
-                if (ThrowExceptions)
-                {
-                    throw;
-                }
+                OnException(request, options, exception);
 
-                return BuildFailureResponse(request, Status.None,
+                response = GenerateFailureResponse(request, Status.None,
                     $"An Exception occurred whilst performing a HTTP {request.Method} Request",
                     exception);
             }
+
+            OnResponse(response, options);
+
+            return response;
         }
 
         /// <summary>
@@ -103,132 +101,102 @@ namespace SereneApi.Core.Handler
         /// <param name="request">The request to be performed.</param>
         /// <param name="cancellationToken">Cancels an ongoing request.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public virtual async Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(IApiRequest request, CancellationToken cancellationToken = default)
+        public virtual async Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(IApiRequest request, IApiRequestOptions options, CancellationToken cancellationToken = default)
+        {
+            OnRequest(request, options);
+
+            IApiResponse<TResponse> response;
+
+            try
+            {
+                response = await _requestHandler.PerformAsync<TResponse>(request, this, cancellationToken);
+            }
+            catch (TimeoutException exception)
+            {
+                OnTimeout(request, options, exception);
+
+                response = GenerateFailureResponse<TResponse>(request, Status.TimedOut, "The Request Timed Out; The retry limit was reached", exception);
+            }
+            catch (Exception exception)
+            {
+                _logger?.LogError(Logging.EventIds.ExceptionEvent, exception, Logging.Messages.RequestEncounteredException, request.Method.ToString(), BuildRequestRoute(request));
+
+                OnException(request, options, exception);
+
+                response = GenerateFailureResponse<TResponse>(request, Status.None,
+                    $"An Exception occurred whilst performing a HTTP {request.Method} Request",
+                    exception);
+            }
+
+            OnResponse(response, options);
+
+            return response;
+        }
+
+        #endregion Perform Methods
+
+        #region Generate Failure Response Methods
+
+        protected abstract IApiResponse GenerateFailureResponse(IApiRequest request, Status status, string message, Exception exception);
+
+        protected abstract IApiResponse<TResponse> GenerateFailureResponse<TResponse>(IApiRequest request, Status status, string message, Exception exception);
+
+        #endregion Generate Failure Response Methods
+
+        #region On Methods
+
+        protected virtual void OnException(IApiRequest request, IApiRequestOptions options, Exception exception)
+        {
+            options.OnException?.Invoke(exception);
+
+            if (ThrowExceptions || options.ThrowExceptions)
+            {
+                throw exception;
+            }
+        }
+
+        protected virtual void OnRequest(IApiRequest request, IApiRequestOptions options)
         {
             if (request == null)
             {
                 throw new ArgumentNullException(nameof(request));
             }
 
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
             CheckIfDisposed();
-
-            try
-            {
-                IApiResponse<TResponse> response = await _requestHandler.PerformAsync<TResponse>(request, this, cancellationToken);
-
-                return response;
-            }
-            catch (TimeoutException exception)
-            {
-                if (ThrowExceptions)
-                {
-                    throw;
-                }
-
-                return BuildFailureResponse<TResponse>(request, Status.TimedOut, "The Request Timed Out; The retry limit was reached", exception);
-            }
-            catch (Exception exception)
-            {
-                _logger?.LogError(Logging.EventIds.ExceptionEvent, exception, Logging.Messages.RequestEncounteredException, request.Method.ToString(), GetRequestRoute(request));
-
-                if (ThrowExceptions)
-                {
-                    throw;
-                }
-
-                return BuildFailureResponse<TResponse>(request, Status.None,
-                    $"An Exception occurred whilst performing a HTTP {request.Method} Request",
-                    exception);
-            }
         }
 
-        #endregion Asynchrounous Methods
-
-        #region Synchrounous Methods
-
-        public virtual IApiResponse PerformRequest(IApiRequest request)
+        protected virtual void OnResponse(IApiResponse response, IApiRequestOptions options)
         {
-            if (request == null)
+            if (ThrowOnFailure || options.ThrowOnFail)
             {
-                throw new ArgumentNullException(nameof(request));
-            }
-
-            CheckIfDisposed();
-
-            try
-            {
-                IApiResponse response = _requestHandler.Perform(request, this);
-
-                return response;
-            }
-            catch (TimeoutException exception)
-            {
-                if (ThrowExceptions)
-                {
-                    throw;
-                }
-
-                return BuildFailureResponse(request, Status.TimedOut, "The Request Timed Out; The retry limit was reached", exception);
-            }
-            catch (Exception exception)
-            {
-                _logger?.LogError(exception, Logging.Messages.RequestEncounteredException, request.Method.ToString(), GetRequestRoute(request));
-
-                if (ThrowExceptions)
-                {
-                    throw;
-                }
-
-                return BuildFailureResponse(request, Status.None,
-                    $"An Exception occurred whilst performing a HTTP {request.Method} Request",
-                    exception);
+                response.ThrowOnFail();
             }
         }
 
-        public virtual IApiResponse<TResponse> PerformRequest<TResponse>(IApiRequest request)
+        protected virtual void OnResponse<TResponse>(IApiResponse<TResponse> response, IApiRequestOptions options)
         {
-            if (request == null)
+            if (ThrowOnFailure || options.ThrowOnFail)
             {
-                throw new ArgumentNullException(nameof(request));
-            }
-
-            CheckIfDisposed();
-
-            try
-            {
-                IApiResponse<TResponse> response = _requestHandler.Perform<TResponse>(request, this);
-
-                return response;
-            }
-            catch (TimeoutException exception)
-            {
-                if (ThrowExceptions)
-                {
-                    throw;
-                }
-
-                return BuildFailureResponse<TResponse>(request, Status.TimedOut, "The Request Timed Out; The retry limit was reached", exception);
-            }
-            catch (Exception exception)
-            {
-                _logger?.LogError(Logging.EventIds.ExceptionEvent, exception, Logging.Messages.RequestEncounteredException, request.Method.ToString(), GetRequestRoute(request));
-
-                if (ThrowExceptions)
-                {
-                    throw;
-                }
-
-                return BuildFailureResponse<TResponse>(request, Status.None,
-                    $"An Exception occurred whilst performing a HTTP {request.Method} Request",
-                    exception);
+                response.ThrowOnFail();
             }
         }
 
-        #endregion Synchrounous Methods
+        protected virtual void OnTimeout(IApiRequest request, IApiRequestOptions options, TimeoutException exception)
+        {
+            options.OnTimeout?.Invoke(exception);
 
-        protected abstract IApiResponse BuildFailureResponse(IApiRequest request, Status status, string message, Exception exception);
+            if (ThrowExceptions || options.ThrowExceptions)
+            {
+                throw exception;
+            }
+        }
 
-        protected abstract IApiResponse<TResponse> BuildFailureResponse<TResponse>(IApiRequest request, Status status, string message, Exception exception);
+        #endregion On Methods
 
         #region IDisposable
 
@@ -260,9 +228,6 @@ namespace SereneApi.Core.Handler
             throw new ObjectDisposedException(GetType().Name);
         }
 
-        /// <summary>
-        /// Override this method to implement <see cref="RestApiHandler"/> disposal.
-        /// </summary>
         protected virtual void Dispose(bool disposing)
         {
             if (_disposed)
@@ -272,19 +237,19 @@ namespace SereneApi.Core.Handler
 
             if (disposing)
             {
-                Options.Dispose();
+                Settings.Dispose();
             }
 
-            Disposed?.Invoke(this, new EventArgs());
+            Disposed?.Invoke(this, EventArgs.Empty);
 
             _disposed = true;
         }
 
         #endregion IDisposable
 
-        private string GetRequestRoute(IApiRequest request)
+        protected virtual string BuildRequestRoute(IApiRequest request)
         {
-            return $"{Options.Connection.BaseAddress}{request.Route}";
+            return $"{Settings.Connection.BaseAddress}{request.Route}";
         }
     }
 }

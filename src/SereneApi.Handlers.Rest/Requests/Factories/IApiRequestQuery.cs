@@ -8,5 +8,7 @@ namespace SereneApi.Handlers.Rest.Requests.Factories
         IApiRequestType WithQuery<TQuery>(TQuery query) where TQuery : class;
 
         IApiRequestType WithQuery<TQuery>(TQuery query, Expression<Func<TQuery, object>> selector) where TQuery : class;
+
+        IApiRequestType WithQuery<TQuery>(Action<TQuery> builder) where TQuery : class;
     }
 }

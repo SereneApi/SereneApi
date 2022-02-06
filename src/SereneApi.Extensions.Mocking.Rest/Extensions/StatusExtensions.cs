@@ -1,4 +1,4 @@
-﻿using SereneApi.Core.Responses;
+﻿using SereneApi.Core.Http.Responses;
 using System.Net;
 
 namespace SereneApi.Extensions.Mocking.Rest.Extensions

@@ -1,25 +1,25 @@
 ﻿using SereneApi.Core.Configuration.Attributes;
+using SereneApi.Core.Configuration.Settings;
 using SereneApi.Core.Handler;
-using SereneApi.Core.Options;
-using SereneApi.Core.Requests;
-using SereneApi.Core.Responses;
+using SereneApi.Core.Http.Requests;
+using SereneApi.Core.Http.Responses;
 using System;
 
 namespace SereneApi.Core.Tests.Configuration.Mocking
 {
-    [UseConfigurationFactory(typeof(TestConfigurationFactory))]
+    [UseHandlerConfigurationProvider(typeof(TestHandlerConfigurationProvider))]
     public class TestApiHandler : ApiHandlerBase
     {
-        public TestApiHandler(IApiOptions<TestApiHandler> options) : base(options)
+        public TestApiHandler(IApiSettings<TestApiHandler> settings) : base(settings)
         {
         }
 
-        protected override IApiResponse BuildFailureResponse(IApiRequest request, Status status, string message, Exception exception)
+        protected override IApiResponse GenerateFailureResponse(IApiRequest request, Status status, string message, Exception exception)
         {
             throw new NotImplementedException();
         }
 
-        protected override IApiResponse<TResponse> BuildFailureResponse<TResponse>(IApiRequest request, Status status, string message,
+        protected override IApiResponse<TResponse> GenerateFailureResponse<TResponse>(IApiRequest request, Status status, string message,
             Exception exception)
         {
             throw new NotImplementedException();

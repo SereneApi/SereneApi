@@ -1,6 +1,6 @@
-﻿using SereneApi.Core.Responses;
-using SereneApi.Handlers.Rest.Requests.Types;
-using SereneApi.Handlers.Rest.Responses.Types;
+﻿using SereneApi.Core.Http.Responses;
+using SereneApi.Handlers.Rest.Requests;
+using SereneApi.Handlers.Rest.Responses;
 using Shouldly;
 using System;
 using Xunit;

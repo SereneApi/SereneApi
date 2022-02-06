@@ -15,10 +15,11 @@
     <RepositoryUrl>https://github.com/SereneApi/SereneApi</RepositoryUrl>
     <PackageProjectUrl>https://www.sereneapi.org/</PackageProjectUrl>
     <NeutralLanguage>en-AU</NeutralLanguage>
+    <PackageTags />
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DeltaWare.Dependencies" Version="1.5.0.4" />
+    <PackageReference Include="DeltaWare.Dependencies" Version="5.0.0.6" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
   </ItemGroup>
 
@@ -31,6 +32,10 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\DeltaWare.SDK\src\DeltaWare.SDK.Core\DeltaWare.SDK.Core.csproj" />
   </ItemGroup>
 
 </Project>

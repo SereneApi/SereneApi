@@ -1,4 +1,4 @@
-﻿using SereneApi.Core.Content.Types;
+﻿using SereneApi.Core.Http.Content.Types;
 using System.Net;
 using System.Net.Http;
 

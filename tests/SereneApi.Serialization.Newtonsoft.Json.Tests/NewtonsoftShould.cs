@@ -2,9 +2,10 @@ using DeltaWare.Dependencies.Abstractions;
 using Newtonsoft.Json;
 using SereneApi.Core.Configuration;
 using SereneApi.Core.Configuration.Attributes;
-using SereneApi.Core.Connection;
+using SereneApi.Core.Configuration.Provider;
+using SereneApi.Core.Configuration.Settings;
 using SereneApi.Core.Handler;
-using SereneApi.Core.Options.Factories;
+using SereneApi.Core.Http;
 using SereneApi.Core.Serialization;
 using SereneApi.Serializers.Newtonsoft.Json;
 using SereneApi.Serializers.Newtonsoft.Json.Serializers;
@@ -19,18 +20,21 @@ namespace SereneApi.Serialization.Newtonsoft.Json.Tests
         [Fact]
         public void AddSuccessfully()
         {
-            ConfigurationManager configuration = new();
+            ApiConfigurationManager configuration = new ApiConfigurationManager();
 
-            Should.NotThrow(() => configuration.AmendConfiguration<TestFactory>(c =>
+            configuration.AddApiConfiguration<TestHandler>(c =>
             {
-                c.AddNewtonsoft();
+                c.SetSource("http://localhost");
+            });
+
+            Should.NotThrow(() => configuration.AmendConfigurationProvider<TestHandlerConfigurationProvider>(c =>
+            {
+                c.UseNewtonsoftSerializer();
             }));
 
-            ApiOptionsFactory<TestHandler> optionsFactory = configuration.BuildApiOptionsFactory<TestHandler>();
+            IApiSettings settings = configuration.BuildApiOptions<TestHandler>();
 
-            IDependencyProvider dependencies = optionsFactory.Dependencies.BuildProvider();
-
-            ISerializer serializer = dependencies.GetDependency<ISerializer>();
+            ISerializer serializer = settings.Dependencies.GetRequiredDependency<ISerializer>();
 
             serializer.ShouldBeOfType<NewtonsoftSerializer>();
         }
@@ -40,18 +44,21 @@ namespace SereneApi.Serialization.Newtonsoft.Json.Tests
         {
             string dateFormat = "TEST";
 
-            ConfigurationManager configuration = new();
+            ApiConfigurationManager configuration = new ApiConfigurationManager();
 
-            Should.NotThrow(() => configuration.AmendConfiguration<TestFactory>(c =>
+            Should.NotThrow(() => configuration.AmendConfigurationProvider<TestHandlerConfigurationProvider>(c =>
             {
-                c.AddNewtonsoft(s => s.DateFormatString = dateFormat);
+                c.UseNewtonsoftSerializer(s => s.DateFormatString = dateFormat);
             }));
 
-            ApiOptionsFactory<TestHandler> optionsFactory = configuration.BuildApiOptionsFactory<TestHandler>();
+            configuration.AddApiConfiguration<TestHandler>(c =>
+            {
+                c.SetSource("http://localhost");
+            });
 
-            IDependencyProvider dependencies = optionsFactory.Dependencies.BuildProvider();
+            IApiSettings settings = configuration.BuildApiOptions<TestHandler>();
 
-            ISerializer serializer = dependencies.GetDependency<ISerializer>();
+            ISerializer serializer = settings.Dependencies.GetRequiredDependency<ISerializer>();
 
             NewtonsoftSerializer newtonsoftSerializer = serializer.ShouldBeOfType<NewtonsoftSerializer>();
 
@@ -67,18 +74,21 @@ namespace SereneApi.Serialization.Newtonsoft.Json.Tests
                 DateFormatString = "TEST"
             };
 
-            ConfigurationManager configuration = new();
+            ApiConfigurationManager configuration = new ApiConfigurationManager();
 
-            Should.NotThrow(() => configuration.AmendConfiguration<TestFactory>(c =>
+            Should.NotThrow(() => configuration.AmendConfigurationProvider<TestHandlerConfigurationProvider>(c =>
             {
-                c.AddNewtonsoft(settings);
+                c.UseNewtonsoftSerializer(settings);
             }));
 
-            ApiOptionsFactory<TestHandler> optionsFactory = configuration.BuildApiOptionsFactory<TestHandler>();
+            configuration.AddApiConfiguration<TestHandler>(c =>
+            {
+                c.SetSource("http://localhost");
+            });
 
-            IDependencyProvider dependencies = optionsFactory.Dependencies.BuildProvider();
+            IApiSettings apiSettings = configuration.BuildApiOptions<TestHandler>();
 
-            ISerializer serializer = dependencies.GetDependency<ISerializer>();
+            ISerializer serializer = apiSettings.Dependencies.GetRequiredDependency<ISerializer>();
 
             NewtonsoftSerializer newtonsoftSerializer = serializer.ShouldBeOfType<NewtonsoftSerializer>();
 
@@ -89,42 +99,41 @@ namespace SereneApi.Serialization.Newtonsoft.Json.Tests
         [Fact]
         public void ThrowArgumentNullException_Builder()
         {
-            ConfigurationManager configuration = new();
+            ApiConfigurationManager configuration = new ApiConfigurationManager();
 
             Action<JsonSerializerSettings> builder = null;
 
-            Should.Throw<ArgumentNullException>(() => configuration.AmendConfiguration<TestFactory>(c =>
+            Should.Throw<ArgumentNullException>(() => configuration.AmendConfigurationProvider<TestHandlerConfigurationProvider>(c =>
             {
-                c.AddNewtonsoft(builder);
+                c.UseNewtonsoftSerializer(builder);
             }));
         }
 
         [Fact]
         public void ThrowArgumentNullException_Settings()
         {
-            ConfigurationManager configuration = new();
+            ApiConfigurationManager configuration = new ApiConfigurationManager();
 
             JsonSerializerSettings settings = null;
 
-            Should.Throw<ArgumentNullException>(() => configuration.AmendConfiguration<TestFactory>(c =>
+            Should.Throw<ArgumentNullException>(() => configuration.AmendConfigurationProvider<TestHandlerConfigurationProvider>(c =>
             {
-                c.AddNewtonsoft(settings);
+                c.UseNewtonsoftSerializer(settings);
             }));
         }
 
-        public class TestFactory : ConfigurationFactory
-        {
-        }
-
-        [UseConfigurationFactory(typeof(TestFactory))]
+        [UseHandlerConfigurationProvider(typeof(TestHandlerConfigurationProvider))]
         public class TestHandler : IApiHandler
         {
             public IConnectionSettings Connection => throw new NotImplementedException();
 
             public void Dispose()
             {
-                throw new NotImplementedException();
             }
+        }
+
+        public class TestHandlerConfigurationProvider : HandlerConfigurationProvider
+        {
         }
     }
 }

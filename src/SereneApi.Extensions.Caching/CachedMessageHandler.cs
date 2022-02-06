@@ -1,6 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using SereneApi.Core.Factories;
-using SereneApi.Extensions.Caching.Types;
+﻿using SereneApi.Extensions.Caching.Types;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http;
 using System.Threading;
@@ -14,10 +13,8 @@ namespace SereneApi.Extensions.Caching
 
         private readonly Cache<Uri, ICachedResponse> _responseCache;
 
-        public CachedMessageHandler(IClientFactory clientFactory, Cache<Uri, ICachedResponse> cache, ILogger logger = null)
+        public CachedMessageHandler(Cache<Uri, ICachedResponse> cache, ILogger logger = null)
         {
-            InnerHandler = clientFactory.BuildHttpMessageHandler();
-
             _responseCache = cache;
             _logger = logger;
         }

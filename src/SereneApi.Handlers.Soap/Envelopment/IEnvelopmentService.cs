@@ -1,4 +1,4 @@
-﻿using SereneApi.Core.Content;
+﻿using SereneApi.Core.Http.Content;
 using System.Collections.Generic;
 
 namespace SereneApi.Handlers.Soap.Envelopment

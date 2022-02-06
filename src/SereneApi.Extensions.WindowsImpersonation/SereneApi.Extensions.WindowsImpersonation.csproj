@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -10,8 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ApiCommon.Core\ApiCommon.Core.csproj" />
-    <ProjectReference Include="..\ApiCommon.Extensions.DependencyInjection\ApiCommon.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="..\SereneApi.Extensions.DependencyInjection\SereneApi.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="..\SereneApi.Extensions.DependencyInjection\SereneApi.Extensions.DependencyInjection.csproj" />
   </ItemGroup>
 
 </Project>

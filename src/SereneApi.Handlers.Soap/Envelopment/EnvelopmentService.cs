@@ -1,5 +1,5 @@
-﻿using SereneApi.Core.Content;
-using SereneApi.Core.Content.Types;
+﻿using SereneApi.Core.Http.Content;
+using SereneApi.Core.Http.Content.Types;
 using SereneApi.Handlers.Soap.Serialization;
 using System;
 using System.Collections.Generic;

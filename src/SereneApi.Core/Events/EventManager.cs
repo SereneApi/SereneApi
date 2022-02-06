@@ -29,7 +29,9 @@ namespace SereneApi.Core.Events
 
         public Task PublishAsync<TEvent>(TEvent sender) where TEvent : IEventListener
         {
-            return Task.Factory.StartNew(() => Publish(sender));
+            Publish(sender);
+
+            return Task.CompletedTask;
         }
 
         public void Subscribe<TEvent>(Action<TEvent> listener) where TEvent : IEventListener

@@ -1,15 +1,15 @@
 using DependencyInjection.API;
-using DependencyInjection.WebUi.Handlers;
+using DependencyInjection.API.Handlers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using SereneApi.Core;
+using SereneApi.Core.Configuration;
 using SereneApi.Extensions.DependencyInjection;
 using SereneApi.Handlers.Rest.Configuration;
 using SereneApi.Serializers.Newtonsoft.Json;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace DependencyInjection.WebUi
 {
@@ -50,10 +50,14 @@ namespace DependencyInjection.WebUi
         {
             services.AddControllers().AddNewtonsoftJson();
 
-            services.OverrideConfigurationFactory<RestConfigurationFactory>(c =>
+            services.AmendConfigurationProvider<RestHandlerConfigurationProvider>(c =>
             {
-                c.Configuration.Override("ResourcePath", "api/v2");
-                c.AddNewtonsoft();
+                c.Dependencies.Configure<HandlerConfiguration>(c =>
+                {
+                    c.SetResourcePath("api/v2");
+                });
+
+                c.UseNewtonsoftSerializer();
             });
 
             // Add an ApiHandler to the services collection, this enables dependency injection. You

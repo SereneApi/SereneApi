@@ -1,5 +1,6 @@
-﻿using SereneApi.Core.Configuration;
-using SereneApi.Core.Options.Factories;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Core.Configuration;
+using SereneApi.Core.Configuration.Settings;
 using SereneApi.Handlers.Rest.Queries;
 using SereneApi.Handlers.Rest.Tests.Mock;
 using Shouldly;
@@ -14,11 +15,16 @@ namespace SereneApi.Handlers.Rest.Tests.Factories
 
         public QueryFactoryShould()
         {
-            ConfigurationManager configuration = new ConfigurationManager();
+            ApiConfigurationManager configuration = new ApiConfigurationManager();
 
-            ApiOptionsFactory<BaseApiHandlerWrapper> optionsFactory = configuration.BuildApiOptionsFactory<BaseApiHandlerWrapper>();
+            configuration.AddApiConfiguration<BaseApiHandlerWrapper>(c =>
+            {
+                c.SetSource("http://localhost");
+            });
 
-            _queryFactory = optionsFactory.Dependencies.BuildProvider().GetDependency<IQueryFactory>();
+            IApiSettings settings = configuration.BuildApiOptions<BaseApiHandlerWrapper>();
+
+            _queryFactory = settings.Dependencies.GetRequiredDependency<IQueryFactory>();
         }
 
         [Fact]

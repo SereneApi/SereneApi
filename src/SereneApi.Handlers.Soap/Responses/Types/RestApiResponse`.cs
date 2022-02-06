@@ -1,5 +1,5 @@
-﻿using SereneApi.Core.Requests;
-using SereneApi.Core.Responses;
+﻿using SereneApi.Core.Http.Requests;
+using SereneApi.Core.Http.Responses;
 using System;
 using System.Diagnostics.CodeAnalysis;
 

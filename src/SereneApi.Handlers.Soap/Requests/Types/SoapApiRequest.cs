@@ -1,5 +1,6 @@
-﻿using SereneApi.Core.Connection;
-using SereneApi.Core.Content;
+﻿using SereneApi.Core.Http;
+using SereneApi.Core.Http.Content;
+using SereneApi.Core.Http.Requests;
 using SereneApi.Core.Requests;
 using SereneApi.Core.Versioning;
 using System;

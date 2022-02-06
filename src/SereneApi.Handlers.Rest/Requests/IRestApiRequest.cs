@@ -1,4 +1,4 @@
-﻿using SereneApi.Core.Requests;
+﻿using SereneApi.Core.Http.Requests;
 using System.Collections.Generic;
 
 namespace SereneApi.Handlers.Rest.Requests
