@@ -13,10 +13,16 @@
     <PackageIcon>nuget_logo.png</PackageIcon>
     <PackageProjectUrl>https://www.sereneapi.org/</PackageProjectUrl>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+      <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+      <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\nuget_logo.png">
+      <None Include="..\..\LICENSE.md">
+          <Pack>True</Pack>
+          <PackagePath></PackagePath>
+      </None>
+      <None Include="..\..\nuget_logo.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
