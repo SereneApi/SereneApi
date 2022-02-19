@@ -2,16 +2,19 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Version>1.5.1.1</Version>
+    <Version>5.0.0.1</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Bradley Clarke</Authors>
     <Company>DeltaWare</Company>
     <Product>SereneApi</Product>
     <Description>Enables support for WebAssembly Microsoft Authentication</Description>
-	<PackageOutputPath>..\..\packages\SereneApi.Authentication.WebAssembly.Msal</PackageOutputPath>
-	<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+	<PackageOutputPath>..\..\nuget.packages</PackageOutputPath>
 	<PackageIcon>nuget_logo.png</PackageIcon>
 	<PackageIconUrl />
+	<RepositoryType>GIT</RepositoryType>
+    <PackageTags>SereneApi; API; Web; Authentication; Blazor; WebAssembly; MSAL; Azure</PackageTags>
+    <RepositoryUrl>https://github.com/SereneApi/SereneApi</RepositoryUrl>
+    <PackageProjectUrl>https://www.sereneapi.org/</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>

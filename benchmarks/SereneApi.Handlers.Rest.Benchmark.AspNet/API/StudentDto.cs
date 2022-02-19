@@ -1,4 +1,4 @@
-﻿namespace ApiCommon.Handlers.Rest.Benchmark.AspNet.API
+﻿namespace SereneApi.Handlers.Rest.Benchmark.AspNet.API
 {
     public class StudentDto
     {

@@ -1,13 +1,13 @@
-﻿using ApiCommon.Core.Options;
-using ApiCommon.Core.Requests;
-using ApiCommon.Core.Responses;
+﻿using SereneApi.Core.Http.Responses;
+using SereneApi.Core.Requests;
 using System.Threading.Tasks;
+using SereneApi.Core.Configuration.Settings;
 
-namespace ApiCommon.Handlers.Rest.Benchmark.AspNet.API
+namespace SereneApi.Handlers.Rest.Benchmark.AspNet.API
 {
     public class StudentApiHandler : RestApiHandler, IStudentApi
     {
-        public StudentApiHandler(IApiOptions<StudentApiHandler> options) : base(options)
+        public StudentApiHandler(IApiSettings<StudentApiHandler> options) : base(options)
         {
         }
 

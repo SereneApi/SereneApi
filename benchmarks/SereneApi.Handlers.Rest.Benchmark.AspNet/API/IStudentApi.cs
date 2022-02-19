@@ -1,10 +1,10 @@
-﻿using ApiCommon.Core.Responses;
+﻿using SereneApi.Core.Http.Responses;
 using System;
 using System.Threading.Tasks;
 
-namespace ApiCommon.Handlers.Rest.Benchmark.AspNet.API
+namespace SereneApi.Handlers.Rest.Benchmark.AspNet.API
 {
-    public interface IStudentApi : IDisposable
+    public interface IStudentApi
     {
         Task<IApiResponse<StudentDto>> GetStudents();
     }

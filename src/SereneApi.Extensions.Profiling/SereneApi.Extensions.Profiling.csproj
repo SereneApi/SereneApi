@@ -4,9 +4,9 @@
 		<TargetFramework>net5.0</TargetFramework>
 		<Version>1.0.1.8</Version>
 		<Authors>Bradley Clarke</Authors>
-		<Company>Maritime Superanutation</Company>
+		<Company>DeltaWare</Company>
 		<Product>SereneApi</Product>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>

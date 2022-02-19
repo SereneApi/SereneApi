@@ -5,9 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\ApiCommon.Extensions.DependencyInjection\ApiCommon.Extensions.DependencyInjection.csproj" />
-    <ProjectReference Include="..\..\src\ApiCommon.Extensions.Mocking.Rest\ApiCommon.Extensions.Mocking.Rest.csproj" />
-    <ProjectReference Include="..\..\src\ApiCommon.Handlers.Rest\ApiCommon.Handlers.Rest.csproj" />
+    <ProjectReference Include="..\..\src\SereneApi.Extensions.DependencyInjection\SereneApi.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\src\SereneApi.Extensions.Mocking.Rest\SereneApi.Extensions.Mocking.Rest.csproj" />
   </ItemGroup>
 
 </Project>

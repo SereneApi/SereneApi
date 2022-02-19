@@ -1,13 +1,14 @@
-using ApiCommon.Core.Requests;
-using ApiCommon.Extensions.Mocking.Rest;
-using ApiCommon.Handlers.Rest.Benchmark.AspNet.API;
+using SereneApi.Core.Requests;
+using SereneApi.Extensions.Mocking.Rest;
+using SereneApi.Handlers.Rest.Benchmark.AspNet.API;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SereneApi.Core.Configuration;
 
-namespace ApiCommon.Handlers.Rest.Benchmark.AspNet
+namespace SereneApi.Handlers.Rest.Benchmark.AspNet
 {
     public class Startup
     {
@@ -48,17 +49,18 @@ namespace ApiCommon.Handlers.Rest.Benchmark.AspNet
             services.RegisterApi<IStudentApi, StudentApiHandler>(o =>
             {
                 o.SetSource("http://localhost", "Student");
-            }).EnableMocking(c =>
-            {
-                c.RegisterMockResponse()
-                    .ForMethod(Method.Get)
-                    .RespondsWith(new StudentDto
-                    {
-                        Email = "John.Smith@gmail.com",
-                        FirstName = "John",
-                        LastName = "Smith",
-                        Id = 0
-                    });
+                o.EnableMocking(c =>
+                {
+                    c.RegisterMockResponse()
+                        .ForMethod(Method.Get)
+                        .RespondsWith(new StudentDto
+                        {
+                            Email = "John.Smith@gmail.com",
+                            FirstName = "John",
+                            LastName = "Smith",
+                            Id = 0
+                        });
+                });
             });
 
             services.AddRazorPages();

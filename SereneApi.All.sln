@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30011.22
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E98EEDA7-F6ED-4EA9-B2B6-D79DBD9145B2}"
 EndProject
@@ -40,10 +40,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Handlers.Soap", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Serializers.Newtonsoft.Json", "src\SereneApi.Serializers.Newtonsoft.Json\SereneApi.Serializers.Newtonsoft.Json.csproj", "{00478531-76EF-4595-89DB-85A8C7A62BD2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneAp.Handlers.Rest.Benchmark", "benchmarks\SereneAp.Handlers.Rest.Benchmark\SereneAp.Handlers.Rest.Benchmark.csproj", "{28045B48-5E5B-44C9-A2F3-38A7CD23A9CB}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneAp.Handlers.Rest.Benchmark.AspNet", "benchmarks\SereneAp.Handlers.Rest.Benchmark.AspNet\SereneAp.Handlers.Rest.Benchmark.AspNet.csproj", "{F21A57C6-6BA6-41BB-A0D1-6B0DDCF3B4FF}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Extensions.Caching", "src\SereneApi.Extensions.Caching\SereneApi.Extensions.Caching.csproj", "{3ADB3DCD-487C-4009-B44B-B2182F73DD4B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Extensions.Mocking.Rest", "src\SereneApi.Extensions.Mocking.Rest\SereneApi.Extensions.Mocking.Rest.csproj", "{3A8AA102-0AA6-4A44-A2FC-603A980CC628}"
@@ -66,9 +62,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Handlers.Rest.Tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Serialization.Newtonsoft.Json.Tests", "tests\SereneApi.Serialization.Newtonsoft.Json.Tests\SereneApi.Serialization.Newtonsoft.Json.Tests.csproj", "{D61DC0E2-ABC9-4BC9-91BE-80FC89D06587}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Authentication.Web.Msal", "src\SereneApi.Authentication.Web.Msal\SereneApi.Authentication.Web.Msal.csproj", "{95C448D8-6288-46AF-9909-BF6E404D0F73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Handlers.Rest.Benchmark", "benchmarks\SereneApi.Handlers.Rest.Benchmark\SereneApi.Handlers.Rest.Benchmark.csproj", "{74D2F1D1-FD84-4D31-A4FA-642022805E18}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeltaWare.SDK.Core", "..\DeltaWare.SDK\src\DeltaWare.SDK.Core\DeltaWare.SDK.Core.csproj", "{CC15FBC6-15C4-4F9C-8A1B-BA816264391D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Handlers.Rest.Benchmark.AspNet", "benchmarks\SereneApi.Handlers.Rest.Benchmark.AspNet\SereneApi.Handlers.Rest.Benchmark.AspNet.csproj", "{4A300ADC-68B3-4A4D-BDD2-161028853DDB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Authentication.Web.Msal", "src\SereneApi.Authentication.Web.Msal\SereneApi.Authentication.Web.Msal.csproj", "{2D22B6A8-4C81-4E31-93BC-F9F5794DA3BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -108,14 +106,6 @@ Global
 		{00478531-76EF-4595-89DB-85A8C7A62BD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00478531-76EF-4595-89DB-85A8C7A62BD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00478531-76EF-4595-89DB-85A8C7A62BD2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{28045B48-5E5B-44C9-A2F3-38A7CD23A9CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{28045B48-5E5B-44C9-A2F3-38A7CD23A9CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{28045B48-5E5B-44C9-A2F3-38A7CD23A9CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{28045B48-5E5B-44C9-A2F3-38A7CD23A9CB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F21A57C6-6BA6-41BB-A0D1-6B0DDCF3B4FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F21A57C6-6BA6-41BB-A0D1-6B0DDCF3B4FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F21A57C6-6BA6-41BB-A0D1-6B0DDCF3B4FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F21A57C6-6BA6-41BB-A0D1-6B0DDCF3B4FF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3ADB3DCD-487C-4009-B44B-B2182F73DD4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3ADB3DCD-487C-4009-B44B-B2182F73DD4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3ADB3DCD-487C-4009-B44B-B2182F73DD4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -160,14 +150,18 @@ Global
 		{D61DC0E2-ABC9-4BC9-91BE-80FC89D06587}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D61DC0E2-ABC9-4BC9-91BE-80FC89D06587}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D61DC0E2-ABC9-4BC9-91BE-80FC89D06587}.Release|Any CPU.Build.0 = Release|Any CPU
-		{95C448D8-6288-46AF-9909-BF6E404D0F73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{95C448D8-6288-46AF-9909-BF6E404D0F73}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{95C448D8-6288-46AF-9909-BF6E404D0F73}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{95C448D8-6288-46AF-9909-BF6E404D0F73}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CC15FBC6-15C4-4F9C-8A1B-BA816264391D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CC15FBC6-15C4-4F9C-8A1B-BA816264391D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CC15FBC6-15C4-4F9C-8A1B-BA816264391D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CC15FBC6-15C4-4F9C-8A1B-BA816264391D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74D2F1D1-FD84-4D31-A4FA-642022805E18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74D2F1D1-FD84-4D31-A4FA-642022805E18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74D2F1D1-FD84-4D31-A4FA-642022805E18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74D2F1D1-FD84-4D31-A4FA-642022805E18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A300ADC-68B3-4A4D-BDD2-161028853DDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A300ADC-68B3-4A4D-BDD2-161028853DDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A300ADC-68B3-4A4D-BDD2-161028853DDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A300ADC-68B3-4A4D-BDD2-161028853DDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D22B6A8-4C81-4E31-93BC-F9F5794DA3BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D22B6A8-4C81-4E31-93BC-F9F5794DA3BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D22B6A8-4C81-4E31-93BC-F9F5794DA3BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D22B6A8-4C81-4E31-93BC-F9F5794DA3BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -177,13 +171,13 @@ Global
 		{BD59168B-B511-417F-B89C-F3EDA406C14E} = {518244F8-568F-457B-8684-CAD8AD9A3D0E}
 		{F92CC81A-C39C-4938-BE3E-1B10EE3E5CA4} = {518244F8-568F-457B-8684-CAD8AD9A3D0E}
 		{AD2DE70B-FFE2-4ED9-8CC2-5BBB6213C10A} = {518244F8-568F-457B-8684-CAD8AD9A3D0E}
-		{28045B48-5E5B-44C9-A2F3-38A7CD23A9CB} = {B184BCCE-56C1-4428-873A-1F564F00DA98}
-		{F21A57C6-6BA6-41BB-A0D1-6B0DDCF3B4FF} = {B184BCCE-56C1-4428-873A-1F564F00DA98}
 		{CD4C6D59-DA07-473A-B651-86F21A1E8980} = {E98EEDA7-F6ED-4EA9-B2B6-D79DBD9145B2}
 		{39189E25-0E6D-4E0C-8027-C4B56D91509E} = {E98EEDA7-F6ED-4EA9-B2B6-D79DBD9145B2}
 		{19EB37AC-F3B5-4F96-900A-91F9A5157285} = {E98EEDA7-F6ED-4EA9-B2B6-D79DBD9145B2}
 		{D2BD3217-A451-46D3-A48F-E7FA13C3405B} = {E98EEDA7-F6ED-4EA9-B2B6-D79DBD9145B2}
 		{D61DC0E2-ABC9-4BC9-91BE-80FC89D06587} = {E98EEDA7-F6ED-4EA9-B2B6-D79DBD9145B2}
+		{74D2F1D1-FD84-4D31-A4FA-642022805E18} = {B184BCCE-56C1-4428-873A-1F564F00DA98}
+		{4A300ADC-68B3-4A4D-BDD2-161028853DDB} = {B184BCCE-56C1-4428-873A-1F564F00DA98}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1434419F-CF49-4407-B3E1-F554AA0DBC33}

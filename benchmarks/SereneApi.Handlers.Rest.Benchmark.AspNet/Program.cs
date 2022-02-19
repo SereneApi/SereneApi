@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace ApiCommon.Handlers.Rest.Benchmark.AspNet
+namespace SereneApi.Handlers.Rest.Benchmark.AspNet
 {
     public class Program
     {

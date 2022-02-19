@@ -58,7 +58,7 @@ namespace SereneApi.Handlers.Rest.Tests.Factories
             {
                 apiHandlerWrapperWrapper = apiFactory.Build<IApiHandlerWrapper>();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return;
             }

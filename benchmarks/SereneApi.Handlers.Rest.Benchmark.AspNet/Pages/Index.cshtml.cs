@@ -1,11 +1,11 @@
-﻿using ApiCommon.Core.Response;
-using ApiCommon.Handlers.Rest.Benchmark.AspNet.API;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using SereneApi.Handlers.Rest.Benchmark.AspNet.API;
 using System;
 using System.Diagnostics;
+using SereneApi.Core.Http.Responses;
 
-namespace ApiCommon.Handlers.Rest.Benchmark.AspNet.Pages
+namespace SereneApi.Handlers.Rest.Benchmark.AspNet.Pages
 {
     public class IndexModel : PageModel
     {

@@ -6,12 +6,15 @@
     <Company>DeltaWare</Company>
     <Product>SereneApi</Product>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.5.1.1</Version>
+    <Version>5.0.0.1</Version>
 	  <Description>Enables support for Web Microsoft Authentication</Description>
-	  <PackageOutputPath>..\..\packages\SereneApi.Authentication.Web.Msal</PackageOutputPath>
-	  <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+      <PackageOutputPath>..\..\nuget.packages</PackageOutputPath>
 	  <PackageIcon>nuget_logo.png</PackageIcon>
 	  <PackageIconUrl />
+	  <RepositoryUrl>https://github.com/SereneApi/SereneApi</RepositoryUrl>
+	  <RepositoryType>GIT</RepositoryType>
+	  <PackageTags>SereneApi; API; Web; Authentication; MSAL; Azure</PackageTags>
+	  <PackageProjectUrl>https://www.sereneapi.org/</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,11 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\LICENSE.md">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <None Include="..\..\nuget_logo.png">
+   <None Include="..\..\nuget_logo.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>

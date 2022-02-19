@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ApiCommon.Handlers.Rest.Benchmark.API
+namespace SereneApi.Handlers.Rest.Benchmark.API
 {
     public class StudentDto
     {

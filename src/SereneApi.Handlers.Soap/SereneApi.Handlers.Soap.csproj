@@ -5,16 +5,16 @@
     <Product>SereneApi</Product>
     <Company>DeltaWare</Company>
     <Authors>Bradley Clarke</Authors>
-    <Version>1.5.1.1</Version>
-    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Version>5.0.0.1</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+      <PackageOutputPath>..\..\nuget.packages</PackageOutputPath>
     <PackageIcon>nuget_logo.png</PackageIcon>
     <PackageIconUrl />
     <RepositoryUrl>https://github.com/SereneApi/SereneApi</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
     <PackageProjectUrl>https://www.sereneapi.org/</PackageProjectUrl>
     <NeutralLanguage>English (Australia)</NeutralLanguage>
+    <PackageTags>SereneApi; API; SOAP</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

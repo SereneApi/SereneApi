@@ -1,14 +1,13 @@
-﻿using ApiCommon.Core.Handler.Factories;
-using ApiCommon.Core.Requests;
-using ApiCommon.Core.Response;
-using ApiCommon.Core.Responses;
-using ApiCommon.Extensions.Mocking.Rest;
-using ApiCommon.Handlers.Rest.Benchmark.API;
+﻿using SereneApi.Core.Handler.Factories;
+using SereneApi.Core.Requests;
+using SereneApi.Handlers.Rest.Benchmark.API;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using SereneApi.Core.Configuration;
+using SereneApi.Core.Http.Responses;
 
-namespace ApiCommon.Handlers.Rest.Benchmark
+namespace SereneApi.Handlers.Rest.Benchmark
 {
     internal class Program
     {
@@ -21,21 +20,24 @@ namespace ApiCommon.Handlers.Rest.Benchmark
                 o.SetSource("http://localhost:52279", "Students");
             });
 
-            factory.ExtendApi<StudentApiHandler>().EnableMocking(c =>
+            factory.ExtendApi<IStudentApi>(e =>
             {
-                c.RegisterMockResponse()
-                    .ForMethod(Method.Get)
-                    .RespondsWith(new List<StudentDto>
-                    {
-                        new StudentDto
-                        {
-                            Email = "John.Smith@gmail.com",
-                            GivenName = "John",
-                            LastName = "Smith",
-                            Id = 0
-                        }
-                    }
-                );
+                e.EnableMocking(c =>
+                {
+                    c.RegisterMockResponse()
+                        .ForMethod(Method.Get)
+                        .RespondsWith(new List<StudentDto>
+                            {
+                                new StudentDto
+                                {
+                                    Email = "John.Smith@gmail.com",
+                                    GivenName = "John",
+                                    LastName = "Smith",
+                                    Id = 0
+                                }
+                            }
+                        );
+                });
             });
 
             Console.Write("Runs: ");
