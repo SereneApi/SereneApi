@@ -1,9 +1,9 @@
-﻿using SereneApi.Core.Http.Requests;
+﻿using Microsoft.Extensions.Logging;
+using SereneApi.Core.Http.Requests;
 using SereneApi.Core.Http.Responses;
 using SereneApi.Core.Http.Responses.Handlers;
 using SereneApi.Core.Serialization;
 using SereneApi.Handlers.Soap.Responses.Types;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;

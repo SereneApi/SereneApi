@@ -1,10 +1,10 @@
-﻿using SereneApi.Core.Configuration.Settings;
+﻿using SereneApi.Core.Configuration.Attributes;
+using SereneApi.Core.Configuration.Settings;
 using SereneApi.Core.Handler;
 using SereneApi.Core.Http.Requests;
 using SereneApi.Core.Http.Responses;
-using System;
-using SereneApi.Core.Configuration.Attributes;
 using SereneApi.Handlers.Rest.Configuration;
+using System;
 
 namespace SereneApi.Extensions.DependencyInjection.Tests
 {

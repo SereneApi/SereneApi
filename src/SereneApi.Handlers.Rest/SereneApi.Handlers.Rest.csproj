@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Product>SereneApi</Product>
     <Company>DeltaWare</Company>
     <Authors>Bradley Clarke</Authors>
-    <Version>5.0.0.1</Version>
+    <Version>6.0.0.1</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <PackageOutputPath>..\..\nuget.packages</PackageOutputPath>
     <PackageIcon>nuget_logo.png</PackageIcon>

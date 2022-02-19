@@ -1,6 +1,6 @@
-﻿using SereneApi.Handlers.Soap.Envelopment;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Handlers.Soap.Envelopment;
 using SereneApi.Handlers.Soap.Serialization.Factories;
-using DeltaWare.Dependencies.Abstractions;
 using System;
 
 // ReSharper disable once CheckNamespace

@@ -2,10 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SereneApi.Core.Configuration;
-using SereneApi.Core.Configuration.Provider;
+using SereneApi.Handlers.Rest.Configuration;
 using Shouldly;
 using System;
-using SereneApi.Handlers.Rest.Configuration;
 using Xunit;
 
 namespace SereneApi.Extensions.DependencyInjection.Tests

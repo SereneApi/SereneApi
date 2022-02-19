@@ -1,9 +1,9 @@
-﻿using SereneApi.Core.Configuration;
-using SereneApi.Core.Http.Requests.Handler;
-using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies.Abstractions;
 using DeltaWare.Dependencies.Abstractions.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using SereneApi.Core.Configuration;
+using SereneApi.Core.Http.Requests.Handler;
 using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;

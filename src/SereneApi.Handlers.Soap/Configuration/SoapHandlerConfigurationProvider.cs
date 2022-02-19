@@ -1,4 +1,5 @@
-﻿using SereneApi.Core.Configuration;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Core.Configuration;
 using SereneApi.Core.Configuration.Provider;
 using SereneApi.Core.Http.Content;
 using SereneApi.Core.Http.Responses.Handlers;
@@ -7,7 +8,6 @@ using SereneApi.Handlers.Soap.Envelopment;
 using SereneApi.Handlers.Soap.Responses.Handlers;
 using SereneApi.Handlers.Soap.Routing;
 using SereneApi.Handlers.Soap.Serialization;
-using DeltaWare.Dependencies.Abstractions;
 using System.Collections.Generic;
 
 namespace SereneApi.Handlers.Soap.Configuration

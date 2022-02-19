@@ -1,12 +1,12 @@
-﻿using SereneApi.Authentication.WebAssembly.Msal.Options;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+using Microsoft.Extensions.Logging;
+using SereneApi.Authentication.WebAssembly.Msal.Options;
 using SereneApi.Core.Http.Authentication;
 using SereneApi.Core.Http.Authorization;
 using SereneApi.Core.Http.Authorization.Types;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 
 namespace SereneApi.Authentication.WebAssembly.Msal
 {

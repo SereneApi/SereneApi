@@ -1,4 +1,5 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
+using DeltaWare.SDK.Core.Validators;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Web;
 using SereneApi.Authentication.Web.Msal;
@@ -6,7 +7,6 @@ using SereneApi.Authentication.Web.Msal.Options;
 using SereneApi.Core.Http.Authentication;
 using SereneApi.Core.Http.Requests;
 using System;
-using DeltaWare.SDK.Core.Validators;
 
 // ReSharper disable once CheckNamespace
 namespace SereneApi.Core.Configuration

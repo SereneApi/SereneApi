@@ -1,5 +1,4 @@
 ﻿using SereneApi.Core.Http.Responses;
-using System;
 using System.Threading.Tasks;
 
 namespace SereneApi.Handlers.Rest.Benchmark.AspNet.API

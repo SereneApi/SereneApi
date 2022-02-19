@@ -1,12 +1,12 @@
-﻿using SereneApi.Core.Events;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using SereneApi.Core.Events;
 using SereneApi.Core.Http;
 using SereneApi.Core.Http.Client;
 using SereneApi.Core.Http.Content;
 using SereneApi.Core.Http.Requests.Handler;
 using SereneApi.Core.Http.Responses.Handlers;
 using SereneApi.Core.Requests;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http;
 using System.Runtime.InteropServices;

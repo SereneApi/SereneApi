@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Authors>Bradley Clarke</Authors>
     <Company>DeltaWare</Company>
     <Product>SereneApi</Product>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>5.0.0.1</Version>
+    <Version>6.0.0.1</Version>
 	  <Description>Enables support for Web Microsoft Authentication</Description>
       <PackageOutputPath>..\..\nuget.packages</PackageOutputPath>
 	  <PackageIcon>nuget_logo.png</PackageIcon>
@@ -20,7 +20,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Identity.Web" Version="1.21.1" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="1.23.0" />
   </ItemGroup>
 
   <ItemGroup>

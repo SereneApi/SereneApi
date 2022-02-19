@@ -1,9 +1,9 @@
-﻿using SereneApi.Core.Configuration;
+﻿using DeltaWare.Dependencies.Abstractions;
+using Microsoft.Extensions.Logging;
+using SereneApi.Core.Configuration;
 using SereneApi.Core.Http.Client.Handler;
 using SereneApi.Extensions.Caching.Options;
 using SereneApi.Extensions.Caching.Types;
-using DeltaWare.Dependencies.Abstractions;
-using Microsoft.Extensions.Logging;
 using System;
 
 namespace SereneApi.Extensions.Caching

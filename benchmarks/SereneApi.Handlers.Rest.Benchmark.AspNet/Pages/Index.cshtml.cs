@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using SereneApi.Core.Http.Responses;
 using SereneApi.Handlers.Rest.Benchmark.AspNet.API;
 using System;
 using System.Diagnostics;
-using SereneApi.Core.Http.Responses;
 
 namespace SereneApi.Handlers.Rest.Benchmark.AspNet.Pages
 {

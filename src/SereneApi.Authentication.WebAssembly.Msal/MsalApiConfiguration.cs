@@ -1,12 +1,12 @@
-﻿using SereneApi.Authentication.WebAssembly.Msal;
-using SereneApi.Authentication.WebAssembly.Msal.Options;
-using SereneApi.Core.Http.Authentication;
-using SereneApi.Core.Http.Requests;
-using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies.Abstractions;
 using DeltaWare.Dependencies.Abstractions.Enums;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.DependencyInjection;
+using SereneApi.Authentication.WebAssembly.Msal;
+using SereneApi.Authentication.WebAssembly.Msal.Options;
+using SereneApi.Core.Http.Authentication;
+using SereneApi.Core.Http.Requests;
 using System;
 
 // ReSharper disable once CheckNamespace
