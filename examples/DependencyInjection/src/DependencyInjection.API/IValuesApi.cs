@@ -1,4 +1,5 @@
-﻿using SereneApi.Abstractions.Response;
+﻿using SereneApi.Core.Http.Responses;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace DependencyInjection.API
@@ -8,5 +9,7 @@ namespace DependencyInjection.API
         Task<IApiResponse<int>> GetAsync(int value);
 
         Task<IApiResponse<string>> GetAsync(string value);
+
+        Task<IApiResponse<MemoryStream>> GetSamplePfgAsync();
     }
 }

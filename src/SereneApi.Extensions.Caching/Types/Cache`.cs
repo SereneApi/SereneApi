@@ -6,7 +6,7 @@ namespace SereneApi.Extensions.Caching.Types
 {
     public class Cache<TKey, TValue> : IDisposable
     {
-        private readonly Dictionary<TKey, CachedItem<TValue>> _cachedItems = new Dictionary<TKey, CachedItem<TValue>>();
+        private readonly Dictionary<TKey, CachedItem<TValue>> _cachedItems = new();
 
         private readonly ICacheOptions _options;
 
@@ -27,6 +27,11 @@ namespace SereneApi.Extensions.Caching.Types
             return default;
         }
 
+        public void Store(TKey key, TValue value)
+        {
+            _cachedItems[key] = new CachedItem<TValue>(value, _options.LifeSpan, i => OnExpired(key, i));
+        }
+
         public bool TryGet(TKey key, out TValue value)
         {
             bool result = _cachedItems.TryGetValue(key, out CachedItem<TValue> item);
@@ -36,12 +41,7 @@ namespace SereneApi.Extensions.Caching.Types
             return result;
         }
 
-        public void Store(TKey key, TValue value)
-        {
-            _cachedItems[key] = new CachedItem<TValue>(value, _options.LifeSpan, i => OnExpired(key, i));
-        }
-
-        public void OnExpired(TKey key, CachedItem<TValue> caller)
+        protected virtual void OnExpired(TKey key, CachedItem<TValue> caller)
         {
             _cachedItems.Remove(key);
 
@@ -83,6 +83,6 @@ namespace SereneApi.Extensions.Caching.Types
             _disposed = true;
         }
 
-        #endregion
+        #endregion IDisposable
     }
 }

@@ -1,11 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\src\SereneApi.Abstractions\SereneApi.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\..\src\SereneApi.Core\SereneApi.Core.csproj" />
+    <ProjectReference Include="..\..\..\..\src\SereneApi.Extensions.Blazor\SereneApi.Extensions.Blazor.csproj" />
+    <ProjectReference Include="..\..\..\..\src\SereneApi.Extensions.Caching\SereneApi.Extensions.Caching.csproj" />
+    <ProjectReference Include="..\..\..\..\src\SereneApi.Extensions.DependencyInjection\SereneApi.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\..\..\src\SereneApi.Extensions.Mocking.Rest\SereneApi.Extensions.Mocking.Rest.csproj" />
+    <ProjectReference Include="..\..\..\..\src\SereneApi.Extensions.Profiling\SereneApi.Extensions.Profiling.csproj" />
+    <ProjectReference Include="..\..\..\..\src\SereneApi.Extensions.WindowsImpersonation\SereneApi.Extensions.WindowsImpersonation.csproj" />
+    <ProjectReference Include="..\..\..\..\src\SereneApi.Handlers.Rest\SereneApi.Handlers.Rest.csproj" />
+    <ProjectReference Include="..\..\..\..\src\SereneApi.Serializers.Newtonsoft.Json\SereneApi.Serializers.Newtonsoft.Json.csproj" />
   </ItemGroup>
 
 </Project>

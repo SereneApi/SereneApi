@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.IO;
 
 namespace DependencyInjection.Service.Controllers
 {
@@ -10,6 +11,19 @@ namespace DependencyInjection.Service.Controllers
         public int GetInt(int value)
         {
             return value;
+        }
+
+        [HttpGet("GetSamplePdf")]
+        public IActionResult GetSamplePdf()
+        {
+            string directory = Directory.GetCurrentDirectory();
+            string fileName = "sample.pdf";
+
+            string filePath = $"{directory}\\{fileName}";
+
+            FileStream file = new FileStream(filePath, FileMode.Open);
+
+            return File(file, "application/pdf");
         }
 
         [HttpGet("string/{value}")]

@@ -1,7 +1,6 @@
-﻿using SereneApi.Abstractions.Content;
+﻿using SereneApi.Core.Http.Content.Types;
 using System.Net;
 using System.Net.Http;
-using SereneApi.Abstractions.Content.Types;
 
 namespace SereneApi.Extensions.Caching
 {
@@ -9,15 +8,22 @@ namespace SereneApi.Extensions.Caching
     {
         public string Content { get; }
 
-        public HttpStatusCode StatusCode { get; }
-
         public string ReasonPhrase { get; }
+
+        public HttpStatusCode StatusCode { get; }
 
         private CachedResponse(HttpStatusCode statusCode, string content = null, string reasonPhrase = null)
         {
             StatusCode = statusCode;
             ReasonPhrase = reasonPhrase;
             Content = content;
+        }
+
+        public static ICachedResponse FromHttpResponse(HttpResponseMessage responseMessage)
+        {
+            string content = new HttpContentResponse(responseMessage.Content).GetContentString();
+
+            return new CachedResponse(responseMessage.StatusCode, content, responseMessage.ReasonPhrase);
         }
 
         public HttpResponseMessage GenerateHttpResponse()
@@ -34,15 +40,7 @@ namespace SereneApi.Extensions.Caching
                 Content = content,
                 StatusCode = StatusCode,
                 ReasonPhrase = ReasonPhrase
-
             };
-        }
-
-        public static ICachedResponse FromHttpResponse(HttpResponseMessage responseMessage)
-        {
-            string content = new HttpContentResponse(responseMessage.Content).GetContentString();
-
-            return new CachedResponse(responseMessage.StatusCode, content, responseMessage.ReasonPhrase);
         }
     }
 }

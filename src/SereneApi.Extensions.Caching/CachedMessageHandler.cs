@@ -1,7 +1,5 @@
-﻿using DeltaWare.Dependencies.Abstractions;
+﻿using SereneApi.Extensions.Caching.Types;
 using Microsoft.Extensions.Logging;
-using SereneApi.Abstractions.Factories;
-using SereneApi.Extensions.Caching.Types;
 using System;
 using System.Net.Http;
 using System.Threading;
@@ -15,14 +13,10 @@ namespace SereneApi.Extensions.Caching
 
         private readonly Cache<Uri, ICachedResponse> _responseCache;
 
-
-        public CachedMessageHandler(IDependencyProvider dependencies)
+        public CachedMessageHandler(Cache<Uri, ICachedResponse> cache, ILogger logger = null)
         {
-            InnerHandler = dependencies.GetDependency<IClientFactory>().BuildHttpMessageHandler();
-
-            dependencies.TryGetDependency(out _logger);
-
-            _responseCache = dependencies.GetDependency<Cache<Uri, ICachedResponse>>();
+            _responseCache = cache;
+            _logger = logger;
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)

@@ -5,7 +5,7 @@ namespace SereneApi.Extensions.Caching.Types
 {
     public class CachedItem<TValue> : IDisposable
     {
-        private readonly Timer _expiryTimer = new Timer();
+        private readonly Timer _expiryTimer = new();
 
         private readonly Action<CachedItem<TValue>> _onExpired;
 
@@ -59,6 +59,6 @@ namespace SereneApi.Extensions.Caching.Types
             _disposed = true;
         }
 
-        #endregion
+        #endregion IDisposable
     }
 }
