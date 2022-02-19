@@ -1,8 +1,8 @@
-﻿using SereneApi.Core.Configuration;
+﻿using DeltaWare.Dependencies.Abstractions;
+using Newtonsoft.Json;
+using SereneApi.Core.Configuration;
 using SereneApi.Core.Serialization;
 using SereneApi.Serializers.Newtonsoft.Json.Serializers;
-using DeltaWare.Dependencies.Abstractions;
-using Newtonsoft.Json;
 using System;
 
 namespace SereneApi.Serializers.Newtonsoft.Json

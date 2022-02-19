@@ -1,4 +1,6 @@
-﻿using SereneApi.Core.Helpers;
+﻿using DeltaWare.Dependencies.Abstractions;
+using Microsoft.Extensions.Logging;
+using SereneApi.Core.Helpers;
 using SereneApi.Core.Http;
 using SereneApi.Core.Http.Authorization;
 using SereneApi.Core.Http.Authorization.Types;
@@ -6,8 +8,6 @@ using SereneApi.Core.Http.Content;
 using SereneApi.Core.Http.Requests.Handler;
 using SereneApi.Core.Http.Responses.Handlers;
 using SereneApi.Core.Serialization;
-using DeltaWare.Dependencies.Abstractions;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
 

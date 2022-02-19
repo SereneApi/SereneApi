@@ -1,11 +1,11 @@
-﻿using SereneApi.Core.Events;
+﻿using DeltaWare.Dependencies;
+using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Core.Events;
 using SereneApi.Core.Http.Client;
 using SereneApi.Core.Http.Client.Handler;
 using SereneApi.Core.Http.Requests.Handler;
 using SereneApi.Core.Transformation;
 using SereneApi.Core.Transformation.Transformers;
-using DeltaWare.Dependencies;
-using DeltaWare.Dependencies.Abstractions;
 using System.Net;
 
 namespace SereneApi.Core.Configuration.Provider

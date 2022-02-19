@@ -1,7 +1,7 @@
-﻿using SereneApi.Core.Handler.Factories;
-using SereneApi.Core.Http.Responses;
-using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.Logging;
+using SereneApi.Core.Handler.Factories;
+using SereneApi.Core.Http.Responses;
 using System;
 using System.Threading.Tasks;
 

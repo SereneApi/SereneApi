@@ -1,4 +1,5 @@
-﻿using SereneApi.Core.Configuration;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Core.Configuration;
 using SereneApi.Core.Configuration.Provider;
 using SereneApi.Core.Http.Content;
 using SereneApi.Core.Http.Responses.Handlers;
@@ -7,7 +8,6 @@ using SereneApi.Handlers.Rest.Queries;
 using SereneApi.Handlers.Rest.Requests.Factories;
 using SereneApi.Handlers.Rest.Responses.Handlers;
 using SereneApi.Handlers.Rest.Routing;
-using DeltaWare.Dependencies.Abstractions;
 
 namespace SereneApi.Handlers.Rest.Configuration
 {

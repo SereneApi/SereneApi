@@ -1,9 +1,9 @@
-﻿using SereneApi.Core.Configuration.Attributes;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Core.Configuration.Attributes;
 using SereneApi.Core.Configuration.Exceptions;
 using SereneApi.Core.Configuration.Provider;
 using SereneApi.Core.Configuration.Settings;
 using SereneApi.Core.Handler;
-using DeltaWare.Dependencies.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;

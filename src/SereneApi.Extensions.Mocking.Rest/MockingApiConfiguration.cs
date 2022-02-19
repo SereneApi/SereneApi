@@ -1,8 +1,8 @@
-﻿using SereneApi.Core.Http.Client.Handler;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Core.Http.Client.Handler;
 using SereneApi.Core.Serialization;
 using SereneApi.Extensions.Mocking.Rest.Responses.Configuration;
 using SereneApi.Extensions.Mocking.Rest.Responses.Handlers;
-using DeltaWare.Dependencies.Abstractions;
 using System;
 
 // ReSharper disable once CheckNamespace

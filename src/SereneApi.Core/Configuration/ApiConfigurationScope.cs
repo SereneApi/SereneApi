@@ -1,7 +1,7 @@
-﻿using SereneApi.Core.Configuration.Provider;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Core.Configuration.Provider;
 using SereneApi.Core.Configuration.Settings;
 using SereneApi.Core.Handler;
-using DeltaWare.Dependencies.Abstractions;
 using System;
 
 namespace SereneApi.Core.Configuration

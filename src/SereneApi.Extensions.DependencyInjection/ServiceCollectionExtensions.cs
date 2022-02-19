@@ -1,9 +1,9 @@
-﻿using SereneApi.Core.Configuration;
-using SereneApi.Core.Configuration.Provider;
-using SereneApi.Core.Handler;
-using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies.Abstractions;
 using DeltaWare.Dependencies.Abstractions.Enums;
 using Microsoft.Extensions.Logging;
+using SereneApi.Core.Configuration;
+using SereneApi.Core.Configuration.Provider;
+using SereneApi.Core.Handler;
 using System;
 using System.Linq;
 

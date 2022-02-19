@@ -1,5 +1,5 @@
-﻿using SereneApi.Handlers.Rest.Routing;
-using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Handlers.Rest.Routing;
 using System;
 
 // ReSharper disable once CheckNamespace

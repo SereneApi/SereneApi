@@ -1,7 +1,7 @@
-﻿using SereneApi.Core.Http.Requests.Options;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Core.Http.Requests.Options;
 using SereneApi.Core.Http.Responses;
 using SereneApi.Handlers.Rest.Routing;
-using DeltaWare.Dependencies.Abstractions;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

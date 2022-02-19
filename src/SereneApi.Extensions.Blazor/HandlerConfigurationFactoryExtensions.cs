@@ -1,6 +1,6 @@
-﻿using SereneApi.Core.Http.Requests.Handler;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Core.Http.Requests.Handler;
 using SereneApi.Core.Serialization;
-using DeltaWare.Dependencies.Abstractions;
 using System.Net;
 
 // ReSharper disable once CheckNamespace

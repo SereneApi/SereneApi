@@ -1,4 +1,5 @@
-﻿using SereneApi.Core.Events;
+﻿using Microsoft.Extensions.Logging;
+using SereneApi.Core.Events;
 using SereneApi.Core.Events.Types;
 using SereneApi.Core.Handler;
 using SereneApi.Core.Http.Client;
@@ -6,7 +7,6 @@ using SereneApi.Core.Http.Content;
 using SereneApi.Core.Http.Responses;
 using SereneApi.Core.Http.Responses.Handlers;
 using SereneApi.Core.Requests;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Net.Http;

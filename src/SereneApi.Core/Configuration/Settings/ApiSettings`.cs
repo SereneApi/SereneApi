@@ -1,5 +1,5 @@
-﻿using SereneApi.Core.Handler;
-using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Core.Handler;
 
 namespace SereneApi.Core.Configuration.Settings
 {

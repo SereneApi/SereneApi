@@ -1,6 +1,6 @@
-﻿using SereneApi.Core.Configuration;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Core.Configuration;
 using SereneApi.Core.Configuration.Settings;
-using DeltaWare.Dependencies.Abstractions;
 using System;
 using System.Collections.Generic;
 

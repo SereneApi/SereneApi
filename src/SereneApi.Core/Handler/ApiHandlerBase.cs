@@ -1,12 +1,12 @@
-﻿using SereneApi.Core.Configuration;
+﻿using DeltaWare.Dependencies.Abstractions;
+using Microsoft.Extensions.Logging;
+using SereneApi.Core.Configuration;
 using SereneApi.Core.Configuration.Settings;
 using SereneApi.Core.Http;
 using SereneApi.Core.Http.Requests;
 using SereneApi.Core.Http.Requests.Handler;
 using SereneApi.Core.Http.Requests.Options;
 using SereneApi.Core.Http.Responses;
-using DeltaWare.Dependencies.Abstractions;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

@@ -1,5 +1,5 @@
-﻿using SereneApi.Core.Http;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using SereneApi.Core.Http;
 using System;
 using System.Collections.Generic;
 
