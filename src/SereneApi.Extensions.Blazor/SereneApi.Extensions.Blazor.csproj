@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Bradley Clarke</Authors>
+    <Company>DeltaWare</Company>
+    <Product>SereneApi</Product>
+    <Description>Enables support for blazor webassembly</Description>
+    <Version>5.0.0.1</Version>
+      <PackageOutputPath>..\..\nuget.packages</PackageOutputPath>
+	  <PackageIcon>nuget_logo.png</PackageIcon>
+	  <PackageTags>SereneApi; API; Web; Blazor; WebAssembly;</PackageTags>
+	  <RepositoryType>GIT</RepositoryType>
+	  <RepositoryUrl>https://github.com/SereneApi/SereneApi</RepositoryUrl>
+	  <PackageProjectUrl>https://www.sereneapi.org/</PackageProjectUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\DeltaWare.SDK\nuget_logo.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SereneApi.Core\SereneApi.Core.csproj" />
+  </ItemGroup>
+
+</Project>

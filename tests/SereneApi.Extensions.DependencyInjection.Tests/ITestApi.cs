@@ -1,10 +1,10 @@
-﻿using SereneApi.Abstractions.Handler;
-using SereneApi.Abstractions.Options;
+﻿using SereneApi.Core.Configuration.Settings;
+using SereneApi.Core.Handler;
 
 namespace SereneApi.Extensions.DependencyInjection.Tests
 {
     public interface ITestApi : IApiHandler
     {
-        IApiOptions Options { get; }
+        IApiSettings Settings { get; }
     }
 }

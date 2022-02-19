@@ -1,6 +1,8 @@
 ﻿using DependencyInjection.API;
 using Microsoft.AspNetCore.Mvc;
-using SereneApi.Abstractions.Response;
+using SereneApi.Core.Http.Responses;
+using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace DependencyInjection.WebUi.Controllers
@@ -22,6 +24,28 @@ namespace DependencyInjection.WebUi.Controllers
             IApiResponse<int> response = await _valuesApi.GetAsync(value);
 
             return Ok(response);
+        }
+
+        [HttpGet("GetSamplePdf")]
+        public async Task<IActionResult> GetSamplePdfAsync()
+        {
+            Guid fileGuid = Guid.NewGuid();
+
+            string directory = Directory.GetCurrentDirectory();
+            string fileName = $"{fileGuid}.pdf";
+
+            string filePath = $"{directory}\\{fileName}";
+
+            IApiResponse<MemoryStream> response = await _valuesApi.GetSamplePfgAsync();
+
+            await using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+            {
+                response.Data.Seek(0, SeekOrigin.Begin);
+
+                await response.Data.CopyToAsync(fileStream);
+            }
+
+            return Ok(filePath);
         }
 
         [HttpGet("string/{value}")]

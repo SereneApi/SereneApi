@@ -1,7 +1,7 @@
 ﻿using DependencyInjection.API;
 using DependencyInjection.API.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using SereneApi.Abstractions.Response;
+using SereneApi.Core.Http.Responses;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -18,18 +18,10 @@ namespace DependencyInjection.WebUi.Controllers
             _studentApi = studentApi;
         }
 
-        [HttpGet("{studentId}")]
-        public async Task<ActionResult<IApiResponse<StudentDto>>> GetStudent(long studentId)
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] StudentDto student)
         {
-            IApiResponse<StudentDto> response = await _studentApi.GetAsync(studentId);
-
-            return Ok(response);
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<List<StudentDto>>> GetStudents()
-        {
-            IApiResponse<List<StudentDto>> response = await _studentApi.GetAllAsync();
+            IApiResponse response = await _studentApi.CreateAsync(student);
 
             return Ok(response);
         }
@@ -42,10 +34,10 @@ namespace DependencyInjection.WebUi.Controllers
             return Ok(response);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] StudentDto student)
+        [HttpGet("{studentId}")]
+        public async Task<ActionResult<IApiResponse<StudentDto>>> GetStudent(long studentId)
         {
-            IApiResponse response = await _studentApi.CreateAsync(student);
+            IApiResponse<StudentDto> response = await _studentApi.GetAsync(studentId);
 
             return Ok(response);
         }
@@ -54,6 +46,14 @@ namespace DependencyInjection.WebUi.Controllers
         public async Task<ActionResult<List<ClassDto>>> GetStudentClasses(int studentId)
         {
             IApiResponse<List<ClassDto>> response = await _studentApi.GetStudentClassesAsync(studentId);
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<StudentDto>>> GetStudents()
+        {
+            IApiResponse<List<StudentDto>> response = await _studentApi.GetAllAsync();
 
             return Ok(response);
         }
