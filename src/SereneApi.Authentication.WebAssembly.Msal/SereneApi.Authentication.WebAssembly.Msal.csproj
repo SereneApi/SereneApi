@@ -15,6 +15,8 @@
     <PackageTags>SereneApi; API; Web; Authentication; Blazor; WebAssembly; MSAL; Azure</PackageTags>
     <RepositoryUrl>https://github.com/SereneApi/SereneApi</RepositoryUrl>
     <PackageProjectUrl>https://www.sereneapi.org/</PackageProjectUrl>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>

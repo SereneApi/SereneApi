@@ -14,6 +14,8 @@
 	  <RepositoryUrl>https://github.com/SereneApi/SereneApi</RepositoryUrl>
 	  <RepositoryType>GIT</RepositoryType>
 	  <PackageTags>SereneApi; API; Web; Authentication; MSAL; Azure</PackageTags>
+      <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+      <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 	  <PackageProjectUrl>https://www.sereneapi.org/</PackageProjectUrl>
   </PropertyGroup>
 
@@ -24,6 +26,13 @@
   <ItemGroup>
     <ProjectReference Include="..\SereneApi.Core\SereneApi.Core.csproj" />
   </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\..\LICENSE.md">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </None>
+    </ItemGroup>
 
   <ItemGroup>
    <None Include="..\..\nuget_logo.png">
