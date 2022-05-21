@@ -1,9 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\SereneApi.Serializers.Newtonsoft.Json\SereneApi.Serializers.Newtonsoft.Json.csproj" />
     <ProjectReference Include="..\..\src\SereneApi.Serializers.Newtonsoft.Json\SereneApi.Serializers.Newtonsoft.Json.csproj" />
   </ItemGroup>
 

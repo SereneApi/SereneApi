@@ -1,42 +1,27 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>5.2.0.2</Version>
     <Product>SereneApi</Product>
     <Company>DeltaWare</Company>
     <Authors>Bradley Clarke</Authors>
-    <Version>6.0.0.1</Version>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-      <PackageOutputPath>..\..\nuget.packages</PackageOutputPath>
-    <PackageIcon>nuget_logo.png</PackageIcon>
-    <PackageIconUrl />
-    <RepositoryType>GIT</RepositoryType>
-    <RepositoryUrl>https://github.com/SereneApi/SereneApi</RepositoryUrl>
-    <PackageProjectUrl>https://www.sereneapi.org/</PackageProjectUrl>
-    <NeutralLanguage>en-AU</NeutralLanguage>
-    <PackageTags>SereneApi; API</PackageTags>
-    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageOutputPath>..\..\packages\SereneApi.Core</PackageOutputPath>
+    <Platforms>AnyCPU;x64</Platforms>
+
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DeltaWare.Dependencies" Version="6.0.0.1" />
-    <PackageReference Include="DeltaWare.SDK.Core" Version="6.0.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+    <Compile Remove="Configuration\Dictionary\**" />
+    <EmbeddedResource Remove="Configuration\Dictionary\**" />
+    <None Remove="Configuration\Dictionary\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\nuget_logo.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>  
-    
-    <ItemGroup>
-    <None Include="..\..\LICENSE.md">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
+    <PackageReference Include="DeltaWare.Dependencies" Version="5.0.0.7" />
+    <PackageReference Include="DeltaWare.SDK.Core" Version="5.0.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
   </ItemGroup>
 
 </Project>

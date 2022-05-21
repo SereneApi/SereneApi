@@ -78,6 +78,18 @@ namespace SereneApi.Core.Serialization
             return await System.Text.Json.JsonSerializer.DeserializeAsync<TObject>(contentStream, _deserializerOptions);
         }
 
+        public async Task<object> DeserializeAsync(Type type, IResponseContent content)
+        {
+            if (content == null)
+            {
+                throw new ArgumentNullException(nameof(content));
+            }
+
+            await using Stream contentStream = await content.GetContentStreamAsync();
+
+            return await System.Text.Json.JsonSerializer.DeserializeAsync(contentStream, type, _deserializerOptions);
+        }
+
         /// <inheritdoc><cref>ISerializer.Serialize</cref></inheritdoc>
         public IRequestContent Serialize(object value)
         {

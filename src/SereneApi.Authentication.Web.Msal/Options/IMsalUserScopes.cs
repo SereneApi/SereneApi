@@ -7,11 +7,11 @@ namespace SereneApi.Authentication.Web.Msal.Options
         /// <summary>
         /// Registers an API authentication scope against this API to be used by the user.
         /// </summary>
-        IMsalUserScopes RegisterScope(string scope);
+        IMsalUserScopes RegisterUserScope(string scope);
 
         /// <summary>
         /// Registers API authentication scopes against this API to be used by the user.
         /// </summary>
-        IMsalUserScopes RegisterScopes(IEnumerable<string> scopes);
+        IMsalUserScopes RegisterUserScopes(IEnumerable<string> scopes);
     }
 }

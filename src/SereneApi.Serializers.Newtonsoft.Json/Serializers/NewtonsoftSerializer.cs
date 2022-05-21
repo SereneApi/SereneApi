@@ -84,6 +84,18 @@ namespace SereneApi.Serializers.Newtonsoft.Json.Serializers
             return JsonConvert.DeserializeObject<TObject>(contentString, DeserializerSettings);
         }
 
+        public async Task<object> DeserializeAsync(Type type, IResponseContent content)
+        {
+            if (content == null)
+            {
+                throw new ArgumentNullException(nameof(content));
+            }
+
+            string contentString = await content.GetContentStringAsync();
+
+            return JsonConvert.DeserializeObject(contentString, type, DeserializerSettings);
+        }
+
         /// <inheritdoc><cref>ISerializer.Serialize</cref></inheritdoc>
         public IRequestContent Serialize(object value)
         {

@@ -35,6 +35,28 @@ namespace Microsoft.Extensions.DependencyInjection
             GetConfigurationManager(services).AddApiPostConfiguration<TApiHandler>(configuration);
         }
 
+        public static void ExtendApi<TApiHandler>(this IServiceCollection services, Action<IApiConfiguration, IServiceProvider> configuration) where TApiHandler : IApiHandler
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            if (configuration == null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
+
+            GetConfigurationManager(services).AddApiPostConfiguration<TApiHandler>(c =>
+            {
+                using IDependencyProvider provider = c.Dependencies.BuildProvider();
+
+                IServiceProvider serviceProvider = provider.GetRequiredDependency<IServiceProvider>();
+
+                configuration.Invoke(c, serviceProvider);
+            });
+        }
+
         public static void RegisterApi<TApi, TApiHandler>(this IServiceCollection services, Action<IApiConfiguration> configuration) where TApi : class where TApiHandler : class, IApiHandler, TApi
         {
             if (services == null)
@@ -48,7 +70,7 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             services.AddScoped<TApi, TApiHandler>();
-            services.AddScoped(p => p.GetRequiredService<ApiConfigurationManager>().BuildApiOptions<TApiHandler>());
+            services.AddScoped(p => p.GetRequiredService<ApiConfigurationManager>().BuildApiSettings<TApiHandler>());
 
             ApiConfigurationManager configurationManager = GetConfigurationManager(services);
 
@@ -76,7 +98,7 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             services.AddScoped<TApi, TApiHandler>();
-            services.AddScoped(p => p.GetRequiredService<ApiConfigurationManager>().BuildApiOptions<TApiHandler>());
+            services.AddScoped(p => p.GetRequiredService<ApiConfigurationManager>().BuildApiSettings<TApiHandler>());
 
             ApiConfigurationManager configurationManager = GetConfigurationManager(services);
 
@@ -122,8 +144,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 });
 
                 // We're using an implementation instance as DI won't replace it. If we use the
-                // standard AddSingleton<A, B> a new instance of HandlerConfiguration Manager will
-                // be created.
+                // standard AddSingleton<A, B> a new instance of HandlerConfiguration Manager
+                // will be created.
                 services.AddSingleton(ConfigurationManager);
 
                 return ConfigurationManager;

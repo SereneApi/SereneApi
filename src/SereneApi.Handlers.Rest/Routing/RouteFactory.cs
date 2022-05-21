@@ -8,7 +8,7 @@ namespace SereneApi.Handlers.Rest.Routing
     /// <inheritdoc cref="IRouteFactory"/>
     internal class RouteFactory : IRouteFactory
     {
-        private readonly IQueryFactory _queryFactory;
+        private readonly IQuerySerializer _querySerializer;
 
         #region Constructors
 
@@ -16,9 +16,9 @@ namespace SereneApi.Handlers.Rest.Routing
         /// Instantiates a new instance of <see cref="RouteFactory"/>.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public RouteFactory(IQueryFactory queryFactory)
+        public RouteFactory(IQuerySerializer querySerializer)
         {
-            _queryFactory = queryFactory ?? throw new ArgumentNullException(nameof(queryFactory));
+            _querySerializer = querySerializer ?? throw new ArgumentNullException(nameof(querySerializer));
         }
 
         #endregion Constructors
@@ -97,7 +97,7 @@ namespace SereneApi.Handlers.Rest.Routing
 
             if (apiRequest.Query is { Count: > 0 })
             {
-                route += _queryFactory.Build(apiRequest.Query);
+                route += _querySerializer.Serialize(apiRequest.Query);
             }
 
             return new Uri(route, UriKind.Relative);
@@ -113,7 +113,7 @@ namespace SereneApi.Handlers.Rest.Routing
         {
             #region Format Check Logic
 
-            // This should not need to be done, but if it is not done a format that only support 1
+            // This should not need to be done, but if it is not done a format that only supports 1
             // parameter but is supplied more than 1 parameter will not fail.
             int expectedFormatLength = endpointTemplate.Length - templateParameters.Length * 3;
 

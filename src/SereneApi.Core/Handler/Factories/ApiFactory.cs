@@ -24,7 +24,7 @@ namespace SereneApi.Core.Handler.Factories
 
             Type handlerType = GetApiHandlerType<TApi>();
 
-            IApiSettings settings = _configurationManager.BuildApiOptions(handlerType);
+            IApiSettings settings = _configurationManager.BuildApiSettings(handlerType);
 
             TApi handler = (TApi)Activator.CreateInstance(_registeredHandlers[typeof(TApi)], settings);
 

@@ -1,8 +1,10 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Core.Configuration;
+using SereneApi.Core.Configuration.Settings;
 using SereneApi.Core.Http;
-using SereneApi.Handlers.Rest.Configuration;
 using SereneApi.Handlers.Rest.Requests;
 using SereneApi.Handlers.Rest.Routing;
+using SereneApi.Handlers.Rest.Tests.Mock;
 using Shouldly;
 using System;
 using System.Collections.Generic;
@@ -19,11 +21,16 @@ namespace SereneApi.Handlers.Rest.Tests.Factories
 
         public RouteFactoryShould()
         {
-            RestHandlerConfigurationProvider configuration = new RestHandlerConfigurationProvider();
+            ApiConfigurationManager manager = new ApiConfigurationManager();
 
-            _dependencies = configuration.Dependencies.BuildProvider();
+            manager.AddApiConfiguration(typeof(BaseApiHandlerWrapper), c =>
+            {
+                c.SetSource("http://localhost");
+            });
 
-            _routeFactory = _dependencies.GetRequiredDependency<IRouteFactory>();
+            IApiSettings options = manager.BuildApiSettings(typeof(BaseApiHandlerWrapper));
+
+            _routeFactory = options.Dependencies.GetRequiredDependency<IRouteFactory>();
         }
 
         [Theory]

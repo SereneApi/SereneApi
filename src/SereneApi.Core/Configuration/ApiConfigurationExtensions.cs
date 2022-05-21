@@ -58,7 +58,13 @@ namespace SereneApi.Core.Configuration
             configuration.Dependencies.AddTransient<IAuthorization>(() => new BearerAuthorization(token));
         }
 
+        [Obsolete("This has been superseded by AddConnectionSettings")]
         public static void AddConfiguration(this IApiConfiguration apiConfiguration, IConnectionSettings connectionSettings)
+        {
+            apiConfiguration.AddConnectionSettings(connectionSettings);
+        }
+
+        public static void AddConnectionSettings(this IApiConfiguration apiConfiguration, IConnectionSettings connectionSettings)
         {
             if (connectionSettings == null)
             {

@@ -10,8 +10,10 @@ namespace SereneApi.Handlers.Rest
     /// <inheritdoc cref="ICrudApi{TResource,TIdentifier}"/>
     public abstract class CrudApiHandler<TResource, TIdentifier> : RestApiHandler, ICrudApi<TResource, TIdentifier> where TResource : class where TIdentifier : struct
     {
-        /// <summary> Instantiates a new Instance of the <see
-        /// cref="CrudApiHandler{TResource,TIdentifier}"/> </summary> <param name="settings></param>
+        /// <summary>
+        /// Instantiates a new Instance of the <see cref="CrudApiHandler{TResource,TIdentifier}"/>
+        /// </summary>
+        /// <param name="settings></param>
         protected CrudApiHandler(IApiSettings settings) : base(settings)
         {
         }

@@ -67,7 +67,8 @@ namespace DependencyInjection.WebUi
             {
                 // Under appsettings.conf, there is an array called ApiConfig. Inside that array is
                 // another array called "Student" as you can see below we are getting that.
-                builder.AddConfiguration(Configuration.GetApiConfig("Student"));
+
+                builder.AddConnectionSettings(Configuration.GetApiConfig("Student"));
             });
 
             // Here a provider is also being used, this allows you to get services that have been

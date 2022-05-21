@@ -1,19 +1,16 @@
-﻿using SereneApi.Core.Configuration.Attributes;
-using SereneApi.Core.Configuration.Settings;
-using SereneApi.Core.Handler;
+﻿using SereneApi.Core.Configuration.Settings;
 using SereneApi.Core.Http.Requests;
 using SereneApi.Core.Http.Responses;
-using SereneApi.Handlers.Rest.Configuration;
+using SereneApi.Handlers.Rest;
 using System;
 
 namespace SereneApi.Extensions.DependencyInjection.Tests
 {
-    [UseHandlerConfigurationProvider(typeof(RestHandlerConfigurationProvider))]
-    public class TestApiHandler : ApiHandlerBase, ITestApi
+    public class TestApiHandler : RestApiHandler, ITestApi
     {
         public new IApiSettings Settings => base.Settings;
 
-        public TestApiHandler(IApiSettings<TestApiHandler> settings) : base(settings)
+        public TestApiHandler(IApiSettings<TestApiHandler> options) : base(options)
         {
         }
 

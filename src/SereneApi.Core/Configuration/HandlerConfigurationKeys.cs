@@ -9,5 +9,6 @@
         public const string ThrowExceptions = "ThrowExceptions";
         public const string ThrowOnFailure = "ThrowOnFailure";
         public const string Timeout = "Timeout";
+        public const string HandlerType = "HandlerType";
     }
 }

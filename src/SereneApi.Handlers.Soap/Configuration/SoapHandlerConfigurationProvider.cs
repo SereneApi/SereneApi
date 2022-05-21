@@ -14,9 +14,9 @@ namespace SereneApi.Handlers.Soap.Configuration
 {
     public class SoapHandlerConfigurationProvider : HandlerConfigurationProvider
     {
-        public SoapHandlerConfigurationProvider()
+        protected override void Configure(IDependencyCollection dependencies)
         {
-            Dependencies.Configure<HandlerConfiguration>(c =>
+            dependencies.Configure<HandlerConfiguration>(c =>
             {
                 c.SetContentType(ContentType.TextXml);
                 c.SetResourcePath(string.Empty);
@@ -26,14 +26,14 @@ namespace SereneApi.Handlers.Soap.Configuration
                 });
             });
 
-            Dependencies.AddScoped<IResponseHandler, ResponseHandler>();
-            Dependencies.AddScoped<IFailedResponseHandler, FailedResponseHandler>();
-            Dependencies.AddScoped<IRouteFactory, RouteFactory>();
+            dependencies.AddScoped<IResponseHandler, ResponseHandler>();
+            dependencies.AddScoped<IFailedResponseHandler, FailedResponseHandler>();
+            dependencies.AddScoped<IRouteFactory, RouteFactory>();
 
-            Dependencies.AddSingleton<ISerializer>(p => p.GetRequiredDependency<ISoapSerializer>());
-            Dependencies.AddSingleton<ISoapSerializer, SoapSerializer>();
-            Dependencies.AddSingleton<IEnvelopmentService, EnvelopmentService>();
-            Dependencies.AddSingleton<ISoapSerializerSettings, SoapSerializerSettings>();
+            dependencies.AddSingleton<ISerializer>(p => p.GetRequiredDependency<ISoapSerializer>());
+            dependencies.AddSingleton<ISoapSerializer, SoapSerializer>();
+            dependencies.AddSingleton<IEnvelopmentService, EnvelopmentService>();
+            dependencies.AddSingleton<ISoapSerializerSettings, SoapSerializerSettings>();
         }
     }
 }

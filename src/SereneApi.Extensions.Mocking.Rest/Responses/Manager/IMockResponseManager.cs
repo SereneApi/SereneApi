@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SereneApi.Extensions.Mocking.Rest.Responses.Manager
 {
-    public interface IMockResponseManager
+    internal interface IMockResponseManager
     {
         Task<HttpResponseMessage> GetMockResponseAsync(HttpRequestMessage request, CancellationToken cancellationToken = default);
     }

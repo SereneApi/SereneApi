@@ -1,6 +1,6 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
+using DeltaWare.SDK.Core.Serialization;
 using SereneApi.Core.Requests;
-using SereneApi.Core.Transformation;
 using SereneApi.Core.Versioning;
 using SereneApi.Handlers.Soap.Envelopment;
 using SereneApi.Handlers.Soap.Models;
@@ -82,9 +82,9 @@ namespace SereneApi.Handlers.Soap.Requests.Factories
 
         public IResponseType WithParameters(Dictionary<string, object> parameters)
         {
-            ITransformationService transformation = _dependencies.GetRequiredDependency<ITransformationService>();
+            IObjectSerializer objectSerializer = _dependencies.GetRequiredDependency<IObjectSerializer>();
 
-            Dictionary<string, string> convertedParameters = transformation.BuildDictionary(parameters);
+            Dictionary<string, string> convertedParameters = objectSerializer.SerializeToDictionary(parameters);
 
             return WithParameters(convertedParameters);
         }
@@ -100,9 +100,9 @@ namespace SereneApi.Handlers.Soap.Requests.Factories
 
         public IResponseType WithParameters<TParam>(TParam parameters) where TParam : class
         {
-            ITransformationService transformation = _dependencies.GetRequiredDependency<ITransformationService>();
+            IObjectSerializer objectSerializer = _dependencies.GetRequiredDependency<IObjectSerializer>();
 
-            Dictionary<string, string> convertedParameters = transformation.BuildDictionary(parameters);
+            Dictionary<string, string> convertedParameters = objectSerializer.SerializeToDictionary(parameters);
 
             return WithParameters(convertedParameters);
         }

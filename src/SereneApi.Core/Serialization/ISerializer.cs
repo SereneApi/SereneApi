@@ -14,6 +14,7 @@ namespace SereneApi.Core.Serialization
         /// ///
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         Task<T> DeserializeAsync<T>(IResponseContent content);
+        Task<object> DeserializeAsync(Type type, IResponseContent content);
 
         IRequestContent Serialize(object value);
     }

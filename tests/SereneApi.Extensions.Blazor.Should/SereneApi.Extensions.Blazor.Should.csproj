@@ -1,9 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,7 +25,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\SereneApi.Extensions.Blazor\SereneApi.Extensions.Blazor.csproj" />
     <ProjectReference Include="..\..\src\SereneApi.Handlers.Rest\SereneApi.Handlers.Rest.csproj" />
-    <ProjectReference Include="..\..\src\SereneApi.Extensions.Blazor\SereneApi.Extensions.Blazor.csproj" />
   </ItemGroup>
 
 </Project>
