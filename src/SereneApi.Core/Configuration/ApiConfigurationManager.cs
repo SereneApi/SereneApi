@@ -28,7 +28,7 @@ namespace SereneApi.Core.Configuration
             AppDomain.CurrentDomain.AssemblyLoad += OnAssemblyLoaded;
         }
 
-        public IApiSettings<TApiHandler> BuildApiOptions<TApiHandler>() where TApiHandler : IApiHandler
+        public IApiSettings<TApiHandler> BuildApiSettings<TApiHandler>() where TApiHandler : IApiHandler
         {
             Type handlerType = typeof(TApiHandler);
             Type providerType = GetConfigurationProviderType<TApiHandler>();
@@ -48,7 +48,7 @@ namespace SereneApi.Core.Configuration
             return scope.BuildApiSettings<TApiHandler>();
         }
 
-        public IApiSettings BuildApiOptions(Type handlerType)
+        public IApiSettings BuildApiSettings(Type handlerType)
         {
             Type providerType = GetConfigurationProviderType(handlerType);
 
@@ -81,7 +81,7 @@ namespace SereneApi.Core.Configuration
                 }
             }
 
-            configuration.Invoke(factory);
+            factory.AmendConfiguration(configuration);
         }
 
         #endregion HandlerConfiguraion
@@ -180,9 +180,14 @@ namespace SereneApi.Core.Configuration
                     throw new ProviderNotInstantiatedException(type);
                 }
 
-                _onConfigurationProviderRegistered?.Invoke(configurationProvider);
+                configurationProvider.ExtendConfiguration(c =>
+                {
+                    c.AddSingleton(() => this);
 
-                configurationProvider.Dependencies.AddSingleton(() => this);
+                    ApiConfiguration configuration = new ApiConfiguration(c, type);
+
+                    _onConfigurationProviderRegistered?.Invoke(configuration);
+                });
 
                 lock (_configurationStoreLock)
                 {

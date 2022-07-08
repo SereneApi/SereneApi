@@ -1,42 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
-		<Product>SereneApi</Product>
-		<Company>DeltaWare</Company>
-		<Authors>Bradley Clarke</Authors>
-		<Version>5.0.0.1</Version>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageOutputPath>..\..\nuget.packages</PackageOutputPath>
-		<PackageIcon>nuget_logo.png</PackageIcon>
-		<PackageIconUrl />
-		<RepositoryUrl>https://github.com/SereneApi/SereneApi</RepositoryUrl>
-		<RepositoryType>GIT</RepositoryType>
-		<PackageProjectUrl>https://www.sereneapi.org/</PackageProjectUrl>
-		<NeutralLanguage>English (Australia)</NeutralLanguage>
-		<PackageTags>SereneApi; API; DependencyInjection</PackageTags>
-        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-        <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Bradley Clarke</Authors>
+    <Company>DeltaWare</Company>
+    <Product>SereneApi</Product>
+    <Version>5.2.0.2</Version>
+    <PackageReleaseNotes>UPDATED - SereneApi.Core</PackageReleaseNotes>
+	  <PackageOutputPath>..\..\packages\SereneApi.Extensions.DependencyInjection</PackageOutputPath>
+	  <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\SereneApi.Core\SereneApi.Core.csproj" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SereneApi.Core\SereneApi.Core.csproj" />
+  </ItemGroup>
 
-	<ItemGroup>
-	  <None Include="..\..\LICENSE.md">
-	    <Pack>True</Pack>
-	    <PackagePath></PackagePath>
-	  </None>
-	  <None Include="..\..\nuget_logo.png">
-	    <Pack>True</Pack>
-	    <PackagePath></PackagePath>
-	  </None>
-	</ItemGroup>
 </Project>

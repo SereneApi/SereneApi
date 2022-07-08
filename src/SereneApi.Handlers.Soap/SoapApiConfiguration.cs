@@ -1,10 +1,11 @@
-﻿using SereneApi.Handlers.Soap.Envelopment;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Core.Configuration;
+using SereneApi.Handlers.Soap.Envelopment;
 using SereneApi.Handlers.Soap.Serialization.Factories;
-using DeltaWare.Dependencies.Abstractions;
 using System;
 
 // ReSharper disable once CheckNamespace
-namespace SereneApi.Core.Configuration
+namespace SereneApi.Handlers.Soap
 {
     public static class SoapApiConfiguration
     {

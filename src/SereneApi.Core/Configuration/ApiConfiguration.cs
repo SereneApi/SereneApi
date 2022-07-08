@@ -1,4 +1,5 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
+using System;
 
 namespace SereneApi.Core.Configuration
 {
@@ -6,9 +7,13 @@ namespace SereneApi.Core.Configuration
     {
         public IDependencyCollection Dependencies { get; }
 
-        public ApiConfiguration(IDependencyCollection dependencies)
+        public ApiConfiguration(IDependencyCollection dependencies, Type handlerType)
         {
             Dependencies = dependencies;
+            Dependencies.Configure<HandlerConfiguration>(c =>
+            {
+                c.SetHandlerType(handlerType);
+            });
         }
 
         public ApiConfigurationScope CreateScope()

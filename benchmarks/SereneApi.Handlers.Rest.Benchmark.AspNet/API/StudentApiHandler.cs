@@ -1,7 +1,7 @@
-﻿using SereneApi.Core.Http.Responses;
+﻿using SereneApi.Core.Configuration.Settings;
+using SereneApi.Core.Http.Responses;
 using SereneApi.Core.Requests;
 using System.Threading.Tasks;
-using SereneApi.Core.Configuration.Settings;
 
 namespace SereneApi.Handlers.Rest.Benchmark.AspNet.API
 {

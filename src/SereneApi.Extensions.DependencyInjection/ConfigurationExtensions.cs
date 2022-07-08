@@ -101,14 +101,14 @@ namespace SereneApi.Extensions.DependencyInjection
         /// <param name="apiConfigurationKey">
         /// The <see cref="IConfiguration"/> name containing the API HandlerConfiguration.
         /// </param>
-        /// <param name="apiSourceKey">
+        /// <param name="apiBaseAddressKey">
         /// The <see cref="IConfigurationSection"/> containing the source for the API.
         /// </param>
         /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
         /// <exception cref="KeyNotFoundException">
         /// Thrown when the specified api key was not found.
         /// </exception>
-        public static IConnectionSettings GetApiConfig(this IConfiguration configuration, string apiConfigurationKey, string apiSourceKey)
+        public static IConnectionSettings GetApiConfig(this IConfiguration configuration, string apiConfigurationKey, string apiBaseAddressKey)
         {
             if (configuration == null)
             {
@@ -120,9 +120,9 @@ namespace SereneApi.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(apiConfigurationKey));
             }
 
-            if (string.IsNullOrWhiteSpace(apiSourceKey))
+            if (string.IsNullOrWhiteSpace(apiBaseAddressKey))
             {
-                throw new ArgumentNullException(nameof(apiSourceKey));
+                throw new ArgumentNullException(nameof(apiBaseAddressKey));
             }
 
             if (!configuration.GetSection(ConfigurationKeys.ApiConfig).Exists())
@@ -139,12 +139,12 @@ namespace SereneApi.Extensions.DependencyInjection
 
             IConfiguration apiConfiguration = configurationSection.GetSection(apiConfigurationKey);
 
-            if (!configurationSection.GetSection(apiSourceKey).Exists())
+            if (!configurationSection.GetSection(apiBaseAddressKey).Exists())
             {
-                throw new KeyNotFoundException($"Could not find {ConfigurationKeys.ApiConfig}:{apiSourceKey} inside the HandlerConfiguration");
+                throw new KeyNotFoundException($"Could not find {ConfigurationKeys.ApiConfig}:{apiBaseAddressKey} inside the HandlerConfiguration");
             }
 
-            string source = configurationSection.Get<string>(apiSourceKey, SourceIsRequired);
+            string source = configurationSection.Get<string>(apiBaseAddressKey, SourceIsRequired);
             string resource = apiConfiguration.Get<string>(ConfigurationKeys.Resource, ResourceIsRequired);
             string resourcePath = apiConfiguration.Get<string>(ConfigurationKeys.ResourcePath, ResourcePathIsRequired);
 

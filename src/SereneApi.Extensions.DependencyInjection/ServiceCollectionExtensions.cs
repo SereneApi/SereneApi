@@ -12,43 +12,99 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {
-        private static readonly object _getConfigurationManagerLock = new();
-        private static ApiConfigurationManager ConfigurationManager { get; set; }
+        private static readonly object GetConfigurationManagerLock = new();
+        private static ApiConfigurationManager ConfigurationManagerInstance { get; set; }
 
-        public static void AmendConfigurationProvider<TConfigurationProvider>(this IServiceCollection services, Action<IApiConfiguration> configuration) where TConfigurationProvider : HandlerConfigurationProvider
+        public static IServiceCollection AmendConfigurationProvider<TConfigurationProvider>(this IServiceCollection services, Action<IApiConfiguration> configuration) where TConfigurationProvider : HandlerConfigurationProvider
         {
             GetConfigurationManager(services).AmendConfigurationProvider<TConfigurationProvider>(configuration);
+
+            return services;
         }
 
-        public static void ExtendApi<TApiHandler>(this IServiceCollection services, Action<IApiConfiguration> configuration) where TApiHandler : IApiHandler
+        /// <summary>
+        /// Modifies the <see cref="IApiConfiguration"/> of a registered <typeparamref name="TApiHandler"/>.
+        /// </summary>
+        /// <typeparam name="TApiHandler">The API Handler to have its <see cref="IApiConfiguration"/> modified.</typeparam>
+        /// <param name="services">The <see cref="IServiceCollection"/> with the <typeparamref name="TApiHandler"/> to have its <see cref="IApiConfiguration"/> modified.</param>
+        /// <param name="configurationFactory">The factory that creates the <see cref="IApiConfiguration"/>.</param>
+        /// <returns>A reference to this instance after the operation has completed.</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IServiceCollection ExtendApi<TApiHandler>(this IServiceCollection services, Action<IApiConfiguration> configurationFactory) where TApiHandler : IApiHandler
         {
             if (services == null)
             {
                 throw new ArgumentNullException(nameof(services));
             }
 
-            if (configuration == null)
+            if (configurationFactory == null)
             {
-                throw new ArgumentNullException(nameof(configuration));
+                throw new ArgumentNullException(nameof(configurationFactory));
             }
 
-            GetConfigurationManager(services).AddApiPostConfiguration<TApiHandler>(configuration);
+            GetConfigurationManager(services).AddApiPostConfiguration<TApiHandler>(configurationFactory);
+
+            return services;
         }
 
-        public static void RegisterApi<TApi, TApiHandler>(this IServiceCollection services, Action<IApiConfiguration> configuration) where TApi : class where TApiHandler : class, IApiHandler, TApi
+        /// <summary>
+        /// Modifies the <see cref="IApiConfiguration"/> of a registered <typeparamref name="TApiHandler"/>.
+        /// </summary>
+        /// <typeparam name="TApiHandler">The API Handler to have its <see cref="IApiConfiguration"/> modified.</typeparam>
+        /// <param name="services">The <see cref="IServiceCollection"/> with the <typeparamref name="TApiHandler"/> to have its <see cref="IApiConfiguration"/> modified.</param>
+        /// <param name="configurationFactory">The factory that creates the <see cref="IApiConfiguration"/>.</param>
+        /// <returns>A reference to this instance after the operation has completed.</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IServiceCollection ExtendApi<TApiHandler>(this IServiceCollection services, Action<IApiConfiguration, IServiceProvider> configurationFactory) where TApiHandler : IApiHandler
         {
             if (services == null)
             {
                 throw new ArgumentNullException(nameof(services));
             }
 
-            if (configuration == null)
+            if (configurationFactory == null)
             {
-                throw new ArgumentNullException(nameof(configuration));
+                throw new ArgumentNullException(nameof(configurationFactory));
+            }
+
+            GetConfigurationManager(services).AddApiPostConfiguration<TApiHandler>(c =>
+            {
+                using IDependencyProvider provider = c.Dependencies.BuildProvider();
+
+                IServiceProvider serviceProvider = provider.GetRequiredDependency<IServiceProvider>();
+
+                configurationFactory.Invoke(c, serviceProvider);
+            });
+
+            return services;
+        }
+
+        /// <summary>
+        /// Registers a scoped API of the type specified in <typeparamref name="TApi"/> with a
+        /// handler type specified in <typeparamref name="TApiHandler"/> to the
+        /// specified <see cref="IServiceCollection"/>.
+        /// </summary>
+        /// <typeparam name="TApi">The type of the API to add.</typeparam>
+        /// <typeparam name="TApiHandler">The type of the implementation handler to use.</typeparam>
+        /// <param name="services">The <see cref="IServiceCollection"/> to add the service to.</param>
+        /// <param name="configurationFactory">The factory that creates the <see cref="IApiConfiguration"/>.</param>
+        /// <returns>A reference to this instance after the operation has completed.</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <seealso cref="ServiceLifetime.Scoped"/>
+        public static IServiceCollection RegisterApi<TApi, TApiHandler>(this IServiceCollection services, Action<IApiConfiguration> configurationFactory) where TApi : class where TApiHandler : class, IApiHandler, TApi
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            if (configurationFactory == null)
+            {
+                throw new ArgumentNullException(nameof(configurationFactory));
             }
 
             services.AddScoped<TApi, TApiHandler>();
-            services.AddScoped(p => p.GetRequiredService<ApiConfigurationManager>().BuildApiOptions<TApiHandler>());
+            services.AddScoped(p => p.GetRequiredService<ApiConfigurationManager>().BuildApiSettings<TApiHandler>());
 
             ApiConfigurationManager configurationManager = GetConfigurationManager(services);
 
@@ -60,23 +116,38 @@ namespace Microsoft.Extensions.DependencyInjection
                 }
             });
 
-            configurationManager.AddApiConfiguration<TApiHandler>(configuration);
+            configurationManager.AddApiConfiguration<TApiHandler>(configurationFactory);
+
+            return services;
         }
 
-        public static void RegisterApi<TApi, TApiHandler>(this IServiceCollection services, Action<IApiConfiguration, IServiceProvider> configuration) where TApi : class where TApiHandler : class, IApiHandler, TApi
+
+        /// <summary>
+        /// Registers a scoped API of the type specified in <typeparamref name="TApi"/> with a
+        /// implementation handler type specified in <typeparamref name="TApiHandler"/> to the
+        /// specified <see cref="IServiceCollection"/>.
+        /// </summary>
+        /// <typeparam name="TApi">The type of the API to add.</typeparam>
+        /// <typeparam name="TApiHandler">The type of the handler to use.</typeparam>
+        /// <param name="services">The <see cref="IServiceCollection"/> to add the service to.</param>
+        /// <param name="configurationFactory">The factory that creates the <see cref="IApiConfiguration"/>.</param>
+        /// <returns>A reference to this instance after the operation has completed.</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <seealso cref="ServiceLifetime.Scoped"/>
+        public static IServiceCollection RegisterApi<TApi, TApiHandler>(this IServiceCollection services, Action<IApiConfiguration, IServiceProvider> configurationFactory) where TApi : class where TApiHandler : class, IApiHandler, TApi
         {
             if (services == null)
             {
                 throw new ArgumentNullException(nameof(services));
             }
 
-            if (configuration == null)
+            if (configurationFactory == null)
             {
-                throw new ArgumentNullException(nameof(configuration));
+                throw new ArgumentNullException(nameof(configurationFactory));
             }
 
             services.AddScoped<TApi, TApiHandler>();
-            services.AddScoped(p => p.GetRequiredService<ApiConfigurationManager>().BuildApiOptions<TApiHandler>());
+            services.AddScoped(p => p.GetRequiredService<ApiConfigurationManager>().BuildApiSettings<TApiHandler>());
 
             ApiConfigurationManager configurationManager = GetConfigurationManager(services);
 
@@ -94,23 +165,25 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 IServiceProvider serviceProvider = provider.GetRequiredDependency<IServiceProvider>();
 
-                configuration.Invoke(c, serviceProvider);
+                configurationFactory.Invoke(c, serviceProvider);
             });
+
+            return services;
         }
 
         #region Private Methods
 
         private static ApiConfigurationManager GetConfigurationManager(IServiceCollection services)
         {
-            lock (_getConfigurationManagerLock)
+            lock (GetConfigurationManagerLock)
             {
                 // We don't want to call TryAdd as it generates a new instance.
                 if (services.Any(x => x.ServiceType == typeof(ApiConfigurationManager)))
                 {
-                    return ConfigurationManager;
+                    return ConfigurationManagerInstance;
                 }
 
-                ConfigurationManager = new ApiConfigurationManager(f =>
+                ConfigurationManagerInstance = new ApiConfigurationManager(f =>
                 {
                     f.Dependencies.AddSingleton(() => services, Binding.Unbound);
                     f.Dependencies.AddSingleton<IServiceProvider>(p => p.GetRequiredDependency<IServiceCollection>().BuildServiceProvider());
@@ -122,11 +195,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 });
 
                 // We're using an implementation instance as DI won't replace it. If we use the
-                // standard AddSingleton<A, B> a new instance of HandlerConfiguration Manager will
-                // be created.
-                services.AddSingleton(ConfigurationManager);
+                // standard AddSingleton<A, B> a new instance of HandlerConfiguration Manager
+                // will be created.
+                services.AddSingleton(ConfigurationManagerInstance);
 
-                return ConfigurationManager;
+                return ConfigurationManagerInstance;
             }
         }
 

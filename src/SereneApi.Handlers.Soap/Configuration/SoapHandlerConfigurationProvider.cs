@@ -1,4 +1,5 @@
-﻿using SereneApi.Core.Configuration;
+﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Core.Configuration;
 using SereneApi.Core.Configuration.Provider;
 using SereneApi.Core.Http.Content;
 using SereneApi.Core.Http.Responses.Handlers;
@@ -7,16 +8,15 @@ using SereneApi.Handlers.Soap.Envelopment;
 using SereneApi.Handlers.Soap.Responses.Handlers;
 using SereneApi.Handlers.Soap.Routing;
 using SereneApi.Handlers.Soap.Serialization;
-using DeltaWare.Dependencies.Abstractions;
 using System.Collections.Generic;
 
 namespace SereneApi.Handlers.Soap.Configuration
 {
     public class SoapHandlerConfigurationProvider : HandlerConfigurationProvider
     {
-        public SoapHandlerConfigurationProvider()
+        protected override void Configure(IDependencyCollection dependencies)
         {
-            Dependencies.Configure<HandlerConfiguration>(c =>
+            dependencies.Configure<HandlerConfiguration>(c =>
             {
                 c.SetContentType(ContentType.TextXml);
                 c.SetResourcePath(string.Empty);
@@ -26,14 +26,14 @@ namespace SereneApi.Handlers.Soap.Configuration
                 });
             });
 
-            Dependencies.AddScoped<IResponseHandler, ResponseHandler>();
-            Dependencies.AddScoped<IFailedResponseHandler, FailedResponseHandler>();
-            Dependencies.AddScoped<IRouteFactory, RouteFactory>();
+            dependencies.AddScoped<IResponseHandler, ResponseHandler>();
+            dependencies.AddScoped<IFailedResponseHandler, FailedResponseHandler>();
+            dependencies.AddScoped<IRouteFactory, RouteFactory>();
 
-            Dependencies.AddSingleton<ISerializer>(p => p.GetRequiredDependency<ISoapSerializer>());
-            Dependencies.AddSingleton<ISoapSerializer, SoapSerializer>();
-            Dependencies.AddSingleton<IEnvelopmentService, EnvelopmentService>();
-            Dependencies.AddSingleton<ISoapSerializerSettings, SoapSerializerSettings>();
+            dependencies.AddSingleton<ISerializer>(p => p.GetRequiredDependency<ISoapSerializer>());
+            dependencies.AddSingleton<ISoapSerializer, SoapSerializer>();
+            dependencies.AddSingleton<IEnvelopmentService, EnvelopmentService>();
+            dependencies.AddSingleton<ISoapSerializerSettings, SoapSerializerSettings>();
         }
     }
 }

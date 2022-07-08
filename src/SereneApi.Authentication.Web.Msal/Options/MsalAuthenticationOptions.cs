@@ -24,7 +24,7 @@ namespace SereneApi.Authentication.Web.Msal.Options
             return this;
         }
 
-        public IMsalUserScopes RegisterScope(string scope)
+        public IMsalUserScopes RegisterUserScope(string scope)
         {
             StringValidator.ThrowOnNullOrWhitespace(scope, nameof(scope));
 
@@ -33,7 +33,7 @@ namespace SereneApi.Authentication.Web.Msal.Options
             return this;
         }
 
-        public IMsalUserScopes RegisterScopes(IEnumerable<string> scopes)
+        public IMsalUserScopes RegisterUserScopes(IEnumerable<string> scopes)
         {
             if (scopes == null)
             {
@@ -42,7 +42,7 @@ namespace SereneApi.Authentication.Web.Msal.Options
 
             foreach (string scope in scopes)
             {
-                RegisterScope(scope);
+                RegisterUserScope(scope);
             }
 
             return this;

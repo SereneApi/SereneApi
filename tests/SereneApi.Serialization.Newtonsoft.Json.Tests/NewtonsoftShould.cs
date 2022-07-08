@@ -32,7 +32,7 @@ namespace SereneApi.Serialization.Newtonsoft.Json.Tests
                 c.UseNewtonsoftSerializer();
             }));
 
-            IApiSettings settings = configuration.BuildApiOptions<TestHandler>();
+            IApiSettings settings = configuration.BuildApiSettings<TestHandler>();
 
             ISerializer serializer = settings.Dependencies.GetRequiredDependency<ISerializer>();
 
@@ -56,7 +56,7 @@ namespace SereneApi.Serialization.Newtonsoft.Json.Tests
                 c.SetSource("http://localhost");
             });
 
-            IApiSettings settings = configuration.BuildApiOptions<TestHandler>();
+            IApiSettings settings = configuration.BuildApiSettings<TestHandler>();
 
             ISerializer serializer = settings.Dependencies.GetRequiredDependency<ISerializer>();
 
@@ -86,7 +86,7 @@ namespace SereneApi.Serialization.Newtonsoft.Json.Tests
                 c.SetSource("http://localhost");
             });
 
-            IApiSettings apiSettings = configuration.BuildApiOptions<TestHandler>();
+            IApiSettings apiSettings = configuration.BuildApiSettings<TestHandler>();
 
             ISerializer serializer = apiSettings.Dependencies.GetRequiredDependency<ISerializer>();
 
@@ -103,10 +103,17 @@ namespace SereneApi.Serialization.Newtonsoft.Json.Tests
 
             Action<JsonSerializerSettings> builder = null;
 
-            Should.Throw<ArgumentNullException>(() => configuration.AmendConfigurationProvider<TestHandlerConfigurationProvider>(c =>
+            configuration.AmendConfigurationProvider<TestHandlerConfigurationProvider>(c =>
             {
                 c.UseNewtonsoftSerializer(builder);
-            }));
+            });
+
+            configuration.AddApiConfiguration(typeof(TestHandler), c =>
+            {
+                c.SetSource("http://localhost");
+            });
+
+            Should.Throw<ArgumentNullException>(() => configuration.BuildApiSettings(typeof(TestHandler)));
         }
 
         [Fact]
@@ -116,10 +123,17 @@ namespace SereneApi.Serialization.Newtonsoft.Json.Tests
 
             JsonSerializerSettings settings = null;
 
-            Should.Throw<ArgumentNullException>(() => configuration.AmendConfigurationProvider<TestHandlerConfigurationProvider>(c =>
+            configuration.AmendConfigurationProvider<TestHandlerConfigurationProvider>(c =>
             {
                 c.UseNewtonsoftSerializer(settings);
-            }));
+            });
+
+            configuration.AddApiConfiguration(typeof(TestHandler), c =>
+            {
+                c.SetSource("http://localhost");
+            });
+
+            Should.Throw<ArgumentNullException>(() => configuration.BuildApiSettings(typeof(TestHandler)));
         }
 
         [UseHandlerConfigurationProvider(typeof(TestHandlerConfigurationProvider))]
@@ -134,6 +148,9 @@ namespace SereneApi.Serialization.Newtonsoft.Json.Tests
 
         public class TestHandlerConfigurationProvider : HandlerConfigurationProvider
         {
+            protected override void Configure(IDependencyCollection dependencies)
+            {
+            }
         }
     }
 }

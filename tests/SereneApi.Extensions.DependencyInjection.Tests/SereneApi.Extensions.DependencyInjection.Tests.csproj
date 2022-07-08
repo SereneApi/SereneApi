@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\SereneApi.Extensions.DependencyInjection\SereneApi.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\src\SereneApi.Extensions.Mocking.Rest\SereneApi.Extensions.Mocking.Rest.csproj" />
     <ProjectReference Include="..\..\src\SereneApi.Handlers.Rest\SereneApi.Handlers.Rest.csproj" />
   </ItemGroup>
 

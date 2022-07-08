@@ -1,4 +1,5 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
+using DeltaWare.SDK.Core.Validators;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Web;
 using SereneApi.Authentication.Web.Msal;
@@ -6,7 +7,6 @@ using SereneApi.Authentication.Web.Msal.Options;
 using SereneApi.Core.Http.Authentication;
 using SereneApi.Core.Http.Requests;
 using System;
-using DeltaWare.SDK.Core.Validators;
 
 // ReSharper disable once CheckNamespace
 namespace SereneApi.Core.Configuration
@@ -29,6 +29,11 @@ namespace SereneApi.Core.Configuration
             return options;
         }
 
+        /// <summary>
+        /// Enables this API to have its <see cref="IApiRequest"/> to be authenticated by Microsoft Azure.
+        /// </summary>
+        /// <remarks>An instance of <see cref="IApiAuthorization"/> must be present for configuration.</remarks>
+        /// <param name="enableClientAuthentication">Specifies if client authentication will be enabled.</param>
         public static void UseMsalAuthentication(this IApiConfiguration configuration, bool enableClientAuthentication = false)
         {
             using IDependencyProvider provider = configuration.Dependencies.BuildProvider();
@@ -42,7 +47,7 @@ namespace SereneApi.Core.Configuration
                     options.EnableClientAuthentication();
                 }
 
-                options.RegisterScopes(authorization.Scopes);
+                options.RegisterUserScopes(authorization.Scopes);
 
                 UseMsalAuthentication(configuration, options);
             }
@@ -52,7 +57,11 @@ namespace SereneApi.Core.Configuration
             }
         }
 
-        public static void UseMsalAuthentication(IApiConfiguration configuration, IMsalAuthenticationOptions authenticationOptions)
+        /// <summary>
+        /// Enables this API to have its <see cref="IApiRequest"/> to be authenticated by Microsoft Azure.
+        /// </summary>
+        /// <param name="authenticationOptions">The authentication options to be used for authentication</param>
+        public static void UseMsalAuthentication(this IApiConfiguration configuration, IMsalAuthenticationOptions authenticationOptions)
         {
             if (!configuration.Dependencies.HasDependency<IServiceProvider>())
             {

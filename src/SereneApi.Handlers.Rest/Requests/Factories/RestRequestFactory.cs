@@ -1,9 +1,9 @@
-﻿using SereneApi.Core.Http;
+﻿using DeltaWare.SDK.Core.Serialization;
+using SereneApi.Core.Http;
 using SereneApi.Core.Http.Requests.Options;
 using SereneApi.Core.Http.Responses;
 using SereneApi.Core.Requests;
 using SereneApi.Core.Serialization;
-using SereneApi.Core.Transformation;
 using SereneApi.Core.Versioning;
 using SereneApi.Handlers.Rest.Routing;
 using System;
@@ -18,13 +18,13 @@ namespace SereneApi.Handlers.Rest.Requests.Factories
         private readonly RestApiRequest _apiRequest;
         private readonly IRouteFactory _routeFactory;
         private readonly ISerializer _serializer;
-        private readonly ITransformationService _transformation;
+        private readonly IObjectSerializer _objectSerializer;
 
         public RestApiHandler Handler { get; set; }
 
-        public RestRequestFactory(ITransformationService transformation, ISerializer serializer, IConnectionSettings connection, IRouteFactory routeFactory)
+        public RestRequestFactory(IObjectSerializer objectSerializer, ISerializer serializer, IConnectionSettings connection, IRouteFactory routeFactory)
         {
-            _transformation = transformation;
+            _objectSerializer = objectSerializer;
             _serializer = serializer;
             _routeFactory = routeFactory;
 
@@ -170,14 +170,14 @@ namespace SereneApi.Handlers.Rest.Requests.Factories
 
         public IApiRequestType WithQuery<TQuery>(TQuery query) where TQuery : class
         {
-            _apiRequest.Query = _transformation.BuildDictionary(query);
+            _apiRequest.Query = _objectSerializer.SerializeToDictionary(query);
 
             return this;
         }
 
         public IApiRequestType WithQuery<TQuery>(TQuery query, Expression<Func<TQuery, object>> selector) where TQuery : class
         {
-            _apiRequest.Query = _transformation.BuildDictionary(query, selector);
+            _apiRequest.Query = _objectSerializer.SerializeToDictionary(query, selector);
 
             return this;
         }
@@ -188,7 +188,7 @@ namespace SereneApi.Handlers.Rest.Requests.Factories
 
             builder.Invoke(query);
 
-            _apiRequest.Query = _transformation.BuildDictionary(query);
+            _apiRequest.Query = _objectSerializer.SerializeToDictionary(query);
 
             return this;
         }

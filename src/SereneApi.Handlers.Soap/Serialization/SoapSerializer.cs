@@ -43,6 +43,12 @@ namespace SereneApi.Handlers.Soap.Serialization
             return _translator.Unpack<T>(value);
         }
 
+        public Task<object> DeserializeAsync(Type type, IResponseContent content)
+        {
+            // TODO: Implement this.
+            throw new NotImplementedException();
+        }
+
         public IRequestContent Serialize(object value)
         {
             return new XmlContent(SerializeToString(value));

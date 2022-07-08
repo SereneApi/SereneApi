@@ -1,24 +1,29 @@
-﻿using DeltaWare.Dependencies;
-using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies.Abstractions;
+using DeltaWare.SDK.Core.Serialization;
 using SereneApi.Core.Events;
 using SereneApi.Core.Http.Client;
 using SereneApi.Core.Http.Client.Handler;
 using SereneApi.Core.Http.Requests.Handler;
-using SereneApi.Core.Transformation;
-using SereneApi.Core.Transformation.Transformers;
+using System;
+using System.Collections.Generic;
 using System.Net;
 
 namespace SereneApi.Core.Configuration.Provider
 {
-    public abstract class HandlerConfigurationProvider : IApiConfiguration
+    public abstract class HandlerConfigurationProvider
     {
-        public IDependencyCollection Dependencies { get; } = new DependencyCollection();
+        private readonly List<Action<IDependencyCollection>> _configurationExtensions = new();
 
-        protected HandlerConfigurationProvider()
+        public void ExtendConfiguration(Action<IDependencyCollection> configuration)
         {
-            Dependencies.AddSingleton<HandlerConfiguration>();
+            _configurationExtensions.Add(configuration ?? throw new ArgumentNullException(nameof(configuration)));
+        }
 
-            Dependencies.Configure<HandlerConfiguration>(c =>
+        internal void InternalConfigure(IDependencyCollection dependencies)
+        {
+            dependencies.AddSingleton<HandlerConfiguration>();
+
+            dependencies.Configure<HandlerConfiguration>(c =>
             {
                 c.SetResourcePath("");
                 c.SetRetryAttempts(0);
@@ -27,17 +32,24 @@ namespace SereneApi.Core.Configuration.Provider
                 c.SetThrowOnFailure(false);
             });
 
-            Dependencies.AddSingleton<IEventManager, EventManager>();
+            dependencies.AddSingleton<IEventManager, EventManager>();
 
-            Dependencies.AddSingleton(() => CredentialCache.DefaultCredentials);
-            Dependencies.AddSingleton<IClientFactory, ClientFactory>();
-            Dependencies.AddSingleton<IHandlerFactory, HandlerFactory>();
-            Dependencies.AddSingleton<IHandlerBuilder>(p => (HandlerFactory)p.GetRequiredDependency<IHandlerFactory>());
-            Dependencies.AddSingleton<ITransformationService, TransformationService>();
-            Dependencies.AddSingleton<IObjectToStringTransformer, BasicObjectToStringTransformer>();
-            Dependencies.AddSingleton<IStringToObjectTransformer, BasicStringToObjectTransformer>();
+            dependencies.AddSingleton(() => CredentialCache.DefaultCredentials);
+            dependencies.AddSingleton<IClientFactory, ClientFactory>();
+            dependencies.AddSingleton<IHandlerFactory, HandlerFactory>();
+            dependencies.AddSingleton<IHandlerBuilder>(p => (HandlerFactory)p.GetRequiredDependency<IHandlerFactory>());
+            dependencies.AddSingleton<IObjectSerializer>(() => new ObjectSerializer());
 
-            Dependencies.AddScoped<IRequestHandler, RetryingRequestHandler>();
+            dependencies.AddScoped<IRequestHandler, RetryingRequestHandler>();
+
+            foreach (Action<IDependencyCollection> configurationExtension in _configurationExtensions)
+            {
+                configurationExtension.Invoke(dependencies);
+            }
+
+            Configure(dependencies);
         }
+
+        protected abstract void Configure(IDependencyCollection dependencies);
     }
 }

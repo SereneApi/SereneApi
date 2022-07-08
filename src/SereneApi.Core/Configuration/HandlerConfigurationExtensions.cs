@@ -1,10 +1,26 @@
 ﻿using SereneApi.Core.Http.Content;
+using System;
 using System.Collections.Generic;
 
 namespace SereneApi.Core.Configuration
 {
     public static class HandlerConfigurationExtensions
     {
+        public static Type GetHandlerType(this HandlerConfiguration handlerConfiguration)
+        {
+            return handlerConfiguration.Get<Type>(HandlerConfigurationKeys.HandlerType);
+        }
+
+        public static bool TryGetHandlerType(this HandlerConfiguration handlerConfiguration, out Type handlerType)
+        {
+            return handlerConfiguration.TryGet(HandlerConfigurationKeys.HandlerType, out handlerType);
+        }
+
+        public static void SetHandlerType(this HandlerConfiguration handlerConfiguration, Type handlerType)
+        {
+            handlerConfiguration.Add(HandlerConfigurationKeys.HandlerType, handlerType);
+        }
+
         public static ContentType GetContentType(this HandlerConfiguration handlerConfiguration)
         {
             return handlerConfiguration.Get<ContentType>(HandlerConfigurationKeys.ContentType);

@@ -1,5 +1,5 @@
-﻿using SereneApi.Extensions.Caching.Types;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using SereneApi.Extensions.Caching.Types;
 using System;
 using System.Net.Http;
 using System.Threading;

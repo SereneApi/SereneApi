@@ -9,17 +9,26 @@ using System.Reflection;
 
 namespace SereneApi.Core.Configuration
 {
-    internal sealed class ApiConfigurationFactory : IApiConfiguration
+    internal sealed class ApiConfigurationFactory
     {
+        private readonly List<Action<IApiConfiguration>> _providerConfiguration = new();
+
         private readonly Dictionary<Type, List<Action<IApiConfiguration>>> _configuration = new();
         private readonly Dictionary<Type, List<Action<IApiOnInitialization>>> _onInitialization = new();
         private readonly Dictionary<Type, List<Action<IApiConfiguration>>> _postConfiguration = new();
         private readonly Dictionary<Type, List<Action<IApiConfiguration>>> _preConfiguration = new();
-        public IDependencyCollection Dependencies { get; }
+        //public IDependencyCollection Dependencies { get; } = new DependencyCollection();
+
+        private readonly HandlerConfigurationProvider _configurationProvider;
 
         public ApiConfigurationFactory(HandlerConfigurationProvider configurationProvider)
         {
-            Dependencies = configurationProvider.Dependencies;
+            _configurationProvider = configurationProvider;
+        }
+
+        public void AmendConfiguration(Action<IApiConfiguration> configuration)
+        {
+            _providerConfiguration.Add(configuration);
         }
 
         public void AddApiConfiguration(Type handlerType, Action<IApiConfiguration> configuration)
@@ -88,7 +97,7 @@ namespace SereneApi.Core.Configuration
         {
             ValidateHandler(handlerType);
 
-            ApiConfiguration apiConfiguration = InternalBuildApiConfiguration();
+            ApiConfiguration apiConfiguration = InternalBuildApiConfiguration(handlerType);
 
             if (_preConfiguration.TryGetValue(handlerType, out List<Action<IApiConfiguration>> preConfigurations))
             {
@@ -145,9 +154,26 @@ namespace SereneApi.Core.Configuration
             }
         }
 
-        private ApiConfiguration InternalBuildApiConfiguration()
+        private ApiConfiguration InternalBuildApiConfiguration(Type handlerType)
         {
-            return new ApiConfiguration((DependencyCollection)((DependencyCollection)Dependencies).Clone());
+            IDependencyCollection dependencies = new DependencyCollection();
+
+            if (!_providerConfiguration.IsEmpty())
+            {
+                _configurationProvider.ExtendConfiguration(c =>
+                {
+                    ApiConfiguration configuration = new ApiConfiguration(c, handlerType);
+
+                    foreach (Action<IApiConfiguration> providerConfiguration in _providerConfiguration)
+                    {
+                        providerConfiguration.Invoke(configuration);
+                    }
+                });
+            }
+
+            _configurationProvider.InternalConfigure(dependencies);
+
+            return new ApiConfiguration(dependencies, handlerType);
         }
     }
 }

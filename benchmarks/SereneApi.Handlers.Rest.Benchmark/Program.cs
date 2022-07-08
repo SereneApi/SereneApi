@@ -1,11 +1,11 @@
-﻿using SereneApi.Core.Handler.Factories;
+﻿using SereneApi.Core.Configuration;
+using SereneApi.Core.Handler.Factories;
+using SereneApi.Core.Http.Responses;
 using SereneApi.Core.Requests;
 using SereneApi.Handlers.Rest.Benchmark.API;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using SereneApi.Core.Configuration;
-using SereneApi.Core.Http.Responses;
 
 namespace SereneApi.Handlers.Rest.Benchmark
 {

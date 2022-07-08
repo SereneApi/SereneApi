@@ -1,10 +1,10 @@
-﻿using SereneApi.Authentication.Web.Msal.Options;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Web;
+using SereneApi.Authentication.Web.Msal.Options;
 using SereneApi.Core.Http.Authentication;
 using SereneApi.Core.Http.Authorization;
 using SereneApi.Core.Http.Authorization.Types;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Microsoft.Identity.Web;
 using System;
 using System.Security.Authentication;
 using System.Threading.Tasks;
