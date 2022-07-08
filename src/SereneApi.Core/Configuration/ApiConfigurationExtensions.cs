@@ -1,4 +1,5 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
+using DeltaWare.Dependencies.Abstractions.Enums;
 using Microsoft.Extensions.Logging;
 using SereneApi.Core.Helpers;
 using SereneApi.Core.Http;
@@ -15,6 +16,9 @@ namespace SereneApi.Core.Configuration
 {
     public static class ApiConfigurationExtensions
     {
+        /// <summary>
+        /// Sets the Accept ContentType Header.
+        /// </summary>
         public static void AcceptContentType(this IApiConfiguration apiConfiguration, ContentType type)
         {
             apiConfiguration.SetHandlerConfiguration(c =>
@@ -71,7 +75,7 @@ namespace SereneApi.Core.Configuration
                 throw new ArgumentNullException(nameof(connectionSettings));
             }
 
-            apiConfiguration.Dependencies.AddSingleton<IConnectionSettings>(p =>
+            apiConfiguration.Dependencies.AddSingleton(p =>
             {
                 HandlerConfiguration handlerConfiguration = p.GetRequiredDependency<HandlerConfiguration>();
 
@@ -114,6 +118,8 @@ namespace SereneApi.Core.Configuration
 
                 return connection;
             });
+
+            apiConfiguration.Dependencies.AddTransient<IConnectionSettings>(p => p.GetRequiredDependency<ConnectionSettings>(), Binding.Unbound);
         }
 
         public static void AddCredentials(this IApiConfiguration apiConfiguration, ICredentials credentials)
@@ -138,15 +144,13 @@ namespace SereneApi.Core.Configuration
                 throw new ArgumentException("Retry attempts must be greater or equal to 0.");
             }
 
-            if (!apiConfiguration.Dependencies.HasDependency<IConnectionSettings>())
+            if (!apiConfiguration.Dependencies.HasDependency<ConnectionSettings>())
             {
-                throw new MethodAccessException("Source must be provided before this method is called.");
+                throw new MethodAccessException("Source must be provided before this httpMethod is called.");
             }
 
-            apiConfiguration.Dependencies.Configure<IConnectionSettings>(c =>
+            apiConfiguration.Dependencies.Configure<ConnectionSettings>(connection =>
             {
-                ConnectionSettings connection = (ConnectionSettings)c;
-
                 Rules.ValidateRetryAttempts(attemptCount);
 
                 connection.RetryAttempts = attemptCount;
@@ -160,7 +164,7 @@ namespace SereneApi.Core.Configuration
                 throw new ArgumentNullException(nameof(baseAddress));
             }
 
-            apiConfiguration.Dependencies.AddSingleton<IConnectionSettings>(p =>
+            apiConfiguration.Dependencies.AddSingleton(p =>
             {
                 HandlerConfiguration handlerConfiguration = p.GetRequiredDependency<HandlerConfiguration>();
 
@@ -178,6 +182,8 @@ namespace SereneApi.Core.Configuration
                     RetryAttempts = handlerConfiguration.GetRetryAttempts()
                 };
             });
+
+            apiConfiguration.Dependencies.AddTransient<IConnectionSettings>(p => p.GetRequiredDependency<ConnectionSettings>(), Binding.Unbound);
         }
 
         public static void SetTimeout(this IApiConfiguration apiConfiguration, int seconds)
@@ -187,30 +193,26 @@ namespace SereneApi.Core.Configuration
                 throw new ArgumentException("A timeout value must be greater than 0.");
             }
 
-            if (!apiConfiguration.Dependencies.HasDependency<IConnectionSettings>())
+            if (!apiConfiguration.Dependencies.HasDependency<ConnectionSettings>())
             {
-                throw new MethodAccessException("Source must be provided before this method is called.");
+                throw new MethodAccessException("Source must be provided before this httpMethod is called.");
             }
 
-            apiConfiguration.Dependencies.Configure<IConnectionSettings>(c =>
+            apiConfiguration.Dependencies.Configure<ConnectionSettings>(connection =>
             {
-                ConnectionSettings connection = (ConnectionSettings)c;
-
                 connection.Timeout = seconds;
             });
         }
 
         public static void SetTimeout(this IApiConfiguration apiConfiguration, int seconds, int attempts)
         {
-            if (!apiConfiguration.Dependencies.HasDependency<IConnectionSettings>())
+            if (!apiConfiguration.Dependencies.HasDependency<ConnectionSettings>())
             {
-                throw new MethodAccessException("Source must be provided before this method is called.");
+                throw new MethodAccessException("Source must be provided before this httpMethod is called.");
             }
 
-            apiConfiguration.Dependencies.Configure<IConnectionSettings>(c =>
+            apiConfiguration.Dependencies.Configure<ConnectionSettings>(connection =>
             {
-                ConnectionSettings connection = (ConnectionSettings)c;
-
                 connection.Timeout = seconds;
                 connection.RetryAttempts = attempts;
             });

@@ -1,13 +1,13 @@
 ﻿using SereneApi.Core.Http;
 using SereneApi.Core.Http.Content;
 using SereneApi.Core.Http.Responses;
-using SereneApi.Core.Requests;
 using SereneApi.Core.Serialization;
 using SereneApi.Extensions.Mocking.Rest.Configuration.Descriptors;
 using SereneApi.Extensions.Mocking.Rest.Extensions;
 using SereneApi.Extensions.Mocking.Rest.Responses;
 using System;
 using System.Linq;
+using System.Net.Http;
 
 namespace SereneApi.Extensions.Mocking.Rest.Configuration.Factories
 {
@@ -85,7 +85,7 @@ namespace SereneApi.Extensions.Mocking.Rest.Configuration.Factories
             return this;
         }
 
-        public IMockResponseEndpoint ForMethod(params Method[] methods)
+        public IMockResponseEndpoint ForMethod(params HttpMethod[] methods)
         {
             if (methods == null)
             {

@@ -21,7 +21,7 @@ namespace SereneApi.Core.Configuration
         {
             if (!configuration.Dependencies.HasDependency<IServiceProvider>())
             {
-                throw new NotSupportedException("SereneApi must be attached to Microsoft Dependency Injection for this method to be supported.");
+                throw new NotSupportedException("SereneApi must be attached to Microsoft Dependency Injection for this httpMethod to be supported.");
             }
 
             if (optionsBuilder != null)
@@ -53,7 +53,7 @@ namespace SereneApi.Core.Configuration
         {
             if (!configuration.Dependencies.HasDependency<IServiceProvider>())
             {
-                throw new NotSupportedException("SereneApi must be attached to Microsoft Dependency Injection for this method to be supported.");
+                throw new NotSupportedException("SereneApi must be attached to Microsoft Dependency Injection for this httpMethod to be supported.");
             }
 
             if (authenticationOptions == null)

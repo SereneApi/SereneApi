@@ -1,10 +1,10 @@
 ﻿using SereneApi.Core.Http;
 using SereneApi.Core.Http.Content;
 using SereneApi.Core.Http.Requests;
-using SereneApi.Core.Requests;
 using SereneApi.Core.Versioning;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 
 namespace SereneApi.Handlers.Rest.Requests
 {
@@ -21,7 +21,7 @@ namespace SereneApi.Handlers.Rest.Requests
         public string Endpoint { get; set; }
         public string EndpointTemplate { get; set; }
         public Guid Identity { get; } = Guid.NewGuid();
-        public Method Method { get; set; }
+        public HttpMethod HttpMethod { get; set; }
         public object[] Parameters { get; set; }
         public Dictionary<string, string> Query { get; set; }
         public string Resource { get; set; }
@@ -29,6 +29,7 @@ namespace SereneApi.Handlers.Rest.Requests
         public Type ResponseType { get; set; }
         public Uri Route { get; set; }
         public IApiVersion Version { get; set; }
+        public IReadOnlyDictionary<string, object> Headers { get; set; }
 
         public static RestApiRequest Create(IConnectionSettings connection)
         {

@@ -1,5 +1,5 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
-using DeltaWare.SDK.Core.Serialization;
+using DeltaWare.SDK.Serialization.Types;
 using SereneApi.Core.Configuration;
 using SereneApi.Core.Configuration.Provider;
 using SereneApi.Core.Http.Content;
@@ -27,7 +27,7 @@ namespace SereneApi.Handlers.Rest.Configuration
             {
                 ObjectSerializer serializer = (ObjectSerializer)s;
 
-                serializer.Transformers.AddTransformer(new DateTimeTransformer());
+                serializer.Transformers.Add(new DateTimeTransformer());
             });
 
             dependencies.AddTransient<IApiRequestFactory, RestRequestFactory>();

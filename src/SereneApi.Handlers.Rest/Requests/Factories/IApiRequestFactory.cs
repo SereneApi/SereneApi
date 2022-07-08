@@ -1,7 +1,9 @@
-﻿namespace SereneApi.Handlers.Rest.Requests.Factories
+﻿using SereneApi.Core.Handler;
+
+namespace SereneApi.Handlers.Rest.Requests.Factories
 {
     public interface IApiRequestFactory : IApiRequestMethod, IApiRequestResource
     {
-        RestApiHandler Handler { get; set; }
+        IApiHandler Handler { get; set; }
     }
 }

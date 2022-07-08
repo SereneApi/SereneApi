@@ -132,7 +132,7 @@ namespace SereneApi.Extensions.Mocking.Rest.Responses.Manager
 
                 if (mockRequest.Methods is { Length: > 0 })
                 {
-                    if (mockRequest.Methods.Contains(request.Method.ToMethod()))
+                    if (mockRequest.Methods.Contains(request.Method))
                     {
                         weight++;
                     }
@@ -208,7 +208,7 @@ namespace SereneApi.Extensions.Mocking.Rest.Responses.Manager
                     }
                     catch (Exception ex)
                     {
-                        _logger?.LogError(ex, "An exception was encountered whilst invoking {handler}.{method} for request {requestUri}", mockHandler.HandlerType.Name, mockHandler.Method.Name, request.RequestUri.ToString());
+                        _logger?.LogError(ex, "An exception was encountered whilst invoking {handler}.{httpMethod} for request {requestUri}", mockHandler.HandlerType.Name, mockHandler.Method.Name, request.RequestUri.ToString());
                     }
                 }
 

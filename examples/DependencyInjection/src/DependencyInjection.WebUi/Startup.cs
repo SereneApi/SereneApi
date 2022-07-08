@@ -22,7 +22,7 @@ namespace DependencyInjection.WebUi
             Configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // This httpMethod gets called by the runtime. Use this httpMethod to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseSwagger();
@@ -45,7 +45,7 @@ namespace DependencyInjection.WebUi
             });
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        // This httpMethod gets called by the runtime. Use this httpMethod to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers().AddNewtonsoftJson();

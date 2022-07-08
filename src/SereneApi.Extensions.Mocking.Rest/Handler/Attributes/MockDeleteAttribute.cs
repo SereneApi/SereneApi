@@ -1,26 +1,25 @@
-﻿using SereneApi.Core.Requests;
-using System;
+﻿using System;
 
 namespace SereneApi.Extensions.Mocking.Rest.Handler.Attributes
 {
     /// <summary>
-    /// Specifies that the Method will respond to Delete request.
+    /// Specifies that the HttpMethod will respond to Delete request.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
     public class MockDeleteAttribute : MockMethodAttribute
     {
         /// <summary>
-        /// Specifies the the current method will response to Delete requests.
+        /// Specifies the the current httpMethod will response to Delete requests.
         /// </summary>
-        public MockDeleteAttribute() : base(Method.Delete)
+        public MockDeleteAttribute() : base("DELETE")
         {
         }
 
         /// <summary>
-        /// Specifies the the current method will response to Delete requests.
+        /// Specifies the the current httpMethod will response to Delete requests.
         /// </summary>
-        /// <param name="endpointTemplate">Sets the endpoint to be responded to, the endpoint can be bound to the method parameters.</param>
-        public MockDeleteAttribute(string endpointTemplate) : base(Method.Delete, endpointTemplate)
+        /// <param name="endpointTemplate">Sets the endpoint to be responded to, the endpoint can be bound to the httpMethod parameters.</param>
+        public MockDeleteAttribute(string endpointTemplate) : base("DELETE", endpointTemplate)
         {
         }
     }

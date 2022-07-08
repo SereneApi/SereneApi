@@ -1,10 +1,10 @@
-﻿using SereneApi.Core.Requests;
+﻿using System.Net.Http;
 
 namespace SereneApi.Extensions.Mocking.Rest.Configuration.Descriptors
 {
     internal interface IMockRequestDescriptor
     {
         public string[] Endpoints { get; }
-        public Method[] Methods { get; }
+        public HttpMethod[] Methods { get; }
     }
 }

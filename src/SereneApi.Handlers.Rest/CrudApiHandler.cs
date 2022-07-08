@@ -1,8 +1,8 @@
 using SereneApi.Core.Configuration.Settings;
 using SereneApi.Core.Http.Responses;
-using SereneApi.Core.Requests;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SereneApi.Handlers.Rest
@@ -27,8 +27,8 @@ namespace SereneApi.Handlers.Rest
             }
 
             return MakeRequest
-                .UsingMethod(Method.Post)
-                .AddInBodyContent(resource)
+                .UsingMethod(HttpMethod.Post)
+                .WithInBodyContent(resource)
                 .RespondsWith<TResource>()
                 .ExecuteAsync();
         }
@@ -37,7 +37,7 @@ namespace SereneApi.Handlers.Rest
         public virtual Task<IApiResponse> DeleteAsync(TIdentifier identifier)
         {
             return MakeRequest
-                .UsingMethod(Method.Delete)
+                .UsingMethod(HttpMethod.Delete)
                 .WithParameter(identifier)
                 .ExecuteAsync();
         }
@@ -46,7 +46,7 @@ namespace SereneApi.Handlers.Rest
         public virtual Task<IApiResponse<TResource>> GetAsync(TIdentifier identifier)
         {
             return MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .WithParameter(identifier)
                 .RespondsWith<TResource>()
                 .ExecuteAsync();
@@ -56,7 +56,7 @@ namespace SereneApi.Handlers.Rest
         public virtual Task<IApiResponse<List<TResource>>> GetAsync()
         {
             return MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .RespondsWith<List<TResource>>()
                 .ExecuteAsync();
         }
@@ -70,8 +70,8 @@ namespace SereneApi.Handlers.Rest
             }
 
             return MakeRequest
-                .UsingMethod(Method.Put)
-                .AddInBodyContent(resource)
+                .UsingMethod(HttpMethod.Put)
+                .WithInBodyContent(resource)
                 .RespondsWith<TResource>()
                 .ExecuteAsync();
         }
@@ -85,8 +85,8 @@ namespace SereneApi.Handlers.Rest
             }
 
             return MakeRequest
-                .UsingMethod(Method.Patch)
-                .AddInBodyContent(resource)
+                .UsingMethod(HttpMethod.Patch)
+                .WithInBodyContent(resource)
                 .RespondsWith<TResource>()
                 .ExecuteAsync();
         }

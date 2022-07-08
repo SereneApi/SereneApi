@@ -1,9 +1,9 @@
 ﻿using DependencyInjection.API.DTOs;
 using SereneApi.Core.Configuration.Settings;
 using SereneApi.Core.Http.Responses;
-using SereneApi.Core.Requests;
 using SereneApi.Handlers.Rest;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace DependencyInjection.API.Handlers
@@ -22,8 +22,8 @@ namespace DependencyInjection.API.Handlers
             // The StudentDto value will be passed to JSON and sent in the body of the request http://localhost:8080/api/Students
 
             return MakeRequest
-                .UsingMethod(Method.Post)
-                .AddInBodyContent(student)
+                .UsingMethod(HttpMethod.Post)
+                .WithInBodyContent(student)
                 .ExecuteAsync();
         }
 
@@ -31,7 +31,7 @@ namespace DependencyInjection.API.Handlers
         {
             // In this example, only the Given and Last name values will used for the query. http://localhost:8080/api/Students?GivenName=value&LastName=value
             return MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .AgainstEndpoint("SearchBy/GivenAndLastName")
                 .WithQuery(student, s => new { s.GivenName, s.LastName })
                 .RespondsWith<List<StudentDto>>()
@@ -42,7 +42,7 @@ namespace DependencyInjection.API.Handlers
         {
             // This is a simple GET request with no endpoint or parameters provided. http://localhost:8080/api/Students
             return MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .RespondsWith<List<StudentDto>>()
                 .ExecuteAsync();
         }
@@ -51,7 +51,7 @@ namespace DependencyInjection.API.Handlers
         {
             // This GET request will use the students Id as a parameter for the request. http://localhost:8080/api/Students/{studentId}
             return MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .WithParameter(studentId)
                 .RespondsWith<StudentDto>()
                 .ExecuteAsync();
@@ -61,7 +61,7 @@ namespace DependencyInjection.API.Handlers
         {
             // Here we are using an Endpoint Template, allowing more complex APIs. http://localhost:8080/api/Students/{studentId}/Classes
             return MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .AgainstEndpoint("{0}/Classes")
                 .WithParameter(studentId)
                 .RespondsWith<List<ClassDto>>()

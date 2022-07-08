@@ -1,4 +1,5 @@
 ﻿using SereneApi.Core.Configuration.Settings;
+using SereneApi.Core.Handler;
 using SereneApi.Core.Http.Requests;
 using SereneApi.Core.Http.Responses;
 using SereneApi.Handlers.Rest;
@@ -23,5 +24,9 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
         {
             throw new NotImplementedException();
         }
+    }
+
+    public interface ITestApi : IApiHandler
+    {
     }
 }

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -20,7 +20,8 @@
 
   <ItemGroup>
     <PackageReference Include="DeltaWare.Dependencies" Version="5.0.0.7" />
-    <PackageReference Include="DeltaWare.SDK.Core" Version="5.0.0.1" />
+    <PackageReference Include="DeltaWare.SDK.Core" Version="5.0.1.2" />
+    <PackageReference Include="DeltaWare.SDK.Serialization.Types" Version="5.0.0.4" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
   </ItemGroup>
 

@@ -103,12 +103,10 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
 
             serviceCollection.AmendConfigurationProvider<RestHandlerConfigurationProvider>(r =>
             {
-                r.Dependencies.Configure<IConnectionSettings>(c =>
+                r.Dependencies.Configure<ConnectionSettings>(c =>
                 {
-                    ConnectionSettings settings = (ConnectionSettings)c;
-
-                    settings.Timeout = 60;
-                    settings.RetryAttempts = 2;
+                    c.Timeout = 60;
+                    c.RetryAttempts = 2;
                 });
             });
 

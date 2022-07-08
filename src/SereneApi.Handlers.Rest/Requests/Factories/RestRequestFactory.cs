@@ -1,13 +1,15 @@
-﻿using DeltaWare.SDK.Core.Serialization;
+﻿using DeltaWare.SDK.Serialization.Types;
+using SereneApi.Core.Handler;
 using SereneApi.Core.Http;
 using SereneApi.Core.Http.Requests.Options;
 using SereneApi.Core.Http.Responses;
-using SereneApi.Core.Requests;
 using SereneApi.Core.Serialization;
 using SereneApi.Core.Versioning;
 using SereneApi.Handlers.Rest.Routing;
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,7 +22,7 @@ namespace SereneApi.Handlers.Rest.Requests.Factories
         private readonly ISerializer _serializer;
         private readonly IObjectSerializer _objectSerializer;
 
-        public RestApiHandler Handler { get; set; }
+        public IApiHandler Handler { get; set; }
 
         public RestRequestFactory(IObjectSerializer objectSerializer, ISerializer serializer, IConnectionSettings connection, IRouteFactory routeFactory)
         {
@@ -31,7 +33,10 @@ namespace SereneApi.Handlers.Rest.Requests.Factories
             _apiRequest = RestApiRequest.Create(connection);
         }
 
-        public IApiRequestResponseType AddInBodyContent<TContent>(TContent content)
+        [Obsolete]
+        public IApiRequestResponseType AddInBodyContent<TContent>(TContent content) => WithInBodyContent(content);
+
+        public IApiRequestResponseType WithInBodyContent<TContent>(TContent content)
         {
             if (content == null)
             {
@@ -127,14 +132,9 @@ namespace SereneApi.Handlers.Rest.Requests.Factories
             return new RestRequestFactory<TContent>(Handler, _apiRequest);
         }
 
-        public IApiRequestResource UsingMethod(Method method)
+        public IApiRequestResource UsingMethod(HttpMethod httpMethod)
         {
-            if (method == Method.None)
-            {
-                throw new ArgumentException("Must use a valid Method.", nameof(method));
-            }
-
-            _apiRequest.Method = method;
+            _apiRequest.HttpMethod = httpMethod;
 
             return this;
         }
@@ -168,21 +168,21 @@ namespace SereneApi.Handlers.Rest.Requests.Factories
             return this;
         }
 
-        public IApiRequestType WithQuery<TQuery>(TQuery query) where TQuery : class
+        public IApiRequestHeaders WithQuery<TQuery>(TQuery query) where TQuery : class
         {
             _apiRequest.Query = _objectSerializer.SerializeToDictionary(query);
 
             return this;
         }
 
-        public IApiRequestType WithQuery<TQuery>(TQuery query, Expression<Func<TQuery, object>> selector) where TQuery : class
+        public IApiRequestHeaders WithQuery<TQuery>(TQuery query, Expression<Func<TQuery, object>> selector) where TQuery : class
         {
             _apiRequest.Query = _objectSerializer.SerializeToDictionary(query, selector);
 
             return this;
         }
 
-        public IApiRequestType WithQuery<TQuery>(Action<TQuery> builder) where TQuery : class
+        public IApiRequestHeaders WithQuery<TQuery>(Action<TQuery> builder) where TQuery : class
         {
             TQuery query = Activator.CreateInstance<TQuery>();
 
@@ -197,6 +197,21 @@ namespace SereneApi.Handlers.Rest.Requests.Factories
         {
             _apiRequest.Endpoint = _routeFactory.BuildEndPoint(_apiRequest);
             _apiRequest.Route = _routeFactory.BuildRoute(_apiRequest);
+        }
+
+        public IApiRequestBody WithHeaders(Action<IHeaderBuilder> headerBuilder)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IApiRequestBody WithHeaders(Dictionary<string, object> headers)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IApiRequestBody WithHeaders<THeader>(THeader header)
+        {
+            throw new NotImplementedException();
         }
     }
 }

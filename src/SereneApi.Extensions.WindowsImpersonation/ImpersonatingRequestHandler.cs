@@ -3,10 +3,9 @@ using Microsoft.Extensions.Logging;
 using SereneApi.Core.Events;
 using SereneApi.Core.Http;
 using SereneApi.Core.Http.Client;
-using SereneApi.Core.Http.Content;
+using SereneApi.Core.Http.Requests;
 using SereneApi.Core.Http.Requests.Handler;
 using SereneApi.Core.Http.Responses.Handlers;
-using SereneApi.Core.Requests;
 using System;
 using System.Net.Http;
 using System.Runtime.InteropServices;
@@ -35,7 +34,7 @@ namespace SereneApi.Extensions.WindowsImpersonation
             _logger = logger;
         }
 
-        protected override async Task<HttpResponseMessage> HandleRequestAsync(HttpClient client, Uri route, Method method, IRequestContent content, CancellationToken cancellationToken = default)
+        protected override async Task<HttpResponseMessage> HandleRequestAsync(HttpClient client, IApiRequest request, CancellationToken cancellationToken = default)
         {
             if (_contextAccessor.HttpContext.User.Identity is WindowsIdentity windowsIdentity)
             {
@@ -44,29 +43,12 @@ namespace SereneApi.Extensions.WindowsImpersonation
                 // Running the async version of RunImpersonated always throws a socket exception.
                 // Thus this request needs to be ran synchronously.
                 return WindowsIdentity.RunImpersonated(windowsIdentity.AccessToken, () =>
-                    base.HandleRequestAsync(client, route, method, content, cancellationToken).GetAwaiter().GetResult());
+                    base.HandleRequestAsync(client, request, cancellationToken).GetAwaiter().GetResult());
             }
 
             _logger?.LogDebug("Request will not be impersonated as no Windows Identity was found");
 
-            return await base.HandleRequestAsync(client, route, method, content, cancellationToken);
-        }
-
-        protected override async Task<HttpResponseMessage> HandleRequestAsync(HttpClient client, Uri route, Method method, CancellationToken cancellationToken = default)
-        {
-            if (_contextAccessor.HttpContext.User.Identity is WindowsIdentity windowsIdentity)
-            {
-                _logger?.LogDebug("Impersonating the request as {UserName}", windowsIdentity.Name);
-
-                // Running the async version of RunImpersonated always throws a socket exception.
-                // Thus this request needs to be ran synchronously.
-                return WindowsIdentity.RunImpersonated(windowsIdentity.AccessToken, () =>
-                    base.HandleRequestAsync(client, route, method, cancellationToken).GetAwaiter().GetResult());
-            }
-
-            _logger?.LogDebug("Request will not be impersonated as no Windows Identity was found");
-
-            return await base.HandleRequestAsync(client, route, method, cancellationToken);
+            return await base.HandleRequestAsync(client, request, cancellationToken);
         }
     }
 }

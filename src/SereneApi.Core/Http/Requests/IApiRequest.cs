@@ -1,7 +1,8 @@
 ﻿using SereneApi.Core.Http.Content;
-using SereneApi.Core.Requests;
 using SereneApi.Core.Versioning;
 using System;
+using System.Collections.Generic;
+using System.Net.Http;
 
 namespace SereneApi.Core.Http.Requests
 {
@@ -23,9 +24,9 @@ namespace SereneApi.Core.Http.Requests
         Guid Identity { get; }
 
         /// <summary>
-        /// The <see cref="Method"/> used when performing the request.
+        /// The <see cref="HttpMethod"/> used when performing the request.
         /// </summary>
-        Method Method { get; }
+        HttpMethod HttpMethod { get; }
 
         /// <summary>
         /// The resource the request will act upon.
@@ -49,5 +50,7 @@ namespace SereneApi.Core.Http.Requests
         /// </summary>
         /// <remarks>This is applied after the Resource [Resource/Version/Endpoint]</remarks>
         IApiVersion Version { get; }
+
+        IReadOnlyDictionary<string, object> Headers { get; }
     }
 }

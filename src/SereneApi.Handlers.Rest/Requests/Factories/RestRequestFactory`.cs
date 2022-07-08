@@ -1,4 +1,5 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
+using SereneApi.Core.Handler;
 using SereneApi.Core.Http.Requests.Options;
 using SereneApi.Core.Http.Responses;
 using SereneApi.Handlers.Rest.Routing;
@@ -10,11 +11,11 @@ namespace SereneApi.Handlers.Rest.Requests.Factories
 {
     public class RestRequestFactory<TContent> : IApiRequestPerformer<TContent>
     {
-        private readonly RestApiHandler _apiHandler;
+        private readonly IApiHandler _apiHandler;
 
         private readonly RestApiRequest _restApiRequest;
 
-        public RestRequestFactory(RestApiHandler apiHandler, RestApiRequest request)
+        public RestRequestFactory(IApiHandler apiHandler, RestApiRequest request)
         {
             _apiHandler = apiHandler;
             _restApiRequest = request;

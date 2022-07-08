@@ -65,7 +65,7 @@ namespace SereneApi.Extensions.Mocking.Rest.Configuration
                     HandlerType = mockingHandlerType,
                     Method = method,
                     MockMethod = mockMethod,
-                    Methods = new[] { mockMethod.Method },
+                    Methods = new[] { mockMethod.HttpMethod },
                     Endpoints = new[] { mockMethod.EndpointTemplate }
                 });
             }

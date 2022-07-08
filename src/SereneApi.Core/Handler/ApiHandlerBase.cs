@@ -78,12 +78,12 @@ namespace SereneApi.Core.Handler
             }
             catch (Exception exception)
             {
-                _logger?.LogError(exception, Logging.Messages.RequestEncounteredException, request.Method.ToString(), BuildRequestRoute(request));
+                _logger?.LogError(exception, Logging.Messages.RequestEncounteredException, request.HttpMethod.ToString(), BuildRequestRoute(request));
 
                 OnException(request, options, exception);
 
                 response = GenerateFailureResponse(request, Status.None,
-                    $"An Exception occurred whilst performing a HTTP {request.Method} Request",
+                    $"An Exception occurred whilst performing a HTTP {request.HttpMethod} Request",
                     exception);
             }
 
@@ -119,12 +119,12 @@ namespace SereneApi.Core.Handler
             }
             catch (Exception exception)
             {
-                _logger?.LogError(Logging.EventIds.ExceptionEvent, exception, Logging.Messages.RequestEncounteredException, request.Method.ToString(), BuildRequestRoute(request));
+                _logger?.LogError(Logging.EventIds.ExceptionEvent, exception, Logging.Messages.RequestEncounteredException, request.HttpMethod.ToString(), BuildRequestRoute(request));
 
                 OnException(request, options, exception);
 
                 response = GenerateFailureResponse<TResponse>(request, Status.None,
-                    $"An Exception occurred whilst performing a HTTP {request.Method} Request",
+                    $"An Exception occurred whilst performing a HTTP {request.HttpMethod} Request",
                     exception);
             }
 
@@ -203,7 +203,7 @@ namespace SereneApi.Core.Handler
         private bool _disposed;
 
         /// <summary>
-        /// Occurs when the component is disposed by a call to the Dispose() method
+        /// Occurs when the component is disposed by a call to the Dispose() httpMethod
         /// </summary>
         public event EventHandler Disposed;
 

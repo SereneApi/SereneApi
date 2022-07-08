@@ -1,6 +1,6 @@
 ﻿using SereneApi.Core.Http.Content;
-using SereneApi.Core.Requests;
 using SereneApi.Extensions.Mocking.Rest.Responses;
+using System.Net.Http;
 
 namespace SereneApi.Extensions.Mocking.Rest.Configuration.Descriptors
 {
@@ -8,7 +8,7 @@ namespace SereneApi.Extensions.Mocking.Rest.Configuration.Descriptors
     {
         public IRequestContent Content { get; set; }
         public string[] Endpoints { get; set; }
-        public Method[] Methods { get; set; }
+        public HttpMethod[] Methods { get; set; }
         public IMockResponse Response { get; set; }
     }
 }

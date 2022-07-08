@@ -11,7 +11,7 @@ namespace SereneApi.Core.Http.Authentication
     /// Authorizes using the specified API call returning a <see cref="BearerAuthorization"/> result.
     /// </summary>
     /// <typeparam name="TApi">The API that will be used to authorize with.</typeparam>
-    /// <typeparam name="TDto">The method in which the token will be retrieved.</typeparam>
+    /// <typeparam name="TDto">The httpMethod in which the token will be retrieved.</typeparam>
     public class TokenAuthenticator<TApi, TDto> : ApiHandlerAuthenticator<TApi, TDto>, IAuthenticator where TApi : class, IDisposable where TDto : class
     {
         private BearerAuthorization _cachedAuthorization;
@@ -24,7 +24,7 @@ namespace SereneApi.Core.Http.Authentication
         /// The dependencies the <see cref="TokenAuthenticator{TApi,TDto}"/> can use to authorize with.
         /// </param>
         /// <param name="apiCall">The API call to authorize with.</param>
-        /// <param name="retrieveToken">The method in which the token will be retrieved.</param>
+        /// <param name="retrieveToken">The httpMethod in which the token will be retrieved.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         public TokenAuthenticator(IDependencyProvider dependencies, Func<TApi, Task<IApiResponse<TDto>>> apiCall, Func<TDto, TokenAuthResult> retrieveToken) : base(dependencies, apiCall, retrieveToken)
         {

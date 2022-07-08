@@ -15,14 +15,14 @@ namespace SereneApi.Extensions.WindowsImpersonation
         /// <summary>
         /// Enables a request to be impersonated as the current windows identity.
         /// </summary>
-        /// <remarks>This method can only be used in a windows environment. The <see cref="IHttpContextAccessor"/> must be present for impersonation to work.</remarks>
+        /// <remarks>This httpMethod can only be used in a windows environment. The <see cref="IHttpContextAccessor"/> must be present for impersonation to work.</remarks>
         /// <exception cref="NotSupportedException">Thrown when executed in a non windows environment.</exception>
         [SupportedOSPlatform("windows")]
         public static void UseWindowsImpersonation(this IApiConfiguration factory)
         {
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                throw new NotSupportedException("This method is only supported on the Windows platform");
+                throw new NotSupportedException("This httpMethod is only supported on the Windows platform");
             }
 
             if (!factory.Dependencies.HasDependency<IHttpContextAccessor>())
