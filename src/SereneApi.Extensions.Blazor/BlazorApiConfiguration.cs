@@ -21,15 +21,21 @@ namespace SereneApi.Core.Configuration
             configuration.Dependencies.Remove<ICredentials>();
 
             // Newtonsoft is not support by blazor, as a JS Interop is called to process JSON.
-            if (configuration.Dependencies.GetDependencyDescriptor<ISerializer>().Type.Name.Equals(NewtonsoftSerializer))
+            if (configuration.Dependencies.Get<ISerializer>().ImplementationType.Name.Equals(NewtonsoftSerializer))
             {
-                configuration.Dependencies.AddSingleton<ISerializer, JsonSerializer>();
+                configuration.Dependencies
+                    .Register<JsonSerializer>()
+                    .DefineAs<ISerializer>()
+                    .AsSingleton();
             }
 
             // Windows impersonation is not supported by blazor.
-            if (configuration.Dependencies.GetDependencyDescriptor<IRequestHandler>().Type.Name.Equals(ImpersonatingRequestHandler))
+            if (configuration.Dependencies.Get<ISerializer>().ImplementationType.Name.Equals(ImpersonatingRequestHandler))
             {
-                configuration.Dependencies.AddScoped<IRequestHandler, RetryingRequestHandler>();
+                configuration.Dependencies
+                    .Register<RetryingRequestHandler>()
+                    .DefineAs<IRequestHandler>()
+                    .AsScoped();
             }
         }
     }

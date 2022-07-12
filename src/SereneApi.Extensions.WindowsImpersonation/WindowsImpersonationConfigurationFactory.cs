@@ -1,5 +1,4 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
-using DeltaWare.Dependencies.Abstractions.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using SereneApi.Core.Configuration;
@@ -27,10 +26,16 @@ namespace SereneApi.Extensions.WindowsImpersonation
 
             if (!factory.Dependencies.HasDependency<IHttpContextAccessor>())
             {
-                factory.Dependencies.AddScoped(p => p.GetRequiredDependency<IServiceProvider>().GetRequiredService<IHttpContextAccessor>(), Binding.Unbound);
+                factory.Dependencies
+                    .Register(p => p.GetRequiredDependency<IServiceProvider>().GetRequiredService<IHttpContextAccessor>())
+                    .AsScoped()
+                    .DoNotBind();
             }
 
-            factory.Dependencies.AddScoped<IRequestHandler, ImpersonatingRequestHandler>();
+            factory.Dependencies
+                .Register<ImpersonatingRequestHandler>()
+                .DefineAs<IRequestHandler>()
+                .AsScoped();
         }
     }
 }

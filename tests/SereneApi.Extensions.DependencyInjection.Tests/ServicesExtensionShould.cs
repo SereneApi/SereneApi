@@ -118,7 +118,9 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
             serviceCollection.ExtendApi<TestApiHandler>(r =>
             {
                 // For testing purposes only, but this is how implementation should be done for extensions.
-                r.Dependencies.AddScoped<ILogger>(() => new Logger<ITestApi>(new LoggerFactory()));
+                r.Dependencies.Register(() => new Logger<ITestApi>(new LoggerFactory()))
+                    .DefineAs<ILogger>()
+                    .AsScoped();
             });
 
             IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();

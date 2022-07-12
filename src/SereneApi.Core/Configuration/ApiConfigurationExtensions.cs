@@ -1,43 +1,54 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
-using DeltaWare.Dependencies.Abstractions.Enums;
 using Microsoft.Extensions.Logging;
 using SereneApi.Core.Helpers;
 using SereneApi.Core.Http;
-using SereneApi.Core.Http.Authorization;
+using SereneApi.Core.Http.Authentication;
 using SereneApi.Core.Http.Authorization.Types;
 using SereneApi.Core.Http.Content;
 using SereneApi.Core.Http.Requests.Handler;
+using SereneApi.Core.Http.Responses;
 using SereneApi.Core.Http.Responses.Handlers;
 using SereneApi.Core.Serialization;
 using System;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace SereneApi.Core.Configuration
 {
     public static class ApiConfigurationExtensions
     {
+        public static void AddBearerAuthenticator<TApi, TDto>(this IApiConfiguration configuration, Func<TApi, Task<IApiResponse<TDto>>> apiCall, Func<TDto, TokenAuthResult> retrieveToken) where TApi : class, IDisposable where TDto : class
+        {
+            configuration.Dependencies
+                .Register(p => new BearerAuthenticator<TApi, TDto>(p, apiCall, retrieveToken))
+                .DefineAs<IAuthenticator>()
+                .AsSingleton();
+        }
+
         /// <summary>
         /// Sets the Accept ContentType Header.
         /// </summary>
-        public static void AcceptContentType(this IApiConfiguration apiConfiguration, ContentType type)
+        public static void AcceptContentType(this IApiConfiguration configuration, ContentType type)
         {
-            apiConfiguration.SetHandlerConfiguration(c =>
+            configuration.SetHandlerConfiguration(c =>
             {
                 c.SetContentType(type);
             });
         }
 
-        public static void AddAuthentication(this IApiConfiguration apiConfiguration, IAuthorization authorization)
+        public static void AddAuthentication(this IApiConfiguration configuration, IAuthentication authentication)
         {
-            if (authorization == null)
+            if (authentication == null)
             {
-                throw new ArgumentNullException(nameof(authorization));
+                throw new ArgumentNullException(nameof(authentication));
             }
 
-            apiConfiguration.Dependencies.AddScoped(() => authorization);
+            configuration.Dependencies
+                .Register(() => authentication)
+                .AsScoped();
         }
 
-        public static void AddBasicAuthentication(this IApiConfiguration apiConfiguration, string username, string password)
+        public static void AddBasicAuthentication(this IApiConfiguration configuration, string username, string password)
         {
             if (string.IsNullOrWhiteSpace(username))
             {
@@ -49,7 +60,10 @@ namespace SereneApi.Core.Configuration
                 throw new ArgumentNullException(nameof(password));
             }
 
-            apiConfiguration.Dependencies.AddTransient<IAuthorization>(() => new BasicAuthorization(username, password));
+            configuration.Dependencies
+                .Register(() => new BasicAuthentication(username, password))
+                .DefineAs<IAuthentication>()
+                .AsTransient();
         }
 
         public static void AddBearerAuthentication(this IApiConfiguration configuration, string token)
@@ -59,7 +73,10 @@ namespace SereneApi.Core.Configuration
                 throw new ArgumentNullException(nameof(token));
             }
 
-            configuration.Dependencies.AddTransient<IAuthorization>(() => new BearerAuthorization(token));
+            configuration.Dependencies
+                .Register(() => new BearerAuthentication(token))
+                .DefineAs<IAuthentication>()
+                .AsTransient();
         }
 
         [Obsolete("This has been superseded by AddConnectionSettings")]
@@ -68,88 +85,97 @@ namespace SereneApi.Core.Configuration
             apiConfiguration.AddConnectionSettings(connectionSettings);
         }
 
-        public static void AddConnectionSettings(this IApiConfiguration apiConfiguration, IConnectionSettings connectionSettings)
+        public static void AddConnectionSettings(this IApiConfiguration configuration, IConnectionSettings connectionSettings)
         {
             if (connectionSettings == null)
             {
                 throw new ArgumentNullException(nameof(connectionSettings));
             }
 
-            apiConfiguration.Dependencies.AddSingleton(p =>
-            {
-                HandlerConfiguration handlerConfiguration = p.GetRequiredDependency<HandlerConfiguration>();
-
-                string resourcePath = connectionSettings.ResourcePath;
-
-                if (string.IsNullOrWhiteSpace(resourcePath))
+            configuration.Dependencies
+                .Register(p =>
                 {
-                    if (resourcePath != string.Empty)
+                    HandlerConfiguration handlerConfiguration = p.GetRequiredDependency<HandlerConfiguration>();
+
+                    string resourcePath = connectionSettings.ResourcePath;
+
+                    if (string.IsNullOrWhiteSpace(resourcePath))
                     {
-                        resourcePath = handlerConfiguration.GetResourcePath();
+                        if (resourcePath != string.Empty)
+                        {
+                            resourcePath = handlerConfiguration.GetResourcePath();
+                        }
                     }
-                }
 
-                ConnectionSettings connection = new ConnectionSettings(connectionSettings.BaseAddress, connectionSettings.Resource, resourcePath)
-                {
-                    Timeout = handlerConfiguration.GetTimeout(),
-                    RetryAttempts = handlerConfiguration.GetRetryAttempts(),
-                };
+                    ConnectionSettings connection =
+                        new ConnectionSettings(connectionSettings.BaseAddress, connectionSettings.Resource, resourcePath)
+                        {
+                            Timeout = handlerConfiguration.GetTimeout(),
+                            RetryAttempts = handlerConfiguration.GetRetryAttempts(),
+                        };
 
-                int timeout = connectionSettings.Timeout;
+                    int timeout = connectionSettings.Timeout;
 
-                if (timeout < 0)
-                {
-                    throw new ArgumentException("The Timeout value must be greater than 0");
-                }
+                    if (timeout < 0)
+                    {
+                        throw new ArgumentException("The Timeout value must be greater than 0");
+                    }
 
-                if (timeout != default)
-                {
-                    connection.Timeout = timeout;
-                }
+                    if (timeout != default)
+                    {
+                        connection.Timeout = timeout;
+                    }
 
-                int retryCount = connectionSettings.RetryAttempts;
+                    int retryCount = connectionSettings.RetryAttempts;
 
-                if (retryCount != default)
-                {
-                    Rules.ValidateRetryAttempts(retryCount);
+                    if (retryCount != default)
+                    {
+                        Rules.ValidateRetryAttempts(retryCount);
 
-                    connection.RetryAttempts = retryCount;
-                }
+                        connection.RetryAttempts = retryCount;
+                    }
 
-                return connection;
-            });
+                    return connection;
+                })
+                //.DefineAs<ConnectionSettings>()
+                .DefineAs<IConnectionSettings>()
+                .AsSingleton();
 
-            apiConfiguration.Dependencies.AddTransient<IConnectionSettings>(p => p.GetRequiredDependency<ConnectionSettings>(), Binding.Unbound);
+            //configuration.Dependencies
+            //    .Register(p => p.GetRequiredDependency<ConnectionSettings>())
+            //    .DefineAs<IConnectionSettings>()
+            //    .AsTransient()
+            //    .DoNotBind();
         }
 
-        public static void AddCredentials(this IApiConfiguration apiConfiguration, ICredentials credentials)
+        public static void AddCredentials(this IApiConfiguration configuration, ICredentials credentials)
         {
             if (credentials == null)
             {
                 throw new ArgumentNullException(nameof(credentials));
             }
 
-            apiConfiguration.Dependencies.AddSingleton(() => credentials);
+            configuration.Dependencies.Register(() => credentials).AsSingleton();
         }
 
-        public static void SetHandlerConfiguration(this IApiConfiguration apiConfiguration, Action<HandlerConfiguration> configuration)
+        public static void SetHandlerConfiguration(this IApiConfiguration configuration, Action<HandlerConfiguration> configurationAction)
         {
-            apiConfiguration.Dependencies.Configure(configuration);
+            configuration.Dependencies.Configure(configurationAction);
         }
 
-        public static void SetRetryAttempts(this IApiConfiguration apiConfiguration, int attemptCount)
+        public static void SetRetryAttempts(this IApiConfiguration configuration, int attemptCount)
         {
             if (attemptCount < 0)
             {
                 throw new ArgumentException("Retry attempts must be greater or equal to 0.");
             }
 
-            if (!apiConfiguration.Dependencies.HasDependency<ConnectionSettings>())
+            if (!configuration.Dependencies.HasDependency<ConnectionSettings>())
             {
                 throw new MethodAccessException("Source must be provided before this httpMethod is called.");
             }
 
-            apiConfiguration.Dependencies.Configure<ConnectionSettings>(connection =>
+            configuration.Dependencies.Configure<ConnectionSettings>(connection =>
             {
                 Rules.ValidateRetryAttempts(attemptCount);
 
@@ -157,143 +183,164 @@ namespace SereneApi.Core.Configuration
             });
         }
 
-        public static void SetSource(this IApiConfiguration apiConfiguration, string baseAddress, string resource = null, string resourcePath = null)
+        public static void SetSource(this IApiConfiguration configuration, string baseAddress, string resource = null, string resourcePath = null)
         {
             if (string.IsNullOrWhiteSpace(baseAddress))
             {
                 throw new ArgumentNullException(nameof(baseAddress));
             }
 
-            apiConfiguration.Dependencies.AddSingleton(p =>
-            {
-                HandlerConfiguration handlerConfiguration = p.GetRequiredDependency<HandlerConfiguration>();
-
-                if (string.IsNullOrWhiteSpace(resourcePath))
+            configuration.Dependencies
+                .Register(p =>
                 {
-                    if (resourcePath != string.Empty)
+                    HandlerConfiguration handlerConfiguration = p.GetRequiredDependency<HandlerConfiguration>();
+
+                    if (string.IsNullOrWhiteSpace(resourcePath))
                     {
-                        resourcePath = handlerConfiguration.GetResourcePath();
+                        if (resourcePath != string.Empty)
+                        {
+                            resourcePath = handlerConfiguration.GetResourcePath();
+                        }
                     }
-                }
 
-                return new ConnectionSettings(baseAddress, resource, resourcePath)
-                {
-                    Timeout = handlerConfiguration.GetTimeout(),
-                    RetryAttempts = handlerConfiguration.GetRetryAttempts()
-                };
-            });
+                    return new ConnectionSettings(baseAddress, resource, resourcePath)
+                    {
+                        Timeout = handlerConfiguration.GetTimeout(),
+                        RetryAttempts = handlerConfiguration.GetRetryAttempts()
+                    };
+                })
+                .DefineAs<IConnectionSettings>()
+                .AsSingleton();
 
-            apiConfiguration.Dependencies.AddTransient<IConnectionSettings>(p => p.GetRequiredDependency<ConnectionSettings>(), Binding.Unbound);
+            //configuration.Dependencies
+            //    .Register(p => p.GetRequiredDependency<ConnectionSettings>())
+            //    .DefineAs<IConnectionSettings>()
+            //    .AsTransient()
+            //    .DoNotBind();
         }
 
-        public static void SetTimeout(this IApiConfiguration apiConfiguration, int seconds)
+        public static void SetTimeout(this IApiConfiguration configuration, int seconds)
         {
             if (seconds <= 0)
             {
                 throw new ArgumentException("A timeout value must be greater than 0.");
             }
 
-            if (!apiConfiguration.Dependencies.HasDependency<ConnectionSettings>())
+            if (!configuration.Dependencies.HasDependency<ConnectionSettings>())
             {
                 throw new MethodAccessException("Source must be provided before this httpMethod is called.");
             }
 
-            apiConfiguration.Dependencies.Configure<ConnectionSettings>(connection =>
+            configuration.Dependencies.Configure<ConnectionSettings>(connection =>
             {
                 connection.Timeout = seconds;
             });
         }
 
-        public static void SetTimeout(this IApiConfiguration apiConfiguration, int seconds, int attempts)
+        public static void SetTimeout(this IApiConfiguration configuration, int seconds, int attempts)
         {
-            if (!apiConfiguration.Dependencies.HasDependency<ConnectionSettings>())
+            if (!configuration.Dependencies.HasDependency<ConnectionSettings>())
             {
                 throw new MethodAccessException("Source must be provided before this httpMethod is called.");
             }
 
-            apiConfiguration.Dependencies.Configure<ConnectionSettings>(connection =>
+            configuration.Dependencies.Configure<ConnectionSettings>(connection =>
             {
                 connection.Timeout = seconds;
                 connection.RetryAttempts = attempts;
             });
         }
 
-        public static void ThrowExceptions(this IApiConfiguration apiConfiguration)
+        public static void ThrowExceptions(this IApiConfiguration configuration)
         {
-            apiConfiguration.SetHandlerConfiguration(c =>
+            configuration.SetHandlerConfiguration(c =>
             {
                 c.SetThrowExceptions(true);
             });
         }
 
-        public static void UseFailedResponseHandler(this IApiConfiguration apiConfiguration, IFailedResponseHandler handler)
+        public static void UseFailedResponseHandler(this IApiConfiguration configuration, IFailedResponseHandler handler)
         {
             if (handler == null)
             {
                 throw new ArgumentNullException(nameof(handler));
             }
 
-            apiConfiguration.Dependencies.AddScoped(() => handler);
+            configuration.Dependencies
+                .Register(() => handler)
+                .AsScoped();
         }
 
-        public static void UseFailedResponseHandler(this IApiConfiguration apiConfiguration, Func<IDependencyProvider, IFailedResponseHandler> handlerBuilder)
+        public static void UseFailedResponseHandler(this IApiConfiguration configuration, Func<IDependencyProvider, IFailedResponseHandler> handlerBuilder)
         {
             if (handlerBuilder == null)
             {
                 throw new ArgumentNullException(nameof(handlerBuilder));
             }
 
-            apiConfiguration.Dependencies.AddScoped(handlerBuilder.Invoke);
+            configuration.Dependencies
+                .Register(handlerBuilder.Invoke)
+                .AsScoped();
         }
 
-        public static void UseLogger(this IApiConfiguration apiConfiguration, ILogger logger)
+        public static void UseLogger(this IApiConfiguration configuration, ILogger logger)
         {
             if (logger == null)
             {
                 throw new ArgumentNullException(nameof(logger));
             }
 
-            apiConfiguration.Dependencies.AddScoped(() => logger);
+            configuration.Dependencies
+                .Register(() => logger)
+                .AsScoped();
         }
 
-        public static void UseRequestHandler(this IApiConfiguration apiConfiguration, IRequestHandler handler)
+        public static void UseRequestHandler(this IApiConfiguration configuration, IRequestHandler handler)
         {
             if (handler == null)
             {
                 throw new ArgumentNullException(nameof(handler));
             }
 
-            apiConfiguration.Dependencies.AddScoped(() => handler);
+            configuration.Dependencies
+                .Register(() => handler)
+                .AsScoped();
         }
 
-        public static void UseRequestHandler(this IApiConfiguration apiConfiguration, Func<IDependencyProvider, IRequestHandler> handlerBuilder)
+        public static void UseRequestHandler(this IApiConfiguration configuration, Func<IDependencyProvider, IRequestHandler> handlerBuilder)
         {
             if (handlerBuilder == null)
             {
                 throw new ArgumentNullException(nameof(handlerBuilder));
             }
 
-            apiConfiguration.Dependencies.AddScoped(handlerBuilder.Invoke);
+            configuration.Dependencies
+                .Register(handlerBuilder.Invoke)
+                .AsScoped();
         }
 
-        public static void UseResponseHandler(this IApiConfiguration apiConfiguration, IResponseHandler handler)
+        public static void UseResponseHandler(this IApiConfiguration configuration, IResponseHandler handler)
         {
             if (handler == null)
             {
                 throw new ArgumentNullException(nameof(handler));
             }
 
-            apiConfiguration.Dependencies.AddScoped(() => handler);
+            configuration.Dependencies
+                .Register(() => handler)
+                .AsScoped();
         }
 
-        public static void UseResponseHandler(this IApiConfiguration apiConfiguration, Func<IDependencyProvider, IResponseHandler> handlerBuilder)
+        public static void UseResponseHandler(this IApiConfiguration configuration, Func<IDependencyProvider, IResponseHandler> handlerBuilder)
         {
             if (handlerBuilder == null)
             {
                 throw new ArgumentNullException(nameof(handlerBuilder));
             }
 
-            apiConfiguration.Dependencies.AddScoped(handlerBuilder.Invoke);
+            configuration.Dependencies
+                .Register(handlerBuilder.Invoke)
+                .AsScoped();
         }
 
         public static void UseSerializer(this IApiConfiguration apiConfiguration, ISerializer serializer)
@@ -303,7 +350,9 @@ namespace SereneApi.Core.Configuration
                 throw new ArgumentNullException(nameof(serializer));
             }
 
-            apiConfiguration.Dependencies.AddScoped(() => serializer);
+            apiConfiguration.Dependencies
+                .Register(() => serializer)
+                .AsScoped();
         }
     }
 }

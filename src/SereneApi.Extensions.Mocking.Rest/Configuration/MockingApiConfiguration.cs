@@ -18,7 +18,10 @@ namespace SereneApi.Core.Configuration
         /// <param name="enableOutgoing">Specifies if the Mocking Middleware will enable outgoing requests if a Mock response is not found.</param>
         public static void EnableMocking(this IApiConfiguration apiConfiguration, Action<IMockingConfiguration> configuration, bool enableOutgoing = false)
         {
-            apiConfiguration.Dependencies.TryAddScoped<IMockHandlerManager, MockHandlerManager>();
+            apiConfiguration.Dependencies
+                .Register<MockHandlerManager>()
+                .DefineAs<IMockHandlerManager>()
+                .AsScoped();
 
             apiConfiguration.Dependencies.Configure<IHandlerFactory>((p, f) =>
             {

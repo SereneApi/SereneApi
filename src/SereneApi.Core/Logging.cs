@@ -26,12 +26,12 @@
             /// <summary>
             /// DEBUG
             /// </summary>
-            public const string AuthorizationTokenCached = "Using Cached authorization token";
+            public const string AuthorizationTokenCached = "Using Cached authentication token";
 
             /// <summary>
             /// DEBUG
             /// </summary>
-            public const string AuthorizationTokenRenewal = "Renewing Cached authorization token";
+            public const string AuthorizationTokenRenewal = "Renewing Cached authentication token";
 
             /// <summary>
             /// ERROR - Params(Type)

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Logging;
 using SereneApi.Authentication.WebAssembly.Msal.Options;
 using SereneApi.Core.Http.Authentication;
-using SereneApi.Core.Http.Authorization;
 using SereneApi.Core.Http.Authorization.Types;
 using System;
 using System.Threading.Tasks;
@@ -16,7 +15,7 @@ namespace SereneApi.Authentication.WebAssembly.Msal
         private readonly ILogger _logger;
         private readonly NavigationManager _navigation;
         private readonly IAccessTokenProvider _provider;
-        private IAuthorization _cachedAuthorization;
+        private IAuthentication _cachedAuthentication;
         private AccessToken _lastToken;
 
         public MsalTokenAuthenticator(IAccessTokenProvider provider, NavigationManager navigation, IMsalAuthenticationOptions authenticationOptions = null, ILogger logger = null)
@@ -27,11 +26,11 @@ namespace SereneApi.Authentication.WebAssembly.Msal
             _logger = logger;
         }
 
-        public async Task<IAuthorization> AuthorizeAsync()
+        public async Task<IAuthentication> AuthorizeAsync()
         {
             if (_lastToken != null && DateTimeOffset.Now < _lastToken.Expires.AddMinutes(-5.0))
             {
-                return _cachedAuthorization;
+                return _cachedAuthentication;
             }
 
             AccessTokenResult accessTokenResult;
@@ -57,9 +56,9 @@ namespace SereneApi.Authentication.WebAssembly.Msal
             _logger.LogTrace("Retrieved Bearer token [{token}]", accessToken.Value);
 
             _lastToken = accessToken;
-            _cachedAuthorization = new BearerAuthorization(_lastToken.Value);
+            _cachedAuthentication = new BearerAuthentication(_lastToken.Value);
 
-            return _cachedAuthorization;
+            return _cachedAuthentication;
         }
 
         private AccessTokenRequestOptions BuildRequestOptions()

@@ -1,5 +1,4 @@
-﻿using SereneApi.Core.Http.Authorization;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SereneApi.Core.Http.Authentication
 {
@@ -11,6 +10,6 @@ namespace SereneApi.Core.Http.Authentication
         /// <summary>
         /// Authorizes a request asynchronously.
         /// </summary>
-        Task<IAuthorization> AuthorizeAsync();
+        Task<IAuthentication> AuthorizeAsync();
     }
 }

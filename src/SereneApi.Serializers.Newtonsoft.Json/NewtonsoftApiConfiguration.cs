@@ -1,5 +1,4 @@
-﻿using DeltaWare.Dependencies.Abstractions;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SereneApi.Core.Configuration;
 using SereneApi.Core.Serialization;
 using SereneApi.Serializers.Newtonsoft.Json.Serializers;
@@ -14,7 +13,9 @@ namespace SereneApi.Serializers.Newtonsoft.Json
         /// </summary>
         public static void UseNewtonsoftSerializer(this IApiConfiguration configuration)
         {
-            configuration.Dependencies.AddSingleton<ISerializer>(() => new NewtonsoftSerializer());
+            configuration.Dependencies.Register(() => new NewtonsoftSerializer())
+                .DefineAs<ISerializer>()
+                .AsSingleton();
         }
 
         /// <summary>
@@ -29,7 +30,9 @@ namespace SereneApi.Serializers.Newtonsoft.Json
                 throw new ArgumentNullException(nameof(settings));
             }
 
-            configuration.Dependencies.AddSingleton<ISerializer>(() => new NewtonsoftSerializer(settings));
+            configuration.Dependencies.Register(() => new NewtonsoftSerializer(settings))
+                .DefineAs<ISerializer>()
+                .AsSingleton();
         }
 
         /// <summary>

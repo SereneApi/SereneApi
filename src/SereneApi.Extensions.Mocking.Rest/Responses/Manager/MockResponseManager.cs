@@ -51,7 +51,7 @@ namespace SereneApi.Extensions.Mocking.Rest.Responses.Manager
         {
             if (mockResponse.Delay != null && (_timesDelayed < mockResponse.Delay.Repeats || mockResponse.Delay.Repeats == 0))
             {
-                _logger?.LogDebug("Delaying the Mock Response by {time} for request {requestUri}", mockResponse.Delay.Time.ToHumanReadableString(2), request.RequestUri);
+                _logger?.LogDebug("Delaying the Mock Response by {time} for request {requestUri}", mockResponse.Delay.Time.ToHumanReadableString(), request.RequestUri);
 
                 _timesDelayed++;
 

@@ -1,5 +1,4 @@
-﻿using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Core.Configuration;
+﻿using SereneApi.Core.Configuration;
 using SereneApi.Core.Configuration.Settings;
 using System;
 using System.Collections.Generic;
@@ -15,7 +14,7 @@ namespace SereneApi.Core.Handler.Factories
 
         public ApiFactory()
         {
-            _configurationManager = new ApiConfigurationManager(r => r.Dependencies.AddSingleton<IApiFactory>(() => this));
+            _configurationManager = new ApiConfigurationManager(r => r.Dependencies.Register(() => this).DefineAs<IApiFactory>().AsSingleton());
         }
 
         public TApi Build<TApi>() where TApi : class

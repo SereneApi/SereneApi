@@ -3,7 +3,7 @@
 namespace SereneApi.Core.Http.Authentication
 {
     /// <summary>
-    /// Specifies the token information, used for authorization and token refreshing.
+    /// Specifies the token information, used for authentication and token refreshing.
     /// </summary>
     public class TokenAuthResult
     {
@@ -15,11 +15,11 @@ namespace SereneApi.Core.Http.Authentication
         public int ExpiryTime { get; }
 
         /// <summary>
-        /// Specifies the token to be used for authorization.
+        /// Specifies the token to be used for authentication.
         /// </summary>
         public string Token { get; }
 
-        /// <param name="token">The token to be used for authorization.</param>
+        /// <param name="token">The token to be used for authentication.</param>
         /// <param name="expiryTime">The amount of time in seconds before the token expires.</param>
         /// <exception cref="ArgumentNullException">Thrown if a null value is provided.</exception>
         /// <remarks>An expiry time of 0 specifies that the token does not expire.</remarks>

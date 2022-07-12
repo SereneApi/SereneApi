@@ -16,8 +16,9 @@ namespace SereneApi.Extensions.Caching
 
             optionsAction?.Invoke(cacheOptionsBuilder);
 
-            configuration.Dependencies.AddSingleton(() => cacheOptionsBuilder.BuildOptions());
-            configuration.Dependencies.AddSingleton<Cache<Uri, ICachedResponse>>();
+            configuration.Dependencies.Register(() => cacheOptionsBuilder.BuildOptions()).AsSingleton();
+
+            configuration.Dependencies.Register<Cache<Uri, ICachedResponse>>().AsSingleton();
 
             configuration.Dependencies.Configure<IHandlerFactory>((p, f) =>
             {

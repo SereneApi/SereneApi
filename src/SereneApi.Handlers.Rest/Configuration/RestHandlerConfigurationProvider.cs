@@ -30,13 +30,29 @@ namespace SereneApi.Handlers.Rest.Configuration
                 serializer.Transformers.Add(new DateTimeTransformer());
             });
 
-            dependencies.AddTransient<IApiRequestFactory, RestRequestFactory>();
+            dependencies.Register<RestRequestFactory>()
+                .DefineAs<IApiRequestFactory>()
+                .AsTransient();
 
-            dependencies.AddScoped<IQuerySerializer, QuerySerializer>();
-            dependencies.AddScoped<ISerializer>(() => new JsonSerializer());
-            dependencies.AddScoped<IRouteFactory, RouteFactory>();
-            dependencies.AddScoped<IResponseHandler, ResponseHandler>();
-            dependencies.AddScoped<IFailedResponseHandler, FailedResponseHandler>();
+            dependencies.Register<QuerySerializer>()
+                .DefineAs<IQuerySerializer>()
+                .AsScoped();
+
+            dependencies.Register(() => new JsonSerializer())
+                .DefineAs<ISerializer>()
+                .AsScoped();
+
+            dependencies.Register<RouteFactory>()
+                .DefineAs<IRouteFactory>()
+                .AsScoped();
+
+            dependencies.Register<ResponseHandler>()
+                .DefineAs<IResponseHandler>()
+                .AsScoped();
+
+            dependencies.Register<FailedResponseHandler>()
+                .DefineAs<IFailedResponseHandler>()
+                .AsScoped();
         }
     }
 }

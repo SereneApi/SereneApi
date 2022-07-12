@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -97,20 +98,9 @@ namespace SereneApi.Core.Http.Requests.Handler
         {
             HttpRequestMessage requestMessage = new HttpRequestMessage(request.HttpMethod, request.Route);
 
-            foreach (var (key, value) in request.Headers)
+            if (request.Headers != null)
             {
-                if (value is IEnumerable<string> stringEnumerable)
-                {
-                    requestMessage.Headers.Add(key, stringEnumerable);
-                }
-                else if (value is IEnumerable<object> objectEnumerable)
-                {
-                    requestMessage.Headers.Add(key, objectEnumerable.Select(v => v.ToString()));
-                }
-                else
-                {
-                    requestMessage.Headers.Add(key, value.ToString());
-                }
+                BuildMessageHeaders(request.Headers, requestMessage.Headers);
             }
 
             if (request.Content == null)
@@ -168,6 +158,25 @@ namespace SereneApi.Core.Http.Requests.Handler
         protected virtual string GetRequestRoute(IApiRequest request)
         {
             return $"{_connection.BaseAddress}{request.Route}";
+        }
+
+        protected virtual void BuildMessageHeaders(IReadOnlyDictionary<string, object> headerValues, HttpRequestHeaders headers)
+        {
+            foreach (var (key, value) in headerValues)
+            {
+                if (value is IEnumerable<string> stringEnumerable)
+                {
+                    headers.Add(key, stringEnumerable);
+                }
+                else if (value is IEnumerable<object> objectEnumerable)
+                {
+                    headers.Add(key, objectEnumerable.Select(v => v.ToString()));
+                }
+                else
+                {
+                    headers.Add(key, value.ToString());
+                }
+            }
         }
     }
 }

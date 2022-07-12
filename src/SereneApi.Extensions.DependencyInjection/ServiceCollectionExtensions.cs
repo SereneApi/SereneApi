@@ -1,5 +1,4 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
-using DeltaWare.Dependencies.Abstractions.Enums;
 using Microsoft.Extensions.Logging;
 using SereneApi.Core.Configuration;
 using SereneApi.Core.Configuration.Provider;
@@ -112,7 +111,9 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 if (c.Dependencies.HasDependency<ILoggerFactory>())
                 {
-                    c.Dependencies.AddScoped<ILogger>(p => p.GetRequiredDependency<ILoggerFactory>().CreateLogger<TApiHandler>());
+                    c.Dependencies.Register(p => p.GetRequiredDependency<ILoggerFactory>().CreateLogger<TApiHandler>())
+                        .DefineAs<ILogger>()
+                        .AsScoped();
                 }
             });
 
@@ -155,7 +156,9 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 if (c.Dependencies.HasDependency<ILoggerFactory>())
                 {
-                    c.Dependencies.AddScoped<ILogger>(p => p.GetRequiredDependency<ILoggerFactory>().CreateLogger<TApiHandler>());
+                    c.Dependencies.Register(p => p.GetRequiredDependency<ILoggerFactory>().CreateLogger<TApiHandler>())
+                        .DefineAs<ILogger>()
+                        .AsScoped();
                 }
             });
 
@@ -185,12 +188,18 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 ConfigurationManagerInstance = new ApiConfigurationManager(f =>
                 {
-                    f.Dependencies.AddSingleton(() => services, Binding.Unbound);
-                    f.Dependencies.AddSingleton<IServiceProvider>(p => p.GetRequiredDependency<IServiceCollection>().BuildServiceProvider());
+                    f.Dependencies
+                        .Register(() => services)
+                        .AsSingleton()
+                        .DoNotBind();
+
+                    f.Dependencies.Register(p => p.GetRequiredDependency<IServiceCollection>().BuildServiceProvider())
+                        .DefineAs<IServiceProvider>()
+                        .AsSingleton();
 
                     if (services.Any(x => x.ServiceType == typeof(ILoggerFactory)))
                     {
-                        f.Dependencies.AddSingleton(p => p.GetRequiredDependency<IServiceProvider>().GetRequiredService<ILoggerFactory>());
+                        f.Dependencies.Register(p => p.GetRequiredDependency<IServiceProvider>().GetRequiredService<ILoggerFactory>()).AsSingleton();
                     }
                 });
 
