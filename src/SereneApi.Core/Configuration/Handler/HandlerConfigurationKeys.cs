@@ -1,4 +1,4 @@
-﻿namespace SereneApi.Core.Configuration
+﻿namespace SereneApi.Core.Configuration.Handler
 {
     public static class HandlerConfigurationKeys
     {

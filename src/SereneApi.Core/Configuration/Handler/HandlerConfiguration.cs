@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SereneApi.Core.Configuration
+namespace SereneApi.Core.Configuration.Handler
 {
     public sealed class HandlerConfiguration : IHandlerConfiguration
     {

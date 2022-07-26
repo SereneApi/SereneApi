@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SereneApi.Core.Configuration
+namespace SereneApi.Core.Configuration.Handler
 {
     public static class HandlerConfigurationExtensions
     {

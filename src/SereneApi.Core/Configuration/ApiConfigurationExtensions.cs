@@ -1,5 +1,6 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.Logging;
+using SereneApi.Core.Configuration.Handler;
 using SereneApi.Core.Helpers;
 using SereneApi.Core.Http;
 using SereneApi.Core.Http.Authentication;
@@ -137,15 +138,8 @@ namespace SereneApi.Core.Configuration
 
                     return connection;
                 })
-                //.DefineAs<ConnectionSettings>()
                 .DefineAs<IConnectionSettings>()
                 .AsSingleton();
-
-            //configuration.Dependencies
-            //    .Register(p => p.GetRequiredDependency<ConnectionSettings>())
-            //    .DefineAs<IConnectionSettings>()
-            //    .AsTransient()
-            //    .DoNotBind();
         }
 
         public static void AddCredentials(this IApiConfiguration configuration, ICredentials credentials)
@@ -160,26 +154,26 @@ namespace SereneApi.Core.Configuration
 
         public static void SetHandlerConfiguration(this IApiConfiguration configuration, Action<HandlerConfiguration> configurationAction)
         {
-            configuration.Dependencies.Configure(configurationAction);
-        }
-
-        public static void SetRetryAttempts(this IApiConfiguration configuration, int attemptCount)
-        {
-            if (attemptCount < 0)
-            {
-                throw new ArgumentException("Retry attempts must be greater or equal to 0.");
-            }
-
-            if (!configuration.Dependencies.HasDependency<ConnectionSettings>())
+            if (!configuration.Dependencies.HasDependency<HandlerConfiguration>())
             {
                 throw new MethodAccessException("Source must be provided before this httpMethod is called.");
             }
 
-            configuration.Dependencies.Configure<ConnectionSettings>(connection =>
-            {
-                Rules.ValidateRetryAttempts(attemptCount);
+            configuration.Dependencies.Configure(configurationAction);
+        }
 
-                connection.RetryAttempts = attemptCount;
+        public static void SetRetryAttempts(this IApiConfiguration configuration, int attempts)
+        {
+            if (attempts < 0)
+            {
+                throw new ArgumentException("Retry attempts must be greater or equal to 0.");
+            }
+
+            configuration.SetHandlerConfiguration(config =>
+            {
+                Rules.ValidateRetryAttempts(attempts);
+
+                config.SetRetryAttempts(attempts);
             });
         }
 
@@ -211,12 +205,6 @@ namespace SereneApi.Core.Configuration
                 })
                 .DefineAs<IConnectionSettings>()
                 .AsSingleton();
-
-            //configuration.Dependencies
-            //    .Register(p => p.GetRequiredDependency<ConnectionSettings>())
-            //    .DefineAs<IConnectionSettings>()
-            //    .AsTransient()
-            //    .DoNotBind();
         }
 
         public static void SetTimeout(this IApiConfiguration configuration, int seconds)
@@ -226,28 +214,25 @@ namespace SereneApi.Core.Configuration
                 throw new ArgumentException("A timeout value must be greater than 0.");
             }
 
-            if (!configuration.Dependencies.HasDependency<ConnectionSettings>())
+            configuration.SetHandlerConfiguration(config =>
             {
-                throw new MethodAccessException("Source must be provided before this httpMethod is called.");
-            }
-
-            configuration.Dependencies.Configure<ConnectionSettings>(connection =>
-            {
-                connection.Timeout = seconds;
+                config.SetTimeout(seconds);
             });
         }
 
         public static void SetTimeout(this IApiConfiguration configuration, int seconds, int attempts)
         {
-            if (!configuration.Dependencies.HasDependency<ConnectionSettings>())
+            if (seconds <= 0)
             {
-                throw new MethodAccessException("Source must be provided before this httpMethod is called.");
+                throw new ArgumentException("A timeout value must be greater than 0.");
             }
 
-            configuration.Dependencies.Configure<ConnectionSettings>(connection =>
+            Rules.ValidateRetryAttempts(attempts);
+
+            configuration.SetHandlerConfiguration(connection =>
             {
-                connection.Timeout = seconds;
-                connection.RetryAttempts = attempts;
+                connection.SetTimeout(seconds);
+                connection.SetRetryAttempts(attempts);
             });
         }
 

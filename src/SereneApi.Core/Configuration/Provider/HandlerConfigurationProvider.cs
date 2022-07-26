@@ -1,5 +1,6 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
 using DeltaWare.SDK.Serialization.Types;
+using SereneApi.Core.Configuration.Handler;
 using SereneApi.Core.Events;
 using SereneApi.Core.Http.Client;
 using SereneApi.Core.Http.Client.Handler;

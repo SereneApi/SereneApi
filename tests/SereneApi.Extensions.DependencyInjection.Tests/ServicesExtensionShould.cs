@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SereneApi.Core.Configuration;
-using SereneApi.Core.Http;
 using SereneApi.Handlers.Rest.Configuration;
 using Shouldly;
 using System;
@@ -103,11 +102,8 @@ namespace SereneApi.Extensions.DependencyInjection.Tests
 
             serviceCollection.AmendConfigurationProvider<RestHandlerConfigurationProvider>(r =>
             {
-                r.Dependencies.Configure<ConnectionSettings>(c =>
-                {
-                    c.Timeout = 60;
-                    c.RetryAttempts = 2;
-                });
+                r.SetTimeout(60);
+                r.SetRetryAttempts(2);
             });
 
             serviceCollection.RegisterApi<ITestApi, TestApiHandler>(b =>

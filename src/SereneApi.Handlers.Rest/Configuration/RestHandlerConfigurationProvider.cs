@@ -1,6 +1,6 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
 using DeltaWare.SDK.Serialization.Types;
-using SereneApi.Core.Configuration;
+using SereneApi.Core.Configuration.Handler;
 using SereneApi.Core.Configuration.Provider;
 using SereneApi.Core.Http.Content;
 using SereneApi.Core.Http.Responses.Handlers;
@@ -21,6 +21,7 @@ namespace SereneApi.Handlers.Rest.Configuration
             {
                 c.SetContentType(ContentType.Json);
                 c.SetResourcePath("api");
+                c.SetRouteTemplate("[/{ResourcePath?}][/{Resource?}][/{Version?}][/{Endpoint?}]{Query?}");
             });
 
             dependencies.Configure<IObjectSerializer>(s =>

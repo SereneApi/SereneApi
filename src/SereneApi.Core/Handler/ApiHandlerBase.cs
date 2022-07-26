@@ -1,6 +1,6 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.Logging;
-using SereneApi.Core.Configuration;
+using SereneApi.Core.Configuration.Handler;
 using SereneApi.Core.Configuration.Settings;
 using SereneApi.Core.Http;
 using SereneApi.Core.Http.Requests;
