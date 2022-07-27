@@ -1,4 +1,4 @@
-﻿using DeltaWare.SDK.Core.Serialization;
+﻿using DeltaWare.SDK.Serialization.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -6,11 +6,16 @@ using SereneApi.Core.Configuration.Provider;
 using SereneApi.Core.Configuration.Settings;
 using SereneApi.Core.Handler;
 using SereneApi.Core.Http;
+using SereneApi.Core.Http.Requests;
+using SereneApi.Core.Http.Requests.Options;
+using SereneApi.Core.Http.Responses;
 using SereneApi.Core.Serialization;
 using SereneApi.Serializers.Newtonsoft.Json;
 using SereneApi.Serializers.Newtonsoft.Json.Serializers;
 using Shouldly;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace SereneApi.Serialization.Newtonsoft.Json.Tests
@@ -140,6 +145,17 @@ namespace SereneApi.Serialization.Newtonsoft.Json.Tests
         public class TestHandler : IApiHandler
         {
             public IConnectionSettings Connection => throw new NotImplementedException();
+            public IApiSettings Settings => throw new NotImplementedException();
+
+            public Task<IApiResponse> PerformRequestAsync(IApiRequest request, IApiRequestOptions options, CancellationToken cancellationToken = default)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task<IApiResponse<TResponse>> PerformRequestAsync<TResponse>(IApiRequest request, IApiRequestOptions options, CancellationToken cancellationToken = default)
+            {
+                throw new NotImplementedException();
+            }
 
             public void Dispose()
             {

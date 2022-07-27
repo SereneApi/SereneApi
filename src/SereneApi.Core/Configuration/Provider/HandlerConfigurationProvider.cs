@@ -1,5 +1,6 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
-using DeltaWare.SDK.Core.Serialization;
+using DeltaWare.SDK.Serialization.Types;
+using SereneApi.Core.Configuration.Handler;
 using SereneApi.Core.Events;
 using SereneApi.Core.Http.Client;
 using SereneApi.Core.Http.Client.Handler;
@@ -21,7 +22,9 @@ namespace SereneApi.Core.Configuration.Provider
 
         internal void InternalConfigure(IDependencyCollection dependencies)
         {
-            dependencies.AddSingleton<HandlerConfiguration>();
+            dependencies
+                .Register<HandlerConfiguration>()
+                .AsSingleton();
 
             dependencies.Configure<HandlerConfiguration>(c =>
             {
@@ -32,15 +35,32 @@ namespace SereneApi.Core.Configuration.Provider
                 c.SetThrowOnFailure(false);
             });
 
-            dependencies.AddSingleton<IEventManager, EventManager>();
+            dependencies.Register<EventManager>()
+                .DefineAs<IEventManager>()
+                .AsSingleton();
 
-            dependencies.AddSingleton(() => CredentialCache.DefaultCredentials);
-            dependencies.AddSingleton<IClientFactory, ClientFactory>();
-            dependencies.AddSingleton<IHandlerFactory, HandlerFactory>();
-            dependencies.AddSingleton<IHandlerBuilder>(p => (HandlerFactory)p.GetRequiredDependency<IHandlerFactory>());
-            dependencies.AddSingleton<IObjectSerializer>(() => new ObjectSerializer());
+            dependencies.Register<ClientFactory>()
+                .DefineAs<IClientFactory>()
+                .AsSingleton();
 
-            dependencies.AddScoped<IRequestHandler, RetryingRequestHandler>();
+            dependencies.Register<HandlerFactory>()
+                .DefineAs<IHandlerFactory>()
+                .AsSingleton();
+
+            dependencies.Register(() => CredentialCache.DefaultCredentials)
+                .AsSingleton();
+
+            dependencies.Register(p => (HandlerFactory)p.GetRequiredDependency<IHandlerFactory>())
+                .DefineAs<IHandlerBuilder>()
+                .AsSingleton();
+
+            dependencies.Register(() => new ObjectSerializer())
+                .DefineAs<IObjectSerializer>()
+                .AsSingleton();
+
+            dependencies.Register<RetryingRequestHandler>()
+                .DefineAs<IRequestHandler>()
+                .AsScoped();
 
             foreach (Action<IDependencyCollection> configurationExtension in _configurationExtensions)
             {

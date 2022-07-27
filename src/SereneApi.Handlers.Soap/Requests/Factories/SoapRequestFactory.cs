@@ -1,6 +1,5 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
-using DeltaWare.SDK.Core.Serialization;
-using SereneApi.Core.Requests;
+using DeltaWare.SDK.Serialization.Types;
 using SereneApi.Core.Versioning;
 using SereneApi.Handlers.Soap.Envelopment;
 using SereneApi.Handlers.Soap.Models;
@@ -9,6 +8,7 @@ using SereneApi.Handlers.Soap.Routing;
 using SereneApi.Handlers.Soap.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 
 namespace SereneApi.Handlers.Soap.Requests.Factories
 {
@@ -23,7 +23,7 @@ namespace SereneApi.Handlers.Soap.Requests.Factories
         {
             _apiHandler = apiHandler;
             _apiRequest = SoapApiRequest.Create(apiHandler.Connection);
-            _apiRequest.Method = Method.Post;
+            _apiRequest.HttpMethod = HttpMethod.Post;
 
             _dependencies = apiHandler.Settings.Dependencies;
         }
@@ -93,7 +93,7 @@ namespace SereneApi.Handlers.Soap.Requests.Factories
         {
             IEnvelopmentService envelopment = _dependencies.GetRequiredDependency<IEnvelopmentService>();
 
-            _apiRequest.Content = envelopment.Envelop(parameters, _service, "ser", "http://services.acuritywebservices.finsyn.com.au/");
+            _apiRequest.Content = envelopment.Envelop(parameters, _service);
 
             return this;
         }

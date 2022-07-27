@@ -1,6 +1,6 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
-using DeltaWare.SDK.Core.Serialization;
-using DeltaWare.SDK.Core.Serialization.Attributes;
+using DeltaWare.SDK.Serialization.Types;
+using DeltaWare.SDK.Serialization.Types.Attributes;
 using Microsoft.Extensions.Logging;
 using SereneApi.Core.Http.Content.Types;
 using SereneApi.Core.Serialization;

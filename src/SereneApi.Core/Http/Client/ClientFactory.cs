@@ -1,8 +1,7 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
 using Microsoft.Extensions.Logging;
-using SereneApi.Core.Configuration;
+using SereneApi.Core.Configuration.Handler;
 using SereneApi.Core.Http.Authentication;
-using SereneApi.Core.Http.Authorization;
 using SereneApi.Core.Http.Client.Handler;
 using SereneApi.Core.Http.Content;
 using System;
@@ -18,7 +17,7 @@ namespace SereneApi.Core.Http.Client
         protected virtual bool DisposeClient => true;
         protected IHandlerBuilder HandlerBuilder { get; }
         protected HandlerConfiguration HandlerConfiguration { get; }
-        protected IDependencyScope Scope { get; }
+        protected ILifetimeScope Scope { get; }
 
         /// <summary>
         /// Creates a new instance of <see cref="ClientFactory"/>.
@@ -27,7 +26,7 @@ namespace SereneApi.Core.Http.Client
         /// The scope the <see cref="ClientFactory"/> may use when creating clients.
         /// </param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public ClientFactory(IDependencyScope scope, IHandlerBuilder handlerBuilder, HandlerConfiguration handlerConfiguration)
+        public ClientFactory(ILifetimeScope scope, IHandlerBuilder handlerBuilder, HandlerConfiguration handlerConfiguration)
         {
             Scope = scope ?? throw new ArgumentNullException(nameof(scope));
 
@@ -75,13 +74,13 @@ namespace SereneApi.Core.Http.Client
             {
                 logger?.LogDebug("Authorizing request.");
 
-                IAuthorization authorization;
+                IAuthentication authentication;
 
                 try
                 {
-                    authorization = await authenticator.AuthorizeAsync();
+                    authentication = await authenticator.AuthorizeAsync();
 
-                    logger?.LogDebug("{scheme} Authorization successful.", authorization.Scheme);
+                    logger?.LogDebug("{scheme} Authorization successful.", authentication.Scheme);
                 }
                 catch (Exception e)
                 {
@@ -90,9 +89,9 @@ namespace SereneApi.Core.Http.Client
                     throw;
                 }
 
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(authorization.Scheme, authorization.Parameter);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);
             }
-            else if (dependencies.TryGetDependency(out IAuthorization authentication))
+            else if (dependencies.TryGetDependency(out IAuthentication authentication))
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);
             }

@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
 using SereneApi.Authentication.Web.Msal.Options;
 using SereneApi.Core.Http.Authentication;
-using SereneApi.Core.Http.Authorization;
 using SereneApi.Core.Http.Authorization.Types;
 using System;
 using System.Security.Authentication;
@@ -26,7 +25,7 @@ namespace SereneApi.Authentication.Web.Msal
             _logger = logger;
         }
 
-        public async Task<IAuthorization> AuthorizeAsync()
+        public async Task<IAuthentication> AuthorizeAsync()
         {
             string token;
 
@@ -49,7 +48,7 @@ namespace SereneApi.Authentication.Web.Msal
 
             _logger.LogTrace("Retrieved Bearer token [{token}]", token);
 
-            return new BearerAuthorization(token);
+            return new BearerAuthentication(token);
         }
 
         private bool IsUserAuthenticated()

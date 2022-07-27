@@ -1,17 +1,17 @@
-﻿namespace SereneApi.Core.Http.Authorization
+﻿namespace SereneApi.Core.Http.Authentication
 {
     /// <summary>
     /// Authorizes an API request.
     /// </summary>
-    public interface IAuthorization
+    public interface IAuthentication
     {
         /// <summary>
-        /// Specifies the authorization parameter.
+        /// Specifies the authentication parameter.
         /// </summary>
         string Parameter { get; }
 
         /// <summary>
-        /// Specifies the authorization scheme.
+        /// Specifies the authentication scheme.
         /// </summary>
         string Scheme { get; }
     }

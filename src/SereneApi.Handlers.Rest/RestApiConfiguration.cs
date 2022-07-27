@@ -1,5 +1,4 @@
-﻿using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Handlers.Rest.Routing;
+﻿using SereneApi.Handlers.Rest.Routing;
 using System;
 
 // ReSharper disable once CheckNamespace
@@ -14,12 +13,16 @@ namespace SereneApi.Core.Configuration
                 throw new ArgumentNullException(nameof(routeFactory));
             }
 
-            configuration.Dependencies.AddScoped(() => routeFactory);
+            configuration.Dependencies
+                .Register(() => routeFactory)
+                .AsScoped();
         }
 
         public static void UseRouteFactory<TRouteFactory>(this IApiConfiguration configuration) where TRouteFactory : IRouteFactory
         {
-            configuration.Dependencies.AddScoped<IRouteFactory, TRouteFactory>();
+            configuration.Dependencies.Register<TRouteFactory>()
+                .DefineAs<IRouteFactory>()
+                .AsScoped();
         }
     }
 }

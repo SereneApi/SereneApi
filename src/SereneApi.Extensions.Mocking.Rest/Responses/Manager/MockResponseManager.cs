@@ -51,7 +51,7 @@ namespace SereneApi.Extensions.Mocking.Rest.Responses.Manager
         {
             if (mockResponse.Delay != null && (_timesDelayed < mockResponse.Delay.Repeats || mockResponse.Delay.Repeats == 0))
             {
-                _logger?.LogDebug("Delaying the Mock Response by {time} for request {requestUri}", mockResponse.Delay.Time.ToHumanReadableString(2), request.RequestUri);
+                _logger?.LogDebug("Delaying the Mock Response by {time} for request {requestUri}", mockResponse.Delay.Time.ToHumanReadableString(), request.RequestUri);
 
                 _timesDelayed++;
 
@@ -132,7 +132,7 @@ namespace SereneApi.Extensions.Mocking.Rest.Responses.Manager
 
                 if (mockRequest.Methods is { Length: > 0 })
                 {
-                    if (mockRequest.Methods.Contains(request.Method.ToMethod()))
+                    if (mockRequest.Methods.Contains(request.Method))
                     {
                         weight++;
                     }
@@ -208,7 +208,7 @@ namespace SereneApi.Extensions.Mocking.Rest.Responses.Manager
                     }
                     catch (Exception ex)
                     {
-                        _logger?.LogError(ex, "An exception was encountered whilst invoking {handler}.{method} for request {requestUri}", mockHandler.HandlerType.Name, mockHandler.Method.Name, request.RequestUri.ToString());
+                        _logger?.LogError(ex, "An exception was encountered whilst invoking {handler}.{httpMethod} for request {requestUri}", mockHandler.HandlerType.Name, mockHandler.Method.Name, request.RequestUri.ToString());
                     }
                 }
 

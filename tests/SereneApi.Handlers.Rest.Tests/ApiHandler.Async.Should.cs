@@ -2,7 +2,6 @@
 using SereneApi.Core.Handler.Factories;
 using SereneApi.Core.Http.Responses;
 using SereneApi.Core.Http.Responses.Types;
-using SereneApi.Core.Requests;
 using SereneApi.Handlers.Rest.Configuration;
 using SereneApi.Handlers.Rest.Tests.Interfaces;
 using SereneApi.Handlers.Rest.Tests.Mock;
@@ -10,6 +9,7 @@ using SereneApi.Handlers.Rest.Tests.Mocking;
 using Shouldly;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
@@ -39,7 +39,7 @@ namespace SereneApi.Handlers.Rest.Tests
                 o.EnableMocking(mocking =>
                 {
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .ForEndpoints(fullSource)
                         .RespondsWith(MockPersonDto.All);
                 });
@@ -52,7 +52,7 @@ namespace SereneApi.Handlers.Rest.Tests
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
             IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .RespondsWith<MockPersonDto>()
                 .ExecuteAsync());
 
@@ -89,7 +89,7 @@ namespace SereneApi.Handlers.Rest.Tests
                 o.EnableMocking(mocking =>
                 {
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .ForEndpoints(fullSource)
                         .RespondsWith(MockPersonDto.All);
                 });
@@ -102,7 +102,7 @@ namespace SereneApi.Handlers.Rest.Tests
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
             await Should.ThrowAsync<Exception>(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .RespondsWith<MockPersonDto>()
                 .ExecuteAsync(o => o.ThrowExceptions()));
 
@@ -143,7 +143,7 @@ namespace SereneApi.Handlers.Rest.Tests
                 c.EnableMocking(mocking =>
                 {
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .ForEndpoints(finalSource)
                         .RespondsWith(Status.Ok);
                 });
@@ -156,7 +156,7 @@ namespace SereneApi.Handlers.Rest.Tests
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
             IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .ExecuteAsync());
 
             #endregion Act
@@ -198,7 +198,7 @@ namespace SereneApi.Handlers.Rest.Tests
                 c.EnableMocking(mocking =>
                 {
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .ForEndpoints(finalSource)
                         .RespondsWith(MockPersonDto.JohnSmith);
                 });
@@ -211,7 +211,7 @@ namespace SereneApi.Handlers.Rest.Tests
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
             IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .RespondsWith<MockPersonDto>()
                 .ExecuteAsync());
 
@@ -260,7 +260,7 @@ namespace SereneApi.Handlers.Rest.Tests
                 c.EnableMocking(mocking =>
                 {
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .ForEndpoints(finalSource)
                         .RespondsWith(MockPersonDto.JohnSmith);
                 });
@@ -273,7 +273,7 @@ namespace SereneApi.Handlers.Rest.Tests
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
             MockPersonDto person = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .RespondsWith<MockPersonDto>()
                 .ExecuteAsync()
                 .GetDataAsync());
@@ -315,7 +315,7 @@ namespace SereneApi.Handlers.Rest.Tests
                 c.EnableMocking(mocking =>
                 {
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .ForEndpoints(finalSource)
                         .RespondsWith(MockPersonDto.JohnSmith);
                 });
@@ -328,7 +328,7 @@ namespace SereneApi.Handlers.Rest.Tests
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
             Status status = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .RespondsWith<MockPersonDto>()
                 .ExecuteAsync()
                 .GetStatusAsync());
@@ -372,16 +372,16 @@ namespace SereneApi.Handlers.Rest.Tests
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
             IApiResponse<List<MockPersonDto>> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .AgainstEndpoint("ByAge/{0}")
                 .WithParameter(18)
                 .RespondsWith<List<MockPersonDto>>()
                 .ExecuteAsync());
 
             IApiResponse createPerson = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Post)
+                .UsingMethod(HttpMethod.Post)
                 .AgainstEndpoint("Create")
-                .AddInBodyContent(new MockPersonDto
+                .WithInBodyContent(new MockPersonDto
                 {
                     Age = 15,
                     BirthDate = new DateTime(2000, 01, 01),
@@ -429,7 +429,7 @@ namespace SereneApi.Handlers.Rest.Tests
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
             IApiResponse<List<MockPersonDto>> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .RespondsWith<List<MockPersonDto>>()
                 .ExecuteAsync());
 
@@ -468,7 +468,7 @@ namespace SereneApi.Handlers.Rest.Tests
                 c.EnableMocking(mocking =>
                 {
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .ForEndpoints(finalSource)
                         .RespondsWith(Status.Ok)
                         .IsDelayed(timeoutSeconds + 2, retryCount - 1);
@@ -481,7 +481,7 @@ namespace SereneApi.Handlers.Rest.Tests
 
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
-            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest.UsingMethod(Method.Get).ExecuteAsync());
+            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest.UsingMethod(HttpMethod.Get).ExecuteAsync());
 
             #endregion Act
 
@@ -524,7 +524,7 @@ namespace SereneApi.Handlers.Rest.Tests
                 c.EnableMocking(mocking =>
                 {
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .ForEndpoints(finalSource)
                         .RespondsWith(MockPersonDto.JohnSmith)
                         .IsDelayed(timeoutSeconds + 2, retryCount - 1);
@@ -538,7 +538,7 @@ namespace SereneApi.Handlers.Rest.Tests
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
             IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .RespondsWith<MockPersonDto>()
                 .ExecuteAsync());
 
@@ -594,7 +594,7 @@ namespace SereneApi.Handlers.Rest.Tests
                 c.EnableMocking(mocking =>
                 {
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .ForEndpoints(finalSource)
                         .RespondsWith(Status.Ok)
                         .IsDelayed(timeoutSeconds + 2, retryCount);
@@ -608,7 +608,7 @@ namespace SereneApi.Handlers.Rest.Tests
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
             IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .ExecuteAsync());
 
             #endregion Act
@@ -656,7 +656,7 @@ namespace SereneApi.Handlers.Rest.Tests
                 c.EnableMocking(mocking =>
                 {
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .ForEndpoints(finalSource)
                         .RespondsWith(Status.Ok)
                         .IsDelayed(timeoutSeconds + 2, retryCount);
@@ -670,7 +670,7 @@ namespace SereneApi.Handlers.Rest.Tests
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
             IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .RespondsWith<MockPersonDto>()
                 .ExecuteAsync());
 
@@ -719,7 +719,7 @@ namespace SereneApi.Handlers.Rest.Tests
                 c.EnableMocking(mocking =>
                 {
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .ForEndpoints(finalSource)
                         .RespondsWith(new FailureResponse(message), status);
                 });
@@ -732,7 +732,7 @@ namespace SereneApi.Handlers.Rest.Tests
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
             IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .ExecuteAsync());
 
             #endregion Act
@@ -777,7 +777,7 @@ namespace SereneApi.Handlers.Rest.Tests
                 c.EnableMocking(mocking =>
                 {
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .ForEndpoints(finalSource)
                         .RespondsWith(new FailureResponse(message), status);
                 });
@@ -790,7 +790,7 @@ namespace SereneApi.Handlers.Rest.Tests
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
             IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .RespondsWith<MockPersonDto>()
                 .ExecuteAsync());
 
@@ -837,7 +837,7 @@ namespace SereneApi.Handlers.Rest.Tests
                 c.EnableMocking(mocking =>
                 {
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .ForEndpoints(finalSource)
                         .RespondsWith(new FailureResponse(message), status)
                         .IsDelayed(timeoutSeconds + 2, retryCount - 1);
@@ -851,7 +851,7 @@ namespace SereneApi.Handlers.Rest.Tests
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
             IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .ExecuteAsync());
 
             #endregion Act
@@ -898,7 +898,7 @@ namespace SereneApi.Handlers.Rest.Tests
                 c.EnableMocking(mocking =>
                 {
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .ForEndpoints(finalSource)
                         .RespondsWith(new FailureResponse(message), status)
                         .IsDelayed(timeoutSeconds + 2, retryCount - 1);
@@ -912,7 +912,7 @@ namespace SereneApi.Handlers.Rest.Tests
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
             IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .RespondsWith<MockPersonDto>()
                 .ExecuteAsync());
 
@@ -963,7 +963,7 @@ namespace SereneApi.Handlers.Rest.Tests
                 c.EnableMocking(mocking =>
                 {
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .ForEndpoints(fullSource)
                         .RespondsWith(MockPersonDto.JohnSmith);
                 });
@@ -976,7 +976,7 @@ namespace SereneApi.Handlers.Rest.Tests
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
             IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .AgainstResource(resource)
                 .RespondsWith<MockPersonDto>()
                 .ExecuteAsync());
@@ -1027,7 +1027,7 @@ namespace SereneApi.Handlers.Rest.Tests
                 c.EnableMocking(mocking =>
                 {
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .ForEndpoints(fullSource)
                         .RespondsWith(Status.Ok);
                 });
@@ -1040,7 +1040,7 @@ namespace SereneApi.Handlers.Rest.Tests
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
             IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .AgainstResource(resource)
                 .ExecuteAsync());
 
@@ -1084,7 +1084,7 @@ namespace SereneApi.Handlers.Rest.Tests
                 c.EnableMocking(mocking =>
                 {
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .ForEndpoints(fullSource)
                         .RespondsWith(Status.Ok);
                 });
@@ -1097,7 +1097,7 @@ namespace SereneApi.Handlers.Rest.Tests
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
             Status status = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .AgainstResource(resource)
                 .ExecuteAsync()
                 .GetStatusAsync());
@@ -1142,7 +1142,7 @@ namespace SereneApi.Handlers.Rest.Tests
                 c.EnableMocking(mocking =>
                 {
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .ForEndpoints(fullSource)
                         .RespondsWith(Status.Ok);
                 });
@@ -1155,7 +1155,7 @@ namespace SereneApi.Handlers.Rest.Tests
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
             IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .AgainstEndpoint(endpoint)
                 .ExecuteAsync());
 
@@ -1199,7 +1199,7 @@ namespace SereneApi.Handlers.Rest.Tests
                 c.EnableMocking(mocking =>
                 {
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .ForEndpoints(fullSource)
                         .RespondsWith(MockPersonDto.JohnSmith);
                 });
@@ -1212,7 +1212,7 @@ namespace SereneApi.Handlers.Rest.Tests
             using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
 
             IApiResponse<MockPersonDto> response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .AgainstEndpoint(endpoint)
                 .RespondsWith<MockPersonDto>()
                 .ExecuteAsync());

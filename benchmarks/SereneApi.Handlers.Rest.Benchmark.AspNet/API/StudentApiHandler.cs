@@ -1,6 +1,6 @@
 ﻿using SereneApi.Core.Configuration.Settings;
 using SereneApi.Core.Http.Responses;
-using SereneApi.Core.Requests;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SereneApi.Handlers.Rest.Benchmark.AspNet.API
@@ -14,7 +14,7 @@ namespace SereneApi.Handlers.Rest.Benchmark.AspNet.API
         public Task<IApiResponse<StudentDto>> GetStudents()
         {
             return MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .RespondsWith<StudentDto>()
                 .ExecuteAsync();
         }

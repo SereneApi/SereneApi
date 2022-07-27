@@ -42,7 +42,7 @@ namespace SereneApi.Extensions.Caching.Types
         }
 
         /// <summary>
-        /// Override this method to implement <see cref="CachedItem{TValue}"/> disposal.
+        /// Override this httpMethod to implement <see cref="CachedItem{TValue}"/> disposal.
         /// </summary>
         protected virtual void Dispose(bool disposing)
         {

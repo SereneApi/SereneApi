@@ -1,27 +1,28 @@
-﻿using System;
+﻿using SereneApi.Core.Http.Authentication;
+using System;
 using System.Text;
 
 namespace SereneApi.Core.Http.Authorization.Types
 {
     /// <summary>
-    /// Authorizes an API request using Basic authorization with the specified Username and Password.
+    /// Authorizes an API request using Basic authentication with the specified Username and Password.
     /// </summary>
-    public class BasicAuthorization : IAuthorization
+    public class BasicAuthentication : IAuthentication
     {
-        /// <inheritdoc cref="IAuthorization.Parameter"/>
+        /// <inheritdoc cref="IAuthentication.Parameter"/>
         public string Parameter { get; }
 
-        /// <inheritdoc cref="IAuthorization.Scheme"/>
+        /// <inheritdoc cref="IAuthentication.Scheme"/>
         public string Scheme { get; } = "Basic";
 
         /// <summary>
-        /// Creates a new instance of <see cref="BasicAuthorization"/>.
+        /// Creates a new instance of <see cref="BasicAuthentication"/>.
         /// </summary>
         /// <param name="username">The username to be authorized with.</param>
         /// <param name="password">The password to be authorized with.</param>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         /// <exception cref="EncoderFallbackException"></exception>
-        public BasicAuthorization(string username, string password)
+        public BasicAuthentication(string username, string password)
         {
             if (string.IsNullOrWhiteSpace(username))
             {

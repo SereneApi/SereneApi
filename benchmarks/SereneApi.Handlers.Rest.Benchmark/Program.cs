@@ -1,11 +1,11 @@
 ﻿using SereneApi.Core.Configuration;
 using SereneApi.Core.Handler.Factories;
 using SereneApi.Core.Http.Responses;
-using SereneApi.Core.Requests;
 using SereneApi.Handlers.Rest.Benchmark.API;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net.Http;
 
 namespace SereneApi.Handlers.Rest.Benchmark
 {
@@ -25,7 +25,7 @@ namespace SereneApi.Handlers.Rest.Benchmark
                 e.EnableMocking(c =>
                 {
                     c.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .RespondsWith(new List<StudentDto>
                             {
                                 new StudentDto

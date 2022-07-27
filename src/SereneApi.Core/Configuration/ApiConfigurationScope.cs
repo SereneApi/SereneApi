@@ -14,9 +14,9 @@ namespace SereneApi.Core.Configuration
         /// <summary>
         /// The current handlerConfiguration scope.
         /// </summary>
-        internal IDependencyScope Scope { get; }
+        internal ILifetimeScope Scope { get; }
 
-        public ApiConfigurationScope(IDependencyScope scope)
+        public ApiConfigurationScope(ILifetimeScope scope)
         {
             Scope = scope ?? throw new ArgumentNullException(nameof(scope));
         }

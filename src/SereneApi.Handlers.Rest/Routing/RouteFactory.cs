@@ -1,4 +1,6 @@
-﻿using SereneApi.Handlers.Rest.Queries;
+﻿using DeltaWare.SDK.SmartFormat;
+using SereneApi.Core.Configuration.Handler;
+using SereneApi.Handlers.Rest.Queries;
 using SereneApi.Handlers.Rest.Requests;
 using System;
 using System.Linq;
@@ -10,15 +12,18 @@ namespace SereneApi.Handlers.Rest.Routing
     {
         private readonly IQuerySerializer _querySerializer;
 
+        private readonly string _routeTemplate;
+
         #region Constructors
 
         /// <summary>
         /// Instantiates a new instance of <see cref="RouteFactory"/>.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public RouteFactory(IQuerySerializer querySerializer)
+        public RouteFactory(IQuerySerializer querySerializer, HandlerConfiguration configuration)
         {
             _querySerializer = querySerializer ?? throw new ArgumentNullException(nameof(querySerializer));
+            _routeTemplate = configuration?.GetRouteTemplate() ?? throw new ArgumentNullException(nameof(configuration));
         }
 
         #endregion Constructors
@@ -27,26 +32,22 @@ namespace SereneApi.Handlers.Rest.Routing
         {
             if (request.Parameters != null)
             {
-                // If parameters are not empty, the route will need to have them added.
-                if (string.IsNullOrWhiteSpace(request.EndpointTemplate))
+                if (!string.IsNullOrWhiteSpace(request.EndpointTemplate))
                 {
-                    // No Endpoint was supplied, if one parameter was provided it will be appended.
-                    // Else an exception will be thrown as a template is needed if more than one
-                    // parameter is provided.
-                    if (request.Parameters.Length > 1)
-                    {
-                        throw new ArgumentException("An endpoint template must be supplied to use multiple parameters.");
-                    }
-
-                    return request.Parameters.First().ToString();
+                    return FormatEndpointTemplate(request.EndpointTemplate, request.Parameters);
                 }
-                // An Endpoint was provided so it will be formatted.
-                return FormatEndpointTemplate(request.EndpointTemplate, request.Parameters);
+
+                if (request.Parameters.Length > 1)
+                {
+                    throw new ArgumentException("An endpoint template must be supplied to use multiple parameters.");
+                }
+
+                return request.Parameters.First().ToString();
+
             }
 
             if (!string.IsNullOrWhiteSpace(request.EndpointTemplate))
             {
-                // No parameter was provided so only the endpoint is appended.
                 return request.EndpointTemplate;
             }
 
@@ -58,49 +59,23 @@ namespace SereneApi.Handlers.Rest.Routing
         {
             RestApiRequest apiRequest = (RestApiRequest)request;
 
-            string route = string.Empty;
-
-            if (!string.IsNullOrWhiteSpace(request.ResourcePath))
-            {
-                route += request.ResourcePath;
-            }
-
-            if (!string.IsNullOrWhiteSpace(request.Resource))
-            {
-                if (route.Length > 0 && route.Last() != '/')
-                {
-                    route += '/';
-                }
-
-                route += request.Resource;
-            }
-
-            if (request.Version != null)
-            {
-                if (route.Length > 0 && route.Last() != '/')
-                {
-                    route += '/';
-                }
-
-                route += request.Version.GetVersionString();
-            }
-
-            if (!string.IsNullOrWhiteSpace(request.Endpoint))
-            {
-                if (route.Length > 0 && route.Last() != '/')
-                {
-                    route += '/';
-                }
-
-                route += request.Endpoint;
-            }
+            string query = null;
 
             if (apiRequest.Query is { Count: > 0 })
             {
-                route += _querySerializer.Serialize(apiRequest.Query);
+                query = _querySerializer.Serialize(apiRequest.Query);
             }
 
-            return new Uri(route, UriKind.Relative);
+            string route = SmartFormat.Parse(_routeTemplate, new
+            {
+                ResourcePath = request.ResourcePath?.TrimEnd('/'),
+                Resource = request.Resource?.TrimEnd('/'),
+                Version = request.Version?.GetVersionString()?.TrimEnd('/'),
+                Endpoint = request.Endpoint?.TrimEnd('/'),
+                Query = query
+            });
+
+            return new Uri(route.TrimStart('/'), UriKind.Relative);
         }
 
         /// <summary>
@@ -111,10 +86,6 @@ namespace SereneApi.Handlers.Rest.Routing
         /// <exception cref="FormatException">Thrown when an incorrect end point is provided.</exception>
         private static string FormatEndpointTemplate(string endpointTemplate, params object[] templateParameters)
         {
-            #region Format Check Logic
-
-            // This should not need to be done, but if it is not done a format that only supports 1
-            // parameter but is supplied more than 1 parameter will not fail.
             int expectedFormatLength = endpointTemplate.Length - templateParameters.Length * 3;
 
             foreach (object parameter in templateParameters)
@@ -122,17 +93,13 @@ namespace SereneApi.Handlers.Rest.Routing
                 expectedFormatLength += parameter.ToString().Length;
             }
 
-            #endregion Format Check Logic
-
             string endpoint = string.Format(endpointTemplate, templateParameters);
 
-            // If the length is different the endpoint has been formatted correctly.
             if (endpoint != endpointTemplate && expectedFormatLength == endpoint.Length)
             {
                 return $"{endpoint}";
             }
 
-            // If we have more than 1 parameter here it means the formatting was unsuccessful.
             if (templateParameters.Length > 1)
             {
                 throw new FormatException("Multiple Parameters must be used with a format-table endpoint template.");
@@ -140,8 +107,6 @@ namespace SereneApi.Handlers.Rest.Routing
 
             endpoint = endpointTemplate;
 
-            // Return an endpoint without formatting the template and appending the only parameter
-            // to the end.
             return $"{endpoint}/{templateParameters.First()}";
         }
     }

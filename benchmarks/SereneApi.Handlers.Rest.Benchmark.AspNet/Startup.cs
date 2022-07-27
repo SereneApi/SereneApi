@@ -4,8 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SereneApi.Core.Configuration;
-using SereneApi.Core.Requests;
 using SereneApi.Handlers.Rest.Benchmark.AspNet.API;
+using System.Net.Http;
 
 namespace SereneApi.Handlers.Rest.Benchmark.AspNet
 {
@@ -18,7 +18,7 @@ namespace SereneApi.Handlers.Rest.Benchmark.AspNet
             Configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // This httpMethod gets called by the runtime. Use this httpMethod to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -42,7 +42,7 @@ namespace SereneApi.Handlers.Rest.Benchmark.AspNet
             });
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        // This httpMethod gets called by the runtime. Use this httpMethod to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.RegisterApi<IStudentApi, StudentApiHandler>(o =>
@@ -51,7 +51,7 @@ namespace SereneApi.Handlers.Rest.Benchmark.AspNet
                 o.EnableMocking(c =>
                 {
                     c.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .RespondsWith(new StudentDto
                         {
                             Email = "John.Smith@gmail.com",

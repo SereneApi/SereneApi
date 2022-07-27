@@ -1,5 +1,4 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
-using DeltaWare.Dependencies.Abstractions.Enums;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +20,7 @@ namespace SereneApi.Core.Configuration
         {
             if (!configuration.Dependencies.HasDependency<IServiceProvider>())
             {
-                throw new NotSupportedException("SereneApi must be attached to Microsoft Dependency Injection for this method to be supported.");
+                throw new NotSupportedException("SereneApi must be attached to Microsoft Dependency Injection for this httpMethod to be supported.");
             }
 
             if (optionsBuilder != null)
@@ -30,20 +29,27 @@ namespace SereneApi.Core.Configuration
 
                 optionsBuilder.Invoke(options);
 
-                configuration.Dependencies.AddSingleton(() => options);
+                configuration.Dependencies.Register(() => options).AsSingleton();
             }
 
-            configuration.Dependencies.AddScoped(p => p
-                .GetRequiredDependency<IServiceProvider>()
-                .GetRequiredService<IAccessTokenProvider>(),
-                Binding.Unbound);
+            configuration.Dependencies
+                .Register(p => p
+                    .GetRequiredDependency<IServiceProvider>()
+                    .GetRequiredService<IAccessTokenProvider>())
+                .AsScoped()
+                .DoNotBind();
 
-            configuration.Dependencies.AddScoped(p => p
-                .GetRequiredDependency<IServiceProvider>()
-                .GetRequiredService<NavigationManager>(),
-                Binding.Unbound);
+            configuration.Dependencies
+                .Register(p => p
+                    .GetRequiredDependency<IServiceProvider>()
+                    .GetRequiredService<NavigationManager>())
+                .AsScoped()
+                .DoNotBind();
 
-            configuration.Dependencies.AddScoped<IAuthenticator, MsalTokenAuthenticator>();
+            configuration.Dependencies
+                .Register<MsalTokenAuthenticator>()
+                .DefineAs<IAuthenticator>()
+                .AsScoped();
         }
 
         /// <summary>
@@ -53,7 +59,7 @@ namespace SereneApi.Core.Configuration
         {
             if (!configuration.Dependencies.HasDependency<IServiceProvider>())
             {
-                throw new NotSupportedException("SereneApi must be attached to Microsoft Dependency Injection for this method to be supported.");
+                throw new NotSupportedException("SereneApi must be attached to Microsoft Dependency Injection for this httpMethod to be supported.");
             }
 
             if (authenticationOptions == null)
@@ -72,20 +78,28 @@ namespace SereneApi.Core.Configuration
 
             if (authenticationOptions != null)
             {
-                configuration.Dependencies.AddSingleton(() => authenticationOptions);
+                configuration.Dependencies
+                    .Register(() => authenticationOptions)
+                    .AsSingleton();
             }
 
-            configuration.Dependencies.AddScoped(p => p
-                .GetRequiredDependency<IServiceProvider>()
-                .GetRequiredService<IAccessTokenProvider>(),
-                Binding.Unbound);
+            configuration.Dependencies
+                .Register(p => p
+                    .GetRequiredDependency<IServiceProvider>()
+                    .GetRequiredService<IAccessTokenProvider>())
+                .AsScoped()
+                .DoNotBind();
 
-            configuration.Dependencies.AddScoped(p => p
-                .GetRequiredDependency<IServiceProvider>()
-                .GetRequiredService<NavigationManager>(),
-                Binding.Unbound);
+            configuration.Dependencies
+                .Register(p => p
+                    .GetRequiredDependency<IServiceProvider>()
+                    .GetRequiredService<NavigationManager>())
+                .AsScoped()
+                .DoNotBind();
 
-            configuration.Dependencies.AddScoped<IAuthenticator, MsalTokenAuthenticator>();
+            configuration.Dependencies.Register<MsalTokenAuthenticator>()
+                .DefineAs<IAuthenticator>()
+                .AsScoped();
         }
     }
 }

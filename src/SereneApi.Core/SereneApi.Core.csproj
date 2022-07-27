@@ -1,27 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>5.2.0.2</Version>
+    <Version>6.0.1.1</Version>
     <Product>SereneApi</Product>
     <Company>DeltaWare</Company>
     <Authors>Bradley Clarke</Authors>
     <PackageOutputPath>..\..\packages\SereneApi.Core</PackageOutputPath>
     <Platforms>AnyCPU;x64</Platforms>
-
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Configuration\Dictionary\**" />
-    <EmbeddedResource Remove="Configuration\Dictionary\**" />
-    <None Remove="Configuration\Dictionary\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="DeltaWare.Dependencies" Version="5.0.0.7" />
-    <PackageReference Include="DeltaWare.SDK.Core" Version="5.0.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
+    <PackageReference Include="DeltaWare.Dependencies" Version="6.0.1.3" />
+    <PackageReference Include="DeltaWare.SDK.Core" Version="6.0.1.1" />
+    <PackageReference Include="DeltaWare.SDK.Serialization.Types" Version="6.0.1.1" />
+    <PackageReference Include="DeltaWare.SDK.SmartFormat" Version="6.0.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
   </ItemGroup>
 
 </Project>

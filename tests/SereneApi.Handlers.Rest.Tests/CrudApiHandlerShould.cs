@@ -2,11 +2,11 @@
 using SereneApi.Core.Handler.Factories;
 using SereneApi.Core.Http.Responses;
 using SereneApi.Core.Http.Responses.Types;
-using SereneApi.Core.Requests;
 using SereneApi.Handlers.Rest.Tests.Interfaces;
 using SereneApi.Handlers.Rest.Tests.Mock;
 using Shouldly;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -30,56 +30,56 @@ namespace SereneApi.Handlers.Rest.Tests
                 c.EnableMocking(mocking =>
                 {
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .ForEndpoints("http://localhost:8080/api/Person/0")
                         .RespondsWith(MockPersonDto.BenJerry);
 
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .ForEndpoints("http://localhost:8080/api/Person/1")
                         .RespondsWith(MockPersonDto.JohnSmith);
 
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Get)
+                        .ForMethod(HttpMethod.Get)
                         .ForEndpoints("http://localhost:8080/api/Person")
                         .RespondsWith(MockPersonDto.All);
 
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Delete)
+                        .ForMethod(HttpMethod.Delete)
                         .ForEndpoints("http://localhost:8080/api/Person/0")
                         .RespondsWith(Status.Ok);
 
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Delete)
+                        .ForMethod(HttpMethod.Delete)
                         .ForEndpoints("http://localhost:8080/api/Person/2")
                         .RespondsWith(new FailureResponse("Could not find a Person with an Id of 2"), Status.NotFound);
 
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Post)
+                        .ForMethod(HttpMethod.Post)
                         .ForEndpoints("http://localhost:8080/api/Person")
                         .ForContent(MockPersonDto.BenJerry)
                         .RespondsWith(MockPersonDto.BenJerry);
 
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Post)
+                        .ForMethod(HttpMethod.Post)
                         .ForEndpoints("http://localhost:8080/api/Person")
                         .ForContent(MockPersonDto.JohnSmith)
                         .RespondsWith(new FailureResponse("This person has already been added."), Status.BadRequest);
 
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Put)
+                        .ForMethod(HttpMethod.Put)
                         .ForEndpoints("http://localhost:8080/api/Person")
                         .ForContent(MockPersonDto.BenJerry)
                         .RespondsWith(MockPersonDto.BenJerry);
 
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Patch)
+                        .ForMethod(HttpMethod.Patch)
                         .ForEndpoints("http://localhost:8080/api/Person")
                         .ForContent(MockPersonDto.BenJerry)
                         .RespondsWith(MockPersonDto.BenJerry);
 
                     mocking.RegisterMockResponse()
-                        .ForMethod(Method.Patch)
+                        .ForMethod(HttpMethod.Patch)
                         .ForEndpoints("http://localhost:8080/api/Person")
                         .ForContent(MockPersonDto.JohnSmith)
                         .RespondsWith(new FailureResponse("Could not find the specified user"), Status.NotFound);

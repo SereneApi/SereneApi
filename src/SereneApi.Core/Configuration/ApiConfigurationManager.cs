@@ -1,5 +1,4 @@
-﻿using DeltaWare.Dependencies.Abstractions;
-using SereneApi.Core.Configuration.Attributes;
+﻿using SereneApi.Core.Configuration.Attributes;
 using SereneApi.Core.Configuration.Exceptions;
 using SereneApi.Core.Configuration.Provider;
 using SereneApi.Core.Configuration.Settings;
@@ -182,7 +181,7 @@ namespace SereneApi.Core.Configuration
 
                 configurationProvider.ExtendConfiguration(c =>
                 {
-                    c.AddSingleton(() => this);
+                    c.Register(() => this).AsSingleton();
 
                     ApiConfiguration configuration = new ApiConfiguration(c, type);
 

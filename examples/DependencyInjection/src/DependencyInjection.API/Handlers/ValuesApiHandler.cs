@@ -1,8 +1,8 @@
 ﻿using SereneApi.Core.Configuration.Settings;
 using SereneApi.Core.Http.Responses;
-using SereneApi.Core.Requests;
 using SereneApi.Handlers.Rest;
 using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace DependencyInjection.API.Handlers
@@ -16,7 +16,7 @@ namespace DependencyInjection.API.Handlers
         public Task<IApiResponse<int>> GetAsync(int value)
         {
             return MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .AgainstEndpoint("int/{0}")
                 .WithParameter(value)
                 .RespondsWith<int>()
@@ -26,7 +26,7 @@ namespace DependencyInjection.API.Handlers
         public Task<IApiResponse<string>> GetAsync(string value)
         {
             return MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .AgainstEndpoint("string/{0}")
                 .WithParameter(value)
                 .RespondsWith<string>()
@@ -36,7 +36,7 @@ namespace DependencyInjection.API.Handlers
         public Task<IApiResponse<MemoryStream>> GetSamplePfgAsync()
         {
             return MakeRequest
-                .UsingMethod(Method.Get)
+                .UsingMethod(HttpMethod.Get)
                 .AgainstResource("GetSamplePdf")
                 .RespondsWith<MemoryStream>()
                 .ExecuteAsync();

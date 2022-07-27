@@ -1,6 +1,6 @@
 ﻿using DeltaWare.Dependencies.Abstractions;
-using DeltaWare.SDK.Core.Serialization;
-using SereneApi.Core.Configuration;
+using DeltaWare.SDK.Serialization.Types;
+using SereneApi.Core.Configuration.Handler;
 using SereneApi.Core.Configuration.Provider;
 using SereneApi.Core.Http.Content;
 using SereneApi.Core.Http.Responses.Handlers;
@@ -21,22 +21,39 @@ namespace SereneApi.Handlers.Rest.Configuration
             {
                 c.SetContentType(ContentType.Json);
                 c.SetResourcePath("api");
+                c.SetRouteTemplate("[/{ResourcePath?}][/{Resource?}][/{Version?}][/{Endpoint?}]{Query?}");
             });
 
             dependencies.Configure<IObjectSerializer>(s =>
             {
                 ObjectSerializer serializer = (ObjectSerializer)s;
 
-                serializer.Transformers.AddTransformer(new DateTimeTransformer());
+                serializer.Transformers.Add(new DateTimeTransformer());
             });
 
-            dependencies.AddTransient<IApiRequestFactory, RestRequestFactory>();
+            dependencies.Register<RestRequestFactory>()
+                .DefineAs<IApiRequestFactory>()
+                .AsTransient();
 
-            dependencies.AddScoped<IQuerySerializer, QuerySerializer>();
-            dependencies.AddScoped<ISerializer>(() => new JsonSerializer());
-            dependencies.AddScoped<IRouteFactory, RouteFactory>();
-            dependencies.AddScoped<IResponseHandler, ResponseHandler>();
-            dependencies.AddScoped<IFailedResponseHandler, FailedResponseHandler>();
+            dependencies.Register<QuerySerializer>()
+                .DefineAs<IQuerySerializer>()
+                .AsScoped();
+
+            dependencies.Register(() => new JsonSerializer())
+                .DefineAs<ISerializer>()
+                .AsScoped();
+
+            dependencies.Register<RouteFactory>()
+                .DefineAs<IRouteFactory>()
+                .AsScoped();
+
+            dependencies.Register<ResponseHandler>()
+                .DefineAs<IResponseHandler>()
+                .AsScoped();
+
+            dependencies.Register<FailedResponseHandler>()
+                .DefineAs<IFailedResponseHandler>()
+                .AsScoped();
         }
     }
 }

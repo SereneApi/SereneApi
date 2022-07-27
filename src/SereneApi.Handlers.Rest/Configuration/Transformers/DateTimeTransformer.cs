@@ -1,4 +1,4 @@
-﻿using DeltaWare.SDK.Core.Transformation;
+﻿using DeltaWare.SDK.Serialization.Types.Transformation;
 using System;
 using System.Globalization;
 

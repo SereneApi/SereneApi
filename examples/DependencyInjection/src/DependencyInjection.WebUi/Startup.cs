@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using SereneApi.Core.Configuration;
+using SereneApi.Core.Configuration.Handler;
 using SereneApi.Extensions.DependencyInjection;
 using SereneApi.Handlers.Rest.Configuration;
 using SereneApi.Serializers.Newtonsoft.Json;
@@ -22,7 +23,7 @@ namespace DependencyInjection.WebUi
             Configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // This httpMethod gets called by the runtime. Use this httpMethod to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseSwagger();
@@ -45,7 +46,7 @@ namespace DependencyInjection.WebUi
             });
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        // This httpMethod gets called by the runtime. Use this httpMethod to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers().AddNewtonsoftJson();
@@ -68,7 +69,7 @@ namespace DependencyInjection.WebUi
                 // Under appsettings.conf, there is an array called ApiConfig. Inside that array is
                 // another array called "Student" as you can see below we are getting that.
 
-                builder.AddConnectionSettings(Configuration.GetApiConfig("Student"));
+                builder.UseConfiguration(Configuration, "Student");
             });
 
             // Here a provider is also being used, this allows you to get services that have been

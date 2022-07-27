@@ -13,10 +13,8 @@ using Xunit;
 
 namespace SereneApi.Handlers.Rest.Tests.Factories
 {
-    public class RouteFactoryShould : IDisposable
+    public class RouteFactoryShould
     {
-        private readonly IDependencyProvider _dependencies;
-
         private readonly IRouteFactory _routeFactory;
 
         public RouteFactoryShould()
@@ -185,11 +183,6 @@ namespace SereneApi.Handlers.Rest.Tests.Factories
             route.ShouldBe(expectedRoute);
 
             #endregion Assert
-        }
-
-        public void Dispose()
-        {
-            _dependencies?.Dispose();
         }
 
         [Fact]
