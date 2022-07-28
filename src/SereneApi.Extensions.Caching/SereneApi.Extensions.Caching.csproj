@@ -1,15 +1,34 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>6.0.1.1</Version>
-    <Authors>Bradley Clarke</Authors>
-    <Company>DeltaWare</Company>
-    <Product>SereneApi</Product>
-	  <PackageOutputPath>..\..\packages\SereneApi.Extensions.Caching</PackageOutputPath>
-	  <Platforms>AnyCPU;x64</Platforms>
-  </PropertyGroup>
+<PropertyGroup>
+        <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <Version>6.0.1.3</Version>
+        <Author>Bradley Clarke</Author>
+        <Company>DeltaWare</Company>
+        <Product>SereneApi</Product>
+        <Description>An easy solution for consuming APIs</Description>
+        <PackageProjectUrl>https://github.com/SereneApi/SereneApi</PackageProjectUrl>
+        <!--<PackageReadmeFile>README.md</PackageReadmeFile>-->
+        <RepositoryUrl>https://github.com/SereneApi/SereneApi</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>SereneApi;Api;Caching</PackageTags>
+        <NeutralLanguage>en</NeutralLanguage>
+        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+        <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <PackageOutputPath>..\..\nuget.packages</PackageOutputPath>
+		<PackageIcon>nuget_logo.png</PackageIcon>
+    </PropertyGroup>
+
+	<ItemGroup>
+        <None Include="..\..\nuget_logo.png" pack="true" PackagePath="." />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\..\LICENSE.md" pack="true" PackagePath="." />
+    </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SereneApi.Core\SereneApi.Core.csproj" />
