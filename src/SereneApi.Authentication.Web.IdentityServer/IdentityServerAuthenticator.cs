@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using IdentityModel.Client;
+﻿using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
@@ -11,6 +6,11 @@ using Microsoft.Extensions.Logging;
 using SereneApi.Authentication.Web.IdentityServer.Options;
 using SereneApi.Core.Http.Authentication;
 using SereneApi.Core.Http.Authorization.Types;
+using System;
+using System.Collections.Concurrent;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SereneApi.Authentication.Web.IdentityServer
 {
@@ -20,17 +20,17 @@ namespace SereneApi.Authentication.Web.IdentityServer
 
         private readonly IHttpContextAccessor _contextAccessor;
 
-        private readonly IMemoryCache? _cache;
+        private readonly IMemoryCache? _tokenCache;
 
         private readonly ILogger? _logger;
 
         private static readonly ConcurrentDictionary<string, SemaphoreSlim> Locks = new();
 
-        public IdentityServerAuthenticator(IAuthenticationOptions options, IHttpContextAccessor contextAccessor, IMemoryCache? cache = null, ILogger? logger = null)
+        public IdentityServerAuthenticator(IAuthenticationOptions options, IHttpContextAccessor contextAccessor, IMemoryCache? tokenCache = null, ILogger? logger = null)
         {
             Options = options;
             _contextAccessor = contextAccessor;
-            _cache = cache;
+            _tokenCache = tokenCache;
             _logger = logger;
         }
 
@@ -40,48 +40,63 @@ namespace SereneApi.Authentication.Web.IdentityServer
 
             if (Options.EnableClientDelegation)
             {
-                if (_contextAccessor.HttpContext != null)
-                {
-                    userToken = await _contextAccessor.HttpContext.GetTokenAsync("access_token");
-
-                    if (string.IsNullOrWhiteSpace(userToken))
-                    {
-                        _logger?.LogDebug($"No user token could be retrieved from the {nameof(HttpContext)}");
-                    }
-                }
-                else
-                {
-                    _logger?.LogWarning($"Client Delegation is enabled, but no instance of {nameof(HttpContext)} could be found.");
-                }
+                userToken = await GetUserTokenAsync();
             }
 
-            string? bearerToken;
+            string? accessToken;
 
             if (string.IsNullOrWhiteSpace(userToken))
             {
                 _logger?.LogTrace("Using Client Authentication");
 
-                if (_cache == null || !_cache.TryGetValue(Options.ClientId, out bearerToken))
+                if (_tokenCache == null || !_tokenCache.TryGetValue(Options.ClientId, out accessToken))
                 {
-                    bearerToken = await InternalRenewClientTokenAsync();
+                    accessToken = await InternalRenewClientTokenAsync();
                 }
             }
             else
             {
                 _logger?.LogTrace("Using User Authentication");
 
-                if (_cache == null || !_cache.TryGetValue(userToken, out bearerToken))
+                if (_tokenCache == null || !_tokenCache.TryGetValue(userToken, out accessToken))
                 {
-                    bearerToken = await InternalRenewDelegateTokenAsync(userToken);
+                    accessToken = await InternalRenewDelegateTokenAsync(userToken);
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(bearerToken))
+            if (string.IsNullOrWhiteSpace(accessToken))
             {
-                throw new UnauthorizedAccessException("No bearer token could be retrieved.");
+                throw new UnauthorizedAccessException("No access token could be retrieved.");
             }
 
-            return new BearerAuthentication(bearerToken);
+            OnTokenRetrieved(accessToken);
+
+            return new BearerAuthentication(accessToken);
+        }
+
+        protected virtual async Task<string?> GetUserTokenAsync()
+        {
+            string? userToken = null;
+
+            if (_contextAccessor.HttpContext != null)
+            {
+                userToken = await _contextAccessor.HttpContext.GetTokenAsync("access_token");
+
+                if (string.IsNullOrWhiteSpace(userToken))
+                {
+                    _logger?.LogDebug($"No user token could be retrieved from the {nameof(HttpContext)}");
+                }
+                else
+                {
+                    _logger?.LogTrace("User token was successfully retrieved.");
+                }
+            }
+            else
+            {
+                _logger?.LogWarning($"Client Delegation is enabled, but no instance of {nameof(HttpContext)} could be found.");
+            }
+
+            return userToken;
         }
 
         private async Task<string?> InternalRenewDelegateTokenAsync(string token)
@@ -99,6 +114,8 @@ namespace SereneApi.Authentication.Web.IdentityServer
 
                 if (tokenResponse.IsError)
                 {
+                    _logger?.LogWarning("Delegation authorization failed. {Error} {ErrorDescription}", tokenResponse.Error, tokenResponse.ErrorDescription);
+
                     throw new UnauthorizedAccessException(tokenResponse.Error);
                 }
 
@@ -108,7 +125,7 @@ namespace SereneApi.Authentication.Web.IdentityServer
                     Priority = CacheItemPriority.Normal
                 };
 
-                _cache?.Set(token, tokenResponse.AccessToken, cacheExpirationOptions);
+                _tokenCache?.Set(token, tokenResponse.AccessToken, cacheExpirationOptions);
 
                 return tokenResponse.AccessToken;
             }
@@ -131,10 +148,10 @@ namespace SereneApi.Authentication.Web.IdentityServer
                     Address = $"{Options.Authority}/connect/token",
                     ClientId = Options.ClientId,
                     ClientSecret = Options.ClientSecret,
-                    GrantType = "delegation",
+                    GrantType = Options.DelegationGrantType,
                     Parameters = new Parameters
                     {
-                        {"token", token}
+                        { "token", token }
                     }
                 });
             }
@@ -142,7 +159,6 @@ namespace SereneApi.Authentication.Web.IdentityServer
             {
                 client.Dispose();
             }
-
         }
 
         private async Task<string?> InternalRenewClientTokenAsync()
@@ -153,13 +169,15 @@ namespace SereneApi.Authentication.Web.IdentityServer
             {
                 return null;
             }
-            
+
             try
             {
                 TokenResponse tokenResponse = await RenewClientTokenAsync();
 
                 if (tokenResponse.IsError)
                 {
+                    _logger?.LogWarning("Client authorization failed. {Error} {ErrorDescription}", tokenResponse.Error, tokenResponse.ErrorDescription);
+
                     throw new UnauthorizedAccessException(tokenResponse.Error);
                 }
 
@@ -169,7 +187,7 @@ namespace SereneApi.Authentication.Web.IdentityServer
                     Priority = CacheItemPriority.Normal
                 };
 
-                _cache?.Set(Options.ClientId, tokenResponse.AccessToken, cacheExpirationOptions);
+                _tokenCache?.Set(Options.ClientId, tokenResponse.AccessToken, cacheExpirationOptions);
 
                 return tokenResponse.AccessToken;
             }
@@ -192,14 +210,17 @@ namespace SereneApi.Authentication.Web.IdentityServer
                     Address = $"{Options.Authority}/connect/token",
                     ClientId = Options.ClientId,
                     ClientSecret = Options.ClientSecret,
-                    GrantType = "client_credentials",
+                    GrantType = Options.ClientGrantType
                 });
             }
             finally
             {
                 client.Dispose();
             }
-
+        }
+        
+        protected virtual void OnTokenRetrieved(string accessToken)
+        {
         }
     }
 }

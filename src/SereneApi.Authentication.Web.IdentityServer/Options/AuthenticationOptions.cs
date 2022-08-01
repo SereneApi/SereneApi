@@ -13,5 +13,7 @@ namespace SereneApi.Authentication.Web.IdentityServer.Options
         public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(5);
 
         public bool EnableClientDelegation { get; set; }
+        public string DelegationGrantType { get; set; } = "delegation";
+        public string ClientGrantType { get; set; } = "client_credentials";
     }
 }
