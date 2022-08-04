@@ -31,7 +31,7 @@ namespace SereneApi.Core.Configuration
 
             configuration.Bind(configurationKey, options);
 
-            UseIdentityServerAuthentication(apiConfiguration, options);
+            UseIdentityServerAuthentication<TAuthenticator>(apiConfiguration, options);
         }
 
         /// <summary>
