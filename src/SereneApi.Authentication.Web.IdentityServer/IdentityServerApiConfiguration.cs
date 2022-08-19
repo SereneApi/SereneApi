@@ -1,5 +1,4 @@
-﻿using System;
-using DeltaWare.Dependencies.Abstractions;
+﻿using DeltaWare.Dependencies.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +7,7 @@ using SereneApi.Authentication.Web.IdentityServer;
 using SereneApi.Authentication.Web.IdentityServer.Options;
 using SereneApi.Core.Http.Authentication;
 using SereneApi.Core.Http.Requests;
+using System;
 
 // ReSharper disable once CheckNamespace
 namespace SereneApi.Core.Configuration

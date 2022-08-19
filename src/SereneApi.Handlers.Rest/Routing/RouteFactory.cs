@@ -1,11 +1,10 @@
 ﻿using DeltaWare.SDK.SmartFormat;
 using SereneApi.Core.Configuration.Handler;
+using SereneApi.Core.Http;
 using SereneApi.Handlers.Rest.Queries;
 using SereneApi.Handlers.Rest.Requests;
 using System;
-using System.IO;
 using System.Linq;
-using SereneApi.Core.Http;
 
 namespace SereneApi.Handlers.Rest.Routing
 {

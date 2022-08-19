@@ -218,7 +218,7 @@ namespace SereneApi.Authentication.Web.IdentityServer
                 client.Dispose();
             }
         }
-        
+
         protected virtual void OnTokenRetrieved(string accessToken)
         {
         }

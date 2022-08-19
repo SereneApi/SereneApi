@@ -1,6 +1,6 @@
-﻿using SereneApi.Handlers.Soap.Requests;
+﻿using SereneApi.Core.Http;
+using SereneApi.Handlers.Soap.Requests;
 using System;
-using SereneApi.Core.Http;
 
 namespace SereneApi.Handlers.Soap.Routing
 {
@@ -16,7 +16,7 @@ namespace SereneApi.Handlers.Soap.Routing
         {
             _connectionSettings = connectionSettings;
         }
-        
+
         /// <inheritdoc cref="IRouteFactory.BuildRoute"/>
         public Uri BuildRoute(ISoapApiRequest request)
         {

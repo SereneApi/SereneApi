@@ -1,6 +1,14 @@
 ﻿using SereneApi.Handlers.Soap.Requests;
+
+/* Unmerged change from project 'SereneApi.Handlers.Soap (net6.0)'
+Before:
 using System;
 using SereneApi.Handlers.Soap.Requests.Types;
+After:
+using SereneApi.Handlers.Soap.Requests.Types;
+using System;
+*/
+using System;
 
 namespace SereneApi.Handlers.Soap.Routing
 {

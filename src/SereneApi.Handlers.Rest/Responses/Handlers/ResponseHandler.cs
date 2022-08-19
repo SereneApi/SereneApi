@@ -80,7 +80,7 @@ namespace SereneApi.Handlers.Rest.Responses.Handlers
             {
                 return await _failedResponseHandler.ProcessFailedRequestAsync<TResponse>(request, status, duration, responseMessage.Content);
             }
-            
+
             try
             {
                 TResponse responseData;

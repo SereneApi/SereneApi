@@ -91,7 +91,7 @@ namespace SereneApi.Core.Http.Requests.Handler
                 }
                 else
                 {
-                    _logger?.LogWarning("The [{HttpMethod}] Request to \"{Url}\" was not successful, Status:{statusCode} | Duration:{Duration} | Message: \"{Message}\"", request.HttpMethod, request.Url, response.StatusCode,  requestTimer.Elapsed.ToString("ss':'fff"), response.ReasonPhrase);
+                    _logger?.LogWarning("The [{HttpMethod}] Request to \"{Url}\" was not successful, Status:{statusCode} | Duration:{Duration} | Message: \"{Message}\"", request.HttpMethod, request.Url, response.StatusCode, requestTimer.Elapsed.ToString("ss':'fff"), response.ReasonPhrase);
                 }
 
                 IApiResponse<TResponse> apiResponse =
