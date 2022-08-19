@@ -45,6 +45,8 @@ namespace SereneApi.Core.Http.Requests
 
         Uri Route { get; }
 
+        public Uri Url { get; }
+
         /// <summary>
         /// The version the request will act upon.
         /// </summary>

@@ -45,6 +45,7 @@ namespace SereneApi.Handlers.Rest.Requests.Factories
 
             _restApiRequest.Endpoint = routeFactory.BuildEndPoint(_restApiRequest);
             _restApiRequest.Route = routeFactory.BuildRoute(_restApiRequest);
+            _restApiRequest.Url = routeFactory.GetUrl(_restApiRequest);
         }
     }
 }

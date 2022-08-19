@@ -3,7 +3,9 @@ using SereneApi.Core.Configuration.Handler;
 using SereneApi.Handlers.Rest.Queries;
 using SereneApi.Handlers.Rest.Requests;
 using System;
+using System.IO;
 using System.Linq;
+using SereneApi.Core.Http;
 
 namespace SereneApi.Handlers.Rest.Routing
 {
@@ -11,6 +13,8 @@ namespace SereneApi.Handlers.Rest.Routing
     internal class RouteFactory : IRouteFactory
     {
         private readonly IQuerySerializer _querySerializer;
+
+        private readonly IConnectionSettings _connectionSettings;
 
         private readonly string _routeTemplate;
 
@@ -20,9 +24,10 @@ namespace SereneApi.Handlers.Rest.Routing
         /// Instantiates a new instance of <see cref="RouteFactory"/>.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public RouteFactory(IQuerySerializer querySerializer, HandlerConfiguration configuration)
+        public RouteFactory(IQuerySerializer querySerializer, IConnectionSettings connectionSettings, HandlerConfiguration configuration)
         {
-            _querySerializer = querySerializer ?? throw new ArgumentNullException(nameof(querySerializer));
+            _querySerializer = querySerializer;
+            _connectionSettings = connectionSettings;
             _routeTemplate = configuration?.GetRouteTemplate() ?? throw new ArgumentNullException(nameof(configuration));
         }
 
@@ -76,6 +81,13 @@ namespace SereneApi.Handlers.Rest.Routing
             });
 
             return new Uri(route.TrimStart('/'), UriKind.Relative);
+        }
+
+        public Uri GetUrl(IRestApiRequest apiRequest)
+        {
+            string url = $"{_connectionSettings.BaseAddress}{apiRequest.Route}";
+
+            return new Uri(url);
         }
 
         /// <summary>

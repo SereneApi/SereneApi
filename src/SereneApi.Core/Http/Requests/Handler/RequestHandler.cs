@@ -47,6 +47,15 @@ namespace SereneApi.Core.Http.Requests.Handler
 
                 requestTimer.Stop();
 
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger?.LogTrace("The [{HttpMethod}] Request to \"{Url}\" was successful. Status:{statusCode} | Duration:{Duration}", request.HttpMethod, request.Url, response.StatusCode, requestTimer.Elapsed.ToString("ss':'fff"));
+                }
+                else
+                {
+                    _logger?.LogWarning("The [{HttpMethod}] Request to \"{Url}\" was not successful, Status:{statusCode} | Duration:{Duration} | Message: \"{Message}\"", request.HttpMethod, request.Url, response.StatusCode, requestTimer.Elapsed.ToString("ss':'fff"), response.ReasonPhrase);
+                }
+
                 IApiResponse apiResponse = await _responseHandler.ProcessResponseAsync(request, requestTimer.Elapsed, response);
 
                 _eventManager?.PublishAsync(new ResponseEvent(caller, apiResponse)).FireAndForget();
@@ -59,7 +68,7 @@ namespace SereneApi.Core.Http.Requests.Handler
                 {
                     response.Dispose();
 
-                    _logger?.LogDebug(Logging.EventIds.DisposedEvent, Logging.Messages.DisposedHttpResponseMessage, request.HttpMethod.ToString(), GetRequestRoute(request));
+                    _logger?.LogDebug(Logging.EventIds.DisposedEvent, Logging.Messages.DisposedHttpResponseMessage, request.HttpMethod.ToString(), request.Url);
                 }
             }
         }
@@ -76,6 +85,15 @@ namespace SereneApi.Core.Http.Requests.Handler
 
                 requestTimer.Stop();
 
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger?.LogTrace("The [{HttpMethod}] Request to \"{Url}\" was successful. Status:{statusCode} | Duration:{Duration}", request.HttpMethod, request.Url, response.StatusCode, requestTimer.Elapsed.ToString("ss':'fff"));
+                }
+                else
+                {
+                    _logger?.LogWarning("The [{HttpMethod}] Request to \"{Url}\" was not successful, Status:{statusCode} | Duration:{Duration} | Message: \"{Message}\"", request.HttpMethod, request.Url, response.StatusCode,  requestTimer.Elapsed.ToString("ss':'fff"), response.ReasonPhrase);
+                }
+
                 IApiResponse<TResponse> apiResponse =
                     await _responseHandler.ProcessResponseAsync<TResponse>(request, requestTimer.Elapsed, response);
 
@@ -89,7 +107,7 @@ namespace SereneApi.Core.Http.Requests.Handler
                 {
                     response.Dispose();
 
-                    _logger?.LogDebug(Logging.EventIds.DisposedEvent, Logging.Messages.DisposedHttpResponseMessage, request.HttpMethod.ToString(), GetRequestRoute(request));
+                    _logger?.LogDebug(Logging.EventIds.DisposedEvent, Logging.Messages.DisposedHttpResponseMessage, request.HttpMethod.ToString(), request.Url);
                 }
             }
         }
@@ -105,7 +123,7 @@ namespace SereneApi.Core.Http.Requests.Handler
 
             if (request.Content == null)
             {
-                _logger?.LogInformation(Logging.EventIds.PerformRequestEvent, Logging.Messages.PerformingRequest, request.HttpMethod.ToString(), GetRequestRoute(request));
+                _logger?.LogInformation(Logging.EventIds.PerformRequestEvent, Logging.Messages.PerformingRequest, request.HttpMethod.ToString(), request.Url);
             }
             else
             {
@@ -115,7 +133,7 @@ namespace SereneApi.Core.Http.Requests.Handler
                 }
                 else
                 {
-                    _logger?.LogDebug(Logging.EventIds.PerformRequestEvent, Logging.Messages.PerformingRequestWithContent, request.HttpMethod.ToString(), GetRequestRoute(request), request.Content.GetContent());
+                    _logger?.LogDebug(Logging.EventIds.PerformRequestEvent, Logging.Messages.PerformingRequestWithContent, request.HttpMethod.ToString(), request.Url, request.Content.GetContent());
                 }
 
                 requestMessage.Content = (HttpContent)request.Content.GetContent();
@@ -136,13 +154,13 @@ namespace SereneApi.Core.Http.Requests.Handler
 
                 _logger?.LogInformation(Logging.EventIds.ResponseReceivedEvent,
                     Logging.Messages.ReceivedResponse,
-                    request.HttpMethod.ToString(), GetRequestRoute(request), response.StatusCode);
+                    request.HttpMethod.ToString(), request.Url, response.StatusCode);
 
                 return response;
             }
             catch (TaskCanceledException canceledException)
             {
-                _logger?.LogWarning(Logging.EventIds.RetryEvent, canceledException, Logging.Messages.Timeout, request.HttpMethod, GetRequestRoute(request));
+                _logger?.LogWarning(Logging.EventIds.RetryEvent, canceledException, Logging.Messages.Timeout, request.HttpMethod, request.Url);
             }
             finally
             {
@@ -152,12 +170,7 @@ namespace SereneApi.Core.Http.Requests.Handler
                 }
             }
 
-            throw new TimeoutException($"The [{request.HttpMethod}] request to \"{GetRequestRoute(request)}\" has Timed out");
-        }
-
-        protected virtual string GetRequestRoute(IApiRequest request)
-        {
-            return $"{_connection.BaseAddress}{request.Route}";
+            throw new TimeoutException($"The [{request.HttpMethod}] request to \"{request.Url}\" has Timed out");
         }
 
         protected virtual void BuildMessageHeaders(IReadOnlyDictionary<string, object> headerValues, HttpRequestHeaders headers)

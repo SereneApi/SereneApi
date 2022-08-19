@@ -26,6 +26,7 @@ namespace SereneApi.Handlers.Soap.Requests.Factories
         public Task<IApiResponse<TResponse>> ExecuteAsync(CancellationToken cancellationToken = default)
         {
             _apiRequest.Route = _routeFactory.BuildRoute(_apiRequest);
+            _apiRequest.Url = _routeFactory.GetUrl(_apiRequest);
 
             return _apiHandler.PerformRequestAsync<TResponse>(_apiRequest, ApiRequestOptions.Default, cancellationToken);
         }
@@ -33,6 +34,7 @@ namespace SereneApi.Handlers.Soap.Requests.Factories
         public Task<IApiResponse<TResponse>> ExecuteAsync(Action<IApiRequestOptionsBuilder> optionsBuilder, CancellationToken cancellationToken = default)
         {
             _apiRequest.Route = _routeFactory.BuildRoute(_apiRequest);
+            _apiRequest.Url = _routeFactory.GetUrl(_apiRequest);
 
             ApiRequestOptions options = ApiRequestOptions.Default;
 

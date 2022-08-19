@@ -46,12 +46,12 @@
             /// <summary>
             /// DEBUG - Params(HttpMethod, Route)
             /// </summary>
-            public const string DisposedHttpClient = "The HttpClient used for the [{HttpMethod}] request to \"{Route}\" has been disposed";
+            public const string DisposedHttpClient = "The HttpClient used for the [{HttpMethod}] request to \"{Url}\" has been disposed";
 
             /// <summary>
             /// DEBUG - Params(HttpMethod, Route)
             /// </summary>
-            public const string DisposedHttpResponseMessage = "The HttpResponseMessage received by the [{HttpMethod}] request to \"{Route}\" has been disposed";
+            public const string DisposedHttpResponseMessage = "The HttpResponseMessage received by the [{HttpMethod}] request to \"{Url}\" has been disposed";
 
             /// <summary>
             /// TRACE - Params (Handler Type)
@@ -66,22 +66,22 @@
             /// <summary>
             /// DEBUG - Params (HttpMethod, Route)
             /// </summary>
-            public const string PerformingRequest = "Performing a [{HttpMethod}] request against \"{Route}\"";
+            public const string PerformingRequest = "Performing a [{HttpMethod}] request against \"{Url}\"";
 
             /// <summary>
             /// DEBUG - Params (HttpMethod, Route)
             /// </summary>
-            public const string PerformingRequestWithContent = "Performing a [{HttpMethod}] request against \"{Route}\" with content [{HttpContent}]";
+            public const string PerformingRequestWithContent = "Performing a [{HttpMethod}] request against \"{Url}\" with content [{HttpContent}]";
 
             /// <summary>
             /// INFORMATION - Params (HttpMethod, Route, Status)
             /// </summary>
-            public const string ReceivedResponse = "Received response from [{HttpMethod}] request to \"{Route}\" with a status of [{HttpStatus}]";
+            public const string ReceivedResponse = "The [{HttpMethod}] request to \"{Url}\" received a response with the status of [{HttpStatus}]";
 
             /// <summary>
-            /// ERROR - Params(HttpMethod, Route)
+            /// ERROR - Params(HttpMethod, Url)
             /// </summary>
-            public const string RequestEncounteredException = "An exception was encountered when performing a [{HttpMethod}] request to \"{Route}\"";
+            public const string RequestEncounteredException = "An exception was encountered while performing a [{HttpMethod}] request to \"{Url}\"";
 
             /// <summary>
             /// ERROR - Params(HttpMethod, Route, Attempts)

@@ -14,5 +14,7 @@ namespace SereneApi.Handlers.Rest.Routing
         /// The route will be built and returned as an <see cref="Uri"/>.
         /// </summary>
         Uri BuildRoute(IRestApiRequest request);
+
+        Uri GetUrl(IRestApiRequest apiRequest);
     }
 }

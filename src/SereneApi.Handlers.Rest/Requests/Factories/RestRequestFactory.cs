@@ -197,6 +197,7 @@ namespace SereneApi.Handlers.Rest.Requests.Factories
         {
             _apiRequest.Endpoint = _routeFactory.BuildEndPoint(_apiRequest);
             _apiRequest.Route = _routeFactory.BuildRoute(_apiRequest);
+            _apiRequest.Url = _routeFactory.GetUrl(_apiRequest);
         }
 
         public IApiRequestBody WithHeaders(Action<IHeaderBuilder> headerBuilder)

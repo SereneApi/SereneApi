@@ -78,7 +78,7 @@ namespace SereneApi.Core.Handler
             }
             catch (Exception exception)
             {
-                _logger?.LogError(exception, Logging.Messages.RequestEncounteredException, request.HttpMethod.ToString(), BuildRequestRoute(request));
+                _logger?.LogError(exception, Logging.Messages.RequestEncounteredException, request.HttpMethod.ToString(), request.Url);
 
                 OnException(request, options, exception);
 
@@ -119,7 +119,7 @@ namespace SereneApi.Core.Handler
             }
             catch (Exception exception)
             {
-                _logger?.LogError(Logging.EventIds.ExceptionEvent, exception, Logging.Messages.RequestEncounteredException, request.HttpMethod.ToString(), BuildRequestRoute(request));
+                _logger?.LogError(Logging.EventIds.ExceptionEvent, exception, Logging.Messages.RequestEncounteredException, request.HttpMethod.ToString(), request.Url);
 
                 OnException(request, options, exception);
 
@@ -246,10 +246,5 @@ namespace SereneApi.Core.Handler
         }
 
         #endregion IDisposable
-
-        protected virtual string BuildRequestRoute(IApiRequest request)
-        {
-            return $"{Settings.Connection.BaseAddress}{request.Route}";
-        }
     }
 }

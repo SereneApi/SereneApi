@@ -48,12 +48,8 @@ namespace SereneApi.Handlers.Rest.Responses.Handlers
 
             if (status.IsSuccessCode())
             {
-                _logger?.LogTrace("The request received a successful response.");
-
                 return RestApiResponse.Success(request, status, duration);
             }
-
-            _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}", responseMessage.StatusCode, responseMessage.ReasonPhrase);
 
             return await _failedResponseHandler.ProcessFailedRequestAsync(request, status, duration, responseMessage.Content);
         }
@@ -82,14 +78,9 @@ namespace SereneApi.Handlers.Rest.Responses.Handlers
 
             if (!status.IsSuccessCode())
             {
-                _logger?.LogWarning("Http Request was not successful, received:{statusCode} - {message}",
-                    responseMessage.StatusCode, responseMessage.ReasonPhrase);
-
                 return await _failedResponseHandler.ProcessFailedRequestAsync<TResponse>(request, status, duration, responseMessage.Content);
             }
-
-            _logger?.LogTrace("The request received a successful response.");
-
+            
             try
             {
                 TResponse responseData;
@@ -115,14 +106,14 @@ namespace SereneApi.Handlers.Rest.Responses.Handlers
             }
             catch (JsonException jsonException)
             {
-                _logger?.LogError(jsonException, "Could not deserialize the returned value");
+                _logger?.LogError(jsonException, "Could not deserialize the response from the [{HttpMethod}] request to \"{Url}\"", request.HttpMethod, request.Url);
 
                 return RestApiResponse<TResponse>
                     .Failure(request, status, duration, "Could not deserialize returned value.", jsonException);
             }
             catch (Exception exception)
             {
-                _logger?.LogError(exception, "An Exception occurred whilst processing the response.");
+                _logger?.LogError(exception, "An Exception occurred whilst processing the response from the [{HttpMethod}] request to \"{Url}\"", request.HttpMethod, request.Url);
 
                 return RestApiResponse<TResponse>
                     .Failure(request, status, duration, "An Exception occurred whilst processing the response.", exception);

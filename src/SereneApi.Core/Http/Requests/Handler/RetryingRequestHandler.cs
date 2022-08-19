@@ -56,7 +56,7 @@ namespace SereneApi.Core.Http.Requests.Handler
 
                     _logger?.LogInformation(Logging.EventIds.ResponseReceivedEvent,
                         Logging.Messages.ReceivedResponse,
-                        request.HttpMethod.ToString(), GetRequestRoute(request), response.StatusCode);
+                        request.HttpMethod.ToString(), request.Url, response.StatusCode);
 
                     return response;
                 }
@@ -69,7 +69,7 @@ namespace SereneApi.Core.Http.Requests.Handler
                     if (_connection.RetryAttempts == 0 || requestsAttempted == _connection.RetryAttempts)
                     {
                         _logger?.LogWarning(Logging.EventIds.RetryEvent, canceledException,
-                            Logging.Messages.TimeoutNoRetry, request.HttpMethod, GetRequestRoute(request),
+                            Logging.Messages.TimeoutNoRetry, request.HttpMethod, request.Url,
                             requestsAttempted);
 
                         retryingRequest = false;
@@ -78,7 +78,7 @@ namespace SereneApi.Core.Http.Requests.Handler
                     {
                         _logger?.LogWarning(Logging.EventIds.RetryEvent, Logging.Messages.TimeoutRetry,
                             request.HttpMethod,
-                            GetRequestRoute(request), _connection.RetryAttempts - requestsAttempted);
+                            request.Url, _connection.RetryAttempts - requestsAttempted);
 
                         _eventManager?.PublishAsync(new RetryEvent(caller, request)).FireAndForget();
 
@@ -87,7 +87,7 @@ namespace SereneApi.Core.Http.Requests.Handler
                 }
             } while (retryingRequest);
 
-            throw new TimeoutException($"The [{request.HttpMethod}] request to \"{GetRequestRoute(request)}\" has Timed out; The retry limit has been reached after attempting {requestsAttempted} times");
+            throw new TimeoutException($"The [{request.HttpMethod}] request to \"{request.Url}\" has Timed out; The retry limit has been reached after attempting {requestsAttempted} times");
         }
     }
 }

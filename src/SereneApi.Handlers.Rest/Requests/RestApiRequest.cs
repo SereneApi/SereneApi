@@ -28,6 +28,7 @@ namespace SereneApi.Handlers.Rest.Requests
         public string ResourcePath { get; set; }
         public Type ResponseType { get; set; }
         public Uri Route { get; set; }
+        public Uri Url { get; set; }
         public IApiVersion Version { get; set; }
         public IReadOnlyDictionary<string, object> Headers { get; set; }
 
