@@ -14,114 +14,101 @@
 
         #endregion Supporting
 
+        #region 1XX - Informational
+
+        Continue = 100,
+        SwitchingProtocols = 101,
+        Processing = 102,
+        EarlyHints = 103,
+
+        #endregion
+
         #region 2XX - Success
 
-        /// <summary>
-        /// 200 - Indicates that the API successfully carried out the requested action.
-        /// </summary>
         Ok = 200,
-
-        /// <summary>
-        /// 201 - Indicates that the API successfully created the resource.
-        /// </summary>
         Created = 201,
-
-        /// <summary>
-        /// 202 - Indicates that the API has accepted the request and may take time to process it.
-        /// </summary>
         Accepted = 202,
-
-        /// <summary>
-        /// 204 -
-        /// </summary>
+        NonAuthoritativeInformation = 203,
         NoContent = 204,
+        ResetContent = 205,
+        PartialContent = 206,
+        MultiStatus = 207,
+        AlreadyReported = 208,
+
+        IMUsed = 226,
 
         #endregion 2XX - Success
 
         #region 3XX - Redirection
 
-        /// <summary>
-        /// 301 -
-        /// </summary>
+        MultipleChoices = 300,
+        Ambiguous = 300,
         MovedPermanently = 301,
-
-        /// <summary>
-        /// 302 -
-        /// </summary>
+        Moved = 301,
         Found = 302,
-
-        /// <summary>
-        /// 303 -
-        /// </summary>
+        Redirect = 302,
         SeeOther = 303,
-
-        /// <summary>
-        /// 304 -
-        /// </summary>
+        RedirectMethod = 303,
         NotModified = 304,
-
-        /// <summary>
-        /// 307 -
-        /// </summary>
+        UseProxy = 305,
+        Unused = 306,
         TemporaryRedirect = 307,
+        RedirectKeepVerb = 307,
+        PermanentRedirect = 308,
 
         #endregion 3XX - Redirection
 
         #region 4XX - Client Error
 
-        /// <summary>
-        /// 400 -
-        /// </summary>
         BadRequest = 400,
-
-        /// <summary>
-        /// 401 -
-        /// </summary>
         Unauthorized = 401,
-
-        /// <summary>
-        /// 403
-        /// </summary>
+        PaymentRequired = 402,
         Forbidden = 403,
-
-        /// <summary>
-        /// 404
-        /// </summary>
         NotFound = 404,
-
-        /// <summary>
-        /// 405
-        /// </summary>
         MethodNotAllowed = 405,
-
-        /// <summary>
-        /// 406
-        /// </summary>
         NotAcceptable = 406,
-
-        /// <summary>
-        /// 412
-        /// </summary>
+        ProxyAuthenticationRequired = 407,
+        RequestTimeout = 408,
+        Conflict = 409,
+        Gone = 410,
+        LengthRequired = 411,
         PreconditionFailed = 412,
-
-        /// <summary>
-        /// 415
-        /// </summary>
+        RequestEntityTooLarge = 413,
+        RequestUriTooLong = 414,
         UnsupportedMediaType = 415,
+        RequestedRangeNotSatisfiable = 416,
+        ExpectationFailed = 417,
+
+        MisdirectedRequest = 421,
+        UnprocessableEntity = 422,
+        Locked = 423,
+        FailedDependency = 424,
+
+        UpgradeRequired = 426,
+
+        PreconditionRequired = 428,
+        TooManyRequests = 429,
+
+        RequestHeaderFieldsTooLarge = 431,
+
+        UnavailableForLegalReasons = 451,
 
         #endregion 4XX - Client Error
 
         #region 5XX - Server Error
 
-        /// <summary>
-        /// 500
-        /// </summary>
         InternalServerError = 500,
-
-        /// <summary>
-        /// 501
-        /// </summary>
         NotImplemented = 501,
+        BadGateway = 502,
+        ServiceUnavailable = 503,
+        GatewayTimeout = 504,
+        HttpVersionNotSupported = 505,
+        VariantAlsoNegotiates = 506,
+        InsufficientStorage = 507,
+        LoopDetected = 508,
+
+        NotExtended = 510,
+        NetworkAuthenticationRequired = 511
 
         #endregion 5XX - Server Error
     }
