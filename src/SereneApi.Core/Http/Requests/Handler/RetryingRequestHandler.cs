@@ -56,7 +56,7 @@ namespace SereneApi.Core.Http.Requests.Handler
 
                     _logger?.LogInformation(Logging.EventIds.ResponseReceivedEvent,
                         Logging.Messages.ReceivedResponse,
-                        request.HttpMethod.ToString(), request.Url, response.StatusCode);
+                        request.HttpMethod.Method, request.Url, response.StatusCode);
 
                     return response;
                 }

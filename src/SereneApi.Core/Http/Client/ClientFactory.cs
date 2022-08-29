@@ -17,18 +17,15 @@ namespace SereneApi.Core.Http.Client
         protected virtual bool DisposeClient => true;
         protected IHandlerBuilder HandlerBuilder { get; }
         protected HandlerConfiguration HandlerConfiguration { get; }
-        protected ILifetimeScope Scope { get; }
 
-        /// <summary>
-        /// Creates a new instance of <see cref="ClientFactory"/>.
-        /// </summary>
-        /// <param name="scope">
-        /// The scope the <see cref="ClientFactory"/> may use when creating clients.
-        /// </param>
-        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
-        public ClientFactory(ILifetimeScope scope, IHandlerBuilder handlerBuilder, HandlerConfiguration handlerConfiguration)
+        private readonly IDependencyProvider _dependencies;
+
+        private readonly ILogger? _logger;
+
+        public ClientFactory(IDependencyProvider dependencies, IHandlerBuilder handlerBuilder, HandlerConfiguration handlerConfiguration, ILogger? logger = null)
         {
-            Scope = scope ?? throw new ArgumentNullException(nameof(scope));
+            _dependencies = dependencies;
+            _logger = logger;
 
             HandlerConfiguration = handlerConfiguration;
             HandlerBuilder = handlerBuilder;
@@ -37,42 +34,38 @@ namespace SereneApi.Core.Http.Client
         /// <inheritdoc cref="IClientFactory.BuildClientAsync"/>
         public Task<HttpClient> BuildClientAsync(out bool disposeClient)
         {
-            using IDependencyProvider dependencies = Scope.BuildProvider();
+            _logger?.LogDebug("Building Client");
 
-            dependencies.TryGetDependency(out ILogger logger);
-
-            logger?.LogDebug("Building Client");
-
-            HttpClient client = InternalBuildClient(dependencies, logger);
+            HttpClient client = InternalBuildClient();
 
             disposeClient = DisposeClient;
 
-            return InternalConfigureClientAsync(client, dependencies, logger);
+            return InternalConfigureClientAsync(client);
         }
 
-        protected virtual HttpClient InternalBuildClient(IDependencyProvider dependencies, ILogger logger = null)
+        protected virtual HttpClient InternalBuildClient()
         {
             return new HttpClient(HandlerBuilder.BuildHandler(), false);
         }
 
-        protected virtual async Task<HttpClient> InternalConfigureClientAsync(HttpClient client, IDependencyProvider dependencies, ILogger logger = null)
+        protected virtual async Task<HttpClient> InternalConfigureClientAsync(HttpClient client)
         {
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Accept.Clear();
 
-            SetConnection(client, dependencies, logger);
-            SetHeaders(client, dependencies, logger);
+            SetConnection(client);
+            SetHeaders(client);
 
-            await OnAuthorizationAsync(client, dependencies, logger);
+            await OnAuthorizationAsync(client);
 
             return client;
         }
 
-        protected virtual async Task OnAuthorizationAsync(HttpClient client, IDependencyProvider dependencies, ILogger logger = null)
+        protected virtual async Task OnAuthorizationAsync(HttpClient client)
         {
-            if (dependencies.TryGetDependency(out IAuthenticator authenticator))
+            if (_dependencies.TryGetDependency(out IAuthenticator authenticator))
             {
-                logger?.LogDebug("Authorizing request.");
+                _logger?.LogDebug("Authorizing request.");
 
                 IAuthentication authentication;
 
@@ -80,26 +73,26 @@ namespace SereneApi.Core.Http.Client
                 {
                     authentication = await authenticator.AuthorizeAsync();
 
-                    logger?.LogDebug("{scheme} Authorization successful.", authentication.Scheme);
+                    _logger?.LogDebug("{scheme} Authorization successful.", authentication.Scheme);
                 }
                 catch (Exception e)
                 {
-                    logger?.LogError(e, "An exception was encountered whilst authorizing the request.");
+                    _logger?.LogError(e, "An exception was encountered whilst authorizing the request.");
 
                     throw;
                 }
 
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);
             }
-            else if (dependencies.TryGetDependency(out IAuthentication authentication))
+            else if (_dependencies.TryGetDependency(out IAuthentication authentication))
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(authentication.Scheme, authentication.Parameter);
             }
         }
 
-        protected virtual void SetConnection(HttpClient client, IDependencyProvider dependencies, ILogger logger = null)
+        protected virtual void SetConnection(HttpClient client)
         {
-            IConnectionSettings connection = dependencies.GetRequiredDependency<IConnectionSettings>();
+            IConnectionSettings connection = _dependencies.GetRequiredDependency<IConnectionSettings>();
 
             if (connection.Timeout < 1)
             {
@@ -110,14 +103,14 @@ namespace SereneApi.Core.Http.Client
             client.Timeout = TimeSpan.FromSeconds(connection.Timeout);
         }
 
-        protected virtual void SetHeaders(HttpClient client, IDependencyProvider dependencies, ILogger logger = null)
+        protected virtual void SetHeaders(HttpClient client)
         {
             if (HandlerConfiguration.TryGetContentType(out ContentType contentType))
             {
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType.ToTypeString()));
             }
 
-            if (dependencies.TryGetDependency(out HandlerConfiguration configuration) && configuration.Contains(HandlerConfigurationKeys.RequestHeaders))
+            if (_dependencies.TryGetDependency(out HandlerConfiguration configuration) && configuration.Contains(HandlerConfigurationKeys.RequestHeaders))
             {
                 foreach ((string key, string value) in configuration.GetRequestHeaders())
                 {

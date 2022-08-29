@@ -5,6 +5,7 @@ using SereneApi.Extensions.Mocking.Rest.Configuration;
 using SereneApi.Extensions.Mocking.Rest.Handler.Manager;
 using SereneApi.Extensions.Mocking.Rest.Responses.Handlers;
 using System;
+using SereneApi.Extensions.Mocking.Rest.Responses.Manager;
 
 // ReSharper disable once CheckNamespace
 namespace SereneApi.Core.Configuration
@@ -23,13 +24,18 @@ namespace SereneApi.Core.Configuration
                 .DefineAs<IMockHandlerManager>()
                 .AsScoped();
 
-            apiConfiguration.Dependencies.Configure<IHandlerFactory>((p, f) =>
+            apiConfiguration.Dependencies.Register(p =>
             {
                 MockingConfiguration mockingConfiguration = p.CreateInstance<MockingConfiguration>();
 
                 configuration.Invoke(mockingConfiguration);
 
-                f.AddHandler(new MockMessageHandler(mockingConfiguration.BuildManager(), enableOutgoing, p.GetDependency<ILogger>()));
+                return mockingConfiguration.BuildManager();
+            }).AsScoped();
+
+            apiConfiguration.Dependencies.Configure<IHandlerFactory>((p, f) =>
+            {
+                f.AddHandler(new MockMessageHandler(enableOutgoing, p.GetRequiredDependency<IMockResponseManager>(), p.GetDependency<ILogger>()));
             });
         }
     }

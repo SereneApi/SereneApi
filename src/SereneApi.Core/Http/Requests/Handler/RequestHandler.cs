@@ -68,7 +68,7 @@ namespace SereneApi.Core.Http.Requests.Handler
                 {
                     response.Dispose();
 
-                    _logger?.LogDebug(Logging.EventIds.DisposedEvent, Logging.Messages.DisposedHttpResponseMessage, request.HttpMethod.ToString(), request.Url);
+                    _logger?.LogDebug(Logging.EventIds.DisposedEvent, Logging.Messages.DisposedHttpResponseMessage, request.HttpMethod.Method, request.Url);
                 }
             }
         }
@@ -107,7 +107,7 @@ namespace SereneApi.Core.Http.Requests.Handler
                 {
                     response.Dispose();
 
-                    _logger?.LogDebug(Logging.EventIds.DisposedEvent, Logging.Messages.DisposedHttpResponseMessage, request.HttpMethod.ToString(), request.Url);
+                    _logger?.LogDebug(Logging.EventIds.DisposedEvent, Logging.Messages.DisposedHttpResponseMessage, request.HttpMethod.Method, request.Url);
                 }
             }
         }
@@ -123,17 +123,17 @@ namespace SereneApi.Core.Http.Requests.Handler
 
             if (request.Content == null)
             {
-                _logger?.LogInformation(Logging.EventIds.PerformRequestEvent, Logging.Messages.PerformingRequest, request.HttpMethod.ToString(), request.Url);
+                _logger?.LogInformation(Logging.EventIds.PerformRequestEvent, Logging.Messages.PerformingRequest, request.HttpMethod.Method, request.Url);
             }
             else
             {
                 if (request.HttpMethod == HttpMethod.Get || request.HttpMethod == HttpMethod.Delete)
                 {
-                    _logger?.LogError(Logging.EventIds.InvalidMethodForRequestEvent, Logging.Messages.InvalidMethodForInBodyContent, request.HttpMethod.ToString());
+                    _logger?.LogError(Logging.EventIds.InvalidMethodForRequestEvent, Logging.Messages.InvalidMethodForInBodyContent, request.HttpMethod.Method);
                 }
                 else
                 {
-                    _logger?.LogDebug(Logging.EventIds.PerformRequestEvent, Logging.Messages.PerformingRequestWithContent, request.HttpMethod.ToString(), request.Url, request.Content.GetContent());
+                    _logger?.LogDebug(Logging.EventIds.PerformRequestEvent, Logging.Messages.PerformingRequestWithContent, request.HttpMethod.Method, request.Url, request.Content.GetContent());
                 }
 
                 requestMessage.Content = (HttpContent)request.Content.GetContent();
@@ -154,7 +154,7 @@ namespace SereneApi.Core.Http.Requests.Handler
 
                 _logger?.LogInformation(Logging.EventIds.ResponseReceivedEvent,
                     Logging.Messages.ReceivedResponse,
-                    request.HttpMethod.ToString(), request.Url, response.StatusCode);
+                    request.HttpMethod.Method, request.Url, response.StatusCode);
 
                 return response;
             }

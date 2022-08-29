@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using DeltaWare.Dependencies.Abstractions;
+using Microsoft.Extensions.Logging;
 using SereneApi.Extensions.Mocking.Rest.Responses.Manager;
 using System;
 using System.Net;
@@ -11,14 +12,15 @@ namespace SereneApi.Extensions.Mocking.Rest.Responses.Handlers
     internal class MockMessageHandler : DelegatingHandler
     {
         private readonly bool _enableOutgoing;
-        private readonly IMockResponseManager _responseManager;
+
         private readonly ILogger _logger;
 
-        public MockMessageHandler(IMockResponseManager manager, bool enableOutgoing, ILogger logger = null)
-        {
-            _responseManager = manager ?? throw new ArgumentNullException(nameof(manager));
+        private readonly IMockResponseManager _responseManager;
 
+        public MockMessageHandler(bool enableOutgoing, IMockResponseManager responseManager, ILogger? logger = null)
+        {
             _enableOutgoing = enableOutgoing;
+            _responseManager = responseManager;
             _logger = logger;
         }
 

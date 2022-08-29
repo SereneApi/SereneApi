@@ -78,7 +78,7 @@ namespace SereneApi.Core.Handler
             }
             catch (Exception exception)
             {
-                _logger?.LogError(exception, Logging.Messages.RequestEncounteredException, request.HttpMethod.ToString(), request.Url);
+                _logger?.LogError(exception, Logging.Messages.RequestEncounteredException, request.HttpMethod.Method, request.Url);
 
                 OnException(request, options, exception);
 
@@ -119,7 +119,7 @@ namespace SereneApi.Core.Handler
             }
             catch (Exception exception)
             {
-                _logger?.LogError(Logging.EventIds.ExceptionEvent, exception, Logging.Messages.RequestEncounteredException, request.HttpMethod.ToString(), request.Url);
+                _logger?.LogError(Logging.EventIds.ExceptionEvent, exception, Logging.Messages.RequestEncounteredException, request.HttpMethod.Method, request.Url);
 
                 OnException(request, options, exception);
 

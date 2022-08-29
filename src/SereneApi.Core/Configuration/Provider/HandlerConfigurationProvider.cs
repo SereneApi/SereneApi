@@ -41,18 +41,18 @@ namespace SereneApi.Core.Configuration.Provider
 
             dependencies.Register<ClientFactory>()
                 .DefineAs<IClientFactory>()
-                .AsSingleton();
+                .AsScoped();
 
             dependencies.Register<HandlerFactory>()
                 .DefineAs<IHandlerFactory>()
-                .AsSingleton();
+                .AsScoped();
 
             dependencies.Register(() => CredentialCache.DefaultCredentials)
                 .AsSingleton();
 
             dependencies.Register(p => (HandlerFactory)p.GetRequiredDependency<IHandlerFactory>())
                 .DefineAs<IHandlerBuilder>()
-                .AsSingleton();
+                .AsScoped();
 
             dependencies.Register(() => new ObjectSerializer())
                 .DefineAs<IObjectSerializer>()
