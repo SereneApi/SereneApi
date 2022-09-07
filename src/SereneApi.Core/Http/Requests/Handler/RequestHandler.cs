@@ -127,9 +127,9 @@ namespace SereneApi.Core.Http.Requests.Handler
             }
             else
             {
-                if (request.HttpMethod == HttpMethod.Get || request.HttpMethod == HttpMethod.Delete)
+                if (request.HttpMethod == HttpMethod.Delete)
                 {
-                    _logger?.LogError(Logging.EventIds.InvalidMethodForRequestEvent, Logging.Messages.InvalidMethodForInBodyContent, request.HttpMethod.Method);
+                    _logger?.LogWarning(Logging.EventIds.InvalidMethodForRequestEvent, Logging.Messages.InvalidMethodForInBodyContent, request.HttpMethod.Method);
                 }
                 else
                 {
