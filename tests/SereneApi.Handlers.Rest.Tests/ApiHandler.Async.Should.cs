@@ -182,6 +182,67 @@ namespace SereneApi.Handlers.Rest.Tests
         [InlineData("http://test.source.com:443", "test/resource")]
         [InlineData("http://test.source.com:443", "path/resource")]
         [InlineData("http://test.source.com:8080", "path/path/resource")]
+        public void SuccessfulGetRequestWithInBodyContent(string source, string resource)
+        {
+            #region Arrange
+
+            string finalSource = $"{source}/api/{resource}";
+
+            using ApiFactory apiFactory = new ApiFactory();
+
+            apiFactory.RegisterApi<IApiHandlerWrapper, BaseApiHandlerWrapper>(
+                o => o.SetSource(source, resource));
+
+            apiFactory.ExtendApi<IApiHandlerWrapper>(c =>
+            {
+                c.EnableMocking(mocking =>
+                {
+                    mocking.RegisterMockResponse()
+                        .ForMethod(HttpMethod.Get)
+                        .ForEndpoints(finalSource)
+                        .RespondsWith(Status.Ok);
+                });
+            });
+
+            #endregion Arrange
+
+            #region Act
+
+            using IApiHandlerWrapper apiHandlerWrapper = Should.NotThrow(() => apiFactory.Build<IApiHandlerWrapper>());
+
+            IApiResponse response = Should.NotThrow(async () => await apiHandlerWrapper.MakeRequest
+                .UsingMethod(HttpMethod.Get)
+                .WithInBodyContent(new MockPersonDto
+                {
+                    Age = 18,
+                    BirthDate = new DateTime(2000, 05, 18),
+                    Name = "John Smith"
+                })
+                .ExecuteAsync());
+
+            #endregion Act
+
+            #region Assert
+
+            apiHandlerWrapper.Connection.Resource.ShouldBe(resource);
+            apiHandlerWrapper.Connection.Source.ShouldBe(finalSource);
+
+            response.WasSuccessful.ShouldBe(true);
+            response.HasException.ShouldBe(false);
+            response.Message.ShouldBeNull();
+            response.Exception.ShouldBeNull();
+            response.Status.ShouldBe(Status.Ok);
+
+            #endregion Assert
+        }
+
+        [Theory]
+        [InlineData("http://test.source.com", "resource")]
+        [InlineData("http://test.source.com", "path/resource")]
+        [InlineData("http://test.source.com", "path/path/resource")]
+        [InlineData("http://test.source.com:443", "test/resource")]
+        [InlineData("http://test.source.com:443", "path/resource")]
+        [InlineData("http://test.source.com:8080", "path/path/resource")]
         public void SuccessfulBasicGetRequestGeneric(string source, string resource)
         {
             #region Arrange
