@@ -1,4 +1,5 @@
 ﻿using SereneApi.Resource.Exceptions;
+using SereneApi.Resource.Schema.Attributes;
 using SereneApi.Resource.Schema.Attributes.Request;
 using SereneApi.Resource.Schema.Enums;
 using System;
@@ -20,6 +21,8 @@ namespace SereneApi.Resource.Schema
 
         public string? Template { get; private set; }
 
+        public string? Version { get; set; }
+
         public bool HasParameters { get; private set; }
 
         public bool HasContent { get; private set; }
@@ -34,7 +37,7 @@ namespace SereneApi.Resource.Schema
         {
         }
 
-        public static ApiRouteSchema Create(MethodInfo method)
+        public static ApiRouteSchema Create(MethodInfo method, HttpResourceVersionAttribute? resourceVersionAttribute)
         {
             HttpRequestAttribute request = method.GetCustomAttribute<HttpRequestAttribute>();
 
@@ -43,10 +46,18 @@ namespace SereneApi.Resource.Schema
                 throw new ArgumentException($"Methods that do not implement the {nameof(HttpRequestAttribute)} are not supported.");
             }
 
+            var routeVersion = method.GetCustomAttribute<HttpResourceVersionAttribute>();
+
+            if (routeVersion != null)
+            {
+                resourceVersionAttribute = routeVersion;
+            }
+
             ApiRouteSchema schema = new ApiRouteSchema
             {
                 Method = request.Method,
                 Template = request.RouteTemplate,
+                Version = resourceVersionAttribute?.Version,
                 InvokedMethod = method,
                 Response = ApiRouteResponseSchema.Create(method)
             };

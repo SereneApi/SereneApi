@@ -1,9 +1,15 @@
-﻿namespace Testing
+﻿using SereneApi.Resource.Schema.Attributes;
+using SereneApi.Resource.Schema.Attributes.Parameter;
+using SereneApi.Resource.Schema.Attributes.Request;
+
+namespace Testing
 {
     [HttpResource("Users")]
+    [HttpResourceVersion("v1")]
     public interface IUsersApi
     {
         [HttpGetRequest]
+        [HttpResourceVersion("v2")]
         void GetUsersAsync();
 
         [HttpGetRequest("Search")]

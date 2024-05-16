@@ -21,6 +21,7 @@ namespace SereneApi.Resource.Schema
         public static ApiResourceSchema Create(Type apiResourceType)
         {
             HttpResourceAttribute resourceAttribute = apiResourceType.GetCustomAttribute<HttpResourceAttribute>()!;
+            HttpResourceVersionAttribute? resourceVersionAttribute = apiResourceType.GetCustomAttribute<HttpResourceVersionAttribute>()!;
 
             ApiResourceSchema schema = new ApiResourceSchema
             {
@@ -40,7 +41,7 @@ namespace SereneApi.Resource.Schema
 
             foreach (MethodInfo method in apiResourceType.GetMethods())
             {
-                routeSchemas.Add(method, ApiRouteSchema.Create(method));
+                routeSchemas.Add(method, ApiRouteSchema.Create(method, resourceVersionAttribute));
             }
 
             schema.RouteSchemas = routeSchemas;
