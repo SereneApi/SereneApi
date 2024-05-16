@@ -4,14 +4,14 @@ using SereneApi.Request.Attributes.Request;
 
 namespace Testing
 {
-    [HttpResource]
+    [HttpResource("Users")]
     public interface IUsersApi
     {
         [HttpGetRequest]
-        Task<List<User>> GetUsersAsync();
+        void GetUsersAsync();
 
-        [HttpGetRequest]
-        Task<List<User>> GetUsersAsync([HttpQuery("first")] string firstName, [HttpQuery] string lastName);
+        [HttpGetRequest("Search")]
+        Task<List<User>> SearchUsersAsync([HttpQuery("first")] string firstName, [HttpQuery] string lastName);
 
         [HttpGetRequest("{id}")]
         Task<User> GetUserAsync(string id);

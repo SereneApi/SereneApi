@@ -16,13 +16,17 @@ namespace SereneApi.Resource.Schema
     {
         public HttpMethod Method { get; private set; } = null!;
 
-        public string? Template { get; private set; }
+        public MethodInfo InvokedMethod { get; private set; } = null!;
 
+        public string? Template { get; private set; }
+        
         public bool HasParameters { get; private set; }
 
         public bool HasContent { get; private set; }
 
         public bool HasQuery { get; private set; }
+
+        public ApiRouteResponseSchema? Response { get; private set; }
 
         public IReadOnlyCollection<ApiRouteParameterSchema> Parameters { get; private set; } = null!;
 
@@ -43,11 +47,14 @@ namespace SereneApi.Resource.Schema
             {
                 Method = request.Method,
                 Template = request.RouteTemplate,
+                InvokedMethod = method,
+                Response = ApiRouteResponseSchema.Create(method)
             };
 
             IReadOnlyDictionary<string, int> parameterTemplateMap = schema.BuildParameterTemplateMap();
 
             schema.Parameters = BuildRouteParameters(method.GetParameters(), parameterTemplateMap);
+            schema.ValidateParameters(method.Name);
             schema.ValidateEndpointTemplateParameters(parameterTemplateMap, method.Name);
             schema.HasQuery = schema.Parameters.Any(p => p.Type == ApiRouteParameterType.Query);
             schema.HasContent = schema.Parameters.Any(p => p.Type == ApiRouteParameterType.Content);
@@ -55,7 +62,7 @@ namespace SereneApi.Resource.Schema
 
             return schema;
         }
-
+        
         public IEnumerable<ApiRouteParameterSchema> GetRouteParameterSchemas() =>
             Parameters.Where(p => p.Type == ApiRouteParameterType.TemplateParameter);
 
@@ -103,6 +110,16 @@ namespace SereneApi.Resource.Schema
             if (parameters.Any(p => p.TemplateIndex == null))
             {
                 throw new InvalidOperationException();
+            }
+        }
+
+        private void ValidateParameters(string methodName)
+        {
+            ApiRouteParameterSchema[] contentParameters = Parameters.Where(p => p.Type == ApiRouteParameterType.Content).ToArray();
+
+            if (contentParameters.Length > 1)
+            {
+                throw InvalidResourceSchemaException.MultipleContentSchemasFound(contentParameters, methodName);
             }
         }
 

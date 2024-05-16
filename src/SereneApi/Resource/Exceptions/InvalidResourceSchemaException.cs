@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace SereneApi.Resource.Exceptions
 {
-    public class InvalidResourceSchemaException : Exception
+    public sealed class InvalidResourceSchemaException : Exception
     {
         private InvalidResourceSchemaException(string message) : base(message)
         {
@@ -25,6 +25,16 @@ namespace SereneApi.Resource.Exceptions
             missingParameters = parameters.Select(p => p.Name).Except(parameterTemplateMap.Keys);
 
             return new InvalidResourceSchemaException($"The Method {methodName} contains Method Parameters that do not map to the Endpoint Template [{string.Join(',', missingParameters)}]");
+        }
+
+        internal static InvalidResourceSchemaException MultipleContentSchemasFound(ApiRouteParameterSchema[] parameters, string methodName)
+        {
+            return new InvalidResourceSchemaException($"The Method {methodName} contains multiple content parameters [{string.Join(',', parameters.Select(p => p.Name))}], no more than 1 can be defined at a time.");
+        }
+
+        internal static InvalidResourceSchemaException DuplicateResourceTemplatesFound(ApiRouteSchema[] routes, Type resourceType)
+        {
+            return new InvalidResourceSchemaException($"The Resource [{resourceType.Name}] has Multiple Routes [{string.Join(',', routes.Select(r => r.InvokedMethod.Name))}] with the Matching Templates [{string.Join(',', routes.Select(r => r.Template))}]");
         }
     }
 }

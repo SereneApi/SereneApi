@@ -8,7 +8,7 @@ namespace SereneApi.Request.Attributes.Request
         {
         }
 
-        public HttpGetRequestAttribute(string endPointTemplate) : base(HttpMethod.Get, endPointTemplate)
+        public HttpGetRequestAttribute(string routeTemplate) : base(HttpMethod.Get, routeTemplate)
         {
         }
     }

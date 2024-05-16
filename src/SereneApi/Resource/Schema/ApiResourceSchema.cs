@@ -2,26 +2,30 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Net.Http;
 using System.Reflection;
+using SereneApi.Resource.Exceptions;
 
 namespace SereneApi.Resource.Schema
 {
-    [DebuggerDisplay("Resource: {Name}")]
+    [DebuggerDisplay("Resource: {Name} Routes: {RouteSchemas.Count}")]
     internal sealed class ApiResourceSchema
     {
         public string Name { get; private set; } = null!;
 
-        public IReadOnlyDictionary<MethodInfo, ApiRouteSchema> RouteSchemas { get; private set; } = null!;
+        public Type ResourceType { get; private set; } = null!;
 
-        private ApiResourceSchema()
-        {
-        }
+        public IReadOnlyDictionary<MethodInfo, ApiRouteSchema> RouteSchemas { get; private set; } = null!;
 
         public static ApiResourceSchema Create(Type apiResourceType)
         {
             HttpResourceAttribute resourceAttribute = apiResourceType.GetCustomAttribute<HttpResourceAttribute>()!;
 
-            ApiResourceSchema schema = new ApiResourceSchema();
+            ApiResourceSchema schema = new ApiResourceSchema
+            {
+                ResourceType = apiResourceType
+            };
 
             if (resourceAttribute.Resource != null)
             {
@@ -41,7 +45,27 @@ namespace SereneApi.Resource.Schema
 
             schema.RouteSchemas = routeSchemas;
 
+            schema.ValidateRoutes();
+
             return schema;
+        }
+
+        private void ValidateRoutes()
+        {
+            List<IGrouping<HttpMethod, ApiRouteSchema>> methodGrouping = RouteSchemas.Values.GroupBy(v => v.Method).ToList();
+
+            foreach (IGrouping<HttpMethod, ApiRouteSchema> methodGroup in methodGrouping)
+            {
+                var templateGrouping = methodGroup.GroupBy(v => v.Template);
+
+                foreach (var routeSchema in templateGrouping)
+                {
+                    if (routeSchema.Count() > 1)
+                    {
+                        throw InvalidResourceSchemaException.DuplicateResourceTemplatesFound(routeSchema.ToArray(), ResourceType);
+                    }
+                }
+            }
         }
     }
 }

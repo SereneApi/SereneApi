@@ -12,7 +12,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi", "src\SereneApi\SereneApi.csproj", "{D32D45A3-C751-40E0-8A5B-C57D41EEF2F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.csproj", "{7C82120D-DCEB-4201-A36A-1C43C06C54AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing", "Testing\Testing.csproj", "{7C82120D-DCEB-4201-A36A-1C43C06C54AA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{82C4773B-B0A9-4B3D-9FCC-DEC751E0A9F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SereneApi.Tests", "tests\SereneApi.Tests\SereneApi.Tests.csproj", "{817F92B6-2FD8-4373-8070-FD952EA68358}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,9 +32,16 @@ Global
 		{7C82120D-DCEB-4201-A36A-1C43C06C54AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C82120D-DCEB-4201-A36A-1C43C06C54AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C82120D-DCEB-4201-A36A-1C43C06C54AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{817F92B6-2FD8-4373-8070-FD952EA68358}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{817F92B6-2FD8-4373-8070-FD952EA68358}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{817F92B6-2FD8-4373-8070-FD952EA68358}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{817F92B6-2FD8-4373-8070-FD952EA68358}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{817F92B6-2FD8-4373-8070-FD952EA68358} = {82C4773B-B0A9-4B3D-9FCC-DEC751E0A9F9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1434419F-CF49-4407-B3E1-F554AA0DBC33}

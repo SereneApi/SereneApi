@@ -1,4 +1,5 @@
 ﻿using SereneApi.Resource;
+using SereneApi.Resource.Source;
 
 namespace Testing
 {
@@ -6,12 +7,12 @@ namespace Testing
     {
         static void Main(string[] args)
         {
-            var registry = ApiResourceRegistry.Create();
+            var registry = new ApiResourceProvider(new AssemblyApiResourceCollection());
 
             IUsersApi userApi = registry.CreateResourceHandler<IUsersApi>();
 
             //userApi.LinkUserToArticleAsync("article:1234", "user:1234");
-            userApi.GetUsersAsync("john", "smith");
+            //userApi.GetUsersAsync("john", "smith");
         }
     }
 }

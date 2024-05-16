@@ -6,12 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Castle.Core" Version="5.1.1" />
-    <PackageReference Include="DeltaWare.Dependencies.Abstractions" Version="7.0.0.1" />
+    <Compile Remove="Resource\Handling\**" />
+    <EmbeddedResource Remove="Resource\Handling\**" />
+    <None Remove="Resource\Handling\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resource\Handling\" />
+    <PackageReference Include="Castle.Core" Version="5.1.1" />
+    <PackageReference Include="DeltaWare.Dependencies.Abstractions" Version="7.0.0.1" />
   </ItemGroup>
 
 </Project>

@@ -10,13 +10,13 @@ namespace SereneApi.Request.Attributes.Request
 
         public string? RouteTemplate { get; }
 
-        public HttpRequestAttribute(HttpMethod method)
+        protected HttpRequestAttribute(HttpMethod method)
         {
             Method = method;
             RouteTemplate = null;
         }
 
-        public HttpRequestAttribute(HttpMethod method, string routeTemplate)
+        protected HttpRequestAttribute(HttpMethod method, string routeTemplate)
         {
             Method = method;
             RouteTemplate = routeTemplate;

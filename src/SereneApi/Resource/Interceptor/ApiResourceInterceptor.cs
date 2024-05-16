@@ -6,16 +6,13 @@ using SereneApi.Resource.Settings;
 
 namespace SereneApi.Resource.Interceptor
 {
-    internal sealed class ResourceInterceptor : IInterceptor
+    internal sealed class ApiResourceInterceptor : IInterceptor
     {
         private readonly ApiResourceSchema _resourceSchema;
 
-        private readonly IResourceSettings _resourceSettings;
-
-        public ResourceInterceptor(ApiResourceSchema resourceSchema, IResourceSettings resourceSettings)
+        public ApiResourceInterceptor(ApiResourceSchema resourceSchema)
         {
             _resourceSchema = resourceSchema;
-            _resourceSettings = resourceSettings;
         }
 
         public void Intercept(IInvocation invocation)

@@ -8,7 +8,7 @@ namespace SereneApi.Request.Attributes.Request
         {
         }
 
-        public HttpPutRequestAttribute(string endPointTemplate) : base(HttpMethod.Put, endPointTemplate)
+        public HttpPutRequestAttribute(string routeTemplate) : base(HttpMethod.Put, routeTemplate)
         {
         }
     }
