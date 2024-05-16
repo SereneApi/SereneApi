@@ -12,7 +12,7 @@ using System.Text.RegularExpressions;
 namespace SereneApi.Resource.Schema
 {
     [DebuggerDisplay("[{Method}] - {Template}")]
-    internal sealed class ApiEndpointSchema
+    internal sealed class ApiRouteSchema
     {
         public HttpMethod Method { get; private set; } = null!;
 
@@ -24,13 +24,13 @@ namespace SereneApi.Resource.Schema
 
         public bool HasQuery { get; private set; }
 
-        public IReadOnlyCollection<ApiEndpointParameterSchema> Parameters { get; private set; } = null!;
+        public IReadOnlyCollection<ApiRouteParameterSchema> Parameters { get; private set; } = null!;
 
-        private ApiEndpointSchema()
+        private ApiRouteSchema()
         {
         }
 
-        public static ApiEndpointSchema Create(MethodInfo method)
+        public static ApiRouteSchema Create(MethodInfo method)
         {
             HttpRequestAttribute request = method.GetCustomAttribute<HttpRequestAttribute>();
 
@@ -39,31 +39,31 @@ namespace SereneApi.Resource.Schema
                 throw new ArgumentException($"Methods that do not implement the {nameof(HttpRequestAttribute)} are not supported.");
             }
 
-            ApiEndpointSchema schema = new ApiEndpointSchema
+            ApiRouteSchema schema = new ApiRouteSchema
             {
                 Method = request.Method,
-                Template = request.EndpointTemplate,
+                Template = request.RouteTemplate,
             };
 
             IReadOnlyDictionary<string, int> parameterTemplateMap = schema.BuildParameterTemplateMap();
 
-            schema.Parameters = BuildEndpointParameters(method.GetParameters(), parameterTemplateMap);
+            schema.Parameters = BuildRouteParameters(method.GetParameters(), parameterTemplateMap);
             schema.ValidateEndpointTemplateParameters(parameterTemplateMap, method.Name);
-            schema.HasQuery = schema.Parameters.Any(p => p.Type == ApiEndpointParameterType.Query);
-            schema.HasContent = schema.Parameters.Any(p => p.Type == ApiEndpointParameterType.Content);
-            schema.HasParameters = schema.Parameters.Any(p => p.Type == ApiEndpointParameterType.TemplateParameter);
+            schema.HasQuery = schema.Parameters.Any(p => p.Type == ApiRouteParameterType.Query);
+            schema.HasContent = schema.Parameters.Any(p => p.Type == ApiRouteParameterType.Content);
+            schema.HasParameters = schema.Parameters.Any(p => p.Type == ApiRouteParameterType.TemplateParameter);
 
             return schema;
         }
 
-        public IEnumerable<ApiEndpointParameterSchema> GetTemplateParameterSchemas() =>
-            Parameters.Where(p => p.Type == ApiEndpointParameterType.TemplateParameter);
+        public IEnumerable<ApiRouteParameterSchema> GetRouteParameterSchemas() =>
+            Parameters.Where(p => p.Type == ApiRouteParameterType.TemplateParameter);
 
-        public IEnumerable<ApiEndpointParameterSchema> GetQuerySchemas() =>
-            Parameters.Where(p => p.Type == ApiEndpointParameterType.Query);
+        public IEnumerable<ApiRouteParameterSchema> GetQuerySchemas() =>
+            Parameters.Where(p => p.Type == ApiRouteParameterType.Query);
 
-        public ApiEndpointParameterSchema? GetContactSchema() =>
-            Parameters.SingleOrDefault(p => p.Type == ApiEndpointParameterType.Content);
+        public ApiRouteParameterSchema? GetContactSchema() =>
+            Parameters.SingleOrDefault(p => p.Type == ApiRouteParameterType.Content);
 
         private IReadOnlyDictionary<string, int> BuildParameterTemplateMap()
         {
@@ -93,7 +93,7 @@ namespace SereneApi.Resource.Schema
 
         private void ValidateEndpointTemplateParameters(IReadOnlyDictionary<string, int> parameterTemplateMap, string methodName)
         {
-            ApiEndpointParameterSchema[] parameters = GetTemplateParameterSchemas().ToArray();
+            ApiRouteParameterSchema[] parameters = GetRouteParameterSchemas().ToArray();
 
             if (parameterTemplateMap.Count != parameters.Length)
             {
@@ -106,23 +106,23 @@ namespace SereneApi.Resource.Schema
             }
         }
 
-        private static List<ApiEndpointParameterSchema> BuildEndpointParameters(ParameterInfo[] methodParameters, IReadOnlyDictionary<string, int> parameterTemplateMap)
+        private static List<ApiRouteParameterSchema> BuildRouteParameters(ParameterInfo[] methodParameters, IReadOnlyDictionary<string, int> parameterTemplateMap)
         {
-            List<ApiEndpointParameterSchema> parameters = new List<ApiEndpointParameterSchema>();
+            List<ApiRouteParameterSchema> parameters = new List<ApiRouteParameterSchema>();
 
             for (int i = 0; i < methodParameters.Length; i++)
             {
-                parameters.Add(ApiEndpointParameterSchema.Create(i, methodParameters[i], parameterTemplateMap));
+                parameters.Add(ApiRouteParameterSchema.Create(i, methodParameters[i], parameterTemplateMap));
             }
 
             return parameters;
         }
 
-        private static MatchCollection FindParameters(string endpointTemplate)
+        private static MatchCollection FindParameters(string RouteTemplate)
         {
             Regex matchCurlyBraces = new Regex("{([^}]*)}"); // Matches anything inside curly braces
 
-            return matchCurlyBraces.Matches(endpointTemplate);
+            return matchCurlyBraces.Matches(RouteTemplate);
         }
     }
 }

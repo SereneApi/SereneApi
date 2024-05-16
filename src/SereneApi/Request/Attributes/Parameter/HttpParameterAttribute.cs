@@ -8,15 +8,15 @@ namespace SereneApi.Request.Attributes.Parameter
     {
         public string? Name { get; }
 
-        public ApiEndpointParameterType Type { get; }
+        public ApiRouteParameterType Type { get; }
 
-        protected HttpParameterAttribute(ApiEndpointParameterType type)
+        protected HttpParameterAttribute(ApiRouteParameterType type)
         {
             Name = null;
             Type = type;
         }
 
-        protected HttpParameterAttribute(ApiEndpointParameterType type, string name)
+        protected HttpParameterAttribute(ApiRouteParameterType type, string name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {

@@ -1,42 +1,42 @@
 ﻿using Castle.DynamicProxy;
+using SereneApi.Helpers;
 using SereneApi.Resource.Schema;
 using System.Collections.Generic;
 using System.Linq;
-using SereneApi.Helpers;
 
 namespace SereneApi.Request.Factory
 {
     internal class RequestFactory
     {
-        private string? _endpoint;
+        private string? _route;
 
         private string? _query;
 
-        public void AddEndpoint(IInvocation invocation, ApiEndpointSchema endpointSchema)
+        public void AddEndpoint(IInvocation invocation, ApiRouteSchema routeSchema)
         {
-            if (!endpointSchema.HasParameters)
+            if (!routeSchema.HasParameters)
             {
-                _endpoint = endpointSchema.Template;
+                _route = routeSchema.Template;
             }
 
-            var templateParameters = endpointSchema
-                .GetTemplateParameterSchemas()
+            var routeParameters = routeSchema
+                .GetRouteParameterSchemas()
                 .OrderBy(p => p.TemplateIndex)
                 .ToArray();
 
-            object[] parameters = new object[templateParameters.Length];
+            object[] parameters = new object[routeParameters.Length];
 
-            for (int i = 0; i < templateParameters.Length; i++)
+            for (int i = 0; i < routeParameters.Length; i++)
             {
-                parameters[i] = invocation.Arguments[templateParameters[i].ParameterIndex];
+                parameters[i] = invocation.Arguments[routeParameters[i].ParameterIndex];
             }
 
-            _endpoint = string.Format(endpointSchema.Template!, parameters);
+            _route = string.Format(routeSchema.Template!, parameters);
         }
 
-        public void AddQuery(IInvocation invocation, ApiEndpointSchema endpointSchema)
+        public void AddQuery(IInvocation invocation, ApiRouteSchema routeSchema)
         {
-            var queryParameters = endpointSchema.GetQuerySchemas().ToArray();
+            var queryParameters = routeSchema.GetQuerySchemas().ToArray();
 
             Dictionary<string, string> querySections = new Dictionary<string, string>();
 
@@ -45,7 +45,7 @@ namespace SereneApi.Request.Factory
                 querySections.Add(queryParameters[i].Name, invocation.Arguments[queryParameters[i].ParameterIndex].ToString());
             }
 
-            _endpoint = QueryHelper.BuildQueryString(querySections);
+            _query = QueryHelper.BuildQueryString(querySections);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace SereneApi.Resource.Schema
     {
         public string Name { get; private set; } = null!;
 
-        public IReadOnlyDictionary<MethodInfo, ApiEndpointSchema> EndpointSchemas { get; private set; } = null!;
+        public IReadOnlyDictionary<MethodInfo, ApiRouteSchema> RouteSchemas { get; private set; } = null!;
 
         private ApiResourceSchema()
         {
@@ -32,14 +32,14 @@ namespace SereneApi.Resource.Schema
                 schema.Name = apiResourceType.Name.Substring(1, apiResourceType.Name.Length - 4);
             }
 
-            Dictionary<MethodInfo, ApiEndpointSchema> endpointSchemas = new Dictionary<MethodInfo, ApiEndpointSchema>();
+            Dictionary<MethodInfo, ApiRouteSchema> routeSchemas = new Dictionary<MethodInfo, ApiRouteSchema>();
 
             foreach (MethodInfo method in apiResourceType.GetMethods())
             {
-                endpointSchemas.Add(method, ApiEndpointSchema.Create(method));
+                routeSchemas.Add(method, ApiRouteSchema.Create(method));
             }
 
-            schema.EndpointSchemas = endpointSchemas;
+            schema.RouteSchemas = routeSchemas;
 
             return schema;
         }

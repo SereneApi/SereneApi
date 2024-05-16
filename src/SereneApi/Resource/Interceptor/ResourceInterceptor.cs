@@ -1,33 +1,32 @@
 ﻿using Castle.DynamicProxy;
-using SereneApi.Helpers;
+using SereneApi.Request.Factory;
 using SereneApi.Resource.Schema;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using SereneApi.Request.Factory;
+using SereneApi.Resource.Settings;
 
-namespace SereneApi.Resource.Handling
+namespace SereneApi.Resource.Interceptor
 {
-    internal sealed class ResourceHandler : IInterceptor
+    internal sealed class ResourceInterceptor : IInterceptor
     {
         private readonly ApiResourceSchema _resourceSchema;
 
+        private readonly IResourceSettings _resourceSettings;
 
-
-        public ResourceHandler(ApiResourceSchema resourceSchema)
+        public ResourceInterceptor(ApiResourceSchema resourceSchema, IResourceSettings resourceSettings)
         {
             _resourceSchema = resourceSchema;
+            _resourceSettings = resourceSettings;
         }
 
         public void Intercept(IInvocation invocation)
         {
-            if (!_resourceSchema.EndpointSchemas.TryGetValue(invocation.Method, out ApiEndpointSchema invocationSchema))
+            if (!_resourceSchema.RouteSchemas.TryGetValue(invocation.Method, out ApiRouteSchema invocationSchema))
             {
                 throw new InvalidOperationException();
             }
 
             RequestFactory requestFactory = new RequestFactory();
-            
+
             requestFactory.AddEndpoint(invocation, invocationSchema);
 
             if (invocationSchema.HasQuery)

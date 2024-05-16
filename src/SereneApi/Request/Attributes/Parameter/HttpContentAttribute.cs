@@ -4,7 +4,7 @@ namespace SereneApi.Request.Attributes.Parameter
 {
     public sealed class HttpContentAttribute : HttpParameterAttribute
     {
-        public HttpContentAttribute() : base(ApiEndpointParameterType.Content)
+        public HttpContentAttribute() : base(ApiRouteParameterType.Content)
         {
         }
     }

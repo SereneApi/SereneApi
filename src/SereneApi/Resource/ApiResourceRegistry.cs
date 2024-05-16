@@ -31,7 +31,7 @@ namespace SereneApi.Resource
         {
             ProxyGenerator generator = new ProxyGenerator();
 
-            return generator.CreateInterfaceProxyWithoutTarget<T>(new ResourceHandler(_resourceSchemas[typeof(T)]));
+            return generator.CreateInterfaceProxyWithoutTarget<T>(new ResourceInterceptor(_resourceSchemas[typeof(T)]));
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace SereneApi.Resource.Schema.Enums
 {
-    public enum ApiEndpointParameterType
+    public enum ApiRouteParameterType
     {
         TemplateParameter,
         Query,

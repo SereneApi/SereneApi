@@ -4,11 +4,11 @@ namespace SereneApi.Request.Attributes.Parameter
 {
     public sealed class HttpQueryAttribute : HttpParameterAttribute
     {
-        public HttpQueryAttribute() : base(ApiEndpointParameterType.Query)
+        public HttpQueryAttribute() : base(ApiRouteParameterType.Query)
         {
         }
 
-        public HttpQueryAttribute(string name) : base(ApiEndpointParameterType.Query, name)
+        public HttpQueryAttribute(string name) : base(ApiRouteParameterType.Query, name)
         {
         }
     }

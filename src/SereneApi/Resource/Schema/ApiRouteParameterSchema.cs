@@ -7,19 +7,19 @@ using System.Reflection;
 namespace SereneApi.Resource.Schema
 {
     [DebuggerDisplay("[{Type}] - {Name} Index: {ParameterIndex} => {TemplateIndex}")]
-    internal sealed class ApiEndpointParameterSchema
+    internal sealed class ApiRouteParameterSchema
     {
         public string Name { get; private set; } = null!;
 
         public int ParameterIndex { get; private set; }
 
-        public ApiEndpointParameterType Type { get; private set; }
+        public ApiRouteParameterType Type { get; private set; }
 
         public int? TemplateIndex { get; private set; }
 
-        public static ApiEndpointParameterSchema Create(int parameterIndex, ParameterInfo parameter, IReadOnlyDictionary<string, int> parameterTemplateMap)
+        public static ApiRouteParameterSchema Create(int parameterIndex, ParameterInfo parameter, IReadOnlyDictionary<string, int> parameterTemplateMap)
         {
-            ApiEndpointParameterSchema schema = new ApiEndpointParameterSchema
+            ApiRouteParameterSchema schema = new ApiRouteParameterSchema
             {
                 Name = parameter.Name,
                 ParameterIndex = parameterIndex
@@ -38,7 +38,7 @@ namespace SereneApi.Resource.Schema
             }
             else
             {
-                schema.Type = ApiEndpointParameterType.TemplateParameter;
+                schema.Type = ApiRouteParameterType.TemplateParameter;
 
                 if (parameterTemplateMap.TryGetValue(parameter.Name, out int index))
                 {

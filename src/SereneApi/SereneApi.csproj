@@ -10,4 +10,8 @@
     <PackageReference Include="DeltaWare.Dependencies.Abstractions" Version="7.0.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Resource\Handling\" />
+  </ItemGroup>
+
 </Project>

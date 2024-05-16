@@ -11,7 +11,7 @@ namespace SereneApi.Resource.Exceptions
         {
         }
 
-        internal static InvalidResourceSchemaException TemplateParameterMissMatch(ApiEndpointParameterSchema[] parameters, IReadOnlyDictionary<string, int> parameterTemplateMap, string methodName)
+        internal static InvalidResourceSchemaException TemplateParameterMissMatch(ApiRouteParameterSchema[] parameters, IReadOnlyDictionary<string, int> parameterTemplateMap, string methodName)
         {
             IEnumerable<string> missingParameters;
 

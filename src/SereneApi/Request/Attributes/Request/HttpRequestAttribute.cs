@@ -8,18 +8,18 @@ namespace SereneApi.Request.Attributes.Request
     {
         public HttpMethod Method { get; }
 
-        public string? EndpointTemplate { get; }
+        public string? RouteTemplate { get; }
 
         public HttpRequestAttribute(HttpMethod method)
         {
             Method = method;
-            EndpointTemplate = null;
+            RouteTemplate = null;
         }
 
-        public HttpRequestAttribute(HttpMethod method, string endpointTemplate)
+        public HttpRequestAttribute(HttpMethod method, string routeTemplate)
         {
             Method = method;
-            EndpointTemplate = endpointTemplate;
+            RouteTemplate = routeTemplate;
         }
     }
 }
