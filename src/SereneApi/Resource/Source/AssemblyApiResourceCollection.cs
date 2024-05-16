@@ -1,5 +1,5 @@
 ﻿using SereneApi.Helpers;
-using SereneApi.Request.Attributes;
+using SereneApi.Resource.Schema.Attributes;
 using System;
 using System.Collections.Generic;
 

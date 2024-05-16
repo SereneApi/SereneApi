@@ -1,4 +1,4 @@
-﻿namespace SereneApi.Request.Attributes
+﻿namespace SereneApi.Resource.Schema.Attributes
 {
     public sealed class HttpEndpointVersionAttribute
     {

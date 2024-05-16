@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 
-namespace SereneApi.Request.Attributes.Request
+namespace SereneApi.Resource.Schema.Attributes.Request
 {
     public sealed class HttpPutRequestAttribute : HttpRequestAttribute
     {

@@ -1,5 +1,5 @@
-﻿using SereneApi.Request.Attributes.Request;
-using SereneApi.Resource.Exceptions;
+﻿using SereneApi.Resource.Exceptions;
+using SereneApi.Resource.Schema.Attributes.Request;
 using SereneApi.Resource.Schema.Enums;
 using System;
 using System.Collections.Generic;
@@ -19,7 +19,7 @@ namespace SereneApi.Resource.Schema
         public MethodInfo InvokedMethod { get; private set; } = null!;
 
         public string? Template { get; private set; }
-        
+
         public bool HasParameters { get; private set; }
 
         public bool HasContent { get; private set; }
@@ -62,7 +62,7 @@ namespace SereneApi.Resource.Schema
 
             return schema;
         }
-        
+
         public IEnumerable<ApiRouteParameterSchema> GetRouteParameterSchemas() =>
             Parameters.Where(p => p.Type == ApiRouteParameterType.TemplateParameter);
 

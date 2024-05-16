@@ -1,7 +1,4 @@
 using FluentAssertions;
-using SereneApi.Request.Attributes;
-using SereneApi.Request.Attributes.Parameter;
-using SereneApi.Request.Attributes.Request;
 using SereneApi.Resource;
 using SereneApi.Resource.Exceptions;
 

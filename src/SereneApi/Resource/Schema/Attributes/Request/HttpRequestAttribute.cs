@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 
-namespace SereneApi.Request.Attributes.Request
+namespace SereneApi.Resource.Schema.Attributes.Request
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class HttpRequestAttribute : Attribute

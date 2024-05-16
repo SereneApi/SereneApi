@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SereneApi.Request.Attributes
+namespace SereneApi.Resource.Schema.Attributes
 {
     [AttributeUsage(AttributeTargets.Interface)]
     public sealed class HttpResourceAttribute : Attribute

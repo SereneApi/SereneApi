@@ -1,4 +1,4 @@
-﻿using SereneApi.Request.Attributes.Parameter;
+﻿using SereneApi.Resource.Schema.Attributes.Parameter;
 using SereneApi.Resource.Schema.Enums;
 using System.Collections.Generic;
 using System.Diagnostics;

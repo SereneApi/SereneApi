@@ -2,7 +2,6 @@
 using SereneApi.Request.Factory;
 using SereneApi.Resource.Schema;
 using System;
-using SereneApi.Resource.Settings;
 
 namespace SereneApi.Resource.Interceptor
 {

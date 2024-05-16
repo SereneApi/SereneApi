@@ -7,19 +7,6 @@ namespace SereneApi.Helpers
 {
     internal static class QueryHelper
     {
-        /// <summary>
-        /// Builds the query section.
-        /// </summary>
-        private static string BuildQuerySection(KeyValuePair<string, string> querySection)
-        {
-            return $"{querySection.Key}={querySection.Value}";
-        }
-
-        /// <summary>
-        /// Builds the query string using the supplied array of strings.
-        /// </summary>
-        /// <param name="querySections">Each string index represents an element in the query.</param>
-        /// <exception cref="ArgumentNullException">Thrown when a null value is provided.</exception>
         public static string BuildQueryString(Dictionary<string, string> querySections)
         {
             if (querySections == null)
@@ -27,13 +14,11 @@ namespace SereneApi.Helpers
                 throw new ArgumentNullException(nameof(querySections));
             }
 
-            // No sections return empty string.
             if (querySections.Count == 0)
             {
                 return string.Empty;
             }
 
-            // There is only one Section so we return the first section.
             if (querySections.Count == 1)
             {
                 KeyValuePair<string, string> querySection = querySections.First();
@@ -43,7 +28,6 @@ namespace SereneApi.Helpers
 
             StringBuilder queryBuilder = new StringBuilder();
 
-            // AddDependency the question mark to the front of the query.
             queryBuilder.Append("?");
 
             foreach (KeyValuePair<string, string> querySection in querySections)
@@ -53,7 +37,6 @@ namespace SereneApi.Helpers
 
             string queryString = queryBuilder.ToString();
 
-            // If ampersand is the last character of the query string remove it.
             if (queryString.Last() == '&')
             {
                 queryString = queryString.Remove(queryString.Length - 1);
@@ -61,5 +44,8 @@ namespace SereneApi.Helpers
 
             return queryString;
         }
+
+        private static string BuildQuerySection(KeyValuePair<string, string> querySection)
+            => $"{querySection.Key}={querySection.Value}";
     }
 }

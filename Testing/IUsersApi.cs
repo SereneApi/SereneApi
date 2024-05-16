@@ -1,8 +1,4 @@
-﻿using SereneApi.Request.Attributes;
-using SereneApi.Request.Attributes.Parameter;
-using SereneApi.Request.Attributes.Request;
-
-namespace Testing
+﻿namespace Testing
 {
     [HttpResource("Users")]
     public interface IUsersApi

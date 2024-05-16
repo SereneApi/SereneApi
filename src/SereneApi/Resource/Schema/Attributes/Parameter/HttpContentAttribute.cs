@@ -1,6 +1,6 @@
 ﻿using SereneApi.Resource.Schema.Enums;
 
-namespace SereneApi.Request.Attributes.Parameter
+namespace SereneApi.Resource.Schema.Attributes.Parameter
 {
     public sealed class HttpContentAttribute : HttpParameterAttribute
     {

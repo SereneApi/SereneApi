@@ -1,7 +1,7 @@
 ﻿using SereneApi.Resource.Schema.Enums;
 using System;
 
-namespace SereneApi.Request.Attributes.Parameter
+namespace SereneApi.Resource.Schema.Attributes.Parameter
 {
     [AttributeUsage(AttributeTargets.Parameter)]
     public abstract class HttpParameterAttribute : Attribute

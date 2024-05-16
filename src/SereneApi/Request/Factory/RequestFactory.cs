@@ -19,7 +19,7 @@ namespace SereneApi.Request.Factory
                 _route = routeSchema.Template;
             }
 
-            var routeParameters = routeSchema
+            ApiRouteParameterSchema[] routeParameters = routeSchema
                 .GetRouteParameterSchemas()
                 .OrderBy(p => p.TemplateIndex)
                 .ToArray();
@@ -36,13 +36,13 @@ namespace SereneApi.Request.Factory
 
         public void AddQuery(IInvocation invocation, ApiRouteSchema routeSchema)
         {
-            var queryParameters = routeSchema.GetQuerySchemas().ToArray();
+            ApiRouteParameterSchema[] queryParameters = routeSchema.GetQuerySchemas().ToArray();
 
             Dictionary<string, string> querySections = new Dictionary<string, string>();
 
-            for (int i = 0; i < queryParameters.Length; i++)
+            foreach (ApiRouteParameterSchema? queryParameter in queryParameters)
             {
-                querySections.Add(queryParameters[i].Name, invocation.Arguments[queryParameters[i].ParameterIndex].ToString());
+                querySections.Add(queryParameter.Name, invocation.Arguments[queryParameter.ParameterIndex].ToString());
             }
 
             _query = QueryHelper.BuildQueryString(querySections);

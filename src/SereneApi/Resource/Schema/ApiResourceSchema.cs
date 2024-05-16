@@ -1,11 +1,11 @@
-﻿using SereneApi.Request.Attributes;
+﻿using SereneApi.Resource.Exceptions;
+using SereneApi.Resource.Schema.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
-using SereneApi.Resource.Exceptions;
 
 namespace SereneApi.Resource.Schema
 {
