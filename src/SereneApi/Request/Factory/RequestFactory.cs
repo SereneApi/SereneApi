@@ -3,69 +3,85 @@ using SereneApi.Helpers;
 using SereneApi.Resource.Schema;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 
 namespace SereneApi.Request.Factory
 {
-    internal class RequestFactory
+    internal sealed class RequestFactory
     {
-        private string? _route;
-
-        private string? _query;
-
-        private string? _version;
-
-        private object? _content;
-
-        private HttpMethod? _method;
-
-        public void SetRoute(IInvocation resourceInvocation, ApiRouteSchema routeSchema)
+        public ApiRequest Build(ApiRouteSchema routeSchema, object[] parameters)
         {
-            if (!routeSchema.HasParameters)
+            ApiRequest request = new ApiRequest(routeSchema.Method);
+
+            request.Version = request.Version;
+            request.Route = BuildRoute(routeSchema, parameters);
+            request.Query = BuildQuery(routeSchema, parameters);
+            request.Content = GetContent(routeSchema, parameters);
+
+            foreach (KeyValuePair<string, string> header in BuildHeaders(routeSchema, parameters))
             {
-                _route = routeSchema.Template;
+                request.Headers.Add(header.Key, header.Value);
             }
 
+            return request;
+        }
+        
+        private static string? BuildRoute(ApiRouteSchema routeSchema, object[] parameters)
+        {
             ApiRouteParameterSchema[] routeParameters = routeSchema
                 .GetRouteParameterSchemas()
                 .OrderBy(p => p.TemplateIndex)
                 .ToArray();
 
-            object[] parameters = new object[routeParameters.Length];
+            if (!routeParameters.Any())
+            {
+                return routeSchema.Template;
+            }
+
+            object[] matchedParameters = new object[routeParameters.Length];
 
             for (int i = 0; i < routeParameters.Length; i++)
             {
-                parameters[i] = resourceInvocation.Arguments[routeParameters[i].ParameterIndex];
+                matchedParameters[i] = parameters[routeParameters[i].ParameterIndex];
             }
 
-            _route = string.Format(routeSchema.Template!, parameters);
+            return string.Format(routeSchema.Template!, matchedParameters);
         }
 
-        public void SetQuery(IInvocation resourceInvocation, ApiRouteSchema routeSchema)
+        private static string BuildQuery(ApiRouteSchema routeSchema, object[] parameters)
         {
-            ApiRouteParameterSchema[] queryParameters = routeSchema.GetQuerySchemas().ToArray();
-
             Dictionary<string, string> querySections = new Dictionary<string, string>();
 
-            foreach (ApiRouteParameterSchema? queryParameter in queryParameters)
+            foreach (ApiRouteParameterSchema? queryParameter in routeSchema.GetQuerySchemas())
             {
-                querySections.Add(queryParameter.Name, resourceInvocation.Arguments[queryParameter.ParameterIndex].ToString());
+                querySections.Add(queryParameter.Name, parameters[queryParameter.ParameterIndex].ToString());
             }
 
-            _query = QueryHelper.BuildQueryString(querySections);
+            return QueryHelper.BuildQueryString(querySections);
         }
 
-        public void SetVersion(IInvocation resourceInvocation, ApiRouteSchema routeSchema)
-            => _version = routeSchema.Version;
-
-        public void SetContent(IInvocation resourceInvocation, ApiRouteSchema routeSchema)
+        private static object? GetContent(ApiRouteSchema routeSchema, object[] parameters)
         {
-            ApiRouteParameterSchema contentSchema = routeSchema.GetContentSchema()!;
+            ApiRouteParameterSchema? contentSchema = routeSchema.GetContentSchema();
 
-            _content = resourceInvocation.Arguments[contentSchema.ParameterIndex];
+            if (contentSchema == null)
+            {
+                return null;
+            }
+
+            return parameters[contentSchema.ParameterIndex];
         }
 
-        public void SetMethod(HttpMethod routeSchemaMethod)
-            => _method = routeSchemaMethod;
+        private static IReadOnlyDictionary<string, string> BuildHeaders(ApiRouteSchema routeSchema, object[] parameters)
+        {
+            Dictionary<string, string> headers = routeSchema.Headers
+                .ToDictionary(k => k.Key, v => v.Value);
+
+            foreach (ApiRouteParameterSchema? headerParameter in routeSchema.GetHeaderSchemas())
+            {
+                headers.Add(headerParameter.Name, parameters[headerParameter.ParameterIndex].ToString());
+            }
+
+            return headers;
+        }
     }
 }

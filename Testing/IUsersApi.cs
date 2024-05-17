@@ -5,15 +5,16 @@ using SereneApi.Resource.Schema.Attributes.Request;
 namespace Testing
 {
     [HttpResource("Users")]
-    [HttpResourceVersion("v1")]
+    [HttpVersion("v1")]
+    [HttpHeader("auth", "bearer")]
     public interface IUsersApi
     {
         [HttpGetRequest]
-        [HttpResourceVersion("v2")]
-        void GetUsersAsync();
+        [HttpVersion("v2")]
+        void GetUsersAsync([HttpHeaderParameter("Correlation-Id")] string correlationId);
 
         [HttpGetRequest("Search")]
-        Task<List<User>> SearchUsersAsync([HttpQuery("first")] string firstName, [HttpQuery] string lastName);
+        Task<List<User>> SearchUsersAsync([HttpQueryParameter("first")] string firstName, [HttpQueryParameter] string lastName);
 
         [HttpGetRequest("{id}")]
         Task<User> GetUserAsync(string id);
@@ -22,7 +23,7 @@ namespace Testing
         Task LinkUserToArticleAsync(string articleId, string userId);
 
         [HttpPostRequest]
-        Task CreateUserAsync([HttpContent] User user);
+        Task CreateUserAsync([HttpContentParameter] User user);
     }
 
     public class User

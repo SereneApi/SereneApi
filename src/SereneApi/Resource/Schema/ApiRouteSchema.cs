@@ -23,30 +23,30 @@ namespace SereneApi.Resource.Schema
 
         public string? Version { get; set; }
 
-        public bool HasParameters { get; private set; }
-
-        public bool HasContent { get; private set; }
-
-        public bool HasQuery { get; private set; }
-
         public ApiRouteResponseSchema? Response { get; private set; }
 
         public IReadOnlyCollection<ApiRouteParameterSchema> Parameters { get; private set; } = null!;
+
+        public IReadOnlyCollection<ApiRouteHeaderSchema> Headers { get; private set; } = null!;
 
         private ApiRouteSchema()
         {
         }
 
-        public static ApiRouteSchema Create(MethodInfo method, HttpResourceVersionAttribute? resourceVersionAttribute)
+        public static ApiRouteSchema Create(MethodInfo method, HttpVersionAttribute? resourceVersionAttribute, IReadOnlyCollection<HttpHeaderAttribute> resourceHeaders)
         {
             HttpRequestAttribute request = method.GetCustomAttribute<HttpRequestAttribute>();
+
+            List<HttpHeaderAttribute> routeHeaders = method.GetCustomAttributes<HttpHeaderAttribute>().ToList();
+
+            routeHeaders.AddRange(resourceHeaders);
 
             if (request == null)
             {
                 throw new ArgumentException($"Methods that do not implement the {nameof(HttpRequestAttribute)} are not supported.");
             }
 
-            var routeVersion = method.GetCustomAttribute<HttpResourceVersionAttribute>();
+            var routeVersion = method.GetCustomAttribute<HttpVersionAttribute>();
 
             if (routeVersion != null)
             {
@@ -59,6 +59,7 @@ namespace SereneApi.Resource.Schema
                 Template = request.RouteTemplate,
                 Version = resourceVersionAttribute?.Version,
                 InvokedMethod = method,
+                Headers = routeHeaders.Select(r => new ApiRouteHeaderSchema(r.Key, r.Value)).ToList().AsReadOnly(),
                 Response = ApiRouteResponseSchema.Create(method)
             };
 
@@ -66,21 +67,22 @@ namespace SereneApi.Resource.Schema
 
             schema.Parameters = BuildRouteParameters(method.GetParameters(), parameterTemplateMap);
             schema.ValidateParameters(method.Name);
+            schema.ValidateHeaders();
             schema.ValidateEndpointTemplateParameters(parameterTemplateMap, method.Name);
-            schema.HasQuery = schema.Parameters.Any(p => p.Type == ApiRouteParameterType.Query);
-            schema.HasContent = schema.Parameters.Any(p => p.Type == ApiRouteParameterType.Content);
-            schema.HasParameters = schema.Parameters.Any(p => p.Type == ApiRouteParameterType.TemplateParameter);
 
             return schema;
         }
 
-        public IEnumerable<ApiRouteParameterSchema> GetRouteParameterSchemas() 
+        public IEnumerable<ApiRouteParameterSchema> GetRouteParameterSchemas()
             => Parameters.Where(p => p.Type == ApiRouteParameterType.TemplateParameter);
 
-        public IEnumerable<ApiRouteParameterSchema> GetQuerySchemas() 
+        public IEnumerable<ApiRouteParameterSchema> GetQuerySchemas()
             => Parameters.Where(p => p.Type == ApiRouteParameterType.Query);
 
-        public ApiRouteParameterSchema? GetContentSchema() 
+        public IEnumerable<ApiRouteParameterSchema> GetHeaderSchemas()
+            => Parameters.Where(p => p.Type == ApiRouteParameterType.Header);
+
+        public ApiRouteParameterSchema? GetContentSchema()
             => Parameters.SingleOrDefault(p => p.Type == ApiRouteParameterType.Content);
 
         private IReadOnlyDictionary<string, int> BuildParameterTemplateMap()
@@ -132,6 +134,10 @@ namespace SereneApi.Resource.Schema
             {
                 throw InvalidResourceSchemaException.MultipleContentSchemasFound(contentParameters, methodName);
             }
+        }
+
+        private void ValidateHeaders()
+        {
         }
 
         private static List<ApiRouteParameterSchema> BuildRouteParameters(ParameterInfo[] methodParameters, IReadOnlyDictionary<string, int> parameterTemplateMap)

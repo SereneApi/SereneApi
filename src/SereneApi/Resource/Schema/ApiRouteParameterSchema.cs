@@ -35,16 +35,15 @@ namespace SereneApi.Resource.Schema
                 }
 
                 schema.Type = parameterAttribute.Type;
+
+                return schema;
             }
-            else
+
+            schema.Type = ApiRouteParameterType.TemplateParameter;
+
+            if (parameterTemplateMap.TryGetValue(parameter.Name, out int index))
             {
-                schema.Type = ApiRouteParameterType.TemplateParameter;
-
-                if (parameterTemplateMap.TryGetValue(parameter.Name, out int index))
-                {
-                    schema.TemplateIndex = index;
-                }
-
+                schema.TemplateIndex = index;
             }
 
             return schema;

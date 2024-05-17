@@ -3,11 +3,11 @@
 namespace SereneApi.Resource.Schema.Attributes
 {
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method)]
-    public sealed class HttpResourceVersionAttribute : Attribute
+    public sealed class HttpVersionAttribute : Attribute
     {
         public string Version { get; }
 
-        public HttpResourceVersionAttribute(string version)
+        public HttpVersionAttribute(string version)
         {
             if (string.IsNullOrWhiteSpace(version))
             {

@@ -21,7 +21,7 @@ namespace SereneApi.Resource.Schema
         public static ApiResourceSchema Create(Type apiResourceType)
         {
             HttpResourceAttribute resourceAttribute = apiResourceType.GetCustomAttribute<HttpResourceAttribute>()!;
-            HttpResourceVersionAttribute? resourceVersionAttribute = apiResourceType.GetCustomAttribute<HttpResourceVersionAttribute>()!;
+            HttpVersionAttribute? resourceVersionAttribute = apiResourceType.GetCustomAttribute<HttpVersionAttribute>()!;
 
             ApiResourceSchema schema = new ApiResourceSchema
             {
@@ -37,11 +37,16 @@ namespace SereneApi.Resource.Schema
                 schema.Name = apiResourceType.Name.Substring(1, apiResourceType.Name.Length - 4);
             }
 
+            IReadOnlyCollection<HttpHeaderAttribute> httpHeaders = apiResourceType
+                .GetCustomAttributes<HttpHeaderAttribute>()
+                .ToList()
+                .AsReadOnly();
+
             Dictionary<MethodInfo, ApiRouteSchema> routeSchemas = new Dictionary<MethodInfo, ApiRouteSchema>();
 
             foreach (MethodInfo method in apiResourceType.GetMethods())
             {
-                routeSchemas.Add(method, ApiRouteSchema.Create(method, resourceVersionAttribute));
+                routeSchemas.Add(method, ApiRouteSchema.Create(method, resourceVersionAttribute, httpHeaders));
             }
 
             schema.RouteSchemas = routeSchemas;

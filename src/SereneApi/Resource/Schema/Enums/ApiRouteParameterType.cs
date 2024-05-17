@@ -4,6 +4,7 @@
     {
         TemplateParameter,
         Query,
-        Content
+        Content,
+        Header
     }
 }
