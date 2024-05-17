@@ -74,14 +74,14 @@ namespace SereneApi.Resource.Schema
             return schema;
         }
 
-        public IEnumerable<ApiRouteParameterSchema> GetRouteParameterSchemas() =>
-            Parameters.Where(p => p.Type == ApiRouteParameterType.TemplateParameter);
+        public IEnumerable<ApiRouteParameterSchema> GetRouteParameterSchemas() 
+            => Parameters.Where(p => p.Type == ApiRouteParameterType.TemplateParameter);
 
-        public IEnumerable<ApiRouteParameterSchema> GetQuerySchemas() =>
-            Parameters.Where(p => p.Type == ApiRouteParameterType.Query);
+        public IEnumerable<ApiRouteParameterSchema> GetQuerySchemas() 
+            => Parameters.Where(p => p.Type == ApiRouteParameterType.Query);
 
-        public ApiRouteParameterSchema? GetContactSchema() =>
-            Parameters.SingleOrDefault(p => p.Type == ApiRouteParameterType.Content);
+        public ApiRouteParameterSchema? GetContentSchema() 
+            => Parameters.SingleOrDefault(p => p.Type == ApiRouteParameterType.Content);
 
         private IReadOnlyDictionary<string, int> BuildParameterTemplateMap()
         {

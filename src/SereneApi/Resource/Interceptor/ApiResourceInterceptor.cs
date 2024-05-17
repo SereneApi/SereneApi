@@ -14,20 +14,27 @@ namespace SereneApi.Resource.Interceptor
             _resourceSchema = resourceSchema;
         }
 
-        public void Intercept(IInvocation invocation)
+        public void Intercept(IInvocation resourceInvocation)
         {
-            if (!_resourceSchema.RouteSchemas.TryGetValue(invocation.Method, out ApiRouteSchema invocationSchema))
+            if (!_resourceSchema.RouteSchemas.TryGetValue(resourceInvocation.Method, out ApiRouteSchema routeSchema))
             {
                 throw new InvalidOperationException();
             }
 
             RequestFactory requestFactory = new RequestFactory();
 
-            requestFactory.AddEndpoint(invocation, invocationSchema);
+            requestFactory.SetVersion(resourceInvocation, routeSchema);
+            requestFactory.SetRoute(resourceInvocation, routeSchema);
+            requestFactory.SetMethod(routeSchema.Method);
 
-            if (invocationSchema.HasQuery)
+            if (routeSchema.HasQuery)
             {
-                requestFactory.AddQuery(invocation, invocationSchema);
+                requestFactory.SetQuery(resourceInvocation, routeSchema);
+            }
+
+            if (routeSchema.HasContent)
+            {
+                requestFactory.SetContent(resourceInvocation, routeSchema);
             }
         }
     }
