@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace SereneApi.Resource.Exceptions
 {
@@ -27,14 +28,10 @@ namespace SereneApi.Resource.Exceptions
             return new InvalidResourceSchemaException($"The Method {methodName} contains Method Parameters that do not map to the Endpoint Template [{string.Join(',', missingParameters)}]");
         }
 
-        internal static InvalidResourceSchemaException MultipleContentSchemasFound(ApiRouteParameterSchema[] parameters, string methodName)
-        {
-            return new InvalidResourceSchemaException($"The Method {methodName} contains multiple content parameters [{string.Join(',', parameters.Select(p => p.Name))}], no more than 1 can be defined at a time.");
-        }
+        internal static InvalidResourceSchemaException MultipleContentSchemasFound(ApiRouteParameterSchema[] parameters, string methodName) => new InvalidResourceSchemaException($"The Method {methodName} contains multiple content parameters [{string.Join(',', parameters.Select(p => p.Name))}], no more than 1 can be defined at a time.");
 
-        internal static InvalidResourceSchemaException DuplicateResourceTemplatesFound(ApiRouteSchema[] routes, Type resourceType)
-        {
-            return new InvalidResourceSchemaException($"The Resource [{resourceType.Name}] has Multiple Routes [{string.Join(',', routes.Select(r => r.InvokedMethod.Name))}] with the Matching Templates [{string.Join(',', routes.Select(r => r.Template))}]");
-        }
+        internal static InvalidResourceSchemaException DuplicateResourceTemplatesFound(ApiRouteSchema[] routes, Type resourceType) => new InvalidResourceSchemaException($"The Resource [{resourceType.Name}] has Multiple Routes [{string.Join(',', routes.Select(r => r.InvokedMethod.Name))}] with the Matching Templates [{string.Join(',', routes.Select(r => r.Template))}]");
+
+        public static InvalidResourceSchemaException MethodMustBeAsync(MethodInfo method) => new InvalidResourceSchemaException($"The Method {method.Name} is not Asynchronous.");
     }
 }

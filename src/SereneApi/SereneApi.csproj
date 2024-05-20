@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -13,7 +13,8 @@
 
   <ItemGroup>
     <PackageReference Include="Castle.Core" Version="5.1.1" />
-    <PackageReference Include="DeltaWare.Dependencies.Abstractions" Version="7.0.0.1" />
+    <PackageReference Include="DeltaWare.Dependencies.Abstractions" Version="8.0.0.1" />
+    <PackageReference Include="DeltaWare.SDK.SmartFormat" Version="8.0.0.1" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SereneApi.Resource.Exceptions;
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -7,8 +8,6 @@ namespace SereneApi.Resource.Schema
 {
     internal sealed class ApiRouteResponseSchema
     {
-        public bool IsAsync { get; private set; }
-
         public Type? ResponseType { get; private set; }
 
         public static ApiRouteResponseSchema? Create(MethodInfo method)
@@ -22,13 +21,8 @@ namespace SereneApi.Resource.Schema
 
             if (method.ReturnType != typeof(Task) && (!method.ReturnType.IsGenericType || method.ReturnType.GetGenericTypeDefinition() != typeof(Task<>)))
             {
-                schema.ResponseType = method.ReturnType;
-                schema.IsAsync = false;
-
-                return schema;
+                throw InvalidResourceSchemaException.MethodMustBeAsync(method);
             }
-
-            schema.IsAsync = true;
 
             if (!method.ReturnType.IsGenericType)
             {

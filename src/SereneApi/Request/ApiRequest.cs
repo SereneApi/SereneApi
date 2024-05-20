@@ -3,7 +3,7 @@ using System.Net.Http;
 
 namespace SereneApi.Request
 {
-    internal sealed class ApiRequest
+    internal sealed class ApiRequest : IApiRequest
     {
         public HttpMethod Method { get; }
 
