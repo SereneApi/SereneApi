@@ -199,20 +199,19 @@ namespace SereneApi.Handlers.Rest.Requests.Factories
             _apiRequest.Route = _routeFactory.BuildRoute(_apiRequest);
             _apiRequest.Url = _routeFactory.GetUrl(_apiRequest);
         }
-
-        public IApiRequestBody WithHeaders(Action<IHeaderBuilder> headerBuilder)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public IApiRequestBody WithHeaders(Dictionary<string, object> headers)
         {
-            throw new NotImplementedException();
+            _apiRequest.Headers = headers;
+
+            return this;
         }
 
         public IApiRequestBody WithHeaders<THeader>(THeader header)
         {
-            throw new NotImplementedException();
+            _apiRequest.Headers = header.GetPublicPropertiesAsDictionary();
+
+            return this;
         }
     }
 }
