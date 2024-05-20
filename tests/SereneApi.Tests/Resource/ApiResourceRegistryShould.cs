@@ -1,6 +1,9 @@
 using FluentAssertions;
 using SereneApi.Resource;
 using SereneApi.Resource.Exceptions;
+using SereneApi.Resource.Schema.Attributes;
+using SereneApi.Resource.Schema.Attributes.Parameter;
+using SereneApi.Resource.Schema.Attributes.Request;
 
 namespace SereneApi.Tests.Resource
 {
@@ -10,7 +13,7 @@ namespace SereneApi.Tests.Resource
         interface IMultipleContentParametersApi
         {
             [HttpPostRequest]
-            Task CreateAsync([HttpContent] object a, [HttpContent] object b);
+            Task CreateAsync([HttpContentParameter] object a, [HttpContentParameter] object b);
         }
 
         [Fact]

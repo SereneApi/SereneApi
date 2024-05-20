@@ -15,6 +15,8 @@ namespace SereneApi.Resource.Schema
     [DebuggerDisplay("[{Method}] - {Template}")]
     internal sealed class ApiRouteSchema
     {
+        public ApiResourceSchema ParentResource { get; private set; }
+        
         public HttpMethod Method { get; private set; } = null!;
 
         public MethodInfo InvokedMethod { get; private set; } = null!;
@@ -33,7 +35,7 @@ namespace SereneApi.Resource.Schema
         {
         }
 
-        public static ApiRouteSchema Create(MethodInfo method, HttpVersionAttribute? resourceVersionAttribute, IReadOnlyCollection<HttpHeaderAttribute> resourceHeaders)
+        public static ApiRouteSchema Create(ApiResourceSchema parentResource, MethodInfo method, HttpVersionAttribute? resourceVersionAttribute, IReadOnlyCollection<HttpHeaderAttribute> resourceHeaders)
         {
             HttpRequestAttribute request = method.GetCustomAttribute<HttpRequestAttribute>();
 
@@ -55,6 +57,7 @@ namespace SereneApi.Resource.Schema
 
             ApiRouteSchema schema = new ApiRouteSchema
             {
+                ParentResource = parentResource,
                 Method = request.Method,
                 Template = request.RouteTemplate,
                 Version = resourceVersionAttribute?.Version,

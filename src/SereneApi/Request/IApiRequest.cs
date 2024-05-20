@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.Collections.Generic;
+using System.Net.Http;
 
 namespace SereneApi.Request
 {
@@ -11,7 +12,11 @@ namespace SereneApi.Request
         public string? Version { get; }
 
         public string? Query { get; }
+        
+        public string FullRoute { get; }
 
         public object? Content { get; }
+
+        public IReadOnlyDictionary<string, string> Headers { get; }
     }
 }

@@ -46,7 +46,7 @@ namespace SereneApi.Resource.Schema
 
             foreach (MethodInfo method in apiResourceType.GetMethods())
             {
-                routeSchemas.Add(method, ApiRouteSchema.Create(method, resourceVersionAttribute, httpHeaders));
+                routeSchemas.Add(method, ApiRouteSchema.Create(schema, method, resourceVersionAttribute, httpHeaders));
             }
 
             schema.RouteSchemas = routeSchemas;

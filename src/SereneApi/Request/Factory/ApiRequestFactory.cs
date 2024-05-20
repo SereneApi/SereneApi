@@ -2,11 +2,19 @@
 using SereneApi.Resource.Schema;
 using System.Collections.Generic;
 using System.Linq;
+using DeltaWare.SDK.SmartFormat;
 
 namespace SereneApi.Request.Factory
 {
     internal sealed class ApiRequestFactory
     {
+        private readonly IApiResourceConnection _connection;
+
+        public ApiRequestFactory(IApiResourceConnection connection)
+        {
+            _connection = connection;
+        }
+
         public IApiRequest Build(ApiRouteSchema routeSchema, object[] parameters)
         {
             ApiRequest request = new ApiRequest(routeSchema.Method);
@@ -15,12 +23,16 @@ namespace SereneApi.Request.Factory
             request.Route = BuildRoute(routeSchema, parameters);
             request.Query = BuildQuery(routeSchema, parameters);
             request.Content = GetContent(routeSchema, parameters);
-
-            foreach (KeyValuePair<string, string> header in BuildHeaders(routeSchema, parameters))
+            request.Headers = BuildHeaders(routeSchema, parameters);
+            request.FullRoute = SmartFormat.Parse(_connection.UrlTemplate, new
             {
-                request.Headers.Add(header.Key, header.Value);
-            }
-
+                Host = _connection.HostUrl,
+                Resource = routeSchema.ParentResource.Name,
+                request.Version,
+                request.Route,
+                request.Query,
+            });
+            
             return request;
         }
 

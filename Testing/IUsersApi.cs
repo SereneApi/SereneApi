@@ -11,7 +11,7 @@ namespace Testing
     {
         [HttpGetRequest]
         [HttpVersion("v2")]
-        void GetUsersAsync([HttpHeaderParameter("Correlation-Id")] string correlationId);
+        Task GetUsersAsync([HttpHeaderParameter("Correlation-Id")] string correlationId);
 
         [HttpGetRequest("Search")]
         Task<List<User>> SearchUsersAsync([HttpQueryParameter("first")] string firstName, [HttpQueryParameter] string lastName);

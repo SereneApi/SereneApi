@@ -15,6 +15,7 @@
     <PackageReference Include="Castle.Core" Version="5.1.1" />
     <PackageReference Include="DeltaWare.Dependencies.Abstractions" Version="8.0.0.1" />
     <PackageReference Include="DeltaWare.SDK.SmartFormat" Version="8.0.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
   </ItemGroup>
 
 </Project>
