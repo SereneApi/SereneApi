@@ -15,33 +15,25 @@ namespace SereneApi.Resource.Schema
     [DebuggerDisplay("[{Method}] - {Template}")]
     internal sealed class ApiRouteSchema
     {
-        public ApiResourceSchema ParentResource { get; private set; }
+        private readonly ILookup<ApiRouteParameterType, ApiRouteParameterSchema> _routeParameterLookup;
+
+        public ApiResourceSchema ParentResource { get;  }
+
+        public HttpMethod Method { get; }
+
+        public MethodInfo InvokedMethod { get; }
+
+        public string? Template { get; }
+
+        public string? Version { get; }
+
+        public ApiRouteResponseSchema? Response { get; }
         
-        public HttpMethod Method { get; private set; } = null!;
+        public IReadOnlyCollection<ApiRouteHeaderSchema> Headers { get; }
 
-        public MethodInfo InvokedMethod { get; private set; } = null!;
-
-        public string? Template { get; private set; }
-
-        public string? Version { get; set; }
-
-        public ApiRouteResponseSchema? Response { get; private set; }
-
-        public IReadOnlyCollection<ApiRouteParameterSchema> Parameters { get; private set; } = null!;
-
-        public IReadOnlyCollection<ApiRouteHeaderSchema> Headers { get; private set; } = null!;
-
-        private ApiRouteSchema()
-        {
-        }
-
-        public static ApiRouteSchema Create(ApiResourceSchema parentResource, MethodInfo method, HttpVersionAttribute? resourceVersionAttribute, IReadOnlyCollection<HttpHeaderAttribute> resourceHeaders)
+        public ApiRouteSchema(ApiResourceSchema parentResource, MethodInfo method, HttpVersionAttribute? resourceVersionAttribute, IReadOnlyCollection<HttpHeaderAttribute> resourceHeaders)
         {
             HttpRequestAttribute request = method.GetCustomAttribute<HttpRequestAttribute>();
-
-            List<HttpHeaderAttribute> routeHeaders = method.GetCustomAttributes<HttpHeaderAttribute>().ToList();
-
-            routeHeaders.AddRange(resourceHeaders);
 
             if (request == null)
             {
@@ -55,47 +47,49 @@ namespace SereneApi.Resource.Schema
                 resourceVersionAttribute = routeVersion;
             }
 
-            ApiRouteSchema schema = new ApiRouteSchema
-            {
-                ParentResource = parentResource,
-                Method = request.Method,
-                Template = request.RouteTemplate,
-                Version = resourceVersionAttribute?.Version,
-                InvokedMethod = method,
-                Headers = routeHeaders.Select(r => new ApiRouteHeaderSchema(r.Key, r.Value)).ToList().AsReadOnly(),
-                Response = ApiRouteResponseSchema.Create(method)
-            };
+            ParentResource = parentResource;
+            Method = request.Method;
+            Version = resourceVersionAttribute?.Version;
+            InvokedMethod = method;
+            Headers = ExtractHeaders(method, resourceHeaders);
+            Response = ApiRouteResponseSchema.Create(method);
 
-            IReadOnlyDictionary<string, int> parameterTemplateMap = schema.BuildParameterTemplateMap();
+            Template = CompileTemplate(request.RouteTemplate, out IReadOnlyDictionary<string, int> parameterTemplateMap);
 
-            schema.Parameters = BuildRouteParameters(method.GetParameters(), parameterTemplateMap);
-            schema.ValidateParameters(method.Name);
-            schema.ValidateHeaders();
-            schema.ValidateEndpointTemplateParameters(parameterTemplateMap, method.Name);
+            _routeParameterLookup = BuildRouteParameters(method.GetParameters(), parameterTemplateMap).ToLookup(p => p.Type);
 
-            return schema;
+            ValidateParameters(method.Name);
+            ValidateEndpointTemplateParameters(parameterTemplateMap, method.Name);
         }
-
+        
         public IEnumerable<ApiRouteParameterSchema> GetRouteParameterSchemas()
-            => Parameters.Where(p => p.Type == ApiRouteParameterType.TemplateParameter);
+            => _routeParameterLookup[ApiRouteParameterType.TemplateParameter];
 
         public IEnumerable<ApiRouteParameterSchema> GetQuerySchemas()
-            => Parameters.Where(p => p.Type == ApiRouteParameterType.Query);
+            => _routeParameterLookup[ApiRouteParameterType.Query];
 
         public IEnumerable<ApiRouteParameterSchema> GetHeaderSchemas()
-            => Parameters.Where(p => p.Type == ApiRouteParameterType.Header);
+            => _routeParameterLookup[ApiRouteParameterType.Header];
 
         public ApiRouteParameterSchema? GetContentSchema()
-            => Parameters.SingleOrDefault(p => p.Type == ApiRouteParameterType.Content);
+            => _routeParameterLookup[ApiRouteParameterType.Content].SingleOrDefault();
 
-        private IReadOnlyDictionary<string, int> BuildParameterTemplateMap()
+        private static IReadOnlyCollection<ApiRouteHeaderSchema> ExtractHeaders(MethodInfo method, IReadOnlyCollection<HttpHeaderAttribute> resourceHeaders) =>
+            method.GetCustomAttributes<HttpHeaderAttribute>()
+                .Concat(resourceHeaders)
+                .Select(r => new ApiRouteHeaderSchema(r.Key, r.Value))
+                .ToList();
+
+        private string? CompileTemplate(string? routeTemplate, out IReadOnlyDictionary<string, int> templateMap)
         {
-            if (string.IsNullOrWhiteSpace(Template))
+            if (string.IsNullOrWhiteSpace(routeTemplate))
             {
-                return new Dictionary<string, int>();
+                templateMap = new Dictionary<string, int>();
+
+                return null;
             }
 
-            MatchCollection matches = FindParameters(Template);
+            MatchCollection matches = FindParameters(routeTemplate);
 
             Dictionary<string, int> parameterTemplateMap = new Dictionary<string, int>();
 
@@ -103,15 +97,17 @@ namespace SereneApi.Resource.Schema
             {
                 string paramName = matches[i].Groups[1].Value;
 
-                Template = Template.Replace($"{{{paramName}}}", $"{{{i}}}");
+                routeTemplate = routeTemplate.Replace($"{{{paramName}}}", $"{{{i}}}");
 
                 if (!parameterTemplateMap.TryAdd(paramName, i))
                 {
-                    throw new ArgumentException($"Duplicate parameters found in Template, parameter name {paramName}", nameof(Template));
+                    throw new ArgumentException($"Duplicate parameters found in Template, parameter name {paramName}", nameof(routeTemplate));
                 }
             }
 
-            return parameterTemplateMap;
+            templateMap = parameterTemplateMap;
+
+            return routeTemplate;
         }
 
         private void ValidateEndpointTemplateParameters(IReadOnlyDictionary<string, int> parameterTemplateMap, string methodName)
@@ -131,16 +127,12 @@ namespace SereneApi.Resource.Schema
 
         private void ValidateParameters(string methodName)
         {
-            ApiRouteParameterSchema[] contentParameters = Parameters.Where(p => p.Type == ApiRouteParameterType.Content).ToArray();
+            ApiRouteParameterSchema[] contentParameters = _routeParameterLookup[ApiRouteParameterType.Content].ToArray();
 
             if (contentParameters.Length > 1)
             {
                 throw InvalidResourceSchemaException.MultipleContentSchemasFound(contentParameters, methodName);
             }
-        }
-
-        private void ValidateHeaders()
-        {
         }
 
         private static List<ApiRouteParameterSchema> BuildRouteParameters(ParameterInfo[] methodParameters, IReadOnlyDictionary<string, int> parameterTemplateMap)
@@ -155,11 +147,11 @@ namespace SereneApi.Resource.Schema
             return parameters;
         }
 
-        private static MatchCollection FindParameters(string RouteTemplate)
+        private static MatchCollection FindParameters(string routeTemplate)
         {
             Regex matchCurlyBraces = new Regex("{([^}]*)}"); // Matches anything inside curly braces
 
-            return matchCurlyBraces.Matches(RouteTemplate);
+            return matchCurlyBraces.Matches(routeTemplate);
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Net.Http;
 namespace SereneApi.Resource.Schema.Attributes.Request
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public class HttpRequestAttribute : Attribute
+    public abstract class HttpRequestAttribute : Attribute
     {
         public HttpMethod Method { get; }
 

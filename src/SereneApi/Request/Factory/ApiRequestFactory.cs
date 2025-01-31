@@ -1,8 +1,9 @@
-﻿using SereneApi.Helpers;
+﻿using DeltaWare.SDK.SmartFormat;
+using SereneApi.Helpers;
 using SereneApi.Resource.Schema;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using DeltaWare.SDK.SmartFormat;
 
 namespace SereneApi.Request.Factory
 {
@@ -24,6 +25,7 @@ namespace SereneApi.Request.Factory
             request.Query = BuildQuery(routeSchema, parameters);
             request.Content = GetContent(routeSchema, parameters);
             request.Headers = BuildHeaders(routeSchema, parameters);
+            request.ResponseType = routeSchema.Response?.ResponseType;
             request.FullRoute = SmartFormat.Parse(_connection.UrlTemplate, new
             {
                 Host = _connection.HostUrl,
@@ -32,40 +34,39 @@ namespace SereneApi.Request.Factory
                 request.Route,
                 request.Query,
             });
-            
+
             return request;
         }
 
         private static string? BuildRoute(ApiRouteSchema routeSchema, object[] parameters)
         {
-            ApiRouteParameterSchema[] routeParameters = routeSchema
+            var routeParameters = routeSchema
                 .GetRouteParameterSchemas()
-                .OrderBy(p => p.TemplateIndex)
                 .ToArray();
 
-            if (!routeParameters.Any())
+            if (routeParameters.Length == 0)
             {
                 return routeSchema.Template;
             }
 
-            object[] matchedParameters = new object[routeParameters.Length];
-
-            for (int i = 0; i < routeParameters.Length; i++)
+            if (routeSchema.Template is null)
             {
-                matchedParameters[i] = parameters[routeParameters[i].ParameterIndex];
+                throw new InvalidOperationException("Route template cannot be null.");
             }
 
-            return string.Format(routeSchema.Template!, matchedParameters);
+            var matchedParameters = routeParameters
+                .OrderBy(p => p.TemplateIndex)
+                .Select(p => parameters[p.ParameterIndex])
+                .ToArray();
+
+            return string.Format(routeSchema.Template, matchedParameters);
         }
 
         private static string BuildQuery(ApiRouteSchema routeSchema, object[] parameters)
         {
-            Dictionary<string, string> querySections = new Dictionary<string, string>();
-
-            foreach (ApiRouteParameterSchema? queryParameter in routeSchema.GetQuerySchemas())
-            {
-                querySections.Add(queryParameter.Name, parameters[queryParameter.ParameterIndex].ToString());
-            }
+            Dictionary<string, string> querySections = routeSchema
+                .GetQuerySchemas()
+                .ToDictionary(queryParameter => queryParameter.Name, queryParameter => parameters[queryParameter.ParameterIndex].ToString());
 
             return QueryHelper.BuildQueryString(querySections);
         }
@@ -79,7 +80,7 @@ namespace SereneApi.Request.Factory
                 return null;
             }
 
-            return parameters[contentSchema.ParameterIndex];
+            return parameters[contentSchema.Value.ParameterIndex];
         }
 
         private static IReadOnlyDictionary<string, string> BuildHeaders(ApiRouteSchema routeSchema, object[] parameters)
@@ -87,7 +88,7 @@ namespace SereneApi.Request.Factory
             Dictionary<string, string> headers = routeSchema.Headers
                 .ToDictionary(k => k.Key, v => v.Value);
 
-            foreach (ApiRouteParameterSchema? headerParameter in routeSchema.GetHeaderSchemas())
+            foreach (ApiRouteParameterSchema headerParameter in routeSchema.GetHeaderSchemas())
             {
                 headers.Add(headerParameter.Name, parameters[headerParameter.ParameterIndex].ToString());
             }

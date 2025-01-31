@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 
 namespace SereneApi.Request
@@ -16,6 +17,8 @@ namespace SereneApi.Request
         public object? Content { get; set; }
 
         public string FullRoute { get; set; }
+
+        public Type? ResponseType { get; set; }
 
         public IReadOnlyDictionary<string, string> Headers { get; set; }
 

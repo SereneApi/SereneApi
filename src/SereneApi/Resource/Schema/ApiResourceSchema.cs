@@ -20,40 +20,43 @@ namespace SereneApi.Resource.Schema
 
         public static ApiResourceSchema Create(Type apiResourceType)
         {
-            HttpResourceAttribute resourceAttribute = apiResourceType.GetCustomAttribute<HttpResourceAttribute>()!;
-            HttpVersionAttribute? resourceVersionAttribute = apiResourceType.GetCustomAttribute<HttpVersionAttribute>()!;
-
-            ApiResourceSchema schema = new ApiResourceSchema
+            var schema = new ApiResourceSchema
             {
-                ResourceType = apiResourceType
+                ResourceType = apiResourceType,
+                Name = GenerateName(apiResourceType)
             };
 
-            if (resourceAttribute.Resource != null)
-            {
-                schema.Name = resourceAttribute.Resource;
-            }
-            else
-            {
-                schema.Name = apiResourceType.Name.Substring(1, apiResourceType.Name.Length - 4);
-            }
-
-            IReadOnlyCollection<HttpHeaderAttribute> httpHeaders = apiResourceType
-                .GetCustomAttributes<HttpHeaderAttribute>()
-                .ToList()
-                .AsReadOnly();
-
-            Dictionary<MethodInfo, ApiRouteSchema> routeSchemas = new Dictionary<MethodInfo, ApiRouteSchema>();
-
-            foreach (MethodInfo method in apiResourceType.GetMethods())
-            {
-                routeSchemas.Add(method, ApiRouteSchema.Create(schema, method, resourceVersionAttribute, httpHeaders));
-            }
-
-            schema.RouteSchemas = routeSchemas;
+            schema.RouteSchemas = GenerateRoutes(apiResourceType, schema).ToDictionary(r => r.InvokedMethod);
 
             schema.ValidateRoutes();
 
             return schema;
+        }
+
+        private static string GenerateName(Type apiResourceType)
+        {
+            var resourceAttribute = apiResourceType.GetCustomAttribute<HttpResourceAttribute>()!;
+
+            if (resourceAttribute.Resource != null)
+            {
+                return resourceAttribute.Resource;
+            }
+
+            return apiResourceType.Name.Substring(1, apiResourceType.Name.Length - 4);
+        }
+
+        private static IEnumerable<ApiRouteSchema> GenerateRoutes(Type apiResourceType, ApiResourceSchema schema)
+        {
+            var resourceVersionAttribute = apiResourceType.GetCustomAttribute<HttpVersionAttribute>();
+
+            var httpHeaders = apiResourceType
+                .GetCustomAttributes<HttpHeaderAttribute>()
+                .ToList();
+
+            foreach (var method in apiResourceType.GetMethods())
+            {
+                yield return new ApiRouteSchema(schema, method, resourceVersionAttribute, httpHeaders);
+            }
         }
 
         private void ValidateRoutes()

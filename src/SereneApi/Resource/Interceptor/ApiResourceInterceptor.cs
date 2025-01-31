@@ -7,13 +7,15 @@ using SereneApi.Resource.Schema;
 
 namespace SereneApi.Resource.Interceptor
 {
-    internal sealed class ApiResourceAsynchronousInterceptor : IInterceptor
+    internal sealed class ApiResourceInterceptor : IInterceptor
     {
         private readonly ApiResourceSchema _resourceSchema;
 
         private readonly IApiRequestHandler _requestHandler;
 
-        public ApiResourceAsynchronousInterceptor(ApiResourceSchema resourceSchema)
+        private readonly ApiRequestFactory _requestFactory;
+
+        public ApiResourceInterceptor(ApiResourceSchema resourceSchema)
         {
             _resourceSchema = resourceSchema;
         }
@@ -25,11 +27,11 @@ namespace SereneApi.Resource.Interceptor
                 throw SchemaNotFoundException.RouteSchemaNotFound(_resourceSchema, resourceInvocation.Method);
             }
 
-            ApiRequestFactory apiRequestFactory = new ApiRequestFactory();
-
-            IApiRequest request = apiRequestFactory.Build(routeSchema, resourceInvocation.Arguments);
+            IApiRequest request = _requestFactory.Build(routeSchema, resourceInvocation.Arguments);
 
             var response = await _requestHandler.ExecuteAsync(request);
+
+            resourceInvocation.ReturnValue = response;
         }
     }
 }

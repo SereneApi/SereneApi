@@ -9,11 +9,6 @@ namespace SereneApi.Helpers
     {
         public static string BuildQueryString(Dictionary<string, string> querySections)
         {
-            if (querySections == null)
-            {
-                throw new ArgumentNullException(nameof(querySections));
-            }
-
             if (querySections.Count == 0)
             {
                 return string.Empty;

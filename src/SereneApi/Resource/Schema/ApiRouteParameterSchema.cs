@@ -7,46 +7,39 @@ using System.Reflection;
 namespace SereneApi.Resource.Schema
 {
     [DebuggerDisplay("[{Type}] - {Name} Index: {ParameterIndex} => {TemplateIndex}")]
-    internal sealed class ApiRouteParameterSchema
+    internal readonly struct ApiRouteParameterSchema
     {
-        public string Name { get; private set; } = null!;
+        public string Name { get; }
 
-        public int ParameterIndex { get; private set; }
+        public int ParameterIndex { get; }
 
-        public ApiRouteParameterType Type { get; private set; }
+        public ApiRouteParameterType Type { get; }
 
-        public int? TemplateIndex { get; private set; }
+        public int? TemplateIndex { get; }
+
+        public ApiRouteParameterSchema(string name, int parameterIndex, ApiRouteParameterType type, int? templateIndex = null)
+        {
+            Name = name;
+            ParameterIndex = parameterIndex;
+            Type = type;
+            TemplateIndex = templateIndex;
+        }
 
         public static ApiRouteParameterSchema Create(int parameterIndex, ParameterInfo parameter, IReadOnlyDictionary<string, int> parameterTemplateMap)
         {
-            ApiRouteParameterSchema schema = new ApiRouteParameterSchema
-            {
-                Name = parameter.Name,
-                ParameterIndex = parameterIndex
-            };
-
             HttpParameterAttribute? parameterAttribute = parameter.GetCustomAttribute<HttpParameterAttribute>();
 
             if (parameterAttribute != null)
             {
-                if (!string.IsNullOrEmpty(parameterAttribute.Name))
-                {
-                    schema.Name = parameterAttribute.Name;
-                }
-
-                schema.Type = parameterAttribute.Type;
-
-                return schema;
+                return new ApiRouteParameterSchema(parameterAttribute.Name ?? parameter.Name, parameterIndex, parameterAttribute.Type);
             }
-
-            schema.Type = ApiRouteParameterType.TemplateParameter;
 
             if (parameterTemplateMap.TryGetValue(parameter.Name, out int index))
             {
-                schema.TemplateIndex = index;
+                return new ApiRouteParameterSchema(parameter.Name, parameterIndex, ApiRouteParameterType.TemplateParameter, index);
             }
 
-            return schema;
+            return new ApiRouteParameterSchema(parameter.Name, parameterIndex, ApiRouteParameterType.TemplateParameter);
         }
     }
 }

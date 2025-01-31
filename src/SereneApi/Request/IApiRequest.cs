@@ -1,22 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 
 namespace SereneApi.Request
 {
     public interface IApiRequest
     {
-        public HttpMethod Method { get; }
+        HttpMethod Method { get; }
 
-        public string? Route { get; }
+        string? Route { get; }
 
-        public string? Version { get; }
+        string? Version { get; }
 
-        public string? Query { get; }
-        
-        public string FullRoute { get; }
+        string? Query { get; }
 
-        public object? Content { get; }
+        string FullRoute { get; }
 
-        public IReadOnlyDictionary<string, string> Headers { get; }
+        object? Content { get; }
+
+        Type? ResponseType { get; }
+
+        IReadOnlyDictionary<string, string> Headers { get; }
     }
 }

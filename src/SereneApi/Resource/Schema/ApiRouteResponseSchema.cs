@@ -8,30 +8,31 @@ namespace SereneApi.Resource.Schema
 {
     internal sealed class ApiRouteResponseSchema
     {
-        public Type? ResponseType { get; private set; }
+        public Type ResponseType { get; }
+
+        private ApiRouteResponseSchema(Type responseType)
+        {
+            ResponseType = responseType;
+        }
 
         public static ApiRouteResponseSchema? Create(MethodInfo method)
         {
-            ApiRouteResponseSchema schema = new ApiRouteResponseSchema();
-
             if (method.ReturnType == typeof(void))
             {
                 return null;
             }
 
-            if (method.ReturnType != typeof(Task) && (!method.ReturnType.IsGenericType || method.ReturnType.GetGenericTypeDefinition() != typeof(Task<>)))
+            if (method.ReturnType.IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
+            {
+                return new ApiRouteResponseSchema(method.ReturnType.GetGenericArguments().Single());
+            }
+
+            if (method.ReturnType != typeof(Task))
             {
                 throw InvalidResourceSchemaException.MethodMustBeAsync(method);
             }
 
-            if (!method.ReturnType.IsGenericType)
-            {
-                return schema;
-            }
-
-            schema.ResponseType = method.ReturnType.GetGenericArguments().Single();
-
-            return schema;
+            return null;
         }
     }
 }

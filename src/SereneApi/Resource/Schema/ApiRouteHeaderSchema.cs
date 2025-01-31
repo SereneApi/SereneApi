@@ -1,6 +1,6 @@
 ﻿namespace SereneApi.Resource.Schema
 {
-    public sealed class ApiRouteHeaderSchema
+    internal readonly struct ApiRouteHeaderSchema
     {
         public string Key { get; }
 

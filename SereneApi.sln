@@ -16,7 +16,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing", "Testing\Testing.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{82C4773B-B0A9-4B3D-9FCC-DEC751E0A9F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SereneApi.Tests", "tests\SereneApi.Tests\SereneApi.Tests.csproj", "{817F92B6-2FD8-4373-8070-FD952EA68358}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereneApi.Tests", "tests\SereneApi.Tests\SereneApi.Tests.csproj", "{817F92B6-2FD8-4373-8070-FD952EA68358}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SereneApi.Extensions.DependencyInjection", "src\SereneApi.Extensions.DependencyInjection\SereneApi.Extensions.DependencyInjection.csproj", "{E68960A4-0BC1-482E-9403-44164AD8B37A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +38,10 @@ Global
 		{817F92B6-2FD8-4373-8070-FD952EA68358}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{817F92B6-2FD8-4373-8070-FD952EA68358}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{817F92B6-2FD8-4373-8070-FD952EA68358}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E68960A4-0BC1-482E-9403-44164AD8B37A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E68960A4-0BC1-482E-9403-44164AD8B37A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E68960A4-0BC1-482E-9403-44164AD8B37A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E68960A4-0BC1-482E-9403-44164AD8B37A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

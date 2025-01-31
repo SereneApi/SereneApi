@@ -1,4 +1,5 @@
 ﻿using Castle.DynamicProxy;
+using SereneApi.Resource.Interceptor;
 using SereneApi.Resource.Schema;
 using SereneApi.Resource.Source;
 using System;
@@ -24,6 +25,6 @@ namespace SereneApi.Resource
         }
 
         public T CreateResourceHandler<T>() where T : class
-            => _resourceHandlerGenerator.CreateInterfaceProxyWithoutTarget<T>(new ApiResourceSynchronousInterceptor(ResourceSchemas[typeof(T)]));
+            => _resourceHandlerGenerator.CreateInterfaceProxyWithoutTarget<T>(new ApiResourceInterceptor(ResourceSchemas[typeof(T)]));
     }
 }

@@ -7,7 +7,7 @@ namespace SereneApi.Resource.Schema.Attributes
     {
         public string Key { get; }
 
-        public string Value { get; set; }
+        public string Value { get; }
 
         public HttpHeaderAttribute(string key, string value)
         {
