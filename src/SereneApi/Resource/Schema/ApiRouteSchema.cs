@@ -15,9 +15,9 @@ namespace SereneApi.Resource.Schema
     [DebuggerDisplay("[{Method}] - {Template}")]
     internal sealed class ApiRouteSchema
     {
-        private readonly ILookup<ApiRouteParameterType, ApiRouteParameterSchema> _routeParameterLookup;
+        public ILookup<ApiRouteParameterType, ApiRouteParameterSchema> Parameters { get; }
 
-        public ApiResourceSchema ParentResource { get;  }
+        public ApiResourceSchema ParentResource { get; }
 
         public HttpMethod Method { get; }
 
@@ -28,7 +28,7 @@ namespace SereneApi.Resource.Schema
         public string? Version { get; }
 
         public ApiRouteResponseSchema? Response { get; }
-        
+
         public IReadOnlyCollection<ApiRouteHeaderSchema> Headers { get; }
 
         public ApiRouteSchema(ApiResourceSchema parentResource, MethodInfo method, HttpVersionAttribute? resourceVersionAttribute, IReadOnlyCollection<HttpHeaderAttribute> resourceHeaders)
@@ -54,25 +54,13 @@ namespace SereneApi.Resource.Schema
             Headers = ExtractHeaders(method, resourceHeaders);
             Response = ApiRouteResponseSchema.Create(method);
 
-            Template = CompileTemplate(request.RouteTemplate, out IReadOnlyDictionary<string, int> parameterTemplateMap);
+            Template = CompileRouteTemplate(request.RouteTemplate, out IReadOnlyDictionary<string, int> parameterTemplateIndexes);
 
-            _routeParameterLookup = BuildRouteParameters(method.GetParameters(), parameterTemplateMap).ToLookup(p => p.Type);
+            Parameters = BuildRouteParameters(method.GetParameters(), parameterTemplateIndexes).ToLookup(p => p.Type);
 
             ValidateParameters(method.Name);
-            ValidateEndpointTemplateParameters(parameterTemplateMap, method.Name);
+            ValidateEndpointTemplateParameters(parameterTemplateIndexes, method.Name);
         }
-        
-        public IEnumerable<ApiRouteParameterSchema> GetRouteParameterSchemas()
-            => _routeParameterLookup[ApiRouteParameterType.TemplateParameter];
-
-        public IEnumerable<ApiRouteParameterSchema> GetQuerySchemas()
-            => _routeParameterLookup[ApiRouteParameterType.Query];
-
-        public IEnumerable<ApiRouteParameterSchema> GetHeaderSchemas()
-            => _routeParameterLookup[ApiRouteParameterType.Header];
-
-        public ApiRouteParameterSchema? GetContentSchema()
-            => _routeParameterLookup[ApiRouteParameterType.Content].SingleOrDefault();
 
         private static IReadOnlyCollection<ApiRouteHeaderSchema> ExtractHeaders(MethodInfo method, IReadOnlyCollection<HttpHeaderAttribute> resourceHeaders) =>
             method.GetCustomAttributes<HttpHeaderAttribute>()
@@ -80,18 +68,18 @@ namespace SereneApi.Resource.Schema
                 .Select(r => new ApiRouteHeaderSchema(r.Key, r.Value))
                 .ToList();
 
-        private string? CompileTemplate(string? routeTemplate, out IReadOnlyDictionary<string, int> templateMap)
+        private static string? CompileRouteTemplate(string? routeTemplate, out IReadOnlyDictionary<string, int> parameterTemplateIndexes)
         {
             if (string.IsNullOrWhiteSpace(routeTemplate))
             {
-                templateMap = new Dictionary<string, int>();
+                parameterTemplateIndexes = new Dictionary<string, int>();
 
                 return null;
             }
 
             MatchCollection matches = FindParameters(routeTemplate);
 
-            Dictionary<string, int> parameterTemplateMap = new Dictionary<string, int>();
+            Dictionary<string, int> parameterTemplateIndexesBuilder = new Dictionary<string, int>();
 
             for (int i = 0; i < matches.Count; i++)
             {
@@ -99,27 +87,27 @@ namespace SereneApi.Resource.Schema
 
                 routeTemplate = routeTemplate.Replace($"{{{paramName}}}", $"{{{i}}}");
 
-                if (!parameterTemplateMap.TryAdd(paramName, i))
+                if (!parameterTemplateIndexesBuilder.TryAdd(paramName, i))
                 {
                     throw new ArgumentException($"Duplicate parameters found in Template, parameter name {paramName}", nameof(routeTemplate));
                 }
             }
 
-            templateMap = parameterTemplateMap;
+            parameterTemplateIndexes = parameterTemplateIndexesBuilder;
 
             return routeTemplate;
         }
 
         private void ValidateEndpointTemplateParameters(IReadOnlyDictionary<string, int> parameterTemplateMap, string methodName)
         {
-            ApiRouteParameterSchema[] parameters = GetRouteParameterSchemas().ToArray();
+            ApiRouteParameterSchema[] templateParameters = Parameters[ApiRouteParameterType.TemplateParameter].ToArray();
 
-            if (parameterTemplateMap.Count != parameters.Length)
+            if (parameterTemplateMap.Count != templateParameters.Length)
             {
-                throw InvalidResourceSchemaException.TemplateParameterMissMatch(parameters, parameterTemplateMap, methodName);
+                throw InvalidResourceSchemaException.TemplateParameterMissMatch(templateParameters, parameterTemplateMap, methodName);
             }
 
-            if (parameters.Any(p => p.TemplateIndex == null))
+            if (templateParameters.Any(p => p.TemplateIndex == null))
             {
                 throw new InvalidOperationException();
             }
@@ -127,7 +115,7 @@ namespace SereneApi.Resource.Schema
 
         private void ValidateParameters(string methodName)
         {
-            ApiRouteParameterSchema[] contentParameters = _routeParameterLookup[ApiRouteParameterType.Content].ToArray();
+            ApiRouteParameterSchema[] contentParameters = Parameters[ApiRouteParameterType.Content].ToArray();
 
             if (contentParameters.Length > 1)
             {
@@ -149,7 +137,8 @@ namespace SereneApi.Resource.Schema
 
         private static MatchCollection FindParameters(string routeTemplate)
         {
-            Regex matchCurlyBraces = new Regex("{([^}]*)}"); // Matches anything inside curly braces
+            // Matches anything inside curly braces
+            Regex matchCurlyBraces = new Regex("{([^}]*)}");
 
             return matchCurlyBraces.Matches(routeTemplate);
         }

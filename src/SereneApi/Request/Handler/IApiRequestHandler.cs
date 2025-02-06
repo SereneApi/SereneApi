@@ -6,6 +6,6 @@ namespace SereneApi.Request.Handler
 {
     internal interface IApiRequestHandler
     {
-        Task<IApiResponse> ExecuteAsync(IApiRequest apiRequest, CancellationToken cancellationToken = default);
+        Task<IApiResponse> SendAsync(IApiRequest apiRequest, CancellationToken cancellationToken = default);
     }
 }

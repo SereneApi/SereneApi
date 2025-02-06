@@ -5,6 +5,7 @@
         TemplateParameter,
         Query,
         Content,
-        Header
+        Header,
+        CancellationToken
     }
 }

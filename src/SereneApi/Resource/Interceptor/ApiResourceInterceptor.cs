@@ -15,9 +15,11 @@ namespace SereneApi.Resource.Interceptor
 
         private readonly ApiRequestFactory _requestFactory;
 
-        public ApiResourceInterceptor(ApiResourceSchema resourceSchema)
+        public ApiResourceInterceptor(ApiResourceSchema resourceSchema, ApiRequestFactory requestFactory, IApiRequestHandler requestHandler)
         {
             _resourceSchema = resourceSchema;
+            _requestFactory = requestFactory;
+            _requestHandler = requestHandler;
         }
 
         public async void Intercept(IInvocation resourceInvocation)
@@ -29,7 +31,7 @@ namespace SereneApi.Resource.Interceptor
 
             IApiRequest request = _requestFactory.Build(routeSchema, resourceInvocation.Arguments);
 
-            var response = await _requestHandler.ExecuteAsync(request);
+            var response = await _requestHandler.SendAsync(request, request.CancellationToken);
 
             resourceInvocation.ReturnValue = response;
         }

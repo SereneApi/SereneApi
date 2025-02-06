@@ -4,7 +4,7 @@ using System.Net;
 
 namespace SereneApi.Response
 {
-    public interface IApiResponse
+    public interface IApiResponse : IDisposable
     {
         TimeSpan Duration { get; }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 
 namespace SereneApi.Request
 {
@@ -19,6 +20,8 @@ namespace SereneApi.Request
         object? Content { get; }
 
         Type? ResponseType { get; }
+
+        CancellationToken CancellationToken { get; }
 
         IReadOnlyDictionary<string, string> Headers { get; }
     }

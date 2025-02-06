@@ -3,6 +3,7 @@ using SereneApi.Resource.Schema.Enums;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using System.Threading;
 
 namespace SereneApi.Resource.Schema
 {
@@ -32,6 +33,11 @@ namespace SereneApi.Resource.Schema
             if (parameterAttribute != null)
             {
                 return new ApiRouteParameterSchema(parameterAttribute.Name ?? parameter.Name, parameterIndex, parameterAttribute.Type);
+            }
+
+            if (parameter.ParameterType == typeof(CancellationToken))
+            {
+                return new ApiRouteParameterSchema(parameter.Name, parameterIndex, ApiRouteParameterType.CancellationToken);
             }
 
             if (parameterTemplateMap.TryGetValue(parameter.Name, out int index))

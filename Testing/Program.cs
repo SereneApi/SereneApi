@@ -11,7 +11,9 @@ namespace Testing
 
             IUsersApi userApi = registry.CreateResourceHandler<IUsersApi>();
 
-            userApi.LinkUserToArticleAsync("article:1234", "user:1234");
+            CancellationTokenSource tokenSource = new CancellationTokenSource();
+
+            userApi.GetUserStreamAsync(tokenSource.Token);
             //userApi.GetUsersAsync("john", "smith");
         }
     }

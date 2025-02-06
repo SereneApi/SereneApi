@@ -8,12 +8,12 @@ namespace SereneApi.Response.Handler
 {
     internal sealed class ApiResponseHandler : IApiResponseHandler
     {
-        public Task<IApiResponse> HandleSuccessfulResponseAsync(IApiRequest apiRequest, HttpResponseMessage httpResponse, CancellationToken cancellationToken = default)
+        public Task<IApiResponse> HandleSuccessfulResponseAsync(IApiRequest apiRequest, HttpResponseMessage httpResponse, TimeSpan responseTime, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IApiResponse> HandleFailedResponseAsync(IApiRequest apiRequest, HttpResponseMessage httpResponse, CancellationToken cancellationToken = default)
+        public Task<IApiResponse> HandleFailedResponseAsync(IApiRequest apiRequest, HttpResponseMessage httpResponse, TimeSpan responseTime, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
